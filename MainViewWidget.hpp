@@ -2,6 +2,8 @@
 #define MAINVIEWWIDGET_HPP
 
 #include <QWidget>
+#include <nix.hpp>
+#include "ui_MainViewWidget.h"
 
 namespace Ui {
 class MainViewWidget;
@@ -17,6 +19,10 @@ public:
 
 private:
     Ui::MainViewWidget *ui;
+    nix::File nix_file;
+
+    void populate_tree_widget();
+    static void add_children_to_item(QTreeWidgetItem*, nix::Section);
 };
 
 #endif // MAINVIEWWIDGET_HPP

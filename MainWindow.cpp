@@ -31,6 +31,4 @@ void MainWindow::on_action_Open_File_triggered()
     //test
     MainViewWidget* mvw = new MainViewWidget(file_path);
     this->ui->main_ho_layout->addWidget(mvw);
-
-    //TODO open NIX file
 }
