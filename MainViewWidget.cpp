@@ -1,4 +1,5 @@
 #include "MainViewWidget.hpp"
+#include "ui_MainViewWidget.h"
 
 /**
 * @brief Container for all widgets for data display.

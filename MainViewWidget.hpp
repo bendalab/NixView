@@ -3,7 +3,7 @@
 
 #include <QWidget>
 #include <nix.hpp>
-#include "ui_MainViewWidget.h"
+#include <QtGui>
 
 namespace Ui {
 class MainViewWidget;
