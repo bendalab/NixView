@@ -21,7 +21,7 @@ private:
     Ui::MainViewWidget *ui;
     nix::File nix_file;
 
-    void populate_tree_widget();
+    void populate_data_stacked_widget();
     static void add_children_to_item(QTreeWidgetItem*, nix::Section);
 };
 

@@ -44,46 +44,10 @@
       </widget>
      </item>
      <item row="2" column="0">
-      <widget class="QStackedWidget" name="stackedWidget">
+      <widget class="QStackedWidget" name="data_stacked_Widget">
        <property name="currentIndex">
-        <number>0</number>
+        <number>-1</number>
        </property>
-       <widget class="QWidget" name="page">
-        <layout class="QGridLayout" name="gridLayout_3">
-         <item row="0" column="0">
-          <widget class="QTreeWidget" name="treeWidget">
-           <property name="autoExpandDelay">
-            <number>1</number>
-           </property>
-           <property name="itemsExpandable">
-            <bool>true</bool>
-           </property>
-           <property name="sortingEnabled">
-            <bool>true</bool>
-           </property>
-           <property name="animated">
-            <bool>true</bool>
-           </property>
-           <column>
-            <property name="text">
-             <string>Name</string>
-            </property>
-           </column>
-           <column>
-            <property name="text">
-             <string>Storage Type</string>
-            </property>
-           </column>
-           <column>
-            <property name="text">
-             <string>Data Type</string>
-            </property>
-           </column>
-          </widget>
-         </item>
-        </layout>
-       </widget>
-       <widget class="QWidget" name="page_2"/>
       </widget>
      </item>
     </layout>
