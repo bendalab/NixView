@@ -17,15 +17,18 @@ QMAKE_CXXFLAGS+= -std=c++11
 SOURCES += main.cpp\
         MainWindow.cpp \
     MainViewWidget.cpp \
-    RawTreeView.cpp
+    RawTreeView.cpp \
+    AnotherTree.cpp
 
 HEADERS  += MainWindow.hpp \
     MainViewWidget.hpp \
-    RawTreeView.hpp
+    RawTreeView.hpp \
+    AnotherTree.hpp
 
 FORMS    += MainWindow.ui \
     MainViewWidget.ui \
-    RawTreeView.ui
+    RawTreeView.ui \
+    AnotherTree.ui
 
 
 # PROBLEM (nicht allgemein)

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>AnotherTree</class>
+ <widget class="QWidget" name="AnotherTree">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>299</width>
+    <height>483</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0">
+    <widget class="QTreeWidget" name="treeWidget">
+     <column>
+      <property name="text">
+       <string>1</string>
+      </property>
+     </column>
+     <item>
+      <property name="text">
+       <string>stuff</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>could be even more stuff</string>
+      </property>
+     </item>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

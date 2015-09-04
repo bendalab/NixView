@@ -1,6 +1,7 @@
 #include "MainViewWidget.hpp"
 #include "ui_MainViewWidget.h"
 #include "RawTreeView.hpp"
+#include "AnotherTree.hpp"
 
 
 /**
@@ -12,6 +13,7 @@ MainViewWidget::MainViewWidget(std::string& nix_file_path, QWidget *parent) :
     ui(new Ui::MainViewWidget)
 {
     ui->setupUi(this);
+    QObject::connect(ui->data_combo_box, SIGNAL(currentIndexChanged(int)), this, SLOT(data_combo_box_changed(int)));
 
     nix_file = nix::File::open(nix_file_path, nix::FileMode::ReadOnly);
 
@@ -22,7 +24,14 @@ void MainViewWidget::populate_data_stacked_widget()
 {
     RawTreeView* rtv = new RawTreeView(nix_file);
     ui->data_stacked_Widget->addWidget(rtv);
-    std::cout << ui->data_stacked_Widget->currentIndex() << std::endl;
+
+    AnotherTree* aot  = new AnotherTree();
+    ui->data_stacked_Widget->addWidget(aot);
+//    std::cout << ui->data_stacked_Widget->currentWidget()->objectName().toStdString() << std::endl;
+}
+
+void MainViewWidget::data_combo_box_changed(int index) {
+    ui->data_stacked_Widget->setCurrentIndex(index);
 }
 
 MainViewWidget::~MainViewWidget()

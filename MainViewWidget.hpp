@@ -17,6 +17,9 @@ public:
     explicit MainViewWidget(std::string& nix_file_path, QWidget *parent = 0);
     ~MainViewWidget();
 
+public slots:
+    void data_combo_box_changed(int);
+
 private:
     Ui::MainViewWidget *ui;
     nix::File nix_file;

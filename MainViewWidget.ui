@@ -17,7 +17,7 @@
    <item row="0" column="0">
     <layout class="QGridLayout" name="gridLayout_2">
      <item row="1" column="0">
-      <widget class="QComboBox" name="comboBox">
+      <widget class="QComboBox" name="data_combo_box">
        <item>
         <property name="text">
          <string>Raw Data</string>
@@ -25,7 +25,7 @@
        </item>
        <item>
         <property name="text">
-         <string>[Data Type]</string>
+         <string>Another Tree</string>
         </property>
        </item>
       </widget>
