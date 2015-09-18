@@ -36,7 +36,7 @@ FORMS    += MainWindow.ui \
 #else:win32:CONFIG(debug, debug|release): LIBS += /usr/local/lib/debug/ -lnix
 #else:unix: LIBS += /usr/local/lib/ -lnix
 
-unix: LIBS += /usr/local/lib/ -lnix
+unix: LIBS += -L/usr/local/lib/ -lnix
 
 INCLUDEPATH += /usr/local/include
 DEPENDPATH += /usr/local/include
