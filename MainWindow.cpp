@@ -1,6 +1,5 @@
 #include "MainWindow.hpp"
 #include "ui_MainWindow.h"
-#include "MainViewWidget.hpp"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -28,7 +27,6 @@ void MainWindow::on_action_Open_File_triggered()
     std::string file_path = fileNames.front().toStdString();
     std::cout << file_path << std::endl;
 
-    //test
-    MainViewWidget* mvw = new MainViewWidget(file_path);
+    mvw = new MainViewWidget(file_path);
     this->ui->main_ho_layout->addWidget(mvw);
 }

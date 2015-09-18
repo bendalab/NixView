@@ -5,6 +5,7 @@
 #include <iostream>
 #include <QFileDialog>
 #include <nix.hpp>
+#include "MainViewWidget.hpp"
 
 namespace Ui {
 class MainWindow;
@@ -23,6 +24,7 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
+    MainViewWidget* mvw;
 };
 
 #endif // MAINWINDOW_HPP
