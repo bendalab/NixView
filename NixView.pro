@@ -31,11 +31,12 @@ FORMS    += MainWindow.ui \
     AnotherTree.ui
 
 
-# PROBLEM (nicht allgemein)
-win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../../tools/nix/cmake/release/ -lnix
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../../tools/nix/cmake/debug/ -lnix
-else:unix: LIBS += -L$$PWD/../../../../tools/nix/cmake/ -lnix
+#standard windows folder?
+#win32:CONFIG(release, debug|release): LIBS += /usr/local/lib/release/ -lnix
+#else:win32:CONFIG(debug, debug|release): LIBS += /usr/local/lib/debug/ -lnix
+#else:unix: LIBS += /usr/local/lib/ -lnix
 
-INCLUDEPATH += $$PWD/../../../../tools/nix/cmake
-DEPENDPATH += $$PWD/../../../../tools/nix/cmake
-# MELBORP
+unix: LIBS += /usr/local/lib/ -lnix
+
+INCLUDEPATH += /usr/local/include
+DEPENDPATH += /usr/local/include
