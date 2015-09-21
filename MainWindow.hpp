@@ -25,6 +25,7 @@ private slots:
 private:
     Ui::MainWindow *ui;
     MainViewWidget* mvw;
+    bool mvw_is_set;
 };
 
 #endif // MAINWINDOW_HPP

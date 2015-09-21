@@ -6,6 +6,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    mvw_is_set = false;
 }
 
 MainWindow::~MainWindow()
@@ -15,6 +16,12 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_action_Open_File_triggered()
 {
+    if (mvw_is_set)
+    {
+        ui->main_ho_layout->removeWidget(mvw);
+        mvw->deleteLater();
+    }
+
     QFileDialog fd(this);
     fd.setFileMode(QFileDialog::ExistingFile);
     fd.setNameFilter(tr("NIX File (*.h5)"));
@@ -28,5 +35,6 @@ void MainWindow::on_action_Open_File_triggered()
     std::cout << file_path << std::endl;
 
     mvw = new MainViewWidget(file_path);
-    this->ui->main_ho_layout->addWidget(mvw);
+    ui->main_ho_layout->addWidget(mvw);
+    mvw_is_set = true;
 }
