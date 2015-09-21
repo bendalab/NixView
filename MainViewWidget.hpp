@@ -4,6 +4,7 @@
 #include <QWidget>
 #include <nix.hpp>
 #include <QtGui>
+#include <RawTreeView.hpp>
 
 namespace Ui {
 class MainViewWidget;
@@ -23,6 +24,8 @@ public slots:
 private:
     Ui::MainViewWidget *ui;
     nix::File nix_file;
+
+    RawTreeView* rtv;
 
     void populate_data_stacked_widget();
     static void add_children_to_item(QTreeWidgetItem*, nix::Section);

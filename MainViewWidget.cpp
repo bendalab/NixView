@@ -22,7 +22,7 @@ MainViewWidget::MainViewWidget(std::string& nix_file_path, QWidget *parent) :
 
 void MainViewWidget::populate_data_stacked_widget()
 {
-    RawTreeView* rtv = new RawTreeView(nix_file);
+    rtv = new RawTreeView(nix_file);
     ui->data_stacked_Widget->addWidget(rtv);
 
     AnotherTree* aot  = new AnotherTree();
