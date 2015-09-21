@@ -18,17 +18,20 @@ SOURCES += main.cpp\
         MainWindow.cpp \
     MainViewWidget.cpp \
     RawTreeView.cpp \
-    AnotherTree.cpp
+    AnotherTree.cpp \
+    InfoWidget.cpp
 
 HEADERS  += MainWindow.hpp \
     MainViewWidget.hpp \
     RawTreeView.hpp \
-    AnotherTree.hpp
+    AnotherTree.hpp \
+    InfoWidget.hpp
 
 FORMS    += MainWindow.ui \
     MainViewWidget.ui \
     RawTreeView.ui \
-    AnotherTree.ui
+    AnotherTree.ui \
+    InfoWidget.ui
 
 
 #standard windows folder?
