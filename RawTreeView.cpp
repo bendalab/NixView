@@ -10,7 +10,7 @@ RawTreeView::RawTreeView(nix::File _nix_file, QWidget *parent) :
     nix_file =  _nix_file;
     init_tree_widget();
 
-    QObject::connect(ui->treeWidget, SIGNAL(itemDoubleClicked(QTreeWidgetItem*,int)), this, SLOT(entry_double_clicked(QTreeWidgetItem*,int)));
+//    QObject::connect(ui->treeWidget, SIGNAL(itemDoubleClicked(QTreeWidgetItem*,int)), this, SLOT(entry_double_clicked(QTreeWidgetItem*,int)));
 }
 
 void RawTreeView::init_tree_widget()
@@ -72,6 +72,11 @@ void RawTreeView::entry_double_clicked(QTreeWidgetItem* item, int column)
 {
     if (item->childCount() == 0)
         std::cout << item->text(0).toStdString() << std::endl;
+}
+
+const QTreeWidget* RawTreeView::get_tree_widget()
+{
+    return ui->treeWidget;
 }
 
 RawTreeView::~RawTreeView()

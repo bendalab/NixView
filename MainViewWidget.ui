@@ -15,7 +15,7 @@
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0">
-    <layout class="QGridLayout" name="gridLayout_2">
+    <layout class="QGridLayout" name="overview_layout">
      <item row="1" column="0">
       <widget class="QComboBox" name="data_combo_box">
        <item>
@@ -66,17 +66,15 @@
     </spacer>
    </item>
    <item row="0" column="2">
-    <spacer name="horizontalSpacer_2">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>40</width>
-       <height>20</height>
-      </size>
-     </property>
-    </spacer>
+    <layout class="QVBoxLayout" name="data_layout">
+     <item>
+      <widget class="QLabel" name="test_label">
+       <property name="text">
+        <string>Test-Label</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
   </layout>
  </widget>

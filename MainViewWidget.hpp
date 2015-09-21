@@ -5,6 +5,7 @@
 #include <nix.hpp>
 #include <QtGui>
 #include <RawTreeView.hpp>
+#include <InfoWidget.hpp>
 
 namespace Ui {
 class MainViewWidget;
@@ -20,15 +21,18 @@ public:
 
 public slots:
     void data_combo_box_changed(int);
+    void set_test_label(QTreeWidgetItem*, int);
 
 private:
     Ui::MainViewWidget *ui;
     nix::File nix_file;
 
     RawTreeView* rtv;
+    InfoWidget* iw;
 
     void populate_data_stacked_widget();
-    static void add_children_to_item(QTreeWidgetItem*, nix::Section);
+
+    void connect_widgets();
 };
 
 #endif // MAINVIEWWIDGET_HPP

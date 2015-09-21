@@ -25,6 +25,10 @@ private:
     nix::File nix_file;
     void init_tree_widget();
     static void add_children_to_item(QTreeWidgetItem* item, nix::Section section);
+
+    // friend declaration and getters for signals and slots
+    friend class MainViewWidget;
+    const QTreeWidget* get_tree_widget();
 };
 
 #endif // RAWTREEVIEW_HPP
