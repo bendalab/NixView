@@ -79,12 +79,12 @@ void MainViewWidget::item_info_requested(QTreeWidgetItem* item, int column)
             }
             else if (item->text(1) == QString("Tag"))
             {
-                nix::DataArray tag = block.getDataArray(item->text(0).toStdString());
+                nix::Tag tag = block.getTag(item->text(0).toStdString());
                 emit item_info_found(tag.id(), tag.type(), tag.name(), tag.definition());
             }
             else if (item->text(1) == QString("MultiTag"))
             {
-                nix::DataArray mtag = block.getDataArray(item->text(0).toStdString());
+                nix::MultiTag mtag = block.getMultiTag(item->text(0).toStdString());
                 emit item_info_found(mtag.id(), mtag.type(), mtag.name(), mtag.definition());
             }
         }

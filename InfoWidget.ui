@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>300</height>
+    <width>369</width>
+    <height>413</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -26,6 +26,34 @@
       <widget class="QLabel" name="test_label">
        <property name="text">
         <string>testlabel</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="info_label">
+       <property name="text">
+        <string>Info</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QTextEdit" name="info_text_edit">
+       <property name="readOnly">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="metadata_label">
+       <property name="text">
+        <string>MetaData</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QTextEdit" name="metadata_text_edit">
+       <property name="readOnly">
+        <bool>true</bool>
        </property>
       </widget>
      </item>
