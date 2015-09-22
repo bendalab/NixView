@@ -25,24 +25,40 @@ void MainViewWidget::populate_data_stacked_widget()
     rtv = new RawTreeView(nix_file);
     ui->data_stacked_Widget->addWidget(rtv);
 
+    iw =  new InfoWidget();
+
+    // for testing
     AnotherTree* aot  = new AnotherTree();
     ui->data_stacked_Widget->addWidget(aot);
+    // =====
 }
 
+// slots
 void MainViewWidget::data_combo_box_changed(int index) {
     ui->data_stacked_Widget->setCurrentIndex(index);
 }
 
-void MainViewWidget::set_test_label(QTreeWidgetItem* qt, int c)
+//void MainViewWidget::set_test_label(QTreeWidgetItem* qt, int c)
+//{
+//    ui->test_label->setText(qt->text(0));
+//}
+
+void MainViewWidget::activate_info_widget()
 {
-    ui->test_label->setText(qt->text(0));
+    ui->horizontalLayout->addWidget(iw);
 }
 
+// widget connection
 void MainViewWidget::connect_widgets()
 {
+    // view mode combo box
     QObject::connect(ui->data_combo_box, SIGNAL(currentIndexChanged(int)), this, SLOT(data_combo_box_changed(int)));
 
-    QObject::connect(rtv->get_tree_widget(), SIGNAL(itemDoubleClicked(QTreeWidgetItem*, int)), this, SLOT(set_test_label(QTreeWidgetItem* ,int)));
+    // activate info widget
+    QObject::connect(iw, SIGNAL(add_info_widget()), this, SLOT(activate_info_widget()));
+
+    // double click in overview
+    QObject::connect(rtv->get_tree_widget(), SIGNAL(itemDoubleClicked(QTreeWidgetItem*, int)), iw, SLOT(update_info_widget(QTreeWidgetItem* ,int)));
 }
 
 MainViewWidget::~MainViewWidget()
