@@ -9,8 +9,6 @@ RawTreeView::RawTreeView(nix::File _nix_file, QWidget *parent) :
     ui->setupUi(this);
     nix_file =  _nix_file;
     init_tree_widget();
-
-//    QObject::connect(ui->treeWidget, SIGNAL(itemDoubleClicked(QTreeWidgetItem*,int)), this, SLOT(entry_double_clicked(QTreeWidgetItem*,int)));
 }
 
 void RawTreeView::init_tree_widget()
@@ -81,11 +79,13 @@ void RawTreeView::resize_to_content(QModelIndex qml)
         ui->treeWidget->resizeColumnToContents(c);
 }
 
+// getter
 const QTreeWidget* RawTreeView::get_tree_widget()
 {
     return ui->treeWidget;
 }
 
+// destructor
 RawTreeView::~RawTreeView()
 {
     delete ui;
