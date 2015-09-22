@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include <QtGui>
+#include <boost/optional.hpp>
 
 namespace Ui {
 class InfoWidget;
@@ -19,7 +20,7 @@ public:
     bool is_active;
 
 public slots:
-    void update_info_widget(QTreeWidgetItem*, int);
+    void update_info_widget(std::string, std::string, std::string, boost::optional<std::basic_string<char>>);
 
 signals:
     void add_info_widget();

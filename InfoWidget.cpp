@@ -9,7 +9,7 @@ InfoWidget::InfoWidget(QWidget *parent) :
     is_active = false;
 }
 
-void InfoWidget::update_info_widget(QTreeWidgetItem* item, int column)
+void InfoWidget::update_info_widget(std::string id, std::string type, std::string name, boost::optional<std::basic_string<char>> description)
 {
     if (!is_active)
     {
@@ -17,7 +17,7 @@ void InfoWidget::update_info_widget(QTreeWidgetItem* item, int column)
         is_active = true;
     }
 
-    ui->test_label->setText(item->text(column));
+    ui->test_label->setText(QString::fromStdString(name));
 }
 
 InfoWidget::~InfoWidget()
