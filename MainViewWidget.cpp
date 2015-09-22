@@ -70,7 +70,7 @@ void MainViewWidget::item_info_requested(QTreeWidgetItem* item, int column)
             return;
         }
 
-        else if(nix_path.size() == 1) //data array/tag/multitag  info requested
+        else if(nix_path.size() == 1) //data array/tag/multitag requested
         {
             if (item->text(1) == QString("Data Array"))
             {
@@ -88,7 +88,10 @@ void MainViewWidget::item_info_requested(QTreeWidgetItem* item, int column)
                 emit item_info_found(mtag.id(), mtag.type(), mtag.name(), mtag.definition());
             }
         }
-
+    }
+    else if (current_item->text(0) == QString("Metadata"))
+    {
+        //TODO
     }
 
 }
@@ -104,7 +107,7 @@ void MainViewWidget::connect_widgets()
 
     // double click in overview
 //    QObject::connect(rtv->get_tree_widget(), SIGNAL(itemDoubleClicked(QTreeWidgetItem*, int)), iw, SLOT(update_info_widget(QTreeWidgetItem* ,int))); //test case
-    QObject::connect(rtv->get_tree_widget(), SIGNAL(itemDoubleClicked(QTreeWidgetItem*, int)), this, SLOT(item_info_requested(QTreeWidgetItem*,int)));
+    QObject::connect(rtv->get_tree_widget(), SIGNAL(itemClicked(QTreeWidgetItem*, int)), this, SLOT(item_info_requested(QTreeWidgetItem*,int)));
     QObject::connect(this, SIGNAL(item_info_found(std::string,std::string,std::string,boost::optional<std::basic_string<char> >)),
                      iw, SLOT(update_info_widget(std::string, std::string, std::string, boost::optional<std::basic_string<char>>)));
 
