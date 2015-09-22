@@ -68,10 +68,17 @@ void RawTreeView::add_children_to_item(QTreeWidgetItem* item, nix::Section secti
     }
 }
 
+// slots
 void RawTreeView::entry_double_clicked(QTreeWidgetItem* item, int column)
 {
     if (item->childCount() == 0)
         std::cout << item->text(0).toStdString() << std::endl;
+}
+
+void RawTreeView::resize_to_content(QModelIndex qml)
+{
+    for (int c = 0; c<ui->treeWidget->columnCount();c++)
+        ui->treeWidget->resizeColumnToContents(c);
 }
 
 const QTreeWidget* RawTreeView::get_tree_widget()

@@ -38,14 +38,10 @@ void MainViewWidget::data_combo_box_changed(int index) {
     ui->data_stacked_Widget->setCurrentIndex(index);
 }
 
-//void MainViewWidget::set_test_label(QTreeWidgetItem* qt, int c)
-//{
-//    ui->test_label->setText(qt->text(0));
-//}
-
 void MainViewWidget::activate_info_widget()
 {
     ui->horizontalLayout->addWidget(iw);
+//    iw->setSizePolicy();
 }
 
 // widget connection
@@ -59,6 +55,8 @@ void MainViewWidget::connect_widgets()
 
     // double click in overview
     QObject::connect(rtv->get_tree_widget(), SIGNAL(itemDoubleClicked(QTreeWidgetItem*, int)), iw, SLOT(update_info_widget(QTreeWidgetItem* ,int)));
+    QObject::connect(rtv->get_tree_widget(), SIGNAL(expanded(QModelIndex)), rtv, SLOT(resize_to_content(QModelIndex)));
+    QObject::connect(rtv->get_tree_widget(), SIGNAL(collapsed(QModelIndex)), rtv, SLOT(resize_to_content(QModelIndex)));
 }
 
 MainViewWidget::~MainViewWidget()

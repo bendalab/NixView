@@ -19,6 +19,7 @@ public:
 
 public slots:
     void entry_double_clicked(QTreeWidgetItem* item, int column);
+    void resize_to_content(QModelIndex);
 
 private:
     Ui::RawTreeView *ui;

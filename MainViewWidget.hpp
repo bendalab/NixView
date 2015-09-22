@@ -21,7 +21,6 @@ public:
 
 public slots:
     void data_combo_box_changed(int);
-//    void set_test_label(QTreeWidgetItem*, int);
     void activate_info_widget();
 
 private:
