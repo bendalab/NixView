@@ -1,6 +1,7 @@
 #include "RawTreeView.hpp"
 #include "ui_RawTreeView.h"
 #include <iostream>
+#include <boost/algorithm/string.hpp>
 
 RawTreeView::RawTreeView(nix::File _nix_file, QWidget *parent) :
     QWidget(parent),
@@ -23,6 +24,12 @@ void RawTreeView::init_tree_widget()
             QTreeWidgetItem* child_item = new QTreeWidgetItem(tree_item, QStringList(QString::fromStdString(da.name())));
             child_item->setText(1, QString::fromStdString("Data Array"));
             child_item->setText(2, QString::fromStdString(nix::data_type_to_string(da.dataType())));
+            std::stringstream s;
+            s << da.dataExtent();
+            std::string shape = s.str();
+            boost::algorithm::trim(shape);
+            shape = shape.substr(7, shape.length()-1);
+            child_item->setText(3, QString::fromStdString(shape));
         }
 
         for (nix::Tag t : b.tags())
