@@ -25,7 +25,34 @@ void InfoWidget::update_info_widget(std::string id, std::string type, std::strin
     ss << "id: " << id << "\n"
        << "type: " << type << "\n"
        << "name: " << name << "\n"
-       << "description: " << description;
+       << "description: ";
+    if (description.is_initialized())
+        ss << description.get();
+    else
+        ss << "-";
+    QString info_string = QString::fromStdString(ss.str());
+    ui->info_text_edit->setText(info_string);
+}
+
+void InfoWidget::update_info_widget(std::string id, std::string name, boost::optional<std::basic_string<char>> description)
+{
+    if (!is_active)
+    {
+        emit add_info_widget();
+        is_active = true;
+    }
+
+    ui->test_label->setText(QString::fromStdString(std::string("Selected item: ") + name));
+
+    //concat strings
+    std::stringstream ss;
+    ss << "id: " << id << "\n"
+       << "name: " << name << "\n"
+       << "description: ";
+    if (description.is_initialized())
+        ss << description.get();
+    else
+        ss << "-";
     QString info_string = QString::fromStdString(ss.str());
     ui->info_text_edit->setText(info_string);
 }

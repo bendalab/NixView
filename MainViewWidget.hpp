@@ -27,6 +27,7 @@ public slots:
 
 signals:
     void item_info_found(std::string, std::string, std::string, boost::optional<std::basic_string<char>>);
+    void item_info_found(std::string, std::string, boost::optional<std::basic_string<char>>);
 
 private:
     Ui::MainViewWidget *ui;

@@ -91,7 +91,31 @@ void MainViewWidget::item_info_requested(QTreeWidgetItem* item, int column)
     }
     else if (current_item->text(0) == QString("Metadata"))
     {
-        //TODO
+        nix::Section section = nix_file.getSection(nix_path.back());
+        nix_path.pop_back();
+
+        if(nix_path.size() == 0)
+        {
+            emit item_info_found(section.id(), section.type(), section.name(), section.definition());
+            return;
+        }
+
+        while(nix_path.size() > 1)
+        {
+            section = section.getSection(nix_path.back());
+            nix_path.pop_back();
+        }
+
+        if(!section.hasProperty(nix_path.back())) //section info requested
+        {
+            section = section.getSection(nix_path.back());
+            emit item_info_found(section.id(), section.type(), section.name(), section.definition());
+        }
+        else
+        {
+            nix::Property property = section.getProperty(nix_path.back());
+            emit item_info_found(property.id(), property.name(), property.definition());
+        }
     }
 
 }
@@ -110,6 +134,8 @@ void MainViewWidget::connect_widgets()
     QObject::connect(rtv->get_tree_widget(), SIGNAL(itemClicked(QTreeWidgetItem*, int)), this, SLOT(item_info_requested(QTreeWidgetItem*,int)));
     QObject::connect(this, SIGNAL(item_info_found(std::string,std::string,std::string,boost::optional<std::basic_string<char> >)),
                      iw, SLOT(update_info_widget(std::string, std::string, std::string, boost::optional<std::basic_string<char>>)));
+    QObject::connect(this, SIGNAL(item_info_found(std::string,std::string,boost::optional<std::basic_string<char> >)),
+                     iw, SLOT(update_info_widget(std::string, std::string, boost::optional<std::basic_string<char>>)));
 
     // overview expanded/collapsed
     QObject::connect(rtv->get_tree_widget(), SIGNAL(expanded(QModelIndex)), rtv, SLOT(resize_to_content(QModelIndex)));

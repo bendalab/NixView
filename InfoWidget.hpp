@@ -21,6 +21,7 @@ public:
 
 public slots:
     void update_info_widget(std::string, std::string, std::string, boost::optional<std::basic_string<char>>);
+    void update_info_widget(std::string, std::string, boost::optional<std::basic_string<char>>);
 
 signals:
     void add_info_widget();
