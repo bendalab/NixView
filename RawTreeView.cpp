@@ -93,7 +93,7 @@ void RawTreeView::item_info_requested(QTreeWidgetItem* item, int column)
     // don't do anything
     if (current_item->text(0) == QString("Metadata") || current_item->text(0)==QString("Data"))
     {
-        emit item_info_found(std::string("-"), std::string("-"), std::string("-"), std::string("-"));
+        emit item_info_found(std::string("-"), std::string("-"), std::string("-"), std::string("-"), nullptr);
         return;
     }
 
@@ -112,7 +112,7 @@ void RawTreeView::item_info_requested(QTreeWidgetItem* item, int column)
 
         if(nix_path.size() == 0) //block info requested
         {
-            emit item_info_found(block.id(), block.type(), block.name(), block.definition());
+            emit item_info_found(block.id(), block.type(), block.name(), block.definition(), block.metadata());
             return;
         }
 
@@ -121,17 +121,17 @@ void RawTreeView::item_info_requested(QTreeWidgetItem* item, int column)
             if (item->text(1) == QString("Data Array"))
             {
                 nix::DataArray da = block.getDataArray(item->text(0).toStdString());
-                emit item_info_found(da.id(), da.type(), da.name(), da.definition());
+                emit item_info_found(da.id(), da.type(), da.name(), da.definition(), da.metadata());
             }
             else if (item->text(1) == QString("Tag"))
             {
                 nix::Tag tag = block.getTag(item->text(0).toStdString());
-                emit item_info_found(tag.id(), tag.type(), tag.name(), tag.definition());
+                emit item_info_found(tag.id(), tag.type(), tag.name(), tag.definition(), tag.metadata());
             }
             else if (item->text(1) == QString("MultiTag"))
             {
                 nix::MultiTag mtag = block.getMultiTag(item->text(0).toStdString());
-                emit item_info_found(mtag.id(), mtag.type(), mtag.name(), mtag.definition());
+                emit item_info_found(mtag.id(), mtag.type(), mtag.name(), mtag.definition(), mtag.metadata());
             }
         }
     }
@@ -142,7 +142,7 @@ void RawTreeView::item_info_requested(QTreeWidgetItem* item, int column)
 
         if(nix_path.size() == 0)
         {
-            emit item_info_found(section.id(), section.type(), section.name(), section.definition());
+            emit item_info_found(section.id(), section.type(), section.name(), section.definition(), section.link());
             return;
         }
 
@@ -155,12 +155,12 @@ void RawTreeView::item_info_requested(QTreeWidgetItem* item, int column)
         if(!section.hasProperty(nix_path.back())) //section info requested
         {
             section = section.getSection(nix_path.back());
-            emit item_info_found(section.id(), section.type(), section.name(), section.definition());
+            emit item_info_found(section.id(), section.type(), section.name(), section.definition(), section.link());
         }
         else
         {
             nix::Property property = section.getProperty(nix_path.back());
-            emit item_info_found(property.id(), property.name(), property.definition());
+            emit item_info_found(property.id(), property.name(), property.definition(), nullptr);
         }
     }
 
