@@ -7,17 +7,10 @@ InfoWidget::InfoWidget(QWidget *parent) :
     ui(new Ui::InfoWidget)
 {
     ui->setupUi(this);
-    is_active = false;
 }
 
 void InfoWidget::update_info_widget(std::string id, std::string type, std::string name, boost::optional<std::basic_string<char>> description, nix::Section meta_section)
 {
-    if (!is_active)
-    {
-        emit add_info_widget();
-        is_active = true;
-    }
-
     ui->test_label->setText(QString::fromStdString(std::string("Selected item: ") + name));
 
     //concat strings
@@ -38,12 +31,6 @@ void InfoWidget::update_info_widget(std::string id, std::string type, std::strin
 
 void InfoWidget::update_info_widget(std::string id, std::string name, boost::optional<std::basic_string<char>> description, nix::Section meta_section)
 {
-    if (!is_active)
-    {
-        emit add_info_widget();
-        is_active = true;
-    }
-
     ui->test_label->setText(QString::fromStdString(std::string("Selected item: ") + name));
 
     //concat strings

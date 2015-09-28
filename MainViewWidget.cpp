@@ -16,6 +16,9 @@ MainViewWidget::MainViewWidget(std::string& nix_file_path, QWidget *parent) :
 
     nix_file = nix::File::open(nix_file_path, nix::FileMode::ReadOnly);
 
+    iw =  new InfoWidget();
+    ui->horizontalLayout->addWidget(iw);
+
     populate_data_stacked_widget();
     connect_widgets();
 }
@@ -24,8 +27,6 @@ void MainViewWidget::populate_data_stacked_widget()
 {
     rtv = new RawTreeView(nix_file);
     ui->data_stacked_Widget->addWidget(rtv);
-
-    iw =  new InfoWidget();
 
     // for testing
     AnotherTree* aot  = new AnotherTree();
@@ -48,9 +49,6 @@ void MainViewWidget::connect_widgets()
 {
     // view mode combo box
     QObject::connect(ui->data_combo_box, SIGNAL(currentIndexChanged(int)), this, SLOT(data_combo_box_changed(int)));
-
-    // activate info widget
-    QObject::connect(iw, SIGNAL(add_info_widget()), this, SLOT(activate_info_widget()));
 
     // click in overview
     // - rawtreeview

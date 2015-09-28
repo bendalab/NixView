@@ -18,16 +18,11 @@ public:
     explicit InfoWidget(QWidget *parent = 0);
     ~InfoWidget();
 
-    bool is_active;
-
 public slots:
     void update_info_widget(std::string, std::string, std::string, boost::optional<std::basic_string<char>>, nix::Section);
     void update_info_widget(std::string, std::string, boost::optional<std::basic_string<char>>, nix::Section);
 
     void resize_to_content(QModelIndex);
-
-signals:
-    void add_info_widget();
 
 private:
     Ui::InfoWidget *ui;
