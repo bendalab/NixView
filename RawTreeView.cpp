@@ -92,7 +92,10 @@ void RawTreeView::item_info_requested(QTreeWidgetItem* item, int column)
     QTreeWidgetItem* current_item = item;
     // don't do anything
     if (current_item->text(0) == QString("Metadata") || current_item->text(0)==QString("Data"))
+    {
+        emit item_info_found(std::string("-"), std::string("-"), std::string("-"), std::string("-"));
         return;
+    }
 
     // get full path to nix_file root
     while (current_item->text(0)!=QString("Metadata") && current_item->text(0)!=QString("Data"))
