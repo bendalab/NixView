@@ -52,7 +52,8 @@ void MainViewWidget::connect_widgets()
     // activate info widget
     QObject::connect(iw, SIGNAL(add_info_widget()), this, SLOT(activate_info_widget()));
 
-    // double click in overview
+    // click in overview
+    // - rawtreeview
     QObject::connect(rtv->get_tree_widget(), SIGNAL(itemClicked(QTreeWidgetItem*, int)), rtv, SLOT(item_info_requested(QTreeWidgetItem*,int)));
     QObject::connect(rtv, SIGNAL(item_info_found(std::string,std::string,std::string,boost::optional<std::basic_string<char> >)),
                      iw, SLOT(update_info_widget(std::string, std::string, std::string, boost::optional<std::basic_string<char>>)));
