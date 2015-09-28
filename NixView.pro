@@ -19,19 +19,28 @@ SOURCES += main.cpp\
     MainViewWidget.cpp \
     RawTreeView.cpp \
     Test/AnotherTree.cpp \
-    InfoWidget/InfoWidget.cpp
+    InfoWidget/InfoWidget.cpp \
+    InfoWidget/DescriptionPanel.cpp \
+    InfoWidget/MetaDataPanel.cpp \
+    InfoWidget/TagPanel.cpp
 
 HEADERS  += MainWindow.hpp \
     MainViewWidget.hpp \
     RawTreeView.hpp \
     Test/AnotherTree.hpp \
-    InfoWidget/InfoWidget.hpp
+    InfoWidget/InfoWidget.hpp \
+    InfoWidget/DescriptionPanel.hpp \
+    InfoWidget/MetaDataPanel.hpp \
+    InfoWidget/TagPanel.hpp
 
 FORMS    += MainWindow.ui \
     MainViewWidget.ui \
     RawTreeView.ui \
     Test/AnotherTree.ui \
-    InfoWidget/InfoWidget.ui
+    InfoWidget/InfoWidget.ui \
+    InfoWidget/DescriptionPanel.ui \
+    InfoWidget/MetaDataPanel.ui \
+    InfoWidget/TagPanel.ui
 
 
 #standard windows folder?
