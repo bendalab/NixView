@@ -51,10 +51,28 @@
       </widget>
      </item>
      <item>
-      <widget class="QTextEdit" name="metadata_text_edit">
-       <property name="readOnly">
+      <widget class="QTreeWidget" name="treeWidget">
+       <property name="sortingEnabled">
+        <bool>false</bool>
+       </property>
+       <property name="animated">
         <bool>true</bool>
        </property>
+       <column>
+        <property name="text">
+         <string>Name</string>
+        </property>
+       </column>
+       <column>
+        <property name="text">
+         <string>Storage Type</string>
+        </property>
+       </column>
+       <column>
+        <property name="text">
+         <string>Data Type</string>
+        </property>
+       </column>
       </widget>
      </item>
     </layout>
