@@ -74,6 +74,7 @@ void InfoWidget::update_meta_info(nix::Section meta_section)
             QTreeWidgetItem* tree_item = new QTreeWidgetItem(branch, QStringList(QString::fromStdString(s.name())));
             add_children_to_item(tree_item, s);
         }
+        add_properties_to_item(branch, meta_section);
 
         ui->treeWidget->expandItem(branch);
         ui->treeWidget->resizeColumnToContents(0);
@@ -88,6 +89,11 @@ void InfoWidget::add_children_to_item(QTreeWidgetItem* item, nix::Section sectio
         add_children_to_item(child_item, s);
     }
 
+    add_properties_to_item(item, section);
+}
+
+void InfoWidget::add_properties_to_item(QTreeWidgetItem* item, nix::Section section)
+{
     for (nix::Property p : section.properties())
     {
         QTreeWidgetItem* child_item = new QTreeWidgetItem(item, QStringList(QString::fromStdString(p.name())));

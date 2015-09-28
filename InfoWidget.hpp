@@ -34,6 +34,7 @@ private:
 
     void update_meta_info(nix::Section);
     void add_children_to_item(QTreeWidgetItem*, nix::Section);
+    void add_properties_to_item(QTreeWidgetItem*, nix::Section);
 
 public:
     const QTreeWidget* get_tree_widget();
