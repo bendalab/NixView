@@ -43,83 +43,6 @@ void MainViewWidget::activate_info_widget()
     ui->horizontalLayout->addWidget(iw);
 }
 
-void MainViewWidget::item_info_requested(QTreeWidgetItem* item, int column)
-{
-    std::vector<std::string> nix_path;
-    QTreeWidgetItem* current_item = item;
-    // don't do anything
-    if (current_item->text(0) == QString("Metadata") || current_item->text(0)==QString("Data"))
-        return;
-
-    // get full path to nix_file root
-    while (current_item->text(0)!=QString("Metadata") && current_item->text(0)!=QString("Data"))
-    {
-        nix_path.push_back(current_item->text(0).toStdString());
-        current_item = current_item->parent();
-    }
-
-    // get data info
-    if (current_item->text(0)==QString("Data"))
-    {
-        nix::Block block = nix_file.getBlock(nix_path.back());
-        nix_path.pop_back();
-
-        if(nix_path.size() == 0) //block info requested
-        {
-            emit item_info_found(block.id(), block.type(), block.name(), block.definition());
-            return;
-        }
-
-        else if(nix_path.size() == 1) //data array/tag/multitag requested
-        {
-            if (item->text(1) == QString("Data Array"))
-            {
-                nix::DataArray da = block.getDataArray(item->text(0).toStdString());
-                emit item_info_found(da.id(), da.type(), da.name(), da.definition());
-            }
-            else if (item->text(1) == QString("Tag"))
-            {
-                nix::Tag tag = block.getTag(item->text(0).toStdString());
-                emit item_info_found(tag.id(), tag.type(), tag.name(), tag.definition());
-            }
-            else if (item->text(1) == QString("MultiTag"))
-            {
-                nix::MultiTag mtag = block.getMultiTag(item->text(0).toStdString());
-                emit item_info_found(mtag.id(), mtag.type(), mtag.name(), mtag.definition());
-            }
-        }
-    }
-    else if (current_item->text(0) == QString("Metadata"))
-    {
-        nix::Section section = nix_file.getSection(nix_path.back());
-        nix_path.pop_back();
-
-        if(nix_path.size() == 0)
-        {
-            emit item_info_found(section.id(), section.type(), section.name(), section.definition());
-            return;
-        }
-
-        while(nix_path.size() > 1)
-        {
-            section = section.getSection(nix_path.back());
-            nix_path.pop_back();
-        }
-
-        if(!section.hasProperty(nix_path.back())) //section info requested
-        {
-            section = section.getSection(nix_path.back());
-            emit item_info_found(section.id(), section.type(), section.name(), section.definition());
-        }
-        else
-        {
-            nix::Property property = section.getProperty(nix_path.back());
-            emit item_info_found(property.id(), property.name(), property.definition());
-        }
-    }
-
-}
-
 // widget connection
 void MainViewWidget::connect_widgets()
 {
@@ -131,10 +54,10 @@ void MainViewWidget::connect_widgets()
 
     // double click in overview
 //    QObject::connect(rtv->get_tree_widget(), SIGNAL(itemDoubleClicked(QTreeWidgetItem*, int)), iw, SLOT(update_info_widget(QTreeWidgetItem* ,int))); //test case
-    QObject::connect(rtv->get_tree_widget(), SIGNAL(itemClicked(QTreeWidgetItem*, int)), this, SLOT(item_info_requested(QTreeWidgetItem*,int)));
-    QObject::connect(this, SIGNAL(item_info_found(std::string,std::string,std::string,boost::optional<std::basic_string<char> >)),
+    QObject::connect(rtv->get_tree_widget(), SIGNAL(itemClicked(QTreeWidgetItem*, int)), rtv, SLOT(item_info_requested(QTreeWidgetItem*,int)));
+    QObject::connect(rtv, SIGNAL(item_info_found(std::string,std::string,std::string,boost::optional<std::basic_string<char> >)),
                      iw, SLOT(update_info_widget(std::string, std::string, std::string, boost::optional<std::basic_string<char>>)));
-    QObject::connect(this, SIGNAL(item_info_found(std::string,std::string,boost::optional<std::basic_string<char> >)),
+    QObject::connect(rtv, SIGNAL(item_info_found(std::string,std::string,boost::optional<std::basic_string<char> >)),
                      iw, SLOT(update_info_widget(std::string, std::string, boost::optional<std::basic_string<char>>)));
 
     // overview expanded/collapsed

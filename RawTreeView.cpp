@@ -86,6 +86,83 @@ void RawTreeView::resize_to_content(QModelIndex qml)
         ui->treeWidget->resizeColumnToContents(c);
 }
 
+void RawTreeView::item_info_requested(QTreeWidgetItem* item, int column)
+{
+    std::vector<std::string> nix_path;
+    QTreeWidgetItem* current_item = item;
+    // don't do anything
+    if (current_item->text(0) == QString("Metadata") || current_item->text(0)==QString("Data"))
+        return;
+
+    // get full path to nix_file root
+    while (current_item->text(0)!=QString("Metadata") && current_item->text(0)!=QString("Data"))
+    {
+        nix_path.push_back(current_item->text(0).toStdString());
+        current_item = current_item->parent();
+    }
+
+    // get data info
+    if (current_item->text(0)==QString("Data"))
+    {
+        nix::Block block = nix_file.getBlock(nix_path.back());
+        nix_path.pop_back();
+
+        if(nix_path.size() == 0) //block info requested
+        {
+            emit item_info_found(block.id(), block.type(), block.name(), block.definition());
+            return;
+        }
+
+        else if(nix_path.size() == 1) //data array/tag/multitag requested
+        {
+            if (item->text(1) == QString("Data Array"))
+            {
+                nix::DataArray da = block.getDataArray(item->text(0).toStdString());
+                emit item_info_found(da.id(), da.type(), da.name(), da.definition());
+            }
+            else if (item->text(1) == QString("Tag"))
+            {
+                nix::Tag tag = block.getTag(item->text(0).toStdString());
+                emit item_info_found(tag.id(), tag.type(), tag.name(), tag.definition());
+            }
+            else if (item->text(1) == QString("MultiTag"))
+            {
+                nix::MultiTag mtag = block.getMultiTag(item->text(0).toStdString());
+                emit item_info_found(mtag.id(), mtag.type(), mtag.name(), mtag.definition());
+            }
+        }
+    }
+    else if (current_item->text(0) == QString("Metadata"))
+    {
+        nix::Section section = nix_file.getSection(nix_path.back());
+        nix_path.pop_back();
+
+        if(nix_path.size() == 0)
+        {
+            emit item_info_found(section.id(), section.type(), section.name(), section.definition());
+            return;
+        }
+
+        while(nix_path.size() > 1)
+        {
+            section = section.getSection(nix_path.back());
+            nix_path.pop_back();
+        }
+
+        if(!section.hasProperty(nix_path.back())) //section info requested
+        {
+            section = section.getSection(nix_path.back());
+            emit item_info_found(section.id(), section.type(), section.name(), section.definition());
+        }
+        else
+        {
+            nix::Property property = section.getProperty(nix_path.back());
+            emit item_info_found(property.id(), property.name(), property.definition());
+        }
+    }
+
+}
+
 // getter
 const QTreeWidget* RawTreeView::get_tree_widget()
 {

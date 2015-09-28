@@ -23,11 +23,6 @@ public:
 public slots:
     void data_combo_box_changed(int);
     void activate_info_widget();
-    void item_info_requested(QTreeWidgetItem*, int);
-
-signals:
-    void item_info_found(std::string, std::string, std::string, boost::optional<std::basic_string<char>>);
-    void item_info_found(std::string, std::string, boost::optional<std::basic_string<char>>);
 
 private:
     Ui::MainViewWidget *ui;
