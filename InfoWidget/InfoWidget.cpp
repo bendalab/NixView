@@ -11,8 +11,6 @@ InfoWidget::InfoWidget(QWidget *parent) :
 
 void InfoWidget::update_info_widget(std::string id, std::string type, std::string name, boost::optional<std::basic_string<char>> description, nix::Section meta_section)
 {
-    ui->test_label->setText(QString::fromStdString(std::string("Selected item: ") + name));
-
     //concat strings
     std::stringstream ss;
     ss << "id: " << id << "\n"
@@ -31,8 +29,6 @@ void InfoWidget::update_info_widget(std::string id, std::string type, std::strin
 
 void InfoWidget::update_info_widget(std::string id, std::string name, boost::optional<std::basic_string<char>> description, nix::Section meta_section)
 {
-    ui->test_label->setText(QString::fromStdString(std::string("Selected item: ") + name));
-
     //concat strings
     std::stringstream ss;
     ss << "id: " << id << "\n"

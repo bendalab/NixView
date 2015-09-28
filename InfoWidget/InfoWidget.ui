@@ -23,13 +23,6 @@
    <item row="0" column="0">
     <layout class="QVBoxLayout" name="verticalLayout">
      <item>
-      <widget class="QLabel" name="test_label">
-       <property name="text">
-        <string>testlabel</string>
-       </property>
-      </widget>
-     </item>
-     <item>
       <widget class="QLabel" name="info_label">
        <property name="text">
         <string>Info</string>
