@@ -32,7 +32,7 @@
      <x>0</x>
      <y>0</y>
      <width>1400</width>
-     <height>22</height>
+     <height>23</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -40,6 +40,7 @@
      <string>&amp;File</string>
     </property>
     <addaction name="action_Open_File"/>
+    <addaction name="action_quit"/>
    </widget>
    <widget class="QMenu" name="menuOptions">
     <property name="title">
@@ -62,6 +63,9 @@
    <property name="text">
     <string>&amp;Open File</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+O</string>
+   </property>
   </action>
   <action name="action_raw_data">
    <property name="text">
@@ -73,8 +77,33 @@
     <string>&amp;Another Tree</string>
    </property>
   </action>
+  <action name="action_quit">
+   <property name="text">
+    <string>Quit</string>
+   </property>
+   <property name="shortcut">
+    <string>Alt+Q</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>action_quit</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>699</x>
+     <y>393</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>
