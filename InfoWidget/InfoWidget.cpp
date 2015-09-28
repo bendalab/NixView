@@ -14,6 +14,9 @@ InfoWidget::InfoWidget(QWidget *parent) :
     mp = new MetaDataPanel();
     ui->verticalLayout->addWidget(mp);
 
+    tp = new TagPanel();
+    ui->verticalLayout->addWidget(tp);
+
     connect_widgets();
 }
 

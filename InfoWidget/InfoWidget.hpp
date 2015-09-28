@@ -7,6 +7,7 @@
 #include <nix.hpp>
 #include "DescriptionPanel.hpp"
 #include "MetaDataPanel.hpp"
+#include "TagPanel.hpp"
 
 namespace Ui {
 class InfoWidget;
@@ -29,6 +30,7 @@ private:
 
     DescriptionPanel* dp;
     MetaDataPanel* mp;
+    TagPanel* tp;
 
     void update_meta_info(nix::Section);
     void add_children_to_item(QTreeWidgetItem*, nix::Section);
