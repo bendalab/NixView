@@ -59,8 +59,6 @@ void MainViewWidget::connect_widgets()
     // tree widget expanded/collapsed
     QObject::connect(rtv->get_tree_widget(), SIGNAL(expanded(QModelIndex)), rtv, SLOT(resize_to_content(QModelIndex)));
     QObject::connect(rtv->get_tree_widget(), SIGNAL(collapsed(QModelIndex)), rtv, SLOT(resize_to_content(QModelIndex)));
-    QObject::connect(iw->get_tree_widget(), SIGNAL(expanded(QModelIndex)), iw, SLOT(resize_to_content(QModelIndex)));
-    QObject::connect(iw->get_tree_widget(), SIGNAL(collapsed(QModelIndex)), iw, SLOT(resize_to_content(QModelIndex)));
 }
 
 MainViewWidget::~MainViewWidget()

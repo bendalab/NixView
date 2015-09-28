@@ -21,54 +21,7 @@
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0">
-    <layout class="QVBoxLayout" name="verticalLayout">
-     <item>
-      <widget class="QLabel" name="info_label">
-       <property name="text">
-        <string>Info</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QTextEdit" name="info_text_edit">
-       <property name="readOnly">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLabel" name="metadata_label">
-       <property name="text">
-        <string>MetaData</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QTreeWidget" name="treeWidget">
-       <property name="sortingEnabled">
-        <bool>false</bool>
-       </property>
-       <property name="animated">
-        <bool>true</bool>
-       </property>
-       <column>
-        <property name="text">
-         <string>Name</string>
-        </property>
-       </column>
-       <column>
-        <property name="text">
-         <string>Storage Type</string>
-        </property>
-       </column>
-       <column>
-        <property name="text">
-         <string>Data Type</string>
-        </property>
-       </column>
-      </widget>
-     </item>
-    </layout>
+    <layout class="QVBoxLayout" name="verticalLayout"/>
    </item>
   </layout>
  </widget>

@@ -5,6 +5,8 @@
 #include <QtGui>
 #include <boost/optional.hpp>
 #include <nix.hpp>
+#include "DescriptionPanel.hpp"
+#include "MetaDataPanel.hpp"
 
 namespace Ui {
 class InfoWidget;
@@ -22,17 +24,19 @@ public slots:
     void update_info_widget(std::string, std::string, std::string, boost::optional<std::basic_string<char>>, nix::Section);
     void update_info_widget(std::string, std::string, boost::optional<std::basic_string<char>>, nix::Section);
 
-    void resize_to_content(QModelIndex);
-
 private:
     Ui::InfoWidget *ui;
+
+    DescriptionPanel* dp;
+    MetaDataPanel* mp;
 
     void update_meta_info(nix::Section);
     void add_children_to_item(QTreeWidgetItem*, nix::Section);
     void add_properties_to_item(QTreeWidgetItem*, nix::Section);
+    void connect_widgets();
 
 public:
-    const QTreeWidget* get_tree_widget();
+    const MetaDataPanel* get_metadata_panel();
 
 };
 
