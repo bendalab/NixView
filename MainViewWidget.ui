@@ -16,20 +16,6 @@
   <layout class="QHBoxLayout" name="horizontalLayout">
    <item>
     <layout class="QGridLayout" name="overview_layout">
-     <item row="1" column="0">
-      <widget class="QComboBox" name="data_combo_box">
-       <item>
-        <property name="text">
-         <string>Raw Data</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Another Tree</string>
-        </property>
-       </item>
-      </widget>
-     </item>
      <item row="0" column="0">
       <widget class="QLabel" name="label">
        <property name="sizePolicy">
@@ -43,7 +29,7 @@
        </property>
       </widget>
      </item>
-     <item row="2" column="0">
+     <item row="1" column="0">
       <widget class="QStackedWidget" name="data_stacked_Widget">
        <property name="currentIndex">
         <number>-1</number>

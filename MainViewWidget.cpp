@@ -45,9 +45,6 @@ void MainViewWidget::activate_info_widget()
 // widget connection
 void MainViewWidget::connect_widgets()
 {
-    // view mode combo box
-    QObject::connect(ui->data_combo_box, SIGNAL(currentIndexChanged(int)), this, SLOT(set_view(int)));
-
     // click in overview
     // - rawtreeview
     QObject::connect(rtv->get_tree_widget(), SIGNAL(itemClicked(QTreeWidgetItem*, int)), rtv, SLOT(item_info_requested(QTreeWidgetItem*,int)));
