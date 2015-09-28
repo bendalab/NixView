@@ -46,13 +46,31 @@
      <string>&amp;Options</string>
     </property>
    </widget>
+   <widget class="QMenu" name="menuView">
+    <property name="title">
+     <string>&amp;View</string>
+    </property>
+    <addaction name="action_raw_data"/>
+    <addaction name="action_another_tree"/>
+   </widget>
    <addaction name="menuFile"/>
+   <addaction name="menuView"/>
    <addaction name="menuOptions"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <action name="action_Open_File">
    <property name="text">
     <string>&amp;Open File</string>
+   </property>
+  </action>
+  <action name="action_raw_data">
+   <property name="text">
+    <string>&amp;Raw Data</string>
+   </property>
+  </action>
+  <action name="action_another_tree">
+   <property name="text">
+    <string>&amp;Another Tree</string>
    </property>
   </action>
  </widget>

@@ -9,9 +9,25 @@ MainWindow::MainWindow(QWidget *parent) :
     mvw_is_set = false;
 }
 
+void MainWindow::connect_widgets()
+{
+    QObject::connect(this, SIGNAL(view_requested_raw_data(int)), mvw, SLOT(set_view(int)));
+}
+
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+// slots
+void MainWindow::on_action_raw_data_triggered()
+{
+    emit view_requested_raw_data(0);
+}
+
+void MainWindow::on_action_another_tree_triggered()
+{
+    emit view_requested_raw_data(1);
 }
 
 void MainWindow::on_action_Open_File_triggered()
@@ -37,4 +53,6 @@ void MainWindow::on_action_Open_File_triggered()
     mvw = new MainViewWidget(file_path);
     ui->main_ho_layout->addWidget(mvw);
     mvw_is_set = true;
+
+    connect_widgets();
 }

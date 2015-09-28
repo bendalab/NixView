@@ -33,7 +33,7 @@ void MainViewWidget::populate_data_stacked_widget()
 }
 
 // slots
-void MainViewWidget::data_combo_box_changed(int index) {
+void MainViewWidget::set_view(int index) {
     ui->data_stacked_Widget->setCurrentIndex(index);
 }
 
@@ -46,7 +46,7 @@ void MainViewWidget::activate_info_widget()
 void MainViewWidget::connect_widgets()
 {
     // view mode combo box
-    QObject::connect(ui->data_combo_box, SIGNAL(currentIndexChanged(int)), this, SLOT(data_combo_box_changed(int)));
+    QObject::connect(ui->data_combo_box, SIGNAL(currentIndexChanged(int)), this, SLOT(set_view(int)));
 
     // click in overview
     // - rawtreeview

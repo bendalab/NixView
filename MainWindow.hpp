@@ -21,11 +21,17 @@ public:
 
 private slots:
     void on_action_Open_File_triggered();
+    void on_action_raw_data_triggered();
+    void on_action_another_tree_triggered();
+
+signals:
+    void view_requested_raw_data(int);
 
 private:
     Ui::MainWindow *ui;
     MainViewWidget* mvw;
     bool mvw_is_set;
+    void connect_widgets();
 };
 
 #endif // MAINWINDOW_HPP

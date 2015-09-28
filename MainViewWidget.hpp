@@ -23,7 +23,7 @@ public:
     ~MainViewWidget();
 
 public slots:
-    void data_combo_box_changed(int);
+    void set_view(int);
     void activate_info_widget();
 
 private:
