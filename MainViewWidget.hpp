@@ -5,8 +5,10 @@
 #include <nix.hpp>
 #include <QtGui>
 #include <RawTreeView.hpp>
-#include <InfoWidget.hpp>
+#include <InfoWidget/InfoWidget.hpp>
 #include <boost/optional.hpp>
+#include "RawTreeView.hpp"
+#include "Test/AnotherTree.hpp"
 
 namespace Ui {
 class MainViewWidget;
