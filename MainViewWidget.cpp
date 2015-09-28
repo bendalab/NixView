@@ -60,5 +60,8 @@ void MainViewWidget::connect_widgets()
 
 MainViewWidget::~MainViewWidget()
 {
+    if (nix_file.isOpen()) {
+        nix_file.close();
+    }
     delete ui;
 }
