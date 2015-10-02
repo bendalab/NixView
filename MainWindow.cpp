@@ -56,3 +56,7 @@ void MainWindow::on_action_Open_File_triggered()
 
     connect_widgets();
 }
+
+void MainWindow::quit() {
+    this->close();
+}

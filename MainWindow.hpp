@@ -23,6 +23,7 @@ private slots:
     void on_action_Open_File_triggered();
     void on_action_raw_data_triggered();
     void on_action_another_tree_triggered();
+    void quit();
 
 signals:
     void view_requested_raw_data(int);
