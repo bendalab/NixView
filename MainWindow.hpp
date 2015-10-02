@@ -7,6 +7,14 @@
 #include <nix.hpp>
 #include "MainViewWidget.hpp"
 
+#include <nix/Block.hpp>
+Q_DECLARE_METATYPE(Block)
+Q_DECLARE_METATYPE(nix::Section)
+Q_DECLARE_METATYPE(nix::Property)
+Q_DECLARE_METATYPE(nix::DataArray)
+Q_DECLARE_METATYPE(nix::Tag)
+Q_DECLARE_METATYPE(nix::MultiTag)
+
 namespace Ui {
 class MainWindow;
 }

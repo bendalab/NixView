@@ -23,8 +23,10 @@ public slots:
     void item_info_requested(QTreeWidgetItem*, int);
 
 signals:
-    void item_info_found(std::string, std::string, std::string, boost::optional<std::basic_string<char>>, nix::Section);
-    void item_info_found(std::string, std::string, boost::optional<std::basic_string<char>>, nix::Section);
+//    void item_info_found(std::string, std::string, std::string, boost::optional<std::basic_string<char>>, nix::Section);
+//    void item_info_found(std::string, std::string, boost::optional<std::basic_string<char>>, nix::Section);
+
+    void item_found(QVariant);
 
 private:
     Ui::RawTreeView *ui;
@@ -36,5 +38,4 @@ private:
     friend class MainViewWidget;
     const QTreeWidget* get_tree_widget();
 };
-
 #endif // RAWTREEVIEW_HPP

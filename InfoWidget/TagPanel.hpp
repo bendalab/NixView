@@ -15,6 +15,9 @@ public:
     explicit TagPanel(QWidget *parent = 0);
     ~TagPanel();
 
+public slots:
+    void update_tag_panel();
+
 private:
     Ui::TagPanel *ui;
 };

@@ -20,17 +20,27 @@ InfoWidget::InfoWidget(QWidget *parent) :
     connect_widgets();
 }
 
-void InfoWidget::update_info_widget(std::string id, std::string type, std::string name, boost::optional<std::basic_string<char>> description, nix::Section meta_section)
-{
-    dp->update_description_panel(id,type,name,description);
-    mp->update_metadata_panel(meta_section);
-}
+//void InfoWidget::update_info_widget(std::string id, std::string type, std::string name, boost::optional<std::basic_string<char>> description, nix::Section meta_section)
+//{
+//    dp->update_description_panel(id,type,name,description);
+//    mp->update_metadata_panel(meta_section);
+//}
 
-void InfoWidget::update_info_widget(std::string id, std::string name, boost::optional<std::basic_string<char>> description, nix::Section meta_section)
-{
+//void InfoWidget::update_info_widget(std::string id, std::string name, boost::optional<std::basic_string<char>> description, nix::Section meta_section)
+//{
 
-    dp->update_description_panel(id,name,description);
-    mp->update_metadata_panel(meta_section);
+//    dp->update_description_panel(id,name,description);
+//    mp->update_metadata_panel(meta_section);
+//}
+
+void InfoWidget::update_info_widget(QVariant v)
+{
+    std::cout << "works " << v.canConvert<nix::Block>() << std::endl;
+
+    if(typeid(v) == typeid(nix::Block))
+    {
+        std::cout << "block" << std::endl;
+    }
 }
 
 void InfoWidget::connect_widgets()

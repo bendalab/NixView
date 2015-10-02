@@ -22,8 +22,7 @@ public:
     ~InfoWidget();
 
 public slots:
-    void update_info_widget(std::string, std::string, std::string, boost::optional<std::basic_string<char>>, nix::Section);
-    void update_info_widget(std::string, std::string, boost::optional<std::basic_string<char>>, nix::Section);
+    void update_info_widget(QVariant);
 
 private:
     Ui::InfoWidget *ui;
@@ -40,6 +39,6 @@ private:
 public:
     const MetaDataPanel* get_metadata_panel();
 
-};
 
+};
 #endif // INFOWIDGET_HPP

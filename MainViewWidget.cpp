@@ -48,10 +48,7 @@ void MainViewWidget::connect_widgets()
     // click in overview
     // - rawtreeview
     QObject::connect(rtv->get_tree_widget(), SIGNAL(itemClicked(QTreeWidgetItem*, int)), rtv, SLOT(item_info_requested(QTreeWidgetItem*,int)));
-    QObject::connect(rtv, SIGNAL(item_info_found(std::string,std::string,std::string,boost::optional<std::basic_string<char>>, nix::Section)),
-                     iw, SLOT(update_info_widget(std::string, std::string, std::string, boost::optional<std::basic_string<char>>, nix::Section)));
-    QObject::connect(rtv, SIGNAL(item_info_found(std::string,std::string,boost::optional<std::basic_string<char> >, nix::Section)),
-                     iw, SLOT(update_info_widget(std::string, std::string, boost::optional<std::basic_string<char>>, nix::Section)));
+    QObject::connect(rtv, SIGNAL(item_found(QVariant)), iw, SLOT(update_info_widget(QVariant)));
 
     // tree widget expanded/collapsed
     QObject::connect(rtv->get_tree_widget(), SIGNAL(expanded(QModelIndex)), rtv, SLOT(resize_to_content(QModelIndex)));
