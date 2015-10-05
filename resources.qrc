@@ -1,0 +1,9 @@
+<RCC>
+    <qresource prefix="/images">
+        <file>images/nix_plot.png</file>
+        <file>images/nix_close.png</file>
+        <file>images/nix_open.png</file>
+        <file>images/quit.png</file>
+        <file>images/nix_fav1_cut.png</file>
+    </qresource>
+</RCC>
