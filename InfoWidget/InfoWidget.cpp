@@ -1,6 +1,7 @@
 #include "InfoWidget.hpp"
 #include "ui_InfoWidget.h"
 #include <sstream>
+#include "common/Common.hpp"
 
 InfoWidget::InfoWidget(QWidget *parent) :
     QWidget(parent),
@@ -37,10 +38,12 @@ void InfoWidget::update_info_widget(QVariant v)
 {
     std::cout << "works " << v.canConvert<nix::Block>() << std::endl;
 
-    if(typeid(v) == typeid(nix::Block))
-    {
-        std::cout << "block" << std::endl;
-    }
+    dp->update_description_panel(v);
+
+//    if(typeid(v) == typeid(nix::Block))
+//    {
+//        std::cout << "block" << std::endl;
+//    }
 }
 
 void InfoWidget::connect_widgets()

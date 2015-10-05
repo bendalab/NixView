@@ -2,6 +2,7 @@
 #include "ui_RawTreeView.h"
 #include <iostream>
 #include <boost/algorithm/string.hpp>
+#include "common/Common.hpp"
 
 RawTreeView::RawTreeView(nix::File _nix_file, QWidget *parent) :
     QWidget(parent),

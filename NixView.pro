@@ -31,7 +31,8 @@ HEADERS  += MainWindow.hpp \
     InfoWidget/InfoWidget.hpp \
     InfoWidget/DescriptionPanel.hpp \
     InfoWidget/MetaDataPanel.hpp \
-    InfoWidget/TagPanel.hpp
+    InfoWidget/TagPanel.hpp \
+    common/Common.hpp
 
 FORMS    += MainWindow.ui \
     MainViewWidget.ui \

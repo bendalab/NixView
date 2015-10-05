@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include <QtGui>
+#include <QVariant>
 #include <boost/optional.hpp>
 #include <nix.hpp>
 #include "DescriptionPanel.hpp"

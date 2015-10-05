@@ -39,6 +39,13 @@ void DescriptionPanel::update_description_panel(std::string id, std::string name
     ui->info_text_edit->setText(info_string);
 }
 
+void DescriptionPanel::update_description_panel(QVariant v)
+{
+    std::cout << "test" << std::endl;
+}
+
+
+
 DescriptionPanel::~DescriptionPanel()
 {
     delete ui;
