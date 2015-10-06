@@ -19,6 +19,16 @@
   <property name="windowTitle">
    <string>NixView</string>
   </property>
+  <property name="windowIcon">
+   <iconset resource="resources.qrc">
+    <normaloff>:/images/images/nix_view_icon.png</normaloff>:/images/images/nix_view_icon.png</iconset>
+  </property>
+  <property name="toolButtonStyle">
+   <enum>Qt::ToolButtonIconOnly</enum>
+  </property>
+  <property name="tabShape">
+   <enum>QTabWidget::Rounded</enum>
+  </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QGridLayout" name="gridLayout">
     <item row="0" column="0">
@@ -32,7 +42,7 @@
      <x>0</x>
      <y>0</y>
      <width>1400</width>
-     <height>20</height>
+     <height>23</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -86,6 +96,9 @@
    </property>
    <property name="windowTitle">
     <string>toolBar</string>
+   </property>
+   <property name="autoFillBackground">
+    <bool>true</bool>
    </property>
    <property name="iconSize">
     <size>
@@ -228,8 +241,8 @@
    <slot>open_file()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>41</x>
-     <y>51</y>
+     <x>-1</x>
+     <y>-1</y>
     </hint>
     <hint type="destinationlabel">
      <x>42</x>
