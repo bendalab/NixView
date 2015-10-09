@@ -8,7 +8,6 @@
 #include <InfoWidget/InfoWidget.hpp>
 #include <boost/optional.hpp>
 #include "RawTreeView.hpp"
-#include "Test/AnotherTree.hpp"
 
 namespace Ui {
 class MainViewWidget;

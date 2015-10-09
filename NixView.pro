@@ -18,7 +18,6 @@ SOURCES += main.cpp\
         MainWindow.cpp \
     MainViewWidget.cpp \
     RawTreeView.cpp \
-    Test/AnotherTree.cpp \
     InfoWidget/InfoWidget.cpp \
     InfoWidget/DescriptionPanel.cpp \
     InfoWidget/MetaDataPanel.cpp \
@@ -27,7 +26,6 @@ SOURCES += main.cpp\
 HEADERS  += MainWindow.hpp \
     MainViewWidget.hpp \
     RawTreeView.hpp \
-    Test/AnotherTree.hpp \
     InfoWidget/InfoWidget.hpp \
     InfoWidget/DescriptionPanel.hpp \
     InfoWidget/MetaDataPanel.hpp \
@@ -37,7 +35,6 @@ HEADERS  += MainWindow.hpp \
 FORMS    += MainWindow.ui \
     MainViewWidget.ui \
     RawTreeView.ui \
-    Test/AnotherTree.ui \
     InfoWidget/InfoWidget.ui \
     InfoWidget/DescriptionPanel.ui \
     InfoWidget/MetaDataPanel.ui \

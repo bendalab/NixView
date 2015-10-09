@@ -25,11 +25,6 @@ void MainViewWidget::populate_data_stacked_widget()
 {
     rtv = new RawTreeView(nix_file);
     ui->data_stacked_Widget->addWidget(rtv);
-
-    // for testing
-    AnotherTree* aot  = new AnotherTree();
-    ui->data_stacked_Widget->addWidget(aot);
-    // =====
 }
 
 // slots

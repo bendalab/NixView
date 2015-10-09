@@ -52,7 +52,6 @@
      <string>&amp;View</string>
     </property>
     <addaction name="action_raw_data"/>
-    <addaction name="action_another_tree"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuView"/>
