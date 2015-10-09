@@ -21,7 +21,8 @@ SOURCES += main.cpp\
     InfoWidget/InfoWidget.cpp \
     InfoWidget/DescriptionPanel.cpp \
     InfoWidget/MetaDataPanel.cpp \
-    InfoWidget/TagPanel.cpp
+    InfoWidget/TagPanel.cpp \
+    aboutdialog.cpp
 
 HEADERS  += MainWindow.hpp \
     MainViewWidget.hpp \
@@ -31,6 +32,7 @@ HEADERS  += MainWindow.hpp \
     InfoWidget/MetaDataPanel.hpp \
     InfoWidget/TagPanel.hpp \
     common/Common.hpp
+    aboutdialog.h
 
 FORMS    += MainWindow.ui \
     MainViewWidget.ui \
@@ -38,7 +40,8 @@ FORMS    += MainWindow.ui \
     InfoWidget/InfoWidget.ui \
     InfoWidget/DescriptionPanel.ui \
     InfoWidget/MetaDataPanel.ui \
-    InfoWidget/TagPanel.ui
+    InfoWidget/TagPanel.ui \
+    aboutdialog.ui
 
 
 #standard windows folder?
@@ -50,3 +53,6 @@ unix: LIBS += -L/usr/local/lib/ -lnix
 
 INCLUDEPATH += /usr/local/include
 DEPENDPATH += /usr/local/include
+
+RESOURCES += \
+    resources.qrc

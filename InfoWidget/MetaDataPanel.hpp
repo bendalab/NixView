@@ -4,6 +4,7 @@
 #include <QWidget>
 #include <nix.hpp>
 #include <QtGui>
+#include <QTreeWidget>
 
 namespace Ui {
 class MetaDataPanel;
