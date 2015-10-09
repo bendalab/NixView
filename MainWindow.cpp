@@ -1,5 +1,6 @@
 #include "MainWindow.hpp"
 #include "ui_MainWindow.h"
+#include "aboutdialog.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -25,13 +26,16 @@ void MainWindow::on_action_raw_data_triggered()
     emit view_requested_raw_data(0);
 }
 
-void MainWindow::on_action_another_tree_triggered()
-{
+void MainWindow::on_action_another_tree_triggered() {
     emit view_requested_raw_data(1);
 }
 
-void MainWindow::on_action_Open_File_triggered()
-{
+void MainWindow::show_about() {
+    AboutDialog d(this);
+    d.exec();
+}
+
+void MainWindow::open_file() {
     if (mvw_is_set)
     {
         ui->main_ho_layout->removeWidget(mvw);
@@ -55,8 +59,4 @@ void MainWindow::on_action_Open_File_triggered()
     mvw_is_set = true;
 
     connect_widgets();
-}
-
-void MainWindow::quit() {
-    this->close();
 }
