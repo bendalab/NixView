@@ -126,7 +126,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>by Lorand Madai, Jan Grewe</string>
+    <string>by Lorand Madai-Tahy, Jan Grewe</string>
    </property>
    <property name="alignment">
     <set>Qt::AlignCenter</set>
