@@ -29,7 +29,7 @@ private:
     void update(T arg);
 
     template <typename T>
-    void update_prop(T arg);
+    void update_typeless(T arg);
 };
 
 #endif // DESCRIPTIONPANEL_HPP

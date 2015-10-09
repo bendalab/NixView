@@ -23,7 +23,7 @@ void DescriptionPanel::update_description_panel(QVariant v)
         update(v.value<nix::Section>());
     // TODO look for better solution
     else if(v.canConvert<nix::Property>())
-        update_prop(v.value<nix::Property>());
+        update_typeless(v.value<nix::Property>());
 
     // TODO reset description
 
@@ -46,7 +46,7 @@ void DescriptionPanel::update(T arg)
 }
 
 template<typename T>
-void DescriptionPanel::update_prop(T arg)
+void DescriptionPanel::update_typeless(T arg)
 {
     std::stringstream ss;
     ss << "id: " << arg.id() << "\n"
