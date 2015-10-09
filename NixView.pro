@@ -31,7 +31,7 @@ HEADERS  += MainWindow.hpp \
     InfoWidget/DescriptionPanel.hpp \
     InfoWidget/MetaDataPanel.hpp \
     InfoWidget/TagPanel.hpp \
-    common/Common.hpp
+    common/Common.hpp \
     aboutdialog.h
 
 FORMS    += MainWindow.ui \

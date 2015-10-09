@@ -5,6 +5,7 @@
 #include <QVariant>
 #include <boost/optional.hpp>
 #include <sstream>
+#include <nix.hpp>
 
 namespace Ui {
 class DescriptionPanel;
@@ -19,12 +20,13 @@ public:
     ~DescriptionPanel();
 
 public slots:
-    void update_description_panel(std::string id, std::string type, std::string name, boost::optional<std::basic_string<char>> description);
-    void update_description_panel(std::string id, std::string name, boost::optional<std::basic_string<char>> description);
     void update_description_panel(QVariant v);
 
 private:
     Ui::DescriptionPanel *ui;
+
+    template <typename T>
+    void update(T arg);
 };
 
 #endif // DESCRIPTIONPANEL_HPP

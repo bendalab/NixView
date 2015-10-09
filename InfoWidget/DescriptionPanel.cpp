@@ -1,5 +1,6 @@
 #include "DescriptionPanel.hpp"
 #include "ui_DescriptionPanel.h"
+#include <common/Common.hpp>
 
 DescriptionPanel::DescriptionPanel(QWidget *parent) :
     QWidget(parent),
@@ -8,42 +9,42 @@ DescriptionPanel::DescriptionPanel(QWidget *parent) :
     ui->setupUi(this);
 }
 
-void DescriptionPanel::update_description_panel(std::string id, std::string type, std::string name, boost::optional<std::basic_string<char>> description)
-{
-    //concat strings
-    std::stringstream ss;
-    ss << "id: " << id << "\n"
-       << "type: " << type << "\n"
-       << "name: " << name << "\n"
-       << "description: ";
-    if (description.is_initialized())
-        ss << description.get();
-    else
-        ss << "-";
-    QString info_string = QString::fromStdString(ss.str());
-    ui->info_text_edit->setText(info_string);
-}
-
-void DescriptionPanel::update_description_panel(std::string id, std::string name, boost::optional<std::basic_string<char>> description)
-{
-    //concat strings
-    std::stringstream ss;
-    ss << "id: " << id << "\n"
-       << "name: " << name << "\n"
-       << "description: ";
-    if (description.is_initialized())
-        ss << description.get();
-    else
-        ss << "-";
-    QString info_string = QString::fromStdString(ss.str());
-    ui->info_text_edit->setText(info_string);
-}
-
 void DescriptionPanel::update_description_panel(QVariant v)
 {
     std::cout << "test" << std::endl;
+    if(v.canConvert<nix::Block>())
+        update(v.value<nix::Block>());
+    else if(v.canConvert<nix::DataArray>())
+        update(v.value<nix::DataArray>());
+    else if(v.canConvert<nix::MultiTag>())
+        update(v.value<nix::MultiTag>());
+    else if(v.canConvert<nix::Tag>())
+        update(v.value<nix::Tag>());
+    else if(v.canConvert<nix::Section>())
+        update(v.value<nix::Section>());
+    // TODO
+//    else if(v.canConvert<nix::Property>())
+//        update(v.value<nix::Property>());
+
+    // TODO reset description
+
 }
 
+template<typename T>
+void DescriptionPanel::update(T arg)
+{
+    std::stringstream ss;
+    ss << "id: " << arg.id() << "\n"
+       << "type: " << arg.type() << "\n"
+       << "name: " << arg.name() << "\n"
+       << "description: ";
+    if (arg.definition().is_initialized())
+        ss << arg.definition().get();
+    else
+        ss << "-";
+    QString info_string = QString::fromStdString(ss.str());
+    ui->info_text_edit->setText(info_string);
+}
 
 
 DescriptionPanel::~DescriptionPanel()
