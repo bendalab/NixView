@@ -11,7 +11,6 @@ DescriptionPanel::DescriptionPanel(QWidget *parent) :
 
 void DescriptionPanel::update_description_panel(QVariant v)
 {
-    std::cout << "test" << std::endl;
     if(v.canConvert<nix::Block>())
         update(v.value<nix::Block>());
     else if(v.canConvert<nix::DataArray>())
@@ -22,9 +21,9 @@ void DescriptionPanel::update_description_panel(QVariant v)
         update(v.value<nix::Tag>());
     else if(v.canConvert<nix::Section>())
         update(v.value<nix::Section>());
-    // TODO
-//    else if(v.canConvert<nix::Property>())
-//        update(v.value<nix::Property>());
+    // TODO look for better solution
+    else if(v.canConvert<nix::Property>())
+        update_prop(v.value<nix::Property>());
 
     // TODO reset description
 
@@ -36,6 +35,21 @@ void DescriptionPanel::update(T arg)
     std::stringstream ss;
     ss << "id: " << arg.id() << "\n"
        << "type: " << arg.type() << "\n"
+       << "name: " << arg.name() << "\n"
+       << "description: ";
+    if (arg.definition().is_initialized())
+        ss << arg.definition().get();
+    else
+        ss << "-";
+    QString info_string = QString::fromStdString(ss.str());
+    ui->info_text_edit->setText(info_string);
+}
+
+template<typename T>
+void DescriptionPanel::update_prop(T arg)
+{
+    std::stringstream ss;
+    ss << "id: " << arg.id() << "\n"
        << "name: " << arg.name() << "\n"
        << "description: ";
     if (arg.definition().is_initialized())

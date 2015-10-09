@@ -27,6 +27,9 @@ private:
 
     template <typename T>
     void update(T arg);
+
+    template <typename T>
+    void update_prop(T arg);
 };
 
 #endif // DESCRIPTIONPANEL_HPP
