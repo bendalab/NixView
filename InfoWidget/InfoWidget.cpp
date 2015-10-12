@@ -25,6 +25,7 @@ void InfoWidget::update_info_widget(QVariant v)
 {
     dp->update_description_panel(v);
     mp->update_metadata_panel(v);
+    tp->update_tag_panel(v);
 }
 
 void InfoWidget::update_info_widget()
