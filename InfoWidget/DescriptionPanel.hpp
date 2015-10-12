@@ -21,6 +21,7 @@ public:
 
 public slots:
     void update_description_panel(QVariant v);
+    void clear_description_panel();
 
 private:
     Ui::DescriptionPanel *ui;

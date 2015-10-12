@@ -24,9 +24,6 @@ void DescriptionPanel::update_description_panel(QVariant v)
     // TODO look for better solution
     else if(v.canConvert<nix::Property>())
         update_typeless(v.value<nix::Property>());
-
-    // TODO reset description
-
 }
 
 template<typename T>
@@ -58,6 +55,11 @@ void DescriptionPanel::update_typeless(T arg)
         ss << "-";
     QString info_string = QString::fromStdString(ss.str());
     ui->info_text_edit->setText(info_string);
+}
+
+void DescriptionPanel::clear_description_panel()
+{
+    ui->info_text_edit->setText("");
 }
 
 
