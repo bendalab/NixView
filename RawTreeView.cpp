@@ -94,8 +94,8 @@ void RawTreeView::item_info_requested(QTreeWidgetItem* item, int column)
     // don't do anything
     if (current_item->text(0) == QString("Metadata") || current_item->text(0)==QString("Data"))
     {
-        // TODO
-//        emit item_info_found(std::string("-"), std::string("-"), std::string("-"), std::string("-"), nullptr);
+        // create empty block
+        emit empty_item();
         return;
     }
 

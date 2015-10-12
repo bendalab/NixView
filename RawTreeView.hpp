@@ -24,10 +24,8 @@ public slots:
     void item_info_requested(QTreeWidgetItem*, int);
 
 signals:
-//    void item_info_found(std::string, std::string, std::string, boost::optional<std::basic_string<char>>, nix::Section);
-//    void item_info_found(std::string, std::string, boost::optional<std::basic_string<char>>, nix::Section);
-
     void item_found(QVariant);
+    void empty_item();
 
 private:
     Ui::RawTreeView *ui;
