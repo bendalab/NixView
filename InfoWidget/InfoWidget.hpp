@@ -24,6 +24,7 @@ public:
 
 public slots:
     void update_info_widget(QVariant);
+    void update_info_widget();
 
 private:
     Ui::InfoWidget *ui;

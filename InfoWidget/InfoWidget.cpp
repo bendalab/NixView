@@ -24,6 +24,13 @@ InfoWidget::InfoWidget(QWidget *parent) :
 void InfoWidget::update_info_widget(QVariant v)
 {
     dp->update_description_panel(v);
+    mp->update_metadata_panel(v);
+}
+
+void InfoWidget::update_info_widget()
+{
+    dp->clear_description_panel();
+    mp->clear_metadata_panel();
 }
 
 void InfoWidget::connect_widgets()
