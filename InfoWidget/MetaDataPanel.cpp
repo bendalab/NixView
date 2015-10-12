@@ -12,7 +12,7 @@ MetaDataPanel::MetaDataPanel(QWidget *parent) :
 void MetaDataPanel::update_metadata_panel(QVariant v)
 {
     nix::Section meta_section;
-    // check if content of v is entity with metadata
+    // check if value of v is entity with metadata
     if(v.canConvert<nix::Block>())
     {
         nix::Block block = v.value<nix::Block>();
