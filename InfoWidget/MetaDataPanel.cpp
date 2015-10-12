@@ -28,6 +28,16 @@ void MetaDataPanel::update_metadata_panel(QVariant v)
         nix::Source so = v.value<nix::Source>();
         meta_section = so.metadata();
     }
+    else if(v.canConvert<nix::Tag>())
+    {
+        nix::Tag tag = v.value<nix::Tag>();
+        meta_section = tag.metadata();
+    }
+    else if(v.canConvert<nix::MultiTag>())
+    {
+        nix::MultiTag mtag = v.value<nix::MultiTag>();
+        meta_section = mtag.metadata();
+    }
     else
     {
         clear_metadata_panel();
