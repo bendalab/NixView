@@ -19,11 +19,12 @@ public:
     ~MetaDataPanel();
 
 public slots:
-    void update_metadata_panel(nix::Section);
+    void update_metadata_panel(QVariant);
     void resize_to_content(QModelIndex);
 
 public:
     const QTreeWidget* get_tree_widget();
+    void clear_metadata_panel();
 
 private:
     void add_children_to_item(QTreeWidgetItem*, nix::Section);

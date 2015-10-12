@@ -1,5 +1,6 @@
 #include "MetaDataPanel.hpp"
 #include "ui_MetaDataPanel.h"
+#include "common/Common.hpp"
 
 MetaDataPanel::MetaDataPanel(QWidget *parent) :
     QWidget(parent),
@@ -8,9 +9,30 @@ MetaDataPanel::MetaDataPanel(QWidget *parent) :
     ui->setupUi(this);
 }
 
-void MetaDataPanel::update_metadata_panel(nix::Section meta_section)
+void MetaDataPanel::update_metadata_panel(QVariant v)
 {
-    ui->treeWidget->clear();
+    nix::Section meta_section;
+    // check if content of v is entity with metadata
+    if(v.canConvert<nix::Block>())
+    {
+        nix::Block block = v.value<nix::Block>();
+        meta_section = block.metadata();
+    }
+    else if(v.canConvert<nix::DataArray>())
+    {
+        nix::DataArray da = v.value<nix::DataArray>();
+        meta_section = da.metadata();
+    }
+    else if(v.canConvert<nix::Source>())
+    {
+        nix::Source so = v.value<nix::Source>();
+        meta_section = so.metadata();
+    }
+    else
+    {
+        clear_metadata_panel();
+        return;
+    }
 
     if(meta_section)
     {
@@ -26,6 +48,8 @@ void MetaDataPanel::update_metadata_panel(nix::Section meta_section)
         ui->treeWidget->expandItem(branch);
         ui->treeWidget->resizeColumnToContents(0);
     }
+    else
+        clear_metadata_panel();
 }
 
 void MetaDataPanel::add_children_to_item(QTreeWidgetItem* item, nix::Section section)
@@ -47,6 +71,11 @@ void MetaDataPanel::add_properties_to_item(QTreeWidgetItem* item, nix::Section s
         child_item->setText(1, QString::fromStdString("Metadata"));
         child_item->setText(2, QString::fromStdString(nix::data_type_to_string(p.dataType())));
     }
+}
+
+void MetaDataPanel::clear_metadata_panel()
+{
+    ui->treeWidget->clear();
 }
 
 void MetaDataPanel::resize_to_content(QModelIndex qml)
