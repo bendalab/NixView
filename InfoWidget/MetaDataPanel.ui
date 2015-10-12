@@ -17,7 +17,7 @@
    <item>
     <widget class="QLabel" name="metadata_label">
      <property name="text">
-      <string>MetaData</string>
+      <string>Connected MetaData</string>
      </property>
     </widget>
    </item>
