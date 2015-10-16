@@ -24,7 +24,7 @@
     <number>8</number>
    </property>
    <property name="topMargin">
-    <number>8</number>
+    <number>0</number>
    </property>
    <property name="bottomMargin">
     <number>0</number>
@@ -33,6 +33,9 @@
     <widget class="QStackedWidget" name="stackedWidget">
      <widget class="QWidget" name="page_meta">
       <layout class="QGridLayout" name="gridLayout_3">
+       <property name="topMargin">
+        <number>0</number>
+       </property>
        <property name="bottomMargin">
         <number>0</number>
        </property>
@@ -43,6 +46,9 @@
      </widget>
      <widget class="QWidget" name="page_tag">
       <layout class="QGridLayout" name="gridLayout_2">
+       <property name="topMargin">
+        <number>0</number>
+       </property>
        <property name="bottomMargin">
         <number>0</number>
        </property>
