@@ -22,7 +22,8 @@ SOURCES += main.cpp\
     InfoWidget/DescriptionPanel.cpp \
     InfoWidget/MetaDataPanel.cpp \
     InfoWidget/TagPanel.cpp \
-    aboutdialog.cpp
+    aboutdialog.cpp \
+    InfoWidget/plotdialog.cpp \
 
 HEADERS  += MainWindow.hpp \
     MainViewWidget.hpp \
@@ -32,7 +33,8 @@ HEADERS  += MainWindow.hpp \
     InfoWidget/MetaDataPanel.hpp \
     InfoWidget/TagPanel.hpp \
     common/Common.hpp \
-    aboutdialog.h
+    aboutdialog.h \
+    InfoWidget/plotdialog.h \
 
 FORMS    += MainWindow.ui \
     MainViewWidget.ui \
