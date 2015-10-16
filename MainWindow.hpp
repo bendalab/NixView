@@ -22,8 +22,10 @@ public:
 public slots:
     void on_action_raw_data_triggered();
     void on_action_another_tree_triggered();
+    void activate_plot(QVariant var);
     void open_file();
     void show_about();
+    void show_plot();
 
 signals:
     void view_requested_raw_data(int);
