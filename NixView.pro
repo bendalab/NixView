@@ -23,7 +23,7 @@ SOURCES += main.cpp\
     InfoWidget/MetaDataPanel.cpp \
     InfoWidget/TagPanel.cpp \
     aboutdialog.cpp \
-    InfoWidget/plotdialog.cpp \
+    plotdialog.cpp \
     qcustomplot.cpp
 
 HEADERS  += MainWindow.hpp \
@@ -35,7 +35,7 @@ HEADERS  += MainWindow.hpp \
     InfoWidget/TagPanel.hpp \
     common/Common.hpp \
     aboutdialog.h \
-    InfoWidget/plotdialog.h \
+    plotdialog.h \
     qcustomplot.h
 
 FORMS    += MainWindow.ui \
@@ -46,7 +46,7 @@ FORMS    += MainWindow.ui \
     InfoWidget/MetaDataPanel.ui \
     InfoWidget/TagPanel.ui \
     aboutdialog.ui \
-    InfoWidget/plotdialog.ui
+    plotdialog.ui
 
 
 #standard windows folder?
