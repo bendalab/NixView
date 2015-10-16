@@ -9,20 +9,31 @@ InfoWidget::InfoWidget(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    dp = new DescriptionPanel();
-    ui->verticalLayout->addWidget(dp);
-
     mp = new MetaDataPanel();
-    ui->verticalLayout->addWidget(mp);
+    ui->verticalLayout_page_meta->addWidget(mp);
+
+    dp = new DescriptionPanel();
+    ui->verticalLayout_page_meta->addWidget(dp);
 
     tp = new TagPanel();
-    ui->verticalLayout->addWidget(tp);
+    ui->verticalLayout_page_tag->addWidget(tp);
 
     connect_widgets();
 }
 
 void InfoWidget::update_info_widget(QVariant v)
 {
+    if(v.canConvert<nix::Tag>() || v.canConvert<nix::MultiTag>())
+    {
+        ui->verticalLayout_page_tag->addWidget(dp);
+        ui->stackedWidget->setCurrentIndex(1);
+    }
+    else
+    {
+        ui->verticalLayout_page_meta->addWidget(dp);
+        ui->stackedWidget->setCurrentIndex(0);
+    }
+
     dp->update_description_panel(v);
     mp->update_metadata_panel(v);
     tp->update_tag_panel(v);
