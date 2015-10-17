@@ -3,6 +3,8 @@
 
 #include <QDialog>
 #include <QVariant>
+#include <qcustomplot.h>
+#include <nix.hpp>
 
 namespace Ui {
 class PlotDialog;
@@ -25,6 +27,9 @@ private:
 
     void draw();
     bool can_draw();
+    void draw_1d(const nix::DataArray &array);
+    void draw_2d(const nix::DataArray &array);
+    QCustomPlot* get_plot();
 
 };
 
