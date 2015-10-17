@@ -17,6 +17,7 @@ class RawTreeView : public QWidget
 public:
     explicit RawTreeView(nix::File nix_file, QWidget *parent = 0);
     ~RawTreeView();
+    // QVariant get_item();
 
 public slots:
     void entry_double_clicked(QTreeWidgetItem* item, int column);
