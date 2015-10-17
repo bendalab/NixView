@@ -46,24 +46,34 @@ void MainWindow::activate_plot(QVariant var) {
             }
         }
     }
+    selected_item = var;
+
     if(var.canConvert<nix::DataArray>() | var.canConvert<nix::MultiTag>() | var.canConvert<nix::Tag>()){
-        if (found_action)
+        if (found_action) {
             plot_action->setEnabled(true);
+        }
     }
-    else
-        if (found_action)
+    else {
+        if (found_action) {
             plot_action->setEnabled(false);
+        }
+    }
 }
+
 
 void MainWindow::show_about() {
     AboutDialog d(this);
     d.exec();
 }
 
+
 void MainWindow::show_plot() {
     PlotDialog d(this);
+    d.set_entity(selected_item);
+
     d.exec();
 }
+
 
 void MainWindow::open_file() {
     if (mvw_is_set) {

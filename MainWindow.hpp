@@ -7,6 +7,8 @@
 #include <nix.hpp>
 #include "MainViewWidget.hpp"
 
+class QVariant;
+
 namespace Ui {
 class MainWindow;
 }
@@ -35,6 +37,7 @@ private:
     MainViewWidget* mvw;
     bool mvw_is_set;
     void connect_widgets();
+    QVariant selected_item;
 };
 
 #endif // MAINWINDOW_HPP
