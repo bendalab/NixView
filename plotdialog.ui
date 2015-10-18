@@ -11,27 +11,13 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>Plotter</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="resources.qrc">
+    <normaloff>:/images/images/nix_plot.png</normaloff>:/images/images/nix_plot.png</iconset>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="0" column="0">
-    <layout class="QVBoxLayout" name="verticalLayout_2">
-     <property name="sizeConstraint">
-      <enum>QLayout::SetMaximumSize</enum>
-     </property>
-     <item>
-      <widget class="QCustomPlot" name="plot" native="true">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <layout class="QFormLayout" name="formLayout"/>
-      </widget>
-     </item>
-    </layout>
-   </item>
    <item row="1" column="0">
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="sizePolicy">
@@ -51,6 +37,91 @@
      </property>
     </widget>
    </item>
+   <item row="0" column="0">
+    <layout class="QVBoxLayout" name="verticalLayout_2">
+     <property name="sizeConstraint">
+      <enum>QLayout::SetMaximumSize</enum>
+     </property>
+     <item>
+      <widget class="QCustomPlot" name="plot" native="true">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="cursor">
+        <cursorShape>OpenHandCursor</cursorShape>
+       </property>
+       <property name="contextMenuPolicy">
+        <enum>Qt::DefaultContextMenu</enum>
+       </property>
+       <layout class="QFormLayout" name="plotLayout"/>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="0" column="1">
+    <widget class="QGroupBox" name="groupBox">
+     <property name="title">
+      <string>GroupBox</string>
+     </property>
+     <widget class="QCheckBox" name="legend_checkBox">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>40</y>
+        <width>90</width>
+        <height>21</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>show legend</string>
+      </property>
+     </widget>
+     <widget class="QCheckBox" name="horizontal_zoom">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>80</y>
+        <width>90</width>
+        <height>21</height>
+       </rect>
+      </property>
+      <property name="toolTip">
+       <string>switch to horizontal zoom</string>
+      </property>
+      <property name="text">
+       <string>horizontal zoom</string>
+      </property>
+      <property name="checked">
+       <bool>true</bool>
+      </property>
+     </widget>
+     <widget class="QCheckBox" name="vertical_zoom">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>120</y>
+        <width>90</width>
+        <height>21</height>
+       </rect>
+      </property>
+      <property name="toolTip">
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;switch to vertical zoom&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      </property>
+      <property name="text">
+       <string>vertical zoom</string>
+      </property>
+      <property name="autoExclusive">
+       <bool>false</bool>
+      </property>
+     </widget>
+    </widget>
+   </item>
   </layout>
  </widget>
  <customwidgets>
@@ -61,7 +132,9 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
- <resources/>
+ <resources>
+  <include location="resources.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>buttonBox</sender>
@@ -70,7 +143,7 @@
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>606</x>
+     <x>545</x>
      <y>303</y>
     </hint>
     <hint type="destinationlabel">
@@ -79,5 +152,75 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>plot</sender>
+   <signal>customContextMenuRequested(QPoint)</signal>
+   <receiver>PlotDialog</receiver>
+   <slot>show_context_menu()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>321</x>
+     <y>145</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>321</x>
+     <y>162</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>vertical_zoom</sender>
+   <signal>stateChanged(int)</signal>
+   <receiver>PlotDialog</receiver>
+   <slot>vertical_zoom_clicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>587</x>
+     <y>141</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>588</x>
+     <y>284</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>horizontal_zoom</sender>
+   <signal>stateChanged(int)</signal>
+   <receiver>PlotDialog</receiver>
+   <slot>horizontal_zoom_clicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>614</x>
+     <y>101</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>618</x>
+     <y>287</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>legend_checkBox</sender>
+   <signal>stateChanged(int)</signal>
+   <receiver>PlotDialog</receiver>
+   <slot>show_legend()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>628</x>
+     <y>59</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>640</x>
+     <y>286</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
+ <slots>
+  <slot>show_context_menu()</slot>
+  <slot>vertical_zoom_clicked()</slot>
+  <slot>horizontal_zoom_clicked()</slot>
+  <slot>show_legend()</slot>
+ </slots>
 </ui>

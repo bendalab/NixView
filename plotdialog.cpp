@@ -1,11 +1,11 @@
 #include "plotdialog.h"
 #include "ui_plotdialog.h"
 #include "common/Common.hpp"
+#include <QToolBar>
 
 PlotDialog::PlotDialog(QWidget *parent) :
     QDialog(parent),
-    ui(new Ui::PlotDialog)
-{
+    ui(new Ui::PlotDialog) {
     ui->setupUi(this);
 }
 
@@ -13,6 +13,7 @@ PlotDialog::PlotDialog(QWidget *parent) :
 QCustomPlot* PlotDialog::get_plot() {
     return ui->plot;
 }
+
 
 void PlotDialog::set_entity(QVariant var) {
     this->item = var;
@@ -23,6 +24,7 @@ void PlotDialog::set_entity(QVariant var) {
 
 
 void PlotDialog::draw() {
+    this->setCursor(Qt::WaitCursor);
     if (item.canConvert<nix::DataArray>()) {
         nix::DataArray array = item.value<nix::DataArray>();
         ui->plot->clearGraphs();
@@ -44,6 +46,7 @@ void PlotDialog::draw() {
     } else {
         std::cerr << "Sorry, plotting of Tags and MultiTags is not yet supported." << std::endl;
     }
+    this->setCursor(Qt::ArrowCursor);
 }
 
 
@@ -52,6 +55,8 @@ void PlotDialog::draw_1d(const nix::DataArray &array) {
     QVector<double> x_axis, y_axis;
     double x_min = 0.0, x_max=1.0, y_min=-1.0, y_max=1.0;
     std::string x_label, y_label;
+    QString name;
+    name.fromStdString(array.name());
     if (d.dimensionType() == nix::DimensionType::Sample) {
         nix::SampledDimension dim = d.asSampledDimension();
         std::vector<double> ax = dim.axis(array.dataExtent()[0]);
@@ -79,6 +84,8 @@ void PlotDialog::draw_1d(const nix::DataArray &array) {
 
     }
     ui->plot->graph(0)->setData(x_axis, y_axis);
+    ui->plot->graph(0)->setName(name);
+    std::cerr << name.toStdString().c_str() << std::endl;
     ui->plot->xAxis->setRange(x_min, x_max);
     ui->plot->yAxis->setRange(1.05*y_min, 1.05*y_max);
     ui->plot->xAxis->setLabel(QString(x_label.c_str()));
@@ -95,6 +102,42 @@ void PlotDialog::draw_2d(const nix::DataArray &array) {
 bool PlotDialog::can_draw() {
     return item.canConvert<nix::DataArray>() | item.canConvert<nix::MultiTag>() | item.canConvert<nix::Tag>();
 }
+
+
+void PlotDialog::show_context_menu() {
+    std::cerr << "show_context menu!" << std::endl;
+}
+
+
+
+void PlotDialog::vertical_zoom_clicked() {
+    if(ui->vertical_zoom->checkState() == Qt::Checked) {
+           ui->horizontal_zoom->setChecked(false);
+           ui->plot->axisRect()->setRangeZoomFactor(1.0, 2.0);
+    }
+    else {
+        ui->horizontal_zoom->setChecked(true);
+        ui->plot->axisRect()->setRangeZoomFactor(2.0, 1.0);
+    }
+}
+
+
+void PlotDialog::horizontal_zoom_clicked() {
+    if(ui->horizontal_zoom->checkState() == Qt::Checked) {
+           ui->vertical_zoom->setChecked(false);
+           ui->plot->axisRect()->setRangeZoomFactor(2.0, 1.0);
+    }
+    else {
+        ui->vertical_zoom->setChecked(true);
+        ui->plot->axisRect()->setRangeZoomFactor(1.0, 2.0);
+    }
+}
+
+void PlotDialog::show_legend() {
+    ui->plot->legend->setVisible(ui->legend_checkBox->checkState() == Qt::Checked);
+    ui->plot->replot();
+}
+
 
 
 PlotDialog::~PlotDialog()

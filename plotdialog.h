@@ -21,6 +21,12 @@ public:
 
     ~PlotDialog();
 
+public slots:
+    void show_context_menu();
+    void vertical_zoom_clicked();
+    void horizontal_zoom_clicked();
+    void show_legend();
+
 private:
     Ui::PlotDialog *ui;
     QVariant item;
