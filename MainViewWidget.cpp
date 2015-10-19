@@ -46,9 +46,14 @@ void MainViewWidget::connect_widgets()
     QObject::connect(rtv, SIGNAL(item_found(QVariant)), iw, SLOT(update_info_widget(QVariant)));
     QObject::connect(rtv, SIGNAL(empty_item()), iw, SLOT(update_info_widget()));
 
+    // - tag references
+//    QObject::connect()
+
     // tree widget expanded/collapsed
     QObject::connect(rtv->get_tree_widget(), SIGNAL(expanded(QModelIndex)), rtv, SLOT(resize_to_content(QModelIndex)));
     QObject::connect(rtv->get_tree_widget(), SIGNAL(collapsed(QModelIndex)), rtv, SLOT(resize_to_content(QModelIndex)));
+
+    // ALSO CHECK CONNECTIONS IN InfoWidget.cpp
 }
 
 MainViewWidget::~MainViewWidget()
