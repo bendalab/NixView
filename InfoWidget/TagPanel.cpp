@@ -6,6 +6,7 @@
 #include <sstream>
 #include <ostream>
 #include <boost/algorithm/string.hpp>
+#include <boost/array.hpp>
 
 TagPanel::TagPanel(QWidget *parent) :
     QWidget(parent),
@@ -24,11 +25,8 @@ void TagPanel::update_tag_panel(QVariant v)
     }
     else if(v.canConvert<nix::MultiTag>())
     {
-        nix::MultiTag mt = v.value<nix::MultiTag>();
-        std::stringstream ss;
-        ss << "test ";
-        QString info_string = QString::fromStdString(ss.str());
-        ui->labal_tag_info->setText(info_string);
+        nix::MultiTag mtag = v.value<nix::MultiTag>();
+        ui->labal_tag_info->setText(QString::fromStdString(extract_multitag_info(mtag)));
     }
     else
     {
@@ -39,12 +37,13 @@ void TagPanel::update_tag_panel(QVariant v)
 
 std::string TagPanel::extract_tag_info(nix::Tag tag)
 {
+    std::stringstream ss;
+
     std::vector<double> pos = tag.position();
     std::ostringstream oss_pos;
     if(!pos.empty())
         std::copy(pos.begin(), pos.end()-1, std::ostream_iterator<double>(oss_pos, ", "));
 
-    std::stringstream ss;
     ss << "Position: " << oss_pos.str() << "\n";
 
     std::vector<double> ext = tag.extent();
@@ -63,6 +62,32 @@ std::string TagPanel::extract_tag_info(nix::Tag tag)
     fill_tree(ui->treeWidget_references, references);
 
     std::vector<nix::Feature> _features = tag.features();
+    for (auto i : _features)
+        features.push_back(i.data());
+    fill_tree(ui->treeWidget_features, features);
+
+    return ss.str();
+}
+
+std::string TagPanel::extract_multitag_info(nix::MultiTag mtag)
+{
+    std::stringstream ss;
+
+    nix::DataArray positions = mtag.positions();
+    nix::NDSize size = positions.dataExtent();
+    positions.getData(pos_array);
+    std::ostringstream oss_pos;
+
+    nix::DataArray extents = mtag.extents();
+    std::ostringstream oss_ext;
+
+    std::vector<std::string> units = mtag.units();
+    std::ostringstream oss_units;
+
+    references = mtag.references();
+    fill_tree(ui->treeWidget_references, references);
+
+    std::vector<nix::Feature> _features = mtag.features();
     for (auto i : _features)
         features.push_back(i.data());
     fill_tree(ui->treeWidget_features, features);

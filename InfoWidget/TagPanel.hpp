@@ -30,6 +30,7 @@ private:
     Ui::TagPanel *ui;
     void clear_tag_panel();
     std::string extract_tag_info(nix::Tag);
+    std::string extract_multitag_info(nix::MultiTag);
     std::vector<nix::DataArray> references;
     std::vector<nix::DataArray> features;
     static void fill_tree(QTreeWidget*, std::vector<nix::DataArray>);
