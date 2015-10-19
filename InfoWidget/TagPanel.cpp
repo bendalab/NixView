@@ -60,28 +60,21 @@ std::string TagPanel::extract_tag_info(nix::Tag tag)
     ss<< "Units: " << oss_units.str();
 
     references = tag.references();
-    fill_reference_list();
+    fill_tree(ui->treeWidget_references, references);
 
-    // TODO
-    std::vector<nix::Feature>  features = tag.features();
-    std::ostringstream oss_features;
-    if(!features.empty())
-    {
-        for (auto i : features)
-        {
-            continue;
-        }
-//        std::copy(features.begin(), features.end()-1, std::ostream_iterator<nix::Feature>(oss_features, ", "));
-    }
+    std::vector<nix::Feature> _features = tag.features();
+    for (auto i : _features)
+        features.push_back(i.data());
+    fill_tree(ui->treeWidget_features, features);
 
     return ss.str();
 }
 
-void TagPanel::fill_reference_list()
+void TagPanel::fill_tree(QTreeWidget* tree, std::vector<nix::DataArray> ar)
 {
-    for (auto i : references)
+    for (auto i : ar)
     {
-        QTreeWidgetItem* item = new QTreeWidgetItem(ui->treeWidget, QStringList(QString::fromStdString(i.name())));
+        QTreeWidgetItem* item = new QTreeWidgetItem(tree, QStringList(QString::fromStdString(i.name())));
         item->setText(1, QString::fromStdString("Data Array"));
         item->setText(2, QString::fromStdString(nix::data_type_to_string(i.dataType())));
         std::stringstream s;
@@ -98,6 +91,37 @@ void TagPanel::clear_tag_panel()
     this->ui->labal_tag_info->setText("");
 }
 
+// slots
+void TagPanel::reference_item_requested(QTreeWidgetItem* item, int column)
+{
+    for (auto i : references)
+    {
+        if(i.name() == item->text(0).toStdString())
+            emit item_found(i);
+    }
+}
+
+void TagPanel::feature_item_requested(QTreeWidgetItem* item, int column)
+{
+    for (auto i : features)
+    {
+        if(i.name() == item->text(0).toStdString())
+            emit item_found(i);
+    }
+}
+
+// getters
+QTreeWidget* TagPanel::get_reference_tree()
+{
+    return ui->treeWidget_references;
+}
+
+QTreeWidget* TagPanel::get_feature_tree()
+{
+    return ui->treeWidget_features;
+}
+
+// destructor
 TagPanel::~TagPanel()
 {
     delete ui;

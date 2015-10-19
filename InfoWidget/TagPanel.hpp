@@ -4,6 +4,7 @@
 #include <QWidget>
 #include <QVariant>
 #include <nix.hpp>
+#include <QtGui>
 
 namespace Ui {
 class TagPanel;
@@ -19,13 +20,24 @@ public:
 
 public slots:
     void update_tag_panel(QVariant v);
+    void reference_item_requested(QTreeWidgetItem*, int);
+    void feature_item_requested(QTreeWidgetItem*, int);
+
+signals:
+    void item_found(nix::DataArray);
 
 private:
     Ui::TagPanel *ui;
     void clear_tag_panel();
     std::string extract_tag_info(nix::Tag);
     std::vector<nix::DataArray> references;
-    void fill_reference_list();
+    std::vector<nix::DataArray> features;
+    static void fill_tree(QTreeWidget*, std::vector<nix::DataArray>);
+
+    // getter
+public:
+    QTreeWidget* get_reference_tree();
+    QTreeWidget* get_feature_tree();
 };
 
 #endif // TAGPANEL_HPP
