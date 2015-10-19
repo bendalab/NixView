@@ -49,10 +49,11 @@ void InfoWidget::connect_widgets()
 {
     QObject::connect(mp->get_tree_widget(), SIGNAL(expanded(QModelIndex)), mp, SLOT(resize_to_content(QModelIndex)));
     QObject::connect(mp->get_tree_widget(), SIGNAL(collapsed(QModelIndex)), mp, SLOT(resize_to_content(QModelIndex)));
+    QObject::connect(tp->get_reference_tree(), SIGNAL(itemClicked(QTreeWidgetItem*,int)), tp, SLOT(reference_item_requested(QTreeWidgetItem*,int)));
+    QObject::connect(tp->get_feature_tree(), SIGNAL(itemClicked(QTreeWidgetItem*,int)), tp, SLOT(feature_item_requested(QTreeWidgetItem*,int)));
 }
 
 // getter
-
 const MetaDataPanel* InfoWidget::get_metadata_panel()
 {
     return mp;
