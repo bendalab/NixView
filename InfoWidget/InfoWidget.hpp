@@ -42,6 +42,5 @@ public:
     const MetaDataPanel* get_metadata_panel();
 
 
-
 };
 #endif // INFOWIDGET_HPP
