@@ -5,6 +5,7 @@
 #include <iostream>
 #include <sstream>
 #include <ostream>
+#include <boost/algorithm/string.hpp>
 
 TagPanel::TagPanel(QWidget *parent) :
     QWidget(parent),
@@ -58,9 +59,38 @@ std::string TagPanel::extract_tag_info(nix::Tag tag)
         std::copy(units.begin(), units.end()-1, std::ostream_iterator<std::string>(oss_units, ", "));
     ss<< "Units: " << oss_units.str();
 
-    // references, features,
+    references = tag.references();
+    fill_reference_list();
+
+    // TODO
+    std::vector<nix::Feature>  features = tag.features();
+    std::ostringstream oss_features;
+    if(!features.empty())
+    {
+        for (auto i : features)
+        {
+            continue;
+        }
+//        std::copy(features.begin(), features.end()-1, std::ostream_iterator<nix::Feature>(oss_features, ", "));
+    }
 
     return ss.str();
+}
+
+void TagPanel::fill_reference_list()
+{
+    for (auto i : references)
+    {
+        QTreeWidgetItem* item = new QTreeWidgetItem(ui->treeWidget, QStringList(QString::fromStdString(i.name())));
+        item->setText(1, QString::fromStdString("Data Array"));
+        item->setText(2, QString::fromStdString(nix::data_type_to_string(i.dataType())));
+        std::stringstream s;
+        s << i.dataExtent();
+        std::string shape = s.str();
+        boost::algorithm::trim(shape);
+        shape = shape.substr(7, shape.length()-1);
+        item->setText(3, QString::fromStdString(shape));
+    }
 }
 
 void TagPanel::clear_tag_panel()

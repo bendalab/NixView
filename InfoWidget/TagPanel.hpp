@@ -24,6 +24,8 @@ private:
     Ui::TagPanel *ui;
     void clear_tag_panel();
     std::string extract_tag_info(nix::Tag);
+    std::vector<nix::DataArray> references;
+    void fill_reference_list();
 };
 
 #endif // TAGPANEL_HPP
