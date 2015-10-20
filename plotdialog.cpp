@@ -7,6 +7,16 @@ PlotDialog::PlotDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::PlotDialog) {
     ui->setupUi(this);
+
+    // connect slot that ties some axis selections together (especially opposite axes):
+    connect(ui->plot, SIGNAL(selectionChangedByUser()), this, SLOT(selection_changed()));
+    // connect slots that takes care that when an axis is selected, only that direction can be dragged and zoomed:
+    connect(ui->plot, SIGNAL(mousePress(QMouseEvent*)), this, SLOT(mouse_press()));
+    connect(ui->plot, SIGNAL(mouseWheel(QWheelEvent*)), this, SLOT(mouse_wheel()));
+    // make bottom and left axes transfer their ranges to top and right axes:
+    connect(ui->plot->xAxis, SIGNAL(rangeChanged(QCPRange)), ui->plot->xAxis2, SLOT(setRange(QCPRange)));
+    connect(ui->plot->yAxis, SIGNAL(rangeChanged(QCPRange)), ui->plot->yAxis2, SLOT(setRange(QCPRange)));
+
 }
 
 
@@ -29,9 +39,7 @@ void PlotDialog::draw() {
         nix::DataArray array = item.value<nix::DataArray>();
         ui->plot->clearGraphs();
         ui->plot->addGraph();
-        ui->plot->setInteraction(QCP::iRangeDrag, true);
-        ui->plot->setInteraction(QCP::iRangeZoom, true);
-        ui->plot->axisRect()->setRangeZoomFactor(2.0, 1.0);
+        ui->plot->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom | QCP::iSelectPlottables | QCP::iSelectAxes);
         size_t dim_count = array.dimensionCount();
         switch (dim_count) {
         case 1:
@@ -83,9 +91,8 @@ void PlotDialog::draw_1d(const nix::DataArray &array) {
     } else {
 
     }
+    ui->plot->graph(0)->setName(array.name().c_str());
     ui->plot->graph(0)->setData(x_axis, y_axis);
-    ui->plot->graph(0)->setName(name);
-    std::cerr << name.toStdString().c_str() << std::endl;
     ui->plot->xAxis->setRange(x_min, x_max);
     ui->plot->yAxis->setRange(1.05*y_min, 1.05*y_max);
     ui->plot->xAxis->setLabel(QString(x_label.c_str()));
@@ -109,29 +116,83 @@ void PlotDialog::show_context_menu() {
 }
 
 
+void PlotDialog::selection_changed()
+{
+  /*
+   normally, axis base line, axis tick labels and axis labels are selectable separately, but we want
+   the user only to be able to select the axis as a whole, so we tie the selected states of the tick labels
+   and the axis base line together. However, the axis label shall be selectable individually.
 
-void PlotDialog::vertical_zoom_clicked() {
-    if(ui->vertical_zoom->checkState() == Qt::Checked) {
-           ui->horizontal_zoom->setChecked(false);
-           ui->plot->axisRect()->setRangeZoomFactor(1.0, 2.0);
+   The selection state of the left and right axes shall be synchronized as well as the state of the
+   bottom and top axes.
+
+   Further, we want to synchronize the selection of the graphs with the selection state of the respective
+   legend item belonging to that graph. So the user can select a graph by either clicking on the graph itself
+   or on its legend item.
+  */
+
+  // make top and bottom axes be selected synchronously, and handle axis and tick labels as one selectable object:
+  if (ui->plot->xAxis->selectedParts().testFlag(QCPAxis::spAxis) || ui->plot->xAxis->selectedParts().testFlag(QCPAxis::spTickLabels) ||
+          ui->plot->xAxis->selectedParts().testFlag(QCPAxis::spAxisLabel) || ui->plot->xAxis2->selectedParts().testFlag(QCPAxis::spAxis) ||
+          ui->plot->xAxis2->selectedParts().testFlag(QCPAxis::spTickLabels) || ui->plot->xAxis2->selectedParts().testFlag(QCPAxis::spAxisLabel))
+  {
+    ui->plot->xAxis2->setSelectedParts(QCPAxis::spAxis|QCPAxis::spTickLabels|QCPAxis::spAxisLabel);
+    ui->plot->xAxis->setSelectedParts(QCPAxis::spAxis|QCPAxis::spTickLabels|QCPAxis::spAxisLabel);
+  }
+  // make left and right axes be selected synchronously, and handle axis and tick labels as one selectable object:
+  if (ui->plot->yAxis->selectedParts().testFlag(QCPAxis::spAxis) || ui->plot->yAxis->selectedParts().testFlag(QCPAxis::spTickLabels) ||
+          ui->plot->yAxis->selectedParts().testFlag(QCPAxis::spAxisLabel) || ui->plot->yAxis2->selectedParts().testFlag(QCPAxis::spAxis) ||
+          ui->plot->yAxis2->selectedParts().testFlag(QCPAxis::spTickLabels) || ui->plot->yAxis2->selectedParts().testFlag(QCPAxis::spAxisLabel))
+  {
+    ui->plot->yAxis2->setSelectedParts(QCPAxis::spAxis|QCPAxis::spTickLabels|QCPAxis::spAxisLabel);
+    ui->plot->yAxis->setSelectedParts(QCPAxis::spAxis|QCPAxis::spTickLabels|QCPAxis::spAxisLabel);
+  }
+
+  // synchronize selection of graphs with selection of corresponding legend items:
+  for (int i=0; i<ui->plot->graphCount(); ++i)
+  {
+    QCPGraph *graph = ui->plot->graph(i);
+    QCPPlottableLegendItem *item = ui->plot->legend->itemWithPlottable(graph);
+    if (item->selected() || graph->selected())
+    {
+      item->setSelected(true);
+      graph->setSelected(true);
     }
-    else {
-        ui->horizontal_zoom->setChecked(true);
-        ui->plot->axisRect()->setRangeZoomFactor(2.0, 1.0);
-    }
+  }
 }
 
 
-void PlotDialog::horizontal_zoom_clicked() {
-    if(ui->horizontal_zoom->checkState() == Qt::Checked) {
-           ui->vertical_zoom->setChecked(false);
-           ui->plot->axisRect()->setRangeZoomFactor(2.0, 1.0);
-    }
-    else {
-        ui->vertical_zoom->setChecked(true);
-        ui->plot->axisRect()->setRangeZoomFactor(1.0, 2.0);
-    }
+void PlotDialog::mouse_press() {
+    std::cerr << "mouse_press" << std::endl;
+
+    // if an axis is selected, only allow the direction of that axis to be dragged
+    // if no axis is selected, both directions may be dragged
+
+    if (ui->plot->xAxis->selectedParts().testFlag(QCPAxis::spAxis))
+        ui->plot->axisRect()->setRangeDrag(ui->plot->xAxis->orientation());
+    else if (ui->plot->yAxis->selectedParts().testFlag(QCPAxis::spAxis))
+        ui->plot->axisRect()->setRangeDrag(ui->plot->yAxis->orientation());
+    else
+        ui->plot->axisRect()->setRangeDrag(Qt::Horizontal|Qt::Vertical);
+
 }
+
+
+void PlotDialog::mouse_wheel()
+{
+    std::cerr << "mouse_wheel" << std::endl;
+
+    // if an axis is selected, only allow the direction of that axis to be zoomed
+    // if no axis is selected, both directions may be zoomed
+
+    if (ui->plot->xAxis->selectedParts().testFlag(QCPAxis::spAxis))
+        ui->plot->axisRect()->setRangeZoom(ui->plot->xAxis->orientation());
+    else if (ui->plot->yAxis->selectedParts().testFlag(QCPAxis::spAxis))
+        ui->plot->axisRect()->setRangeZoom(ui->plot->yAxis->orientation());
+    else
+        ui->plot->axisRect()->setRangeZoom(Qt::Horizontal|Qt::Vertical);
+}
+
 
 void PlotDialog::show_legend() {
     ui->plot->legend->setVisible(ui->legend_checkBox->checkState() == Qt::Checked);

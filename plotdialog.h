@@ -23,9 +23,10 @@ public:
 
 public slots:
     void show_context_menu();
-    void vertical_zoom_clicked();
-    void horizontal_zoom_clicked();
     void show_legend();
+    void mouse_press();
+    void mouse_wheel();
+    void selection_changed();
 
 private:
     Ui::PlotDialog *ui;
