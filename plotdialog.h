@@ -27,6 +27,8 @@ public slots:
     void mouse_press();
     void mouse_wheel();
     void selection_changed();
+    void context_menu_request(QPoint pos);
+    void remove_selected_graph();
 
 private:
     Ui::PlotDialog *ui;

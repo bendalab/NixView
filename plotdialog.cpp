@@ -2,6 +2,7 @@
 #include "ui_plotdialog.h"
 #include "common/Common.hpp"
 #include <QToolBar>
+#include <QMenu>
 
 PlotDialog::PlotDialog(QWidget *parent) :
     QDialog(parent),
@@ -16,7 +17,9 @@ PlotDialog::PlotDialog(QWidget *parent) :
     // make bottom and left axes transfer their ranges to top and right axes:
     connect(ui->plot->xAxis, SIGNAL(rangeChanged(QCPRange)), ui->plot->xAxis2, SLOT(setRange(QCPRange)));
     connect(ui->plot->yAxis, SIGNAL(rangeChanged(QCPRange)), ui->plot->yAxis2, SLOT(setRange(QCPRange)));
-
+    // setup policy and connect slot for context menu popup:
+    ui->plot->setContextMenuPolicy(Qt::CustomContextMenu);
+    connect(ui->plot, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(context_menu_request(QPoint)));
 }
 
 
@@ -118,7 +121,9 @@ void PlotDialog::show_context_menu() {
 
 void PlotDialog::selection_changed()
 {
-  /*
+    std::cerr << "selection changed" << std::endl;
+    std::cerr << (ui->plot->selectedPlottables().size() == 0) << std::endl;
+    /*
    normally, axis base line, axis tick labels and axis labels are selectable separately, but we want
    the user only to be able to select the axis as a whole, so we tie the selected states of the tick labels
    and the axis base line together. However, the axis label shall be selectable individually.
@@ -131,40 +136,36 @@ void PlotDialog::selection_changed()
    or on its legend item.
   */
 
-  // make top and bottom axes be selected synchronously, and handle axis and tick labels as one selectable object:
-  if (ui->plot->xAxis->selectedParts().testFlag(QCPAxis::spAxis) || ui->plot->xAxis->selectedParts().testFlag(QCPAxis::spTickLabels) ||
-          ui->plot->xAxis->selectedParts().testFlag(QCPAxis::spAxisLabel) || ui->plot->xAxis2->selectedParts().testFlag(QCPAxis::spAxis) ||
-          ui->plot->xAxis2->selectedParts().testFlag(QCPAxis::spTickLabels) || ui->plot->xAxis2->selectedParts().testFlag(QCPAxis::spAxisLabel))
-  {
-    ui->plot->xAxis2->setSelectedParts(QCPAxis::spAxis|QCPAxis::spTickLabels|QCPAxis::spAxisLabel);
-    ui->plot->xAxis->setSelectedParts(QCPAxis::spAxis|QCPAxis::spTickLabels|QCPAxis::spAxisLabel);
-  }
-  // make left and right axes be selected synchronously, and handle axis and tick labels as one selectable object:
-  if (ui->plot->yAxis->selectedParts().testFlag(QCPAxis::spAxis) || ui->plot->yAxis->selectedParts().testFlag(QCPAxis::spTickLabels) ||
-          ui->plot->yAxis->selectedParts().testFlag(QCPAxis::spAxisLabel) || ui->plot->yAxis2->selectedParts().testFlag(QCPAxis::spAxis) ||
-          ui->plot->yAxis2->selectedParts().testFlag(QCPAxis::spTickLabels) || ui->plot->yAxis2->selectedParts().testFlag(QCPAxis::spAxisLabel))
-  {
-    ui->plot->yAxis2->setSelectedParts(QCPAxis::spAxis|QCPAxis::spTickLabels|QCPAxis::spAxisLabel);
-    ui->plot->yAxis->setSelectedParts(QCPAxis::spAxis|QCPAxis::spTickLabels|QCPAxis::spAxisLabel);
-  }
-
-  // synchronize selection of graphs with selection of corresponding legend items:
-  for (int i=0; i<ui->plot->graphCount(); ++i)
-  {
-    QCPGraph *graph = ui->plot->graph(i);
-    QCPPlottableLegendItem *item = ui->plot->legend->itemWithPlottable(graph);
-    if (item->selected() || graph->selected())
+    // make top and bottom axes be selected synchronously, and handle axis and tick labels as one selectable object:
+    if (ui->plot->xAxis->selectedParts().testFlag(QCPAxis::spAxis) || ui->plot->xAxis->selectedParts().testFlag(QCPAxis::spTickLabels) ||
+            ui->plot->xAxis->selectedParts().testFlag(QCPAxis::spAxisLabel) || ui->plot->xAxis2->selectedParts().testFlag(QCPAxis::spAxis) ||
+            ui->plot->xAxis2->selectedParts().testFlag(QCPAxis::spTickLabels) || ui->plot->xAxis2->selectedParts().testFlag(QCPAxis::spAxisLabel))
     {
-      item->setSelected(true);
-      graph->setSelected(true);
+        ui->plot->xAxis2->setSelectedParts(QCPAxis::spAxis|QCPAxis::spTickLabels|QCPAxis::spAxisLabel);
+        ui->plot->xAxis->setSelectedParts(QCPAxis::spAxis|QCPAxis::spTickLabels|QCPAxis::spAxisLabel);
     }
-  }
+    // make left and right axes be selected synchronously, and handle axis and tick labels as one selectable object:
+    if (ui->plot->yAxis->selectedParts().testFlag(QCPAxis::spAxis) || ui->plot->yAxis->selectedParts().testFlag(QCPAxis::spTickLabels) ||
+            ui->plot->yAxis->selectedParts().testFlag(QCPAxis::spAxisLabel) || ui->plot->yAxis2->selectedParts().testFlag(QCPAxis::spAxis) ||
+            ui->plot->yAxis2->selectedParts().testFlag(QCPAxis::spTickLabels) || ui->plot->yAxis2->selectedParts().testFlag(QCPAxis::spAxisLabel))
+    {
+        ui->plot->yAxis2->setSelectedParts(QCPAxis::spAxis|QCPAxis::spTickLabels|QCPAxis::spAxisLabel);
+        ui->plot->yAxis->setSelectedParts(QCPAxis::spAxis|QCPAxis::spTickLabels|QCPAxis::spAxisLabel);
+    }
+
+    // synchronize selection of graphs with selection of corresponding legend items:
+    for (int i=0; i<ui->plot->graphCount(); ++i) {
+        QCPGraph *graph = ui->plot->graph(i);
+        QCPPlottableLegendItem *item = ui->plot->legend->itemWithPlottable(graph);
+        if (item->selected() || graph->selected()) {
+            item->setSelected(true);
+            graph->setSelected(true);
+        }
+    }
 }
 
 
 void PlotDialog::mouse_press() {
-    std::cerr << "mouse_press" << std::endl;
-
     // if an axis is selected, only allow the direction of that axis to be dragged
     // if no axis is selected, both directions may be dragged
 
@@ -174,14 +175,10 @@ void PlotDialog::mouse_press() {
         ui->plot->axisRect()->setRangeDrag(ui->plot->yAxis->orientation());
     else
         ui->plot->axisRect()->setRangeDrag(Qt::Horizontal|Qt::Vertical);
-
 }
 
 
-void PlotDialog::mouse_wheel()
-{
-    std::cerr << "mouse_wheel" << std::endl;
-
+void PlotDialog::mouse_wheel() {
     // if an axis is selected, only allow the direction of that axis to be zoomed
     // if no axis is selected, both directions may be zoomed
 
@@ -194,8 +191,32 @@ void PlotDialog::mouse_wheel()
 }
 
 
+void PlotDialog::context_menu_request(QPoint pos) {
+    std::cerr << "context request" << std::endl;
+    QMenu *menu = new QMenu(this);
+    menu->setAttribute(Qt::WA_DeleteOnClose);
+
+    QAction *legend_action = menu->addAction("Show legend", this, SLOT(show_legend()));
+    legend_action->setCheckable(true);
+    legend_action->setChecked(ui->plot->legend->visible());
+    if (ui->plot->selectedGraphs().size() > 0) {
+        menu->addAction("Remove selected graph", this, SLOT(remove_selected_graph()));
+
+    }
+    menu->popup(ui->plot->mapToGlobal(pos));
+}
+
+
+void PlotDialog::remove_selected_graph() {
+    if (ui->plot->selectedGraphs().size() > 0) {
+        ui->plot->removeGraph(ui->plot->selectedGraphs().first());
+        ui->plot->replot();
+    }
+}
+
+
 void PlotDialog::show_legend() {
-    ui->plot->legend->setVisible(ui->legend_checkBox->checkState() == Qt::Checked);
+    ui->plot->legend->setVisible(!ui->plot->legend->visible());
     ui->plot->replot();
 }
 
