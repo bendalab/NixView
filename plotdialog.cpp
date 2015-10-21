@@ -41,7 +41,6 @@ void PlotDialog::draw() {
     if (item.canConvert<nix::DataArray>()) {
         nix::DataArray array = item.value<nix::DataArray>();
         ui->plot->clearGraphs();
-        ui->plot->addGraph();
         ui->plot->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom | QCP::iSelectPlottables | QCP::iSelectAxes);
         size_t dim_count = array.dimensionCount();
         switch (dim_count) {
@@ -62,50 +61,116 @@ void PlotDialog::draw() {
 
 
 void PlotDialog::draw_1d(const nix::DataArray &array) {
-    nix::Dimension d = array.getDimension(1);
-    QVector<double> x_axis, y_axis;
-    double x_min = 0.0, x_max=1.0, y_min=-1.0, y_max=1.0;
-    std::string x_label, y_label;
-    QString name;
-    name.fromStdString(array.name());
-    if (d.dimensionType() == nix::DimensionType::Sample) {
-        nix::SampledDimension dim = d.asSampledDimension();
-        std::vector<double> ax = dim.axis(array.dataExtent()[0]);
-        x_axis = QVector<double>::fromStdVector(ax);
-        x_min = ax[0];
-        x_max = ax.back();
-        if (dim.label())
-            x_label = *dim.label();
-        if (dim.unit())
-            x_label = x_label + " [" + *dim.unit() + "]";
+    if (check_plottable_dtype(array)) {
+        nix::Dimension d = array.getDimension(1);
+        QVector<double> x_axis, y_axis;
+        double x_min, x_max, y_min, y_max;
+        std::string x_label, y_label;
+        if (d.dimensionType() == nix::DimensionType::Sample) {
+            nix::SampledDimension dim = d.asSampledDimension();
+            std::vector<double> ax = dim.axis(array.dataExtent()[0]);
+            x_axis = QVector<double>::fromStdVector(ax);
+            if (dim.label())
+                x_label = *dim.label();
+            if (dim.unit())
+                x_label = x_label + " [" + *dim.unit() + "]";
 
-        std::vector<double> data(ax.size());
-        array.getData(nix::DataType::Double, data.data(), {ax.size()}, {0});
-        y_axis = QVector<double>::fromStdVector(data);
-        y_min = *std::min_element(std::begin(data), std::end(data));
-        y_max = *std::max_element(std::begin(data), std::end(data));
-        if (array.label())
-            y_label = *array.label();
-        if (array.unit())
-            y_label = y_label + " [" + *array.unit() + "]";
-    } else if (d.dimensionType() == nix::DimensionType::Range) {
-        std::cerr << "1D sampled" << std::endl;
+            std::vector<double> data(ax.size());
+            array.getData(nix::DataType::Double, data.data(), {ax.size()}, {0});
+            y_axis = QVector<double>::fromStdVector(data);
 
-    } else {
+            if (array.label())
+                y_label = *array.label();
+            if (array.unit())
+                y_label = y_label + " [" + *array.unit() + "]";
+            x_min = x_axis[0];
+            x_max = x_axis.back();
+            add_line_plot(x_axis, y_axis);
+        } else if (d.dimensionType() == nix::DimensionType::Range) {
+            nix::RangeDimension dim = d.asRangeDimension();
+            std::vector<double> ax = dim.axis(array.dataExtent()[0]);
+            x_axis = QVector<double>::fromStdVector(ax);
 
+            if (dim.label())
+                x_label = *dim.label();
+            if (dim.unit())
+                x_label = x_label + " [" + *dim.unit() + "]";
+            std::vector<double> data(ax.size());
+            array.getData(nix::DataType::Double, data.data(), {ax.size()}, {0});
+            y_axis = QVector<double>::fromStdVector(data);
+
+            if (array.label())
+                y_label = *array.label();
+            if (array.unit())
+                y_label = y_label + " [" + *array.unit() + "]";
+            add_scatter_plot(x_axis, y_axis);
+            x_min = x_axis[0];
+            x_max = x_axis.back();
+        } else if (d.dimensionType() == nix::DimensionType::Set) {
+            std::vector<double> data;
+            array.getData(data);
+            y_axis = QVector<double>::fromStdVector(data);
+
+            nix::SetDimension dim = d.asSetDimension();
+            std::vector<string> labels = dim.labels();
+            QVector<QString> categories;
+
+            if (labels.size() == 0) {
+                for (int i = 0; i < y_axis.size(); ++i)
+                    categories.push_back(QString::fromStdString(nix::util::numToStr<int>(i)));
+            }
+            x_min = 0;
+            x_max = labels.size();
+            add_bar_plot(QVector<string>);
+        } else {
+            std::cerr << "unsupported dimension type" << std::endl;
+        }
+
+        double y_min = *std::min_element(std::begin(y_axis), std::end(y_axis));
+        double y_max = *std::max_element(std::begin(y_axis), std::end(y_axis));
+
+        ui->plot->graph()->setName(array.name().c_str());
+        ui->plot->xAxis->setRange(x_min, x_max);
+        ui->plot->yAxis->setRange(1.05*y_min, 1.05*y_max);
+        ui->plot->xAxis->setLabel(QString(x_label.c_str()));
+        ui->plot->yAxis->setLabel(QString(y_label.c_str()));
+        ui->plot->replot();
     }
-    ui->plot->graph(0)->setName(array.name().c_str());
-    ui->plot->graph(0)->setData(x_axis, y_axis);
-    ui->plot->xAxis->setRange(x_min, x_max);
-    ui->plot->yAxis->setRange(1.05*y_min, 1.05*y_max);
-    ui->plot->xAxis->setLabel(QString(x_label.c_str()));
-    ui->plot->yAxis->setLabel(QString(y_label.c_str()));
-    ui->plot->replot();
+}
+
+void PlotDialog::add_line_plot(QVector<double> x_data, QVector<double> y_data) {
+    ui->plot->addGraph(x_data, y_data);
 }
 
 
+void PlotDialog::add_scatter_plot(QVector<double> x_data, QVector<double> y_data) {
+    ui->plot->addGraph(x_data, y_data);
+    QPen pen = ui->plot->graph()->pen();
+    pen.setStyle(Qt::PenStyle::NoPen);
+    ui->plot->graph()->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, 10));
+    ui->plot->graph()->setPen(pen);
+}
+
+
+void PlotDialog::add_bar_plot(QVector<QString> categories, QVector<double> y_data){
+    return;
+}
+
 void PlotDialog::draw_2d(const nix::DataArray &array) {
 
+}
+
+
+bool PlotDialog::check_plottable_dtype(const nix::DataArray &array) {
+    bool plottable = true;
+    plottable = plottable && array.dataType() != nix::DataType::DateTime;
+    plottable = plottable && array.dataType() != nix::DataType::Bool;
+    plottable = plottable && array.dataType() != nix::DataType::String;
+    plottable = plottable && array.dataType() != nix::DataType::Date;
+    plottable = plottable && array.dataType() != nix::DataType::Char;
+    plottable = plottable && array.dataType() != nix::DataType::Opaque;
+    plottable = plottable && array.dataType() != nix::DataType::Nothing;
+    return plottable;
 }
 
 
@@ -121,19 +186,6 @@ void PlotDialog::show_context_menu() {
 
 void PlotDialog::selection_changed()
 {
-    /*
-    normally, axis base line, axis tick labels and axis labels are selectable separately, but we want
-    the user only to be able to select the axis as a whole, so we tie the selected states of the tick labels
-    and the axis base line together. However, the axis label shall be selectable individually.
-
-    The selection state of the left and right axes shall be synchronized as well as the state of     the
-    bottom and top axes
-
-    Further, we want to synchronize the selection of the graphs with the selection state of the respective
-    legend item belonging to that graph. So the user can select a graph by either clicking on the graph itself
-    or on its legend item.
-    */
-
     // make top and bottom axes be selected synchronously, and handle axis and tick labels as one selectable object:
     if (ui->plot->xAxis->selectedParts().testFlag(QCPAxis::spAxis) || ui->plot->xAxis->selectedParts().testFlag(QCPAxis::spTickLabels) ||
             ui->plot->xAxis->selectedParts().testFlag(QCPAxis::spAxisLabel) || ui->plot->xAxis2->selectedParts().testFlag(QCPAxis::spAxis) ||

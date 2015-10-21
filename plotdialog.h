@@ -54,6 +54,12 @@ private:
     bool can_draw();
     void draw_1d(const nix::DataArray &array);
     void draw_2d(const nix::DataArray &array);
+    bool check_plottable_dtype(const nix::DataArray & array);
+
+    void add_line_plot(QVector<double> x_data, QVector<double> y_data);
+    void add_scatter_plot(QVector<double> x_data, QVector<double> y_data);
+    void add_bar_plot(QVector<QString> categories, QVector<double> y_data);
+
     QCustomPlot* get_plot();
 
 };
