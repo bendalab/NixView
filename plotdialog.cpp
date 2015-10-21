@@ -121,20 +121,18 @@ void PlotDialog::show_context_menu() {
 
 void PlotDialog::selection_changed()
 {
-    std::cerr << "selection changed" << std::endl;
-    std::cerr << (ui->plot->selectedPlottables().size() == 0) << std::endl;
     /*
-   normally, axis base line, axis tick labels and axis labels are selectable separately, but we want
-   the user only to be able to select the axis as a whole, so we tie the selected states of the tick labels
-   and the axis base line together. However, the axis label shall be selectable individually.
+    normally, axis base line, axis tick labels and axis labels are selectable separately, but we want
+    the user only to be able to select the axis as a whole, so we tie the selected states of the tick labels
+    and the axis base line together. However, the axis label shall be selectable individually.
 
-   The selection state of the left and right axes shall be synchronized as well as the state of the
-   bottom and top axes.
+    The selection state of the left and right axes shall be synchronized as well as the state of     the
+    bottom and top axes
 
-   Further, we want to synchronize the selection of the graphs with the selection state of the respective
-   legend item belonging to that graph. So the user can select a graph by either clicking on the graph itself
-   or on its legend item.
-  */
+    Further, we want to synchronize the selection of the graphs with the selection state of the respective
+    legend item belonging to that graph. So the user can select a graph by either clicking on the graph itself
+    or on its legend item.
+    */
 
     // make top and bottom axes be selected synchronously, and handle axis and tick labels as one selectable object:
     if (ui->plot->xAxis->selectedParts().testFlag(QCPAxis::spAxis) || ui->plot->xAxis->selectedParts().testFlag(QCPAxis::spTickLabels) ||
@@ -192,16 +190,15 @@ void PlotDialog::mouse_wheel() {
 
 
 void PlotDialog::context_menu_request(QPoint pos) {
-    std::cerr << "context request" << std::endl;
     QMenu *menu = new QMenu(this);
     menu->setAttribute(Qt::WA_DeleteOnClose);
 
     QAction *legend_action = menu->addAction("Show legend", this, SLOT(show_legend()));
     legend_action->setCheckable(true);
     legend_action->setChecked(ui->plot->legend->visible());
+    menu->addAction("Clear selection", this, SLOT(clear_selection()));
     if (ui->plot->selectedGraphs().size() > 0) {
         menu->addAction("Remove selected graph", this, SLOT(remove_selected_graph()));
-
     }
     menu->popup(ui->plot->mapToGlobal(pos));
 }
@@ -220,6 +217,11 @@ void PlotDialog::show_legend() {
     ui->plot->replot();
 }
 
+
+void PlotDialog::clear_selection(){
+    ui->plot->deselectAll();
+    ui->plot->replot();
+}
 
 
 PlotDialog::~PlotDialog()

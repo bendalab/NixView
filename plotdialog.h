@@ -29,6 +29,7 @@ public slots:
     void selection_changed();
     void context_menu_request(QPoint pos);
     void remove_selected_graph();
+    void clear_selection();
 
 private:
     Ui::PlotDialog *ui;
