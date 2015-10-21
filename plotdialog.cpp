@@ -197,12 +197,21 @@ void PlotDialog::context_menu_request(QPoint pos) {
     menu->addAction("Clear selection", this, SLOT(clear_selection()));
     if (ui->plot->selectedGraphs().size() > 0) {
         menu->addAction("Remove selected graph", this, SLOT(remove_selected_graph()));
-        QMenu *line_style_menu = menu->addMenu("Set line style");
-        line_style_menu->addAction("None", this, SLOT(set_pen_none()));
-        line_style_menu->addAction("Solid", this, SLOT(set_pen_solid()));
-        line_style_menu->addAction("Dashed", this, SLOT(set_pen_dashed()));
-        line_style_menu->addAction("Dash-dotted", this, SLOT(set_pen_dashed()));
-        line_style_menu->addAction("Dotted", this, SLOT(set_pen_dashed()));
+        QMenu *line_style_menu = menu->addMenu("Line style");
+        line_style_menu->addAction("none", this, SLOT(set_pen_none()));
+        line_style_menu->addAction("solid", this, SLOT(set_pen_solid()));
+        line_style_menu->addAction("dashed", this, SLOT(set_pen_dashed()));
+        line_style_menu->addAction("dash-dotted", this, SLOT(set_pen_dashed()));
+        line_style_menu->addAction("dotted", this, SLOT(set_pen_dashed()));
+
+        QMenu *marker_menu = menu->addMenu("Marker");
+        marker_menu->addAction("none", this, SLOT(marker_none()));
+        marker_menu->addAction("circle", this, SLOT(marker_circle()));
+        marker_menu->addAction("cross", this, SLOT(marker_cross()));
+        marker_menu->addAction("dot", this, SLOT(marker_dot()));
+        marker_menu->addAction("diamond", this, SLOT(marker_diamond()));
+        marker_menu->addAction("plus", this, SLOT(marker_plus()));
+        marker_menu->addAction("Square", this, SLOT(marker_square()));
     }
     menu->popup(ui->plot->mapToGlobal(pos));
 }
@@ -227,6 +236,56 @@ void PlotDialog::clear_selection(){
     ui->plot->replot();
 }
 
+
+void PlotDialog::set_marker(QString marker){
+    QCPGraph *graph = ui->plot->selectedGraphs().first();
+    if (marker == "none") {
+        graph->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssNone, 0));
+    } else if (marker == "circle") {
+        graph->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, 10));
+    } else if (marker == "diamond") {
+        graph->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssDiamond, 10));
+    } else if (marker == "dot") {
+        graph->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssDot, 10));
+    } else if (marker == "cross") {
+        graph->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCross, 10));
+    } else if (marker == "square") {
+        graph->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssSquare, 10));
+    } else if (marker == "plus") {
+        graph->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssPlus, 10));
+    } else {
+        graph->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssNone, 10));
+    }
+    clear_selection();
+}
+
+void PlotDialog::marker_circle() {
+    set_marker("circle");
+}
+
+void PlotDialog::marker_cross() {
+    set_marker("cross");
+}
+
+void PlotDialog::marker_dot() {
+    set_marker("dot");
+}
+
+void PlotDialog::marker_diamond() {
+    set_marker("diamond");
+}
+
+void PlotDialog::marker_square() {
+    set_marker("square");
+}
+
+void PlotDialog::marker_none(){
+    set_marker("none");
+}
+
+void PlotDialog::marker_plus(){
+    set_marker("plus");
+}
 
 void PlotDialog::set_pen_style(QString style) {
     QCPGraph *graph = ui->plot->selectedGraphs().first();

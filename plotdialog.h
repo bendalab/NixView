@@ -37,6 +37,14 @@ public slots:
     void set_pen_dashed();
     void set_pen_dashdotted();
     void set_pen_dotted();
+    void set_marker(QString marker);
+    void marker_none();
+    void marker_square();
+    void marker_diamond();
+    void marker_circle();
+    void marker_cross();
+    void marker_dot();
+    void marker_plus();
 
 private:
     Ui::PlotDialog *ui;
