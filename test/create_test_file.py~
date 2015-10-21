@@ -1,0 +1,40 @@
+import nix
+import numpy as np
+import matplotlib.pyplot as plt
+from IPython import embed
+
+
+def create_1d_sampled(f, b):
+    sample_interval = 0.00005
+    t = np.arange(0., 0.5, sample_interval)
+    f1 = 100.
+    f2 = 200.
+    a1 = 0.825
+    a2 = 0.4
+    eod = a1 * np.sin(t * f1 * 2* np.pi) + a2 * np.sin(f2 * t * 2 * np.pi)
+    da = b.create_data_array('eod', 'nix.regular_sampled', data=eod)
+    embed()
+    
+    # da.append_sampled_dimension()
+    
+
+def create_1d_range(f, b):
+    pass
+
+
+def create_1d_set(f, b):
+    pass
+
+
+def create_test_file(filename):
+    nix_file = nix.file.open(filename, nix.FileMode.Overwrite)
+    b = nix_file.create_block("Recording session 1", "nix.recording_session")
+    b2 = nix_file.create_block("Categorical data", "nix.analysis_session") 
+    create_1d_sampled(nix_file, b);
+    create_1d_range(nix_file, b);
+    create_1d_set(nix_file, b2)
+    
+    nix_file.close()
+
+if __name__ == "__main__":
+    create_test_file('nix_test.hdf5')
