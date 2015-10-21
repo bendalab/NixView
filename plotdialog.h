@@ -3,6 +3,7 @@
 
 #include <QDialog>
 #include <QVariant>
+#include <QSignalMapper>
 #include <qcustomplot.h>
 #include <nix.hpp>
 
@@ -30,6 +31,12 @@ public slots:
     void context_menu_request(QPoint pos);
     void remove_selected_graph();
     void clear_selection();
+    void set_pen_style(QString style);
+    void set_pen_none();
+    void set_pen_solid();
+    void set_pen_dashed();
+    void set_pen_dashdotted();
+    void set_pen_dotted();
 
 private:
     Ui::PlotDialog *ui;

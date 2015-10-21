@@ -166,7 +166,6 @@ void PlotDialog::selection_changed()
 void PlotDialog::mouse_press() {
     // if an axis is selected, only allow the direction of that axis to be dragged
     // if no axis is selected, both directions may be dragged
-
     if (ui->plot->xAxis->selectedParts().testFlag(QCPAxis::spAxis))
         ui->plot->axisRect()->setRangeDrag(ui->plot->xAxis->orientation());
     else if (ui->plot->yAxis->selectedParts().testFlag(QCPAxis::spAxis))
@@ -179,7 +178,6 @@ void PlotDialog::mouse_press() {
 void PlotDialog::mouse_wheel() {
     // if an axis is selected, only allow the direction of that axis to be zoomed
     // if no axis is selected, both directions may be zoomed
-
     if (ui->plot->xAxis->selectedParts().testFlag(QCPAxis::spAxis))
         ui->plot->axisRect()->setRangeZoom(ui->plot->xAxis->orientation());
     else if (ui->plot->yAxis->selectedParts().testFlag(QCPAxis::spAxis))
@@ -199,6 +197,12 @@ void PlotDialog::context_menu_request(QPoint pos) {
     menu->addAction("Clear selection", this, SLOT(clear_selection()));
     if (ui->plot->selectedGraphs().size() > 0) {
         menu->addAction("Remove selected graph", this, SLOT(remove_selected_graph()));
+        QMenu *line_style_menu = menu->addMenu("Set line style");
+        line_style_menu->addAction("None", this, SLOT(set_pen_none()));
+        line_style_menu->addAction("Solid", this, SLOT(set_pen_solid()));
+        line_style_menu->addAction("Dashed", this, SLOT(set_pen_dashed()));
+        line_style_menu->addAction("Dash-dotted", this, SLOT(set_pen_dashed()));
+        line_style_menu->addAction("Dotted", this, SLOT(set_pen_dashed()));
     }
     menu->popup(ui->plot->mapToGlobal(pos));
 }
@@ -223,6 +227,46 @@ void PlotDialog::clear_selection(){
     ui->plot->replot();
 }
 
+
+void PlotDialog::set_pen_style(QString style) {
+    QCPGraph *graph = ui->plot->selectedGraphs().first();
+    QPen pen = graph->pen();
+    if (style == "none"){
+        pen.setStyle(Qt::PenStyle::NoPen);
+    } else if (style == "solid") {
+        pen.setStyle(Qt::PenStyle::SolidLine);
+    } else if (style == "dashed") {
+        pen.setStyle(Qt::PenStyle::DashLine);
+    } else if (style == "dotted") {
+        pen.setStyle(Qt::PenStyle::DotLine);
+    } else if (style == "dashdot") {
+        pen.setStyle(Qt::PenStyle::DashDotLine);
+    } else {
+        pen.setStyle(Qt::PenStyle::SolidLine);
+    }
+    graph->setPen(pen);
+    clear_selection();
+}
+
+void PlotDialog::set_pen_none() {
+    set_pen_style("none");
+}
+
+void PlotDialog::set_pen_solid() {
+    set_pen_style("solid");
+}
+
+void PlotDialog::set_pen_dashed() {
+    set_pen_style("dashed");
+}
+
+void PlotDialog::set_pen_dotted() {
+    set_pen_style("dotted");
+}
+
+void PlotDialog::set_pen_dashdotted() {
+    set_pen_style("dashdot");
+}
 
 PlotDialog::~PlotDialog()
 {
