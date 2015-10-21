@@ -64,7 +64,7 @@ void PlotDialog::draw_1d(const nix::DataArray &array) {
     if (check_plottable_dtype(array)) {
         nix::Dimension d = array.getDimension(1);
         QVector<double> x_axis, y_axis;
-        double x_min, x_max, y_min, y_max;
+        double x_min, x_max;
         std::string x_label, y_label;
         if (d.dimensionType() == nix::DimensionType::Sample) {
             nix::SampledDimension dim = d.asSampledDimension();
@@ -103,32 +103,39 @@ void PlotDialog::draw_1d(const nix::DataArray &array) {
                 y_label = *array.label();
             if (array.unit())
                 y_label = y_label + " [" + *array.unit() + "]";
-            add_scatter_plot(x_axis, y_axis);
             x_min = x_axis[0];
             x_max = x_axis.back();
+            if (x_axis[0] == y_axis[0] && x_axis.last() == y_axis.last()){
+                y_axis.fill(1.0);
+                y_label = "event";
+            }
+            add_scatter_plot(x_axis, y_axis);
+
         } else if (d.dimensionType() == nix::DimensionType::Set) {
             std::vector<double> data;
             array.getData(data);
             y_axis = QVector<double>::fromStdVector(data);
 
             nix::SetDimension dim = d.asSetDimension();
-            std::vector<string> labels = dim.labels();
+            std::vector<std::string> labels = dim.labels();
             QVector<QString> categories;
-
+            for (size_t i = 0; i < labels.size(); ++i)
+                categories.push_back(QString::fromStdString(labels[i]));
             if (labels.size() == 0) {
                 for (int i = 0; i < y_axis.size(); ++i)
                     categories.push_back(QString::fromStdString(nix::util::numToStr<int>(i)));
             }
             x_min = 0;
             x_max = labels.size();
-            add_bar_plot(QVector<string>);
+            add_bar_plot(categories, y_axis);
         } else {
             std::cerr << "unsupported dimension type" << std::endl;
         }
 
         double y_min = *std::min_element(std::begin(y_axis), std::end(y_axis));
         double y_max = *std::max_element(std::begin(y_axis), std::end(y_axis));
-
+        if (y_min == y_max)
+            y_min = 0.0;
         ui->plot->graph()->setName(array.name().c_str());
         ui->plot->xAxis->setRange(x_min, x_max);
         ui->plot->yAxis->setRange(1.05*y_min, 1.05*y_max);
@@ -139,16 +146,19 @@ void PlotDialog::draw_1d(const nix::DataArray &array) {
 }
 
 void PlotDialog::add_line_plot(QVector<double> x_data, QVector<double> y_data) {
-    ui->plot->addGraph(x_data, y_data);
+    ui->plot->addGraph();
+    ui->plot->graph()->addData(x_data, y_data);
 }
 
 
 void PlotDialog::add_scatter_plot(QVector<double> x_data, QVector<double> y_data) {
-    ui->plot->addGraph(x_data, y_data);
+    ui->plot->addGraph();
+    ui->plot->graph()->addData(x_data, y_data);
     QPen pen = ui->plot->graph()->pen();
     pen.setStyle(Qt::PenStyle::NoPen);
     ui->plot->graph()->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, 10));
-    ui->plot->graph()->setPen(pen);
+    ui->plot->graph()->setLineStyle(QCPGraph::LineStyle::lsImpulse);
+    //ui->plot->graph()->setPen(pen);
 }
 
 
@@ -163,10 +173,8 @@ void PlotDialog::draw_2d(const nix::DataArray &array) {
 
 bool PlotDialog::check_plottable_dtype(const nix::DataArray &array) {
     bool plottable = true;
-    plottable = plottable && array.dataType() != nix::DataType::DateTime;
     plottable = plottable && array.dataType() != nix::DataType::Bool;
     plottable = plottable && array.dataType() != nix::DataType::String;
-    plottable = plottable && array.dataType() != nix::DataType::Date;
     plottable = plottable && array.dataType() != nix::DataType::Char;
     plottable = plottable && array.dataType() != nix::DataType::Opaque;
     plottable = plottable && array.dataType() != nix::DataType::Nothing;
