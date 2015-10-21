@@ -42,7 +42,7 @@
      <x>0</x>
      <y>0</y>
      <width>1400</width>
-     <height>22</height>
+     <height>23</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -198,11 +198,6 @@
     <string>Ctrl+W</string>
    </property>
   </action>
-  <action name="actionPlot_data">
-   <property name="text">
-    <string>Plot data</string>
-   </property>
-  </action>
   <action name="actionAbout">
    <property name="text">
     <string>About</string>
@@ -265,9 +260,26 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>actionPlot</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>show_plot()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>699</x>
+     <y>393</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>open_file()</slot>
   <slot>show_about()</slot>
+  <slot>show_plot()</slot>
  </slots>
 </ui>

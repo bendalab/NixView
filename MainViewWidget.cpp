@@ -27,6 +27,10 @@ void MainViewWidget::populate_data_stacked_widget()
     ui->data_stacked_Widget->addWidget(rtv);
 }
 
+RawTreeView* MainViewWidget::get_rtv() {
+    return rtv;
+}
+
 // slots
 void MainViewWidget::set_view(int index) {
     ui->data_stacked_Widget->setCurrentIndex(index);
