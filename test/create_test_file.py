@@ -66,15 +66,21 @@ def create_1d_set(f, b):
     s = f.create_section("Helgoland Weather data", "data_origin")
     s["period"] = "201509 - 201410"
     s["url"] = "http://www.dwd.de/DE/leistungen/klimadatendeutschland/klimadatendeutschland.html"
-
     src.metadata = s
 
+
 def create_m_tag(f,b):
-    pass
+    trace = b.data_arrays["eod"]
+    event_times = b.data_arrays["zero crossings"]
+    mt = b.create_multi_tag("zero crossings", "nix.event_times", event_times)
+    mt.references.append(trace)
 
 
 def create_tag(f, b):
-    pass
+    trace = b.data_arrays["eod"]
+    tag = b.create_tag("name", "nix.segemnt", [0.1])
+    tag.extent = [0.3]
+    tag.references.append(trace)
 
 
 def create_test_file(filename):
@@ -91,7 +97,8 @@ def create_test_file(filename):
     create_1d_sampled(nix_file, b);
     create_1d_range(nix_file, b);
     create_1d_set(nix_file, b2)
-    
+    create_m_tag(nix_file, b)
+    create_tag(nix_file, b)
     nix_file.close()
 
 if __name__ == "__main__":
