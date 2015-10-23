@@ -64,7 +64,6 @@ void PlotDialog::draw_1d(const nix::DataArray &array) {
     if (check_plottable_dtype(array)) {
         nix::Dimension d = array.getDimension(1);
         QVector<double> x_axis, y_axis;
-        double x_min, x_max;
         std::string x_label, y_label;
         if (d.dimensionType() == nix::DimensionType::Sample) {
             nix::SampledDimension dim = d.asSampledDimension();
@@ -83,9 +82,7 @@ void PlotDialog::draw_1d(const nix::DataArray &array) {
                 y_label = *array.label();
             if (array.unit())
                 y_label = y_label + " [" + *array.unit() + "]";
-            x_min = x_axis[0];
-            x_max = x_axis.back();
-            add_line_plot(x_axis, y_axis);
+            add_line_plot(x_axis, y_axis, QString::fromStdString(array.name()));
         } else if (d.dimensionType() == nix::DimensionType::Range) {
             nix::RangeDimension dim = d.asRangeDimension();
             std::vector<double> ax = dim.axis(array.dataExtent()[0]);
@@ -103,19 +100,16 @@ void PlotDialog::draw_1d(const nix::DataArray &array) {
                 y_label = *array.label();
             if (array.unit())
                 y_label = y_label + " [" + *array.unit() + "]";
-            x_min = x_axis[0];
-            x_max = x_axis.back();
             if (x_axis[0] == y_axis[0] && x_axis.last() == y_axis.last()){
                 y_axis.fill(1.0);
                 y_label = "event";
             }
-            add_scatter_plot(x_axis, y_axis);
+            add_scatter_plot(x_axis, y_axis, QString::fromStdString(array.name()));
 
         } else if (d.dimensionType() == nix::DimensionType::Set) {
             std::vector<double> data;
             array.getData(data);
             y_axis = QVector<double>::fromStdVector(data);
-
             nix::SetDimension dim = d.asSetDimension();
             std::vector<std::string> labels = dim.labels();
             QVector<QString> categories;
@@ -125,46 +119,94 @@ void PlotDialog::draw_1d(const nix::DataArray &array) {
                 for (int i = 0; i < y_axis.size(); ++i)
                     categories.push_back(QString::fromStdString(nix::util::numToStr<int>(i)));
             }
-            x_min = 0;
-            x_max = labels.size();
-            add_bar_plot(categories, y_axis);
+            if (array.label())
+                y_label = *array.label();
+            if (array.unit())
+                y_label = y_label + " [" + *array.unit() + "]";
+
+            add_bar_plot(categories, y_axis, QString::fromStdString(array.name()));
         } else {
             std::cerr << "unsupported dimension type" << std::endl;
         }
 
-        double y_min = *std::min_element(std::begin(y_axis), std::end(y_axis));
-        double y_max = *std::max_element(std::begin(y_axis), std::end(y_axis));
-        if (y_min == y_max)
-            y_min = 0.0;
-        ui->plot->graph()->setName(array.name().c_str());
-        ui->plot->xAxis->setRange(x_min, x_max);
-        ui->plot->yAxis->setRange(1.05*y_min, 1.05*y_max);
         ui->plot->xAxis->setLabel(QString(x_label.c_str()));
         ui->plot->yAxis->setLabel(QString(y_label.c_str()));
         ui->plot->replot();
     }
 }
 
-void PlotDialog::add_line_plot(QVector<double> x_data, QVector<double> y_data) {
+void PlotDialog::add_line_plot(QVector<double> x_data, QVector<double> y_data, QString name) {
     ui->plot->addGraph();
     ui->plot->graph()->addData(x_data, y_data);
+    ui->plot->xAxis->setRange(x_data[0], x_data.last());
+    double y_min = *std::min_element(std::begin(y_data), std::end(y_data));
+    double y_max = *std::max_element(std::begin(y_data), std::end(y_data));
+    if (y_min == y_max)
+        y_min = 0.0;
+    ui->plot->yAxis->setRange(1.05*y_min, 1.05*y_max);
 }
 
 
-void PlotDialog::add_scatter_plot(QVector<double> x_data, QVector<double> y_data) {
+void PlotDialog::add_scatter_plot(QVector<double> x_data, QVector<double> y_data, QString name) {
     ui->plot->addGraph();
     ui->plot->graph()->addData(x_data, y_data);
     QPen pen = ui->plot->graph()->pen();
     pen.setStyle(Qt::PenStyle::NoPen);
     ui->plot->graph()->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, 10));
     ui->plot->graph()->setLineStyle(QCPGraph::LineStyle::lsImpulse);
+    ui->plot->graph()->setName(name);
+
+    double y_min = *std::min_element(std::begin(y_data), std::end(y_data));
+    double y_max = *std::max_element(std::begin(y_data), std::end(y_data));
+    if (y_min == y_max)
+        y_min = 0.0;
+
+    ui->plot->yAxis->setRange(1.05*y_min, 1.05*y_max);
+    ui->plot->xAxis->setRange(x_data[0], x_data.last());
     //ui->plot->graph()->setPen(pen);
 }
 
 
-void PlotDialog::add_bar_plot(QVector<QString> categories, QVector<double> y_data){
-    return;
+void PlotDialog::add_bar_plot(QVector<QString> categories, QVector<double> y_data, QString name){
+    QCPBars *bars = new QCPBars(ui->plot->xAxis, ui->plot->yAxis);
+    ui->plot->addPlottable(bars);
+
+    QPen pen;
+    pen.setColor(QColor(150, 222, 0));
+    bars->setPen(pen);
+    bars->setBrush(QColor(150, 222, 0, 70));
+    QVector<double> ticks;
+    for (int i = 0; i < categories.size(); ++i)
+        ticks.push_back(i);
+
+    ui->plot->xAxis->setAutoTicks(false);
+    ui->plot->xAxis->setAutoTickLabels(false);
+    ui->plot->xAxis->setTickVector(ticks);
+    ui->plot->xAxis->setTickVectorLabels(categories);
+    ui->plot->xAxis->setTickLabelRotation(60);
+    ui->plot->xAxis->setSubTickCount(0);
+    ui->plot->xAxis->setTickLength(0, 4);
+    ui->plot->xAxis->grid()->setVisible(true);
+    ui->plot->xAxis->setRange(-0.5, categories.size() - 0.5);
+
+    ui->plot->yAxis->setPadding(5); // a bit more space to the left border
+    ui->plot->yAxis->setLabel("Power Consumption in\nKilowatts per Capita (2007)");
+    ui->plot->yAxis->grid()->setSubGridVisible(true);
+    double y_max = *std::max_element(std::begin(y_data), std::end(y_data));
+    ui->plot->yAxis->setRange(0, 1.05 * y_max);
+
+    QPen gridPen;
+    gridPen.setStyle(Qt::SolidLine);
+    gridPen.setColor(QColor(0, 0, 0, 25));
+    ui->plot->yAxis->grid()->setPen(gridPen);
+    gridPen.setStyle(Qt::DotLine);
+    ui->plot->yAxis->grid()->setSubGridPen(gridPen);
+
+    // Add data:
+    bars->setData(ticks, y_data);
+    bars->setName(name);
 }
+
 
 void PlotDialog::draw_2d(const nix::DataArray &array) {
 

@@ -56,9 +56,9 @@ private:
     void draw_2d(const nix::DataArray &array);
     bool check_plottable_dtype(const nix::DataArray & array);
 
-    void add_line_plot(QVector<double> x_data, QVector<double> y_data);
-    void add_scatter_plot(QVector<double> x_data, QVector<double> y_data);
-    void add_bar_plot(QVector<QString> categories, QVector<double> y_data);
+    void add_line_plot(QVector<double> x_data, QVector<double> y_data, QString name);
+    void add_scatter_plot(QVector<double> x_data, QVector<double> y_data, QString name);
+    void add_bar_plot(QVector<QString> categories, QVector<double> y_data, QString name);
 
     QCustomPlot* get_plot();
 
