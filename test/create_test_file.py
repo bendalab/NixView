@@ -48,9 +48,32 @@ def create_1d_range(f, b):
     d = range_da.append_alias_range_dimension()
     d.unit = 's'
     d.label = 'time'
-    embed()
+    
 
 def create_1d_set(f, b):
+    temp = [13.7, 16.3, 14.6, 11.6, 8.6, 5.7, 4., 2.6, 3., 4., 8.5, 13.1]
+    labels = ["Sep", "Aug", "Jul", "Jun", "Mai", "April", "Mar", "Feb", "Jan","Dec","Nov","Okt"]
+    da =  b.create_data_array("average temperature", "nix.catergorical", data=temp)
+    da.label = "temperature"
+    da.unit = "C"
+
+    d = da.append_set_dimension()
+    d.labels = labels
+
+    src = b.create_source("Data source", "nix.source")
+    da.source = src
+    
+    s = f.create_section("Helgoland Weather data", "data_origin")
+    s["period"] = "201509 - 201410"
+    s["url"] = "http://www.dwd.de/DE/leistungen/klimadatendeutschland/klimadatendeutschland.html"
+
+    src.metadata = s
+
+def create_m_tag(f,b):
+    pass
+
+
+def create_tag(f, b):
     pass
 
 
