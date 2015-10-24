@@ -72,13 +72,13 @@ def create_1d_set(f, b):
 def create_m_tag(f,b):
     trace = b.data_arrays["eod"]
     event_times = b.data_arrays["zero crossings"]
-    mt = b.create_multi_tag("zero crossings", "nix.event_times", event_times)
+    mt = b.create_multi_tag("special events", "nix.event_times", event_times)
     mt.references.append(trace)
 
 
 def create_tag(f, b):
     trace = b.data_arrays["eod"]
-    tag = b.create_tag("name", "nix.segemnt", [0.1])
+    tag = b.create_tag("interesting epoch", "nix.epoch", [0.1])
     tag.extent = [0.3]
     tag.references.append(trace)
 
@@ -90,7 +90,7 @@ def create_test_file(filename):
     s['date'] = '2015-10-21'
     s['experimenter'] = 'John Doe'
     
-    b = nix_file.create_block("Recording session 1", "nix.recording_session")
+    b = nix_file.create_block("1D data", "nix.recording_session")
     b.metadata  = s
     b2 = nix_file.create_block("Categorical data", "nix.analysis_session") 
 
