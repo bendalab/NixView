@@ -38,25 +38,47 @@ void PlotDialog::set_entity(QVariant var) {
 
 void PlotDialog::draw() {
     this->setCursor(Qt::WaitCursor);
+    ui->plot->clearGraphs();
+    ui->plot->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom | QCP::iSelectPlottables | QCP::iSelectAxes);
     if (item.canConvert<nix::DataArray>()) {
         nix::DataArray array = item.value<nix::DataArray>();
-        ui->plot->clearGraphs();
-        ui->plot->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom | QCP::iSelectPlottables | QCP::iSelectAxes);
-        size_t dim_count = array.dimensionCount();
-        switch (dim_count) {
-        case 1:
-            draw_1d(array);
-            break;
-        case 2:
-            draw_2d(array);
-            break;
-        default:
-            break;
-        }
+        draw_data_array(array);
+    } else if (item.canConvert<nix::Tag>()) {
+        nix::Tag tag = item.value<nix::Tag>();
+        draw_tag(tag);
+    }  else if (item.canConvert<nix::MultiTag>()){
+        nix::MultiTag mtag = item.value<nix::MultiTag>();
+        draw_multi_tag(mtag);
     } else {
-        std::cerr << "Sorry, plotting of Tags and MultiTags is not yet supported." << std::endl;
+        std::cerr << "Cannot plot the passed entity." << std::endl;
     }
     this->setCursor(Qt::ArrowCursor);
+}
+
+
+void PlotDialog::draw_tag(const nix::Tag &tag) {
+
+}
+
+
+void PlotDialog::draw_multi_tag(const nix::MultiTag &mtag) {
+    std::cerr << "Plotting of multitags is not yet supported." << std::endl;
+}
+
+
+void PlotDialog::draw_data_array(const nix::DataArray &array) {
+    size_t dim_count = array.dimensionCount();
+    switch (dim_count) {
+    case 1:
+        draw_1d(array);
+        break;
+    case 2:
+        draw_2d(array);
+        break;
+    default:
+        std::cerr << "Sorry, cannot plot data with more than 2d!" << std::endl;
+        break;
+    }
 }
 
 

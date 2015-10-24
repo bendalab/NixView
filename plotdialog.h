@@ -52,6 +52,9 @@ private:
 
     void draw();
     bool can_draw();
+    void draw_data_array(const nix::DataArray &array);
+    void draw_tag(const nix::Tag &tag);
+    void draw_multi_tag(const nix::MultiTag &mtag);
     void draw_1d(const nix::DataArray &array);
     void draw_2d(const nix::DataArray &array);
     bool check_plottable_dtype(const nix::DataArray & array);
