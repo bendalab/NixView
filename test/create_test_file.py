@@ -15,6 +15,7 @@ def create_1d_sampled(f, b):
     da = b.create_data_array('eod', 'nix.regular_sampled', data=eod)
     da.unit = 'mV/cm'
     da.label = 'electric field'
+    da.description = ""
 
     d = da.append_sampled_dimension(sample_interval)
     d.unit = 's'
@@ -76,10 +77,16 @@ def create_m_tag(f,b):
     mt.references.append(trace)
 
 
-def create_tag(f, b):
+def create_epoch_tag(f, b):
     trace = b.data_arrays["eod"]
     tag = b.create_tag("interesting epoch", "nix.epoch", [0.1])
     tag.extent = [0.3]
+    tag.references.append(trace)
+
+
+def create_point_tag(f, b):
+    trace = b.data_arrays["eod"]
+    tag = b.create_tag("interesting point", "nix.point", [0.05])
     tag.references.append(trace)
 
 
@@ -94,11 +101,12 @@ def create_test_file(filename):
     b.metadata  = s
     b2 = nix_file.create_block("Categorical data", "nix.analysis_session") 
 
-    create_1d_sampled(nix_file, b);
-    create_1d_range(nix_file, b);
+    create_1d_sampled(nix_file, b)
+    create_1d_range(nix_file, b)
     create_1d_set(nix_file, b2)
     create_m_tag(nix_file, b)
-    create_tag(nix_file, b)
+    create_epoch_tag(nix_file, b)
+    create_point_tag(nix_file, b)
     nix_file.close()
 
 if __name__ == "__main__":
