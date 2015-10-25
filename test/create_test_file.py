@@ -79,9 +79,11 @@ def create_m_tag(f,b):
 
 def create_epoch_tag(f, b):
     trace = b.data_arrays["eod"]
+    xings = b.data_arrays["zero crossings"]
     tag = b.create_tag("interesting epoch", "nix.epoch", [0.1])
     tag.extent = [0.3]
     tag.references.append(trace)
+    tag.references.append(xings)
 
 
 def create_point_tag(f, b):
