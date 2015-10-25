@@ -57,7 +57,29 @@ void PlotDialog::draw() {
 
 
 void PlotDialog::draw_tag(const nix::Tag &tag) {
-
+    if (tag.referenceCount() == 1) {
+        draw_data_array(tag.references()[0]);
+        if (tag.position().size() == 1) {
+            QCPItemRect *rect = new QCPItemRect(ui->plot);
+            double y_max, y_min;
+            y_max = ui->plot->yAxis->range().upper;
+            y_min = ui->plot->yAxis->range().lower;
+            double x_min, x_max;
+            x_min = tag.position()[0];
+            x_max = x_min + 0.00001; // TODO set this to the sample_interval?!
+            if (tag.extent().size() == 1)
+               x_max = tag.position()[0] + tag.extent()[0];
+            rect->position("topLeft")->setCoords(x_min, y_max);
+            rect->position("bottomRight")->setCoords(x_max, y_min);
+            rect->setPen(QPen(Qt::red));
+            rect->setBrush(QBrush(QColor(255, 10, 10, 50)));
+            ui->plot->addItem(rect);
+        } else {
+            std::cerr << "Can only draw regions in one-d, so far!" << std::endl;
+        }
+    } else {
+        //TODO for now we will plot the first one, later ask, which to plot...
+    }
 }
 
 
@@ -166,6 +188,7 @@ void PlotDialog::add_line_plot(QVector<double> x_data, QVector<double> y_data, Q
     if (y_min == y_max)
         y_min = 0.0;
     ui->plot->yAxis->setRange(1.05*y_min, 1.05*y_max);
+    ui->plot->graph()->setName(name);
 }
 
 
