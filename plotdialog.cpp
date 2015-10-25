@@ -3,6 +3,8 @@
 #include "common/Common.hpp"
 #include <QToolBar>
 #include <QMenu>
+#include <QInputDialog>
+
 
 PlotDialog::PlotDialog(QWidget *parent) :
     QDialog(parent),
@@ -60,26 +62,43 @@ void PlotDialog::draw_tag(const nix::Tag &tag) {
     if (tag.referenceCount() == 1) {
         draw_data_array(tag.references()[0]);
         if (tag.position().size() == 1) {
-            QCPItemRect *rect = new QCPItemRect(ui->plot);
-            double y_max, y_min;
-            y_max = ui->plot->yAxis->range().upper;
-            y_min = ui->plot->yAxis->range().lower;
-            double x_min, x_max;
-            x_min = tag.position()[0];
-            x_max = x_min + 0.00001; // TODO set this to the sample_interval?!
-            if (tag.extent().size() == 1)
-               x_max = tag.position()[0] + tag.extent()[0];
-            rect->position("topLeft")->setCoords(x_min, y_max);
-            rect->position("bottomRight")->setCoords(x_max, y_min);
-            rect->setPen(QPen(Qt::red));
-            rect->setBrush(QBrush(QColor(255, 10, 10, 50)));
-            ui->plot->addItem(rect);
+            draw_segment(tag);
         } else {
             std::cerr << "Can only draw regions in one-d, so far!" << std::endl;
         }
     } else {
-        //TODO for now we will plot the first one, later ask, which to plot...
+        std::vector<nix::DataArray> arrays = tag.references();
+        QStringList array_names;
+        for (size_t i = 0; i < arrays.size(); ++i)
+            array_names.append(QString::fromStdString(arrays[i].name()));
+        bool ok;
+        QString label = "Select one of the referenced data arrays for display:";
+        QString item = QInputDialog::getItem(this, "Select data array", label, array_names, 0, false, &ok);
+        if (ok && !item.isEmpty())
+            draw_data_array(tag.getReference(item.toStdString()));
+        if (tag.position().size() == 1) {
+            draw_segment(tag);
+        } else {
+            std::cerr << "Can only draw regions in one-d, so far!" << std::endl;
+        }
     }
+}
+
+void PlotDialog::draw_segment(const nix::Tag &tag) {
+    QCPItemRect *rect = new QCPItemRect(ui->plot);
+    double y_max, y_min;
+    y_max = ui->plot->yAxis->range().upper;
+    y_min = ui->plot->yAxis->range().lower;
+    double x_min, x_max;
+    x_min = tag.position()[0];
+    x_max = x_min + 0.0001; // TODO set this to the sample_interval?!
+    if (tag.extent().size() == 1)
+       x_max = tag.position()[0] + tag.extent()[0];
+    rect->position("topLeft")->setCoords(x_min, y_max);
+    rect->position("bottomRight")->setCoords(x_max, y_min);
+    rect->setPen(QPen(Qt::red));
+    rect->setBrush(QBrush(QColor(255, 10, 10, 50)));
+    ui->plot->addItem(rect);
 }
 
 

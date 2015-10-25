@@ -57,6 +57,7 @@ private:
     void draw_multi_tag(const nix::MultiTag &mtag);
     void draw_1d(const nix::DataArray &array);
     void draw_2d(const nix::DataArray &array);
+    void draw_segment(const nix::Tag &tag);
     bool check_plottable_dtype(const nix::DataArray & array);
 
     void add_line_plot(QVector<double> x_data, QVector<double> y_data, QString name);
