@@ -75,6 +75,18 @@ def create_m_tag(f,b):
     event_times = b.data_arrays["zero crossings"]
     mt = b.create_multi_tag("special events", "nix.event_times", event_times)
     mt.references.append(trace)
+    
+    positions = b.create_data_array('epoch_starts','nix.event', data=[0.05, 0.35])
+    extents = b.create_data_array('epoch_ends','nix.event', data=[0.1, 0.1])
+    mtag = b.create_multi_tag("epochs", "nix.event_epochs", positions)
+    mtag.extents = extents
+    
+    feature_1 = b.create_data_array("feature 1", "nix.feature", 
+                                    data=np.sin(100 * 2 * np.pi * np.arange(0,0.1,0.00005)))
+    feature_2 = b.create_data_array("feature 2", "nix.feature", 
+                                    data=np.cos(150 * 2 * np.pi * np.arange(0,0.1,0.00005)))
+    mtag.create_feature(feature_1, nix.LinkType.Untagged)
+    mtag.create_feature(feature_2, nix.LinkType.Untagged)
 
 
 def create_epoch_tag(f, b):
