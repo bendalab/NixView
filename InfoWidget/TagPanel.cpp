@@ -76,19 +76,24 @@ std::string TagPanel::extract_multitag_info(nix::MultiTag mtag)
     nix::DataArray positions = mtag.positions();
     nix::NDSize size_pos = positions.dataExtent();
     std::ostringstream oss_pos;
+    std::cout << size_pos[0] << std::endl;
     if (size_pos.size() == 1)
     {
-        double* pos_array = new double[size_pos[0]];
-        positions.getData(*pos_array);
+        std::vector<double> pos_array;
+        positions.getData(pos_array);
+        std::cout << "debug" << std::endl;
         for (int i = 0; i < (int)size_pos[0]; i++)
             oss_pos << "Position " << i+1 << ": [ " << pos_array[i] <<" ]" << std::endl;
     }
-    else if (size_pos.size() == 2)
+    else //if (size_pos.size() == 2)
     {
         double** pos_array = new double*[size_pos[1]];
+        std::cout << "debug1" << std::endl;
         for (int i = 0; i < (int)size_pos[1]; i++)
             pos_array[i] = new double[size_pos[0]];
+        std::cout << "debug2" << std::endl;
         positions.getData(**pos_array);
+        std::cout << "debug3" << std::endl;
         for (int i = 0; i < (int)size_pos[0]; i++)
         {
             oss_pos << "Position " << i+1 << ": [ ";
@@ -96,6 +101,7 @@ std::string TagPanel::extract_multitag_info(nix::MultiTag mtag)
                 oss_pos << pos_array[i+j] << " ";
             oss_pos << "]" << std::endl;
         }
+        std::cout << "debug4" << std::endl;
     }
     ss << oss_pos.str();
 
@@ -113,10 +119,8 @@ std::string TagPanel::extract_multitag_info(nix::MultiTag mtag)
         }
         else if (size_ext.size() == 2)
         {
-            double** ext_array = new double*[size_ext[1]];
-            for (int i = 0; i < (int)size_ext[1]; i++)
-                ext_array[i] = new double[size_ext[0]];
-            positions.getData(**ext_array);
+            std::vector<double> ext_array;
+            positions.getData(ext_array);
             for (int i = 0; i < (int)size_ext[0]; i++)
             {
                 oss_ext << "Extend " << i+1 << ": [ ";
