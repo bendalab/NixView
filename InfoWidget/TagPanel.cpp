@@ -74,15 +74,72 @@ std::string TagPanel::extract_multitag_info(nix::MultiTag mtag)
     std::stringstream ss;
 
     nix::DataArray positions = mtag.positions();
-    nix::NDSize size = positions.dataExtent();
-    positions.getData(pos_array);
+    nix::NDSize size_pos = positions.dataExtent();
     std::ostringstream oss_pos;
+    if (size_pos.size() == 1)
+    {
+        double* pos_array = new double[size_pos[0]];
+        positions.getData(*pos_array);
+        for (int i = 0; i < size_pos[0]; i++)
+            oss_pos << "Position " << i+1 << ": [ " << pos_array[i] <<" ]" << std::endl;
+    }
+    else if (size_pos.size() == 2)
+    {
+        double** pos_array = new double*[size_pos[1]];
+        for (int i = 0; i < size_pos[1]; i++)
+            pos_array[i] = new double[size_pos[0]];
+        positions.getData(**pos_array);
+        for (int i = 0; i < size_pos[0]; i++)
+        {
+            oss_pos << "Position " << i+1 << ": [ ";
+            for (int j = 0; j < size_pos[1]; j++)
+                oss_pos << pos_array[i+j] << " ";
+            oss_pos << "]" << std::endl;
+        }
+    }
+    ss << oss_pos.str();
 
     nix::DataArray extents = mtag.extents();
     std::ostringstream oss_ext;
+    if (extents)
+    {
+        nix::NDSize size_ext =  extents.dataExtent();
+        if (size_ext.size() == 1)
+        {
+            double* ext_array = new double[size_ext[0]];
+            positions.getData(*ext_array);
+            for (int i = 0; i < size_ext[0]; i++)
+                oss_ext << "Extend " << i+1 << ": [" << ext_array[i] <<"]" << std::endl;
+        }
+        else if (size_ext.size() == 2)
+        {
+            double** ext_array = new double*[size_ext[1]];
+            for (int i = 0; i < size_ext[1]; i++)
+                ext_array[i] = new double[size_ext[0]];
+            positions.getData(**ext_array);
+            for (int i = 0; i < size_ext[0]; i++)
+            {
+                oss_ext << "Extend " << i+1 << ": [ ";
+                for (int j = 0; j < size_ext[1]; j++)
+                    oss_pos << ext_array[i+j] << " ";
+                oss_ext << "]" << std::endl;
+            }
+        }
+    }
+    else
+        oss_ext << "No Extents" << std::endl;
+    ss << oss_ext.str();
 
     std::vector<std::string> units = mtag.units();
     std::ostringstream oss_units;
+    if (!units.empty())
+    {
+        oss_units << "Units: ";
+        std::copy(units.begin(), units.end()-1, std::ostream_iterator<std::string>(oss_units, ", "));
+    }
+    else
+        oss_units << "No Units";
+    ss << oss_units.str();
 
     references = mtag.references();
     fill_tree(ui->treeWidget_references, references);
