@@ -80,19 +80,19 @@ std::string TagPanel::extract_multitag_info(nix::MultiTag mtag)
     {
         double* pos_array = new double[size_pos[0]];
         positions.getData(*pos_array);
-        for (int i = 0; i < size_pos[0]; i++)
+        for (int i = 0; i < (int)size_pos[0]; i++)
             oss_pos << "Position " << i+1 << ": [ " << pos_array[i] <<" ]" << std::endl;
     }
     else if (size_pos.size() == 2)
     {
         double** pos_array = new double*[size_pos[1]];
-        for (int i = 0; i < size_pos[1]; i++)
+        for (int i = 0; i < (int)size_pos[1]; i++)
             pos_array[i] = new double[size_pos[0]];
         positions.getData(**pos_array);
-        for (int i = 0; i < size_pos[0]; i++)
+        for (int i = 0; i < (int)size_pos[0]; i++)
         {
             oss_pos << "Position " << i+1 << ": [ ";
-            for (int j = 0; j < size_pos[1]; j++)
+            for (int j = 0; j < (int)size_pos[1]; j++)
                 oss_pos << pos_array[i+j] << " ";
             oss_pos << "]" << std::endl;
         }
@@ -108,19 +108,19 @@ std::string TagPanel::extract_multitag_info(nix::MultiTag mtag)
         {
             double* ext_array = new double[size_ext[0]];
             positions.getData(*ext_array);
-            for (int i = 0; i < size_ext[0]; i++)
+            for (int i = 0; i < (int)size_ext[0]; i++)
                 oss_ext << "Extend " << i+1 << ": [" << ext_array[i] <<"]" << std::endl;
         }
         else if (size_ext.size() == 2)
         {
             double** ext_array = new double*[size_ext[1]];
-            for (int i = 0; i < size_ext[1]; i++)
+            for (int i = 0; i < (int)size_ext[1]; i++)
                 ext_array[i] = new double[size_ext[0]];
             positions.getData(**ext_array);
-            for (int i = 0; i < size_ext[0]; i++)
+            for (int i = 0; i < (int)size_ext[0]; i++)
             {
                 oss_ext << "Extend " << i+1 << ": [ ";
-                for (int j = 0; j < size_ext[1]; j++)
+                for (int j = 0; j < (int)size_ext[1]; j++)
                     oss_pos << ext_array[i+j] << " ";
                 oss_ext << "]" << std::endl;
             }
