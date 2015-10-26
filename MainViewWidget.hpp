@@ -21,6 +21,8 @@ public:
     explicit MainViewWidget(std::string& nix_file_path, QWidget *parent = 0);
     ~MainViewWidget();
 
+    RawTreeView* get_rtv();
+
 public slots:
     void set_view(int);
     void activate_info_widget();

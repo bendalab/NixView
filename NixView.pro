@@ -6,7 +6,7 @@
 
 QT       += core gui
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets printsupport
 
 TARGET = NixView
 TEMPLATE = app
@@ -22,7 +22,9 @@ SOURCES += main.cpp\
     InfoWidget/DescriptionPanel.cpp \
     InfoWidget/MetaDataPanel.cpp \
     InfoWidget/TagPanel.cpp \
-    aboutdialog.cpp
+    aboutdialog.cpp \
+    plotdialog.cpp \
+    qcustomplot.cpp
 
 HEADERS  += MainWindow.hpp \
     MainViewWidget.hpp \
@@ -32,7 +34,9 @@ HEADERS  += MainWindow.hpp \
     InfoWidget/MetaDataPanel.hpp \
     InfoWidget/TagPanel.hpp \
     common/Common.hpp \
-    aboutdialog.h
+    aboutdialog.h \
+    plotdialog.h \
+    qcustomplot.h
 
 FORMS    += MainWindow.ui \
     MainViewWidget.ui \
@@ -41,7 +45,8 @@ FORMS    += MainWindow.ui \
     InfoWidget/DescriptionPanel.ui \
     InfoWidget/MetaDataPanel.ui \
     InfoWidget/TagPanel.ui \
-    aboutdialog.ui
+    aboutdialog.ui \
+    plotdialog.ui
 
 
 #standard windows folder?
