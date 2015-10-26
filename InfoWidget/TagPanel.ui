@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>400</width>
-    <height>300</height>
+    <height>309</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -28,7 +28,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QTextEdit" name="labal_tag_info"/>
+    <widget class="QTextEdit" name="label_tag_info"/>
    </item>
    <item>
     <widget class="QLabel" name="label_2">
