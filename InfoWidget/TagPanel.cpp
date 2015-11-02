@@ -25,7 +25,6 @@ void TagPanel::update_tag_panel(QVariant v)
     if(v.canConvert<nix::Tag>())
     {
         nix::Tag tag = v.value<nix::Tag>();
-        //ui->label_tag_info->setText(QString::fromStdString(extract_tag_info(tag)));
         extract_tag_info(tag);
     }
     else if(v.canConvert<nix::MultiTag>())
@@ -33,6 +32,8 @@ void TagPanel::update_tag_panel(QVariant v)
         nix::MultiTag mtag = v.value<nix::MultiTag>();
         extract_multitag_info(mtag);
     }
+    ui->tableWidget->resizeColumnsToContents();
+    ui->tableWidget->horizontalHeader()->setStretchLastSection(true);
 }
 
 std::string TagPanel::extract_tag_info(nix::Tag tag)
@@ -42,26 +43,43 @@ std::string TagPanel::extract_tag_info(nix::Tag tag)
     std::vector<double> pos = tag.position();
     std::ostringstream oss_pos;
     if(!pos.empty())
-        std::copy(pos.begin(), pos.end()-1, std::ostream_iterator<double>(oss_pos, ", "));
-
-    ss << "Position: " << oss_pos.str() << "\n";
+    {
+        for (int i = 0; i < (int)pos.size(); ++i)
+        {
+            oss_pos << std::setprecision(5) << pos[i];
+            if (i < (int)pos.size()-1)
+                oss_pos << ", ";
+        }
+    }
+    ui->tableWidget->insertRow(0);
+    QTableWidgetItem* item_pos = new QTableWidgetItem(QString::fromStdString(oss_pos.str()));
+    ui->tableWidget->setItem(0, 0, item_pos);
 
     std::vector<double> ext = tag.extent();
     std::ostringstream oss_ext;
     if(!ext.empty())
-        std::copy(ext.begin(), ext.end()-1, std::ostream_iterator<double>(oss_ext, ", "));
-    ss << "Extend: " << oss_ext.str() << "\n";
+    {
+        for (int i = 0; i < (int)ext.size(); ++i)
+        {
+            oss_ext << std::setprecision(5) << ext[i];
+            if (i < (int)ext.size()-1)
+                oss_ext << ", ";
+        }
+    }
+    QTableWidgetItem* item_ext = new QTableWidgetItem(QString::fromStdString(oss_ext.str()));
+    ui->tableWidget->setItem(0, 1, item_ext);
 
     std::vector<std::string> units = tag.units();
-    std::ostringstream oss_units;
+    QTableWidgetItem* item_unit;
     if(!units.empty())
-        std::copy(units.begin(), units.end()-1, std::ostream_iterator<std::string>(oss_units, ", "));
-    ss<< "Units: " << oss_units.str();
+        item_unit = new QTableWidgetItem(QString::fromStdString(units[0]));
+    ui->tableWidget->setItem(0, 2, item_unit);
 
     references = tag.references();
     fill_tree(ui->treeWidget_references, references);
 
     std::vector<nix::Feature> _features = tag.features();
+    features.clear();
     for (auto i : _features)
         features.push_back(i.data());
     fill_tree(ui->treeWidget_features, features);
@@ -109,10 +127,8 @@ void TagPanel::extract_multitag_info(nix::MultiTag mtag)
                 ui->tableWidget->setItem(new_row, 2, item);
             }
         }
-        ui->tableWidget->resizeColumnsToContents();
-        ui->tableWidget->horizontalHeader()->setStretchLastSection(true);
     }
-    else //if (size_pos.size() == 2)
+    else // TODO if (size_pos.size() > 2)  // = not 1-dimensional data
     {
 
     }
@@ -145,7 +161,6 @@ void TagPanel::fill_tree(QTreeWidget* tree, std::vector<nix::DataArray> ar)
 
 void TagPanel::clear_tag_panel()
 {
-    //this->ui->label_tag_info->setText("");
     int table_size  = ui->tableWidget->rowCount();
     for (int i = 0; i < table_size; ++i)
         ui->tableWidget->removeRow(0);
