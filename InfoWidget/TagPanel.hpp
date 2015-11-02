@@ -24,7 +24,9 @@ public slots:
     void feature_item_requested(QTreeWidgetItem*, int);
 
 signals:
+    // TODO change to QVariant?
     void item_found(nix::DataArray);
+    // TODO signal for emitting dataarrays + tags
 
 private:
     Ui::TagPanel *ui;
