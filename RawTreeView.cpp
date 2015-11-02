@@ -41,6 +41,8 @@ void RawTreeView::init_tree_widget() {
             QTreeWidgetItem* child_item = new QTreeWidgetItem(tree_item, QStringList(QString::fromStdString(m.name())));
             child_item->setText(1, QString::fromStdString("MultiTag"));
         }
+
+        // TODO sources
     }
 
     QTreeWidgetItem* metadata_branch = new QTreeWidgetItem(ui->treeWidget, QStringList(QString::fromStdString("Metadata")));
