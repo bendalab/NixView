@@ -17,6 +17,7 @@ TagPanel::TagPanel(QWidget *parent) :
 {
     ui->setupUi(this);
     ui->tableWidget->horizontalHeader()->setDefaultAlignment(Qt::AlignLeft);
+    // TODO only row selection
 }
 
 void TagPanel::update_tag_panel(QVariant v)
