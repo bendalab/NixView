@@ -28,11 +28,13 @@ void TagPanel::update_tag_panel(QVariant v)
     {
         nix::Tag tag = v.value<nix::Tag>();
         extract_tag_info(tag);
+        current_tag = v;
     }
     else if(v.canConvert<nix::MultiTag>())
     {
         nix::MultiTag mtag = v.value<nix::MultiTag>();
         extract_multitag_info(mtag);
+        current_tag = v;
     }
     ui->tableWidget->resizeColumnsToContents();
     ui->tableWidget->horizontalHeader()->setStretchLastSection(true);
@@ -176,7 +178,7 @@ void TagPanel::reference_item_requested(QTreeWidgetItem* item, int column)
     for (auto i : references)
     {
         if(i.name() == item->text(0).toStdString())
-            emit item_found(i);
+            emit emit_reference(i);
     }
 }
 
@@ -185,8 +187,13 @@ void TagPanel::feature_item_requested(QTreeWidgetItem* item, int column)
     for (auto i : features)
     {
         if(i.name() == item->text(0).toStdString())
-            emit item_found(i);
+            emit emit_feature(i);
     }
+}
+
+void TagPanel::tag_item_requested(int current_row, int current_column, int previous_row, int previous_column)
+{
+    emit emit_tag(current_tag, current_row);
 }
 
 // getters
@@ -198,6 +205,11 @@ QTreeWidget* TagPanel::get_reference_tree()
 QTreeWidget* TagPanel::get_feature_tree()
 {
     return ui->treeWidget_features;
+}
+
+QTableWidget* TagPanel::get_tag_table()
+{
+    return ui->tableWidget;
 }
 
 // destructor
