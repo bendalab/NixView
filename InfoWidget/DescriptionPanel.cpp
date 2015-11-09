@@ -29,6 +29,8 @@ void DescriptionPanel::update_description_panel(QVariant v)
 template<typename T>
 void DescriptionPanel::update(T arg)
 {
+    // TODO created / updated at
+
     std::stringstream ss;
     ss << "id: " << arg.id() << "\n"
        << "type: " << arg.type() << "\n"

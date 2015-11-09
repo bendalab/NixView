@@ -83,8 +83,18 @@ def create_m_tag(f,b):
     
     feature_1 = b.create_data_array("feature 1", "nix.feature", 
                                     data=np.sin(100 * 2 * np.pi * np.arange(0,0.1,0.00005)))
+    d = feature_1.append_sampled_dimension(0.00005)
+    d.unit = "s"
+    d.label = "time"
+    feature_1.unit = "mV"
+    feature_1.label = "voltage"
     feature_2 = b.create_data_array("feature 2", "nix.feature", 
                                     data=np.cos(150 * 2 * np.pi * np.arange(0,0.1,0.00005)))
+    d = feature_2.append_sampled_dimension(0.00005)
+    d.unit = "s"
+    d.label = "time"
+    feature_2.unit = "mV"
+    feature_2.label = "voltage"
     mtag.create_feature(feature_1, nix.LinkType.Untagged)
     mtag.create_feature(feature_2, nix.LinkType.Untagged)
 
