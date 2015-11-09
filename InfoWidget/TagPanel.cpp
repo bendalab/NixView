@@ -175,6 +175,11 @@ void TagPanel::clear_tag_panel()
 // slots
 void TagPanel::reference_item_requested(QTreeWidgetItem* item, int column)
 {
+    if (!item)
+    {
+        emit references_cleared();
+        return;
+    }
     for (auto i : references)
     {
         if(i.name() == item->text(0).toStdString())
@@ -184,6 +189,11 @@ void TagPanel::reference_item_requested(QTreeWidgetItem* item, int column)
 
 void TagPanel::feature_item_requested(QTreeWidgetItem* item, int column)
 {
+    if (!item)
+    {
+        emit features_cleared();
+        return;
+    }
     for (auto i : features)
     {
         if(i.name() == item->text(0).toStdString())
@@ -194,6 +204,16 @@ void TagPanel::feature_item_requested(QTreeWidgetItem* item, int column)
 void TagPanel::tag_item_requested(int current_row, int current_column, int previous_row, int previous_column)
 {
     emit emit_tag(current_tag, current_row);
+}
+
+void TagPanel::currentItemChanged_reference_helper(QTreeWidgetItem* current, QTreeWidgetItem* previous)
+{
+    reference_item_requested(current, 0);
+}
+
+void TagPanel::currentItemChanged_feature_helper(QTreeWidgetItem* current, QTreeWidgetItem* previous)
+{
+    feature_item_requested(current, 0);
 }
 
 // getters

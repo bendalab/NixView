@@ -23,12 +23,14 @@ public slots:
     void reference_item_requested(QTreeWidgetItem*, int);
     void feature_item_requested(QTreeWidgetItem*, int);
     void tag_item_requested(int, int, int, int);
+    void currentItemChanged_reference_helper(QTreeWidgetItem*,QTreeWidgetItem*);
+    void currentItemChanged_feature_helper(QTreeWidgetItem*,QTreeWidgetItem*);
 
 signals:
-    // TODO change to QVariant?
     void emit_reference(nix::DataArray);
+    void references_cleared();
     void emit_feature(nix::DataArray);
-    // TODO signal for emitting tags
+    void features_cleared();
     void emit_tag(QVariant, int);
 
 private:
@@ -41,7 +43,7 @@ private:
     QVariant current_tag;
     static void fill_tree(QTreeWidget*, std::vector<nix::DataArray>);
 
-    // getter
+// getter
 public:
     QTreeWidget* get_reference_tree();
     QTreeWidget* get_feature_tree();

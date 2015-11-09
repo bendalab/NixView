@@ -49,9 +49,12 @@ void InfoWidget::connect_widgets()
 {
     QObject::connect(mp->get_tree_widget(), SIGNAL(expanded(QModelIndex)), mp, SLOT(resize_to_content(QModelIndex)));
     QObject::connect(mp->get_tree_widget(), SIGNAL(collapsed(QModelIndex)), mp, SLOT(resize_to_content(QModelIndex)));
-    QObject::connect(tp->get_reference_tree(), SIGNAL(itemClicked(QTreeWidgetItem*,int)), tp, SLOT(reference_item_requested(QTreeWidgetItem*,int)));
-    QObject::connect(tp->get_feature_tree(), SIGNAL(itemClicked(QTreeWidgetItem*,int)), tp, SLOT(feature_item_requested(QTreeWidgetItem*,int)));
     QObject::connect(tp->get_tag_table(), SIGNAL(currentCellChanged(int,int,int,int)), tp, SLOT(tag_item_requested(int, int, int, int)));
+
+    QObject::connect(tp->get_reference_tree(), SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)),
+                     tp, SLOT(currentItemChanged_reference_helper(QTreeWidgetItem*,QTreeWidgetItem*)));
+    QObject::connect(tp->get_feature_tree(), SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)),
+                     tp, SLOT(currentItemChanged_feature_helper(QTreeWidgetItem*,QTreeWidgetItem*)));
 }
 
 // getter
