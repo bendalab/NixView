@@ -76,11 +76,6 @@ void MainWindow::show_plot() {
 
 
 void MainWindow::open_file() {
-    if (mvw_is_set) {
-        ui->main_ho_layout->removeWidget(mvw);
-        mvw->deleteLater();
-    }
-
     QFileDialog fd(this);
     fd.setFileMode(QFileDialog::ExistingFile);
     fd.setNameFilter(tr("NIX File (*.h5)"));
@@ -90,6 +85,13 @@ void MainWindow::open_file() {
         fileNames = fd.selectedFiles();
     if (fileNames.size() == 0)
         return;
+
+    if (mvw_is_set) {
+        ui->main_ho_layout->removeWidget(mvw);
+        mvw->deleteLater();
+        mvw_is_set = false;
+    }
+
     std::string file_path = fileNames.front().toStdString();
     std::cout << file_path << std::endl;
 
