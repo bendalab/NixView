@@ -11,6 +11,8 @@ MetaDataPanel::MetaDataPanel(QWidget *parent) :
 
 void MetaDataPanel::update_metadata_panel(QVariant v)
 {
+    ui->treeWidget->clear();
+
     nix::Section meta_section;
     // check if value of v is entity with metadata
     if(v.canConvert<nix::Block>())
