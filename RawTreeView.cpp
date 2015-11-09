@@ -42,7 +42,11 @@ void RawTreeView::init_tree_widget() {
             child_item->setText(1, QString::fromStdString("MultiTag"));
         }
 
-        // TODO sources
+        for (nix::Source s : b.sources())
+        {
+            QTreeWidgetItem* child_item = new QTreeWidgetItem(tree_item, QStringList(QString::fromStdString(s.name())));
+            child_item->setText(1, QString::fromStdString("Source"));
+        }
     }
 
     QTreeWidgetItem* metadata_branch = new QTreeWidgetItem(ui->treeWidget, QStringList(QString::fromStdString("Metadata")));
@@ -118,6 +122,9 @@ void RawTreeView::item_info_requested(QTreeWidgetItem* item, int column) {
             } else if (item->text(1) == QString("MultiTag")) {
                 nix::MultiTag mtag = block.getMultiTag(item->text(0).toStdString());
                 emit item_found(QVariant::fromValue(mtag));
+            } else if (item->text(1) == QString("Source")) {
+            nix::Source source = block.getSource(item->text(0).toStdString());
+            emit item_found(QVariant::fromValue(source));
             }
         }
     }
