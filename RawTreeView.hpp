@@ -5,6 +5,7 @@
 #include <nix.hpp>
 #include <QtGui>
 #include <QTreeWidget>
+#include <QVariant>
 
 namespace Ui {
 class RawTreeView;
@@ -33,6 +34,11 @@ private:
     Ui::RawTreeView *ui;
     nix::File nix_file;
     void init_tree_widget();
+    void add_linked_sources(QTreeWidgetItem*, QVariant);
+
+    template <typename T>
+    void add_linked_sources_helper(QTreeWidgetItem*, T);
+
     static void add_children_to_item(QTreeWidgetItem* item, nix::Section section);
 
     // friend declaration and getters for signals and slots
