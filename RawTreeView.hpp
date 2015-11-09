@@ -20,6 +20,7 @@ public:
     // QVariant get_item();
 
 public slots:
+    void currentItemChanged_worker(QTreeWidgetItem*,QTreeWidgetItem*);
     void entry_double_clicked(QTreeWidgetItem* item, int column);
     void resize_to_content(QModelIndex);
     void item_info_requested(QTreeWidgetItem*, int);

@@ -87,6 +87,10 @@ void RawTreeView::resize_to_content(QModelIndex qml) {
         ui->treeWidget->resizeColumnToContents(c);
 }
 
+void RawTreeView::currentItemChanged_worker(QTreeWidgetItem* old_item, QTreeWidgetItem* new_item)
+{
+    item_info_requested(old_item, 0);
+}
 
 void RawTreeView::item_info_requested(QTreeWidgetItem* item, int column) {
     std::vector<std::string> nix_path;

@@ -47,6 +47,8 @@ void MainViewWidget::connect_widgets()
     // click in overview
     // - rawtreeview
     QObject::connect(rtv->get_tree_widget(), SIGNAL(itemClicked(QTreeWidgetItem*, int)), rtv, SLOT(item_info_requested(QTreeWidgetItem*,int)));
+    QObject::connect(rtv->get_tree_widget(), SIGNAL(currentItemChanged(QTreeWidgetItem*, QTreeWidgetItem*)),
+                     rtv, SLOT(currentItemChanged_worker(QTreeWidgetItem*, QTreeWidgetItem*)));
     QObject::connect(rtv, SIGNAL(item_found(QVariant)), iw, SLOT(update_info_widget(QVariant)));
     QObject::connect(rtv, SIGNAL(empty_item()), iw, SLOT(update_info_widget()));
 
