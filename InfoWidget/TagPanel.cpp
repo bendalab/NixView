@@ -73,7 +73,7 @@ std::string TagPanel::extract_tag_info(nix::Tag tag)
     ui->tableWidget->setItem(0, 1, item_ext);
 
     std::vector<std::string> units = tag.units();
-    QTableWidgetItem* item_unit;
+    QTableWidgetItem* item_unit = nullptr;
     if(!units.empty())
         item_unit = new QTableWidgetItem(QString::fromStdString(units[0]));
     ui->tableWidget->setItem(0, 2, item_unit);
