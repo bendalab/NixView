@@ -2,6 +2,8 @@
 #define TAGPANEL_HPP
 
 #include <QWidget>
+#include <QTreeWidget>
+#include <QTableWidget>
 #include <QVariant>
 #include <nix.hpp>
 #include <QtGui>

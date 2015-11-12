@@ -9,7 +9,6 @@
 #include <boost/lexical_cast.hpp>
 #include <boost/algorithm/string.hpp>
 #include <boost/array.hpp>
-#include <QtGui/QTableWidget>
 
 TagPanel::TagPanel(QWidget *parent) :
     QWidget(parent),
