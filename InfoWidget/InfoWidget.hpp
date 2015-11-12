@@ -2,6 +2,7 @@
 #define INFOWIDGET_HPP
 
 #include <QWidget>
+#include <QTreeWidget>
 #include <QtGui>
 #include <QVariant>
 #include <boost/optional.hpp>
