@@ -95,17 +95,19 @@ void TagPanel::extract_multitag_info(nix::MultiTag mtag)
     std::stringstream ss;
 
     nix::DataArray positions = mtag.positions();
-    nix::NDSize size_pos = positions.dataExtent();
     nix::DataArray extents = mtag.extents();
-    std::vector<double> ext_array;
-    if(extents)
-        positions.getData(ext_array);
-    std::vector<std::string> units = mtag.units();
-    if (size_pos.size() == 1)
+
+    nix::NDSize pos_size = positions.dataExtent();
+
+    if (pos_size.size() == 1)  // 1-dimensional data
     {
+        std::vector<std::string> units = mtag.units();
         std::vector<double> pos_array;
+        std::vector<double> ext_array;
+        if(extents)
+            positions.getData(ext_array);
         positions.getData(pos_array);
-        for (int i = 0; i < (int)size_pos[0]; i++)
+        for (int i = 0; i < (int)pos_size[0]; i++)
         {
             std::ostringstream ss;
             ss << std::setprecision(5) << pos_array[i];
@@ -133,7 +135,8 @@ void TagPanel::extract_multitag_info(nix::MultiTag mtag)
     }
     else // TODO if (size_pos.size() > 2)  // = not 1-dimensional data
     {
-
+        int dim_1 = pos_size[0];
+        int dim_2 = pos_size[1];
     }
 
     references = mtag.references();
