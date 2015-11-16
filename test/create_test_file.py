@@ -62,7 +62,7 @@ def create_1d_set(f, b):
     d.labels = labels
 
     src = b.create_source("Data source", "nix.source")
-    da.source = src
+    da.sources.append(src)
     
     s = f.create_section("Helgoland Weather data", "data_origin")
     s["period"] = "201509 - 201410"
