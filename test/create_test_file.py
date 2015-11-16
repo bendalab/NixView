@@ -1,6 +1,7 @@
 import nix
 import numpy as np
 import matplotlib.pyplot as plt
+import Image as img
 from IPython import embed
 
 
@@ -36,6 +37,20 @@ def create_1d_sampled(f, b):
 
     src2 = b.create_source('subject', 'nix.source.subject')
     src2.metadata = subj
+    
+def create_3d(f, b):
+    # taken from nix tutorial
+    image = img.open('lena.bmp')
+    img_data = np.array(image)
+    channels = list(image.mode)
+    data = b.create_data_array("lena", "nix.image.rgb", data=img_data)
+    # add descriptors for width, height and channels
+    height_dim = data.append_sampled_dimension(1)
+    height_dim.label = "height"
+    width_dim = data.append_sampled_dimension(1)
+    width_dim.label = "width"
+    color_dim = data.append_set_dimension()
+    color_dim.labels = channels
 
 
 def create_1d_range(f, b):
@@ -98,6 +113,35 @@ def create_m_tag(f,b):
     mtag.create_feature(feature_1, nix.LinkType.Untagged)
     mtag.create_feature(feature_2, nix.LinkType.Untagged)
 
+def create_m_tag_3d(f, b):
+    data = [da for da in b.data_arrays if da.name == 'lena'][0]
+    
+    # some space for three regions-of-interest
+    roi_starts = np.zeros((3,3))
+    roi_starts[0, :] = [250, 245, 0] 
+    roi_starts[1, :] = [250, 315, 0] 
+    roi_starts[2, :] = [340, 260, 0] 
+
+    roi_extents = np.zeros((3,3))    
+    roi_extents[0, :] = [30, 45, 3] 
+    roi_extents[1, :] = [30, 40, 3] 
+    roi_extents[2, :] = [25, 65, 3] 
+    
+    # create the positions DataArray
+    positions = b.create_data_array("ROI positions", "nix.positions", data=roi_starts)
+    positions.append_set_dimension() # these can be empty
+    positions.append_set_dimension()
+    
+    # create the extents DataArray
+    extents = b.create_data_array("ROI extents", "nix.extents", data=roi_extents)
+    extents.append_set_dimension()
+    extents.append_set_dimension()
+
+    # create a MultiTag
+    multi_tag = b.create_multi_tag("Regions of interest", "nix.roi", positions)
+    multi_tag.extents = extents
+    multi_tag.references.append(data)
+
 
 def create_epoch_tag(f, b):
     trace = b.data_arrays["eod"]
@@ -131,6 +175,11 @@ def create_test_file(filename):
     create_m_tag(nix_file, b)
     create_epoch_tag(nix_file, b)
     create_point_tag(nix_file, b)
+    
+    b3 = nix_file.create_block("3D data", "nix.image_data")
+    b3.metadata  = s
+    create_3d(nix_file, b3)
+    create_m_tag_3d(nix_file, b3)
     nix_file.close()
 
 if __name__ == "__main__":
