@@ -9,6 +9,7 @@
 #include <boost/lexical_cast.hpp>
 #include <boost/algorithm/string.hpp>
 #include <boost/array.hpp>
+#include <boost/multi_array.hpp>
 
 TagPanel::TagPanel(QWidget *parent) :
     QWidget(parent),
@@ -135,8 +136,14 @@ void TagPanel::extract_multitag_info(nix::MultiTag mtag)
     }
     else // TODO if (size_pos.size() > 2)  // = not 1-dimensional data
     {
+        typedef boost::multi_array<double, 2> array_type;
+        typedef array_type::index index;
         int dim_1 = pos_size[0];
         int dim_2 = pos_size[1];
+
+        array_type pos_array(boost::extents[dim_1][dim_2]);
+//        positions.getData(pos_array);
+//        array_type ext_array(boost::extents[dim_1][dim_2]);
     }
 
     references = mtag.references();
