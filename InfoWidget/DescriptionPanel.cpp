@@ -21,7 +21,8 @@ void DescriptionPanel::update_description_panel(QVariant v)
         update(v.value<nix::Tag>());
     else if(v.canConvert<nix::Section>())
         update(v.value<nix::Section>());
-    // TODO look for better solution
+    else if(v.canConvert<nix::Source>())
+        update(v.value<nix::Source>());
     else if(v.canConvert<nix::Property>())
         update_typeless(v.value<nix::Property>());
 }
