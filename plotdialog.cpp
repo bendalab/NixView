@@ -159,13 +159,15 @@ void PlotDialog::draw_1d(const nix::DataArray &array) {
             array.getData(nix::DataType::Double, data.data(), {ax.size()}, {0});
             y_axis = QVector<double>::fromStdVector(data);
 
-            if (array.label())
-                y_label = *array.label();
-            if (array.unit())
-                y_label = y_label + " [" + *array.unit() + "]";
-            if (x_axis[0] == y_axis[0] && x_axis.last() == y_axis.last()){
+            if (dim.alias()) {
                 y_axis.fill(1.0);
                 y_label = "event";
+            }
+            if (array.label()) {
+                y_label = *array.label();
+            }
+            if (array.unit()) {
+                y_label = y_label + " [" + *array.unit() + "]";
             }
             add_scatter_plot(x_axis, y_axis, QString::fromStdString(array.name()));
 
