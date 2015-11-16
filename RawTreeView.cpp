@@ -63,7 +63,6 @@ void RawTreeView::init_tree_widget() {
         ui->treeWidget->resizeColumnToContents(c);
 }
 
-// TODO test this!
 void RawTreeView::add_linked_sources(QTreeWidgetItem* item, QVariant nix_item)
 {
     if (nix_item.canConvert<nix::DataArray>())
@@ -136,22 +135,28 @@ void RawTreeView::item_info_requested(QTreeWidgetItem* item, int column) {
         nix::Block block = nix_file.getBlock(nix_path.back());
         nix_path.pop_back();
 
-        if(nix_path.size() == 0) {//block info requested
+        if(nix_path.size() == 0) //block info requested
+        {
             emit item_found(QVariant::fromValue(block));
             return;
-        } else if(nix_path.size() == 1) { //data array/tag/multitag requested
+        }
+        else  //data array/tag/multitag/source requested
+        {
             if (item->text(1) == QString("Data Array")) {
-                nix::DataArray da = block.getDataArray(item->text(0).toStdString());
+                nix::DataArray da = block.getDataArray(nix_path[0]);
                 emit item_found(QVariant::fromValue(da));
             } else if (item->text(1) == QString("Tag")) {
-                nix::Tag tag = block.getTag(item->text(0).toStdString());
+                nix::Tag tag = block.getTag(nix_path[0]);
                 emit item_found(QVariant::fromValue(tag));
             } else if (item->text(1) == QString("MultiTag")) {
-                nix::MultiTag mtag = block.getMultiTag(item->text(0).toStdString());
+                nix::MultiTag mtag = block.getMultiTag(nix_path[0]);
                 emit item_found(QVariant::fromValue(mtag));
             } else if (item->text(1) == QString("Source")) {
-            nix::Source source = block.getSource(item->text(0).toStdString());
-            emit item_found(QVariant::fromValue(source));
+                nix::Source source = block.getSource(nix_path[0]);
+                emit item_found(QVariant::fromValue(source));
+            }else if (item->text(1) == QString("Source/Link")) {
+                nix::Source source = block.getSource(nix_path[0]);
+                emit item_found(QVariant::fromValue(source));
             }
         }
     }
