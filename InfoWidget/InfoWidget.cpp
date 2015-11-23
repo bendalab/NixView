@@ -55,6 +55,8 @@ void InfoWidget::connect_widgets()
                      tp, SLOT(currentItemChanged_reference_helper(QTreeWidgetItem*,QTreeWidgetItem*)));
     QObject::connect(tp->get_feature_tree(), SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)),
                      tp, SLOT(currentItemChanged_feature_helper(QTreeWidgetItem*,QTreeWidgetItem*)));
+    QObject::connect(tp->get_tag_table(), SIGNAL(currentCellChanged(int,int,int,int)),
+                     tp, SLOT(tag_item_requested(int,int,int,int)));
 }
 
 // getter
