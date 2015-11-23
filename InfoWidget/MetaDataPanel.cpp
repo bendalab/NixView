@@ -10,11 +10,20 @@ MetaDataPanel::MetaDataPanel(QWidget *parent) :
     ui->setupUi(this);
 }
 
+// TODO set all labels to "-" if empty item is emitted
+
 void MetaDataPanel::update_metadata_panel(QVariant v)
 {
     ui->treeWidget->clear();
+    if(v.canConvert<nix::Section>())
+        ui->metadata_label->setText("Metadata Entries");
+    else if(v.canConvert<nix::Property>())
+        ui->metadata_label->setText("Property Value");
+    else
+        ui->metadata_label->setText("Connected Metadata");
 
     nix::Section meta_section;
+    nix::Property meta_property;
     // check if value of v is entity with metadata
     if(v.canConvert<nix::Block>())
     {
@@ -41,6 +50,10 @@ void MetaDataPanel::update_metadata_panel(QVariant v)
         nix::MultiTag mtag = v.value<nix::MultiTag>();
         meta_section = mtag.metadata();
     }
+    else if(v.canConvert<nix::Section>())
+        meta_section = v.value<nix::Section>();
+    else if(v.canConvert<nix::Property>())
+        meta_property = v.value<nix::Property>();
     else
     {
         clear_metadata_panel();
@@ -60,6 +73,13 @@ void MetaDataPanel::update_metadata_panel(QVariant v)
 
         ui->treeWidget->expandItem(branch);
         ui->treeWidget->resizeColumnToContents(0);
+    }
+    else if (meta_property)
+    {
+        QTreeWidgetItem* prop = new QTreeWidgetItem(ui->treeWidget, QStringList(QString::fromStdString(meta_property.name())));
+        prop->setText(1, QString::fromStdString("Metadata"));
+        prop->setText(2, QString::fromStdString(nix::data_type_to_string(meta_property.dataType())));
+        add_values_to_property(prop, meta_property);
     }
     else
         clear_metadata_panel();
@@ -83,22 +103,50 @@ void MetaDataPanel::add_properties_to_item(QTreeWidgetItem* item, nix::Section s
         QTreeWidgetItem* child_item = new QTreeWidgetItem(item, QStringList(QString::fromStdString(p.name())));
         child_item->setText(1, QString::fromStdString("Metadata"));
         child_item->setText(2, QString::fromStdString(nix::data_type_to_string(p.dataType())));
+        add_values_to_property(child_item, p);
+    }
+}
 
-        std::vector<nix::Value> values = p.values();
-        std::ostringstream oss;
-        oss << "(";
-        for (int i = 0; i < (int)values.size(); ++i)
-        {
+void MetaDataPanel::add_values_to_property(QTreeWidgetItem* item, nix::Property p)
+{
+    std::vector<nix::Value> values = p.values();
+    std::ostringstream oss;
+    oss << "(";
+    for (int i = 0; i < (int)values.size(); ++i)
+    {
+        if (item->text(2) == QString("String")) {
             std::string value;
             values[i].get(value);
             oss << value << ", " << values[i].uncertainty;
-            oss << ")";
-
-            if (i < (int)values.size()-1)
-                oss << ", (";
+        } else if (item->text(2) == QString("Bool")){
+            bool value;
+            values[i].get(value);
+            oss << value << ", " << values[i].uncertainty;
+        } else if (item->text(2) == QString("Int32")){
+            int32_t value;
+            values[i].get(value);
+            oss << value << ", " << values[i].uncertainty;
+        } else if (item->text(2) == QString("Int64")){
+            int64_t value;
+            values[i].get(value);
+            oss << value << ", " << values[i].uncertainty;
+        } else if (item->text(2) == QString("UInt64")){
+            uint64_t value;
+            values[i].get(value);
+            oss << value << ", " << values[i].uncertainty;
+        } else if (item->text(2) == QString("Double")){
+            double value;
+            values[i].get(value);
+            oss << value << ", " << values[i].uncertainty;
+        } else {
+            oss << "NOT READABLE" << values[i].uncertainty;
         }
-        child_item->setText(3, QString::fromStdString(oss.str()));
+        oss << ")";
+
+        if (i < (int)values.size()-1)
+            oss << ", (";
     }
+    item->setText(3, QString::fromStdString(oss.str()));
 }
 
 void MetaDataPanel::clear_metadata_panel()
