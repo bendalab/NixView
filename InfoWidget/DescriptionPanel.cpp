@@ -11,6 +11,8 @@ DescriptionPanel::DescriptionPanel(QWidget *parent) :
     ui->setupUi(this);
 }
 
+// TODO set all labels to "-" if empty item is emitted
+
 void DescriptionPanel::update_description_panel(QVariant v)
 {
     if(v.canConvert<nix::Block>())
