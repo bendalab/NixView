@@ -21,6 +21,8 @@ TagPanel::TagPanel(QWidget *parent) :
     ui->tableWidget->setSelectionBehavior(QAbstractItemView::SelectRows);
 }
 
+// TODO set all labels to "-" if empty item is emitted
+
 void TagPanel::update_tag_panel(QVariant v)
 {
     clear_tag_panel();
