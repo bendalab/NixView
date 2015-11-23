@@ -50,6 +50,11 @@
        <string>Data Type</string>
       </property>
      </column>
+     <column>
+      <property name="text">
+       <string>Value, Uncertanty</string>
+      </property>
+     </column>
     </widget>
    </item>
   </layout>

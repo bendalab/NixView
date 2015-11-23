@@ -1,6 +1,7 @@
 #include "MetaDataPanel.hpp"
 #include "ui_MetaDataPanel.h"
 #include "common/Common.hpp"
+#include <ostream>
 
 MetaDataPanel::MetaDataPanel(QWidget *parent) :
     QWidget(parent),
@@ -82,6 +83,21 @@ void MetaDataPanel::add_properties_to_item(QTreeWidgetItem* item, nix::Section s
         QTreeWidgetItem* child_item = new QTreeWidgetItem(item, QStringList(QString::fromStdString(p.name())));
         child_item->setText(1, QString::fromStdString("Metadata"));
         child_item->setText(2, QString::fromStdString(nix::data_type_to_string(p.dataType())));
+
+        std::vector<nix::Value> values = p.values();
+        std::ostringstream oss;
+        oss << "(";
+        for (int i = 0; i < (int)values.size(); ++i)
+        {
+            std::string value;
+            values[i].get(value);
+            oss << value << ", " << values[i].uncertainty;
+            oss << ")";
+
+            if (i < (int)values.size()-1)
+                oss << ", (";
+        }
+        child_item->setText(3, QString::fromStdString(oss.str()));
     }
 }
 
