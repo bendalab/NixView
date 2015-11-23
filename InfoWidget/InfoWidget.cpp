@@ -43,6 +43,7 @@ void InfoWidget::update_info_widget()
 {
     dp->clear_description_panel();
     mp->clear_metadata_panel();
+    tp->clear_tag_panel();
 }
 
 void InfoWidget::connect_widgets()
