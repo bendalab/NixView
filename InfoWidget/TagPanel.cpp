@@ -136,14 +136,67 @@ void TagPanel::extract_multitag_info(nix::MultiTag mtag)
     }
     else // TODO if (size_pos.size() > 2)  // = not 1-dimensional data
     {
-        typedef boost::multi_array<double, 2> array_type;
-        typedef array_type::index index;
         int dim_1 = pos_size[0];
         int dim_2 = pos_size[1];
 
-        array_type pos_array(boost::extents[dim_1][dim_2]);
+        // NOT WORKING
+//        typedef boost::multi_array<double, 2> array_type;
+//        array_type pos_array(boost::extents[dim_1][dim_2]);
 //        positions.getData(pos_array);
-//        array_type ext_array(boost::extents[dim_1][dim_2]);
+
+        std::vector<std::string> units = mtag.units();
+        double* pos_array = new double[dim_1 * dim_2];
+        positions.getDataDirect(nix::DataType::Double, pos_array, pos_size, {0,0});
+        double* ext_array = new double[dim_1 * dim_2];
+        if (extents)
+            extents.getDataDirect(nix::DataType::Double, ext_array, pos_size, {0,0});
+        for (int i = 0; i < dim_1; ++i)
+        {
+            int new_row = ui->tableWidget->rowCount();
+            ui->tableWidget->insertRow(new_row);
+
+            std::ostringstream ss_pos;
+            std::ostringstream ss_ext;
+            std::ostringstream ss_units;
+
+            for (int j =  0; j < dim_2; ++j)
+            {
+                ss_pos << std::setprecision(5) << pos_array[i*dim_2 + j];
+                if (j < dim_2 - 1)
+                    ss_pos << ", ";
+
+                if (extents)
+                {
+                    ss_ext << std::setprecision(5) << ext_array[i*dim_2 + j];
+                    if (j < dim_2 - 1)
+                        ss_ext << ", ";
+                }
+
+                if (units.size() > 0)
+                {
+                    ss_units << units[j];
+                    if (j < dim_2 - 1)
+                        ss_units << ", ";
+                }
+
+            }
+            QTableWidgetItem* item = new QTableWidgetItem(QString::fromStdString(ss_pos.str()));
+            ui->tableWidget->setItem(new_row, 0, item);
+
+            if (extents)
+            {
+                QTableWidgetItem* item = new QTableWidgetItem(QString::fromStdString(ss_ext.str()));
+                ui->tableWidget->setItem(new_row, 1, item);
+            }
+
+            if(units.size() > 0)
+            {
+                QTableWidgetItem* item = new QTableWidgetItem(QString::fromStdString(ss_units.str()));
+                ui->tableWidget->setItem(new_row, 2, item);
+            }
+        }
+
+
     }
 
     references = mtag.references();
