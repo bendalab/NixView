@@ -60,9 +60,19 @@ void DescriptionPanel::update(T arg)
 template<typename T>
 void DescriptionPanel::update_typeless(T arg)
 {
+    time_t rawtime_cr = arg.createdAt();
+    struct tm *info_cr;
+    info_cr = localtime( &rawtime_cr );
+
+    time_t rawtime_up = arg.updatedAt();
+    struct tm *info_up;
+    info_up = localtime( &rawtime_up );
+
     std::stringstream ss;
     ss << "id: " << arg.id() << "\n"
        << "name: " << arg.name() << "\n"
+       << "created at: " << boost::algorithm::trim_right_copy(std::string(asctime(info_cr))) << "\n"
+       << "updated at: " << boost::algorithm::trim_right_copy(std::string(asctime(info_up))) << "\n"
        << "description: ";
     if (arg.definition().is_initialized())
         ss << arg.definition().get();
