@@ -18,19 +18,29 @@ class RawTreeView : public QWidget
 public:
     explicit RawTreeView(nix::File nix_file, QWidget *parent = 0);
     ~RawTreeView();
-    // QVariant get_item();
 
 public slots:
     void currentItemChanged_worker(QTreeWidgetItem*,QTreeWidgetItem*);
-    void entry_double_clicked(QTreeWidgetItem* item, int column);
     void resize_to_content(QModelIndex);
     void item_info_requested(QTreeWidgetItem*, int);
+    void filter_changed(QString);
 
 signals:
     void item_found(QVariant);
     void empty_item();
 
 private:
+    /**
+     * @brief filter_mode
+     * 0 = no filter
+     * 1 = data
+     * 2 = metadata
+     * 3 = data arrays
+     * 4 = tags/multitags
+     * 5 = sources
+     */
+    int filter_mode;
+
     Ui::RawTreeView *ui;
     nix::File nix_file;
     void init_tree_widget();
@@ -41,8 +51,12 @@ private:
 
     static void add_children_to_item(QTreeWidgetItem* item, nix::Section section);
 
+    void refresh();
+    void expand();
+
     // friend declaration and getters for signals and slots
     friend class MainViewWidget;
     const QTreeWidget* get_tree_widget();
+    const QComboBox* get_filter_combo_box();
 };
 #endif // RAWTREEVIEW_HPP
