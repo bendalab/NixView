@@ -216,14 +216,15 @@ void TagPanel::fill_tree(QTreeWidget* tree, std::vector<nix::DataArray> ar)
     for (auto i : ar)
     {
         QTreeWidgetItem* item = new QTreeWidgetItem(tree, QStringList(QString::fromStdString(i.name())));
-        item->setText(1, QString::fromStdString("Data Array"));
-        item->setText(2, QString::fromStdString(nix::data_type_to_string(i.dataType())));
+        item->setText(1, QString::fromStdString(i.type()));
+        item->setText(2, QString::fromStdString("Data Array"));
+        item->setText(3, QString::fromStdString(nix::data_type_to_string(i.dataType())));
         std::stringstream s;
         s << i.dataExtent();
         std::string shape = s.str();
         boost::algorithm::trim(shape);
         shape = shape.substr(7, shape.length()-1);
-        item->setText(3, QString::fromStdString(shape));
+        item->setText(4, QString::fromStdString(shape));
     }
 }
 

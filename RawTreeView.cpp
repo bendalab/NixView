@@ -23,19 +23,22 @@ void RawTreeView::init_tree_widget() {
 
         for (nix::Block b : nix_file.blocks()) {
             QTreeWidgetItem* tree_item = new QTreeWidgetItem(data_branch, QStringList(QString::fromStdString(b.name())));
+            tree_item->setText(1, QString::fromStdString(b.type()));
+
             for (nix::DataArray da  : b.dataArrays()) {
                 if (!(filter_mode == 0) && !(filter_mode == 1) && !(filter_mode == 3))
                     continue;
 
                 QTreeWidgetItem* child_item = new QTreeWidgetItem(tree_item, QStringList(QString::fromStdString(da.name())));
-                child_item->setText(1, QString::fromStdString("Data Array"));
-                child_item->setText(2, QString::fromStdString(nix::data_type_to_string(da.dataType())));
+                child_item->setText(1, QString::fromStdString(da.type()));
+                child_item->setText(2, QString::fromStdString("Data Array"));
+                child_item->setText(3, QString::fromStdString(nix::data_type_to_string(da.dataType())));
                 std::stringstream s;
                 s << da.dataExtent();
                 std::string shape = s.str();
                 boost::algorithm::trim(shape);
                 shape = shape.substr(7, shape.length()-1);
-                child_item->setText(3, QString::fromStdString(shape));
+                child_item->setText(4, QString::fromStdString(shape));
                 add_linked_sources(child_item, QVariant::fromValue(da));
             }
 
@@ -43,7 +46,8 @@ void RawTreeView::init_tree_widget() {
                 if (!(filter_mode == 4) && !(filter_mode == 0))
                     continue;
                 QTreeWidgetItem* child_item = new QTreeWidgetItem(tree_item, QStringList(QString::fromStdString(t.name())));
-                child_item->setText(1, QString::fromStdString("Tag"));
+                child_item->setText(1, QString::fromStdString(t.type()));
+                child_item->setText(2, QString::fromStdString("Tag"));
                 add_linked_sources(child_item, QVariant::fromValue(t));
             }
 
@@ -51,7 +55,8 @@ void RawTreeView::init_tree_widget() {
                 if (!(filter_mode == 4) && !(filter_mode == 0))
                     continue;
                 QTreeWidgetItem* child_item = new QTreeWidgetItem(tree_item, QStringList(QString::fromStdString(m.name())));
-                child_item->setText(1, QString::fromStdString("MultiTag"));
+                child_item->setText(1, QString::fromStdString(m.type()));
+                child_item->setText(2, QString::fromStdString("MultiTag"));
                 add_linked_sources(child_item, QVariant::fromValue(b));
             }
 
@@ -60,7 +65,8 @@ void RawTreeView::init_tree_widget() {
                 if (!(filter_mode == 5) && !(filter_mode == 0))
                     continue;
                 QTreeWidgetItem* child_item = new QTreeWidgetItem(tree_item, QStringList(QString::fromStdString(s.name())));
-                child_item->setText(1, QString::fromStdString("Source"));
+                child_item->setText(1, QString::fromStdString(b.type()));
+                child_item->setText(2, QString::fromStdString("Source"));
             }
         }
     }
@@ -71,6 +77,7 @@ void RawTreeView::init_tree_widget() {
 
         for (nix::Section s : nix_file.sections()) {
             QTreeWidgetItem* tree_item = new QTreeWidgetItem(metadata_branch, QStringList(QString::fromStdString(s.name())));
+            tree_item->setText(1, QString::fromStdString(s.type()));
             add_children_to_item(tree_item, s);
         }
     }
@@ -96,20 +103,22 @@ void RawTreeView::add_linked_sources_helper(QTreeWidgetItem* item, T nix_item)
     for (nix::Source s : nix_item.sources())
     {
         QTreeWidgetItem* child_item = new QTreeWidgetItem(item, QStringList(QString::fromStdString(s.name())));
-        child_item->setText(1, QString::fromStdString("Source/Link"));
+        child_item->setText(1, QString::fromStdString(s.type()));
+        child_item->setText(2, QString::fromStdString("Source/Link"));
     }
 }
 
 void RawTreeView::add_children_to_item(QTreeWidgetItem* item, nix::Section section) {
     for  (auto s : section.sections()) {
         QTreeWidgetItem* child_item = new QTreeWidgetItem(item, QStringList(QString::fromStdString(s.name())));
+        child_item->setText(1, QString::fromStdString(s.type()));
         add_children_to_item(child_item, s);
     }
 
     for (nix::Property p : section.properties()) {
         QTreeWidgetItem* child_item = new QTreeWidgetItem(item, QStringList(QString::fromStdString(p.name())));
-        child_item->setText(1, QString::fromStdString("Metadata"));
-        child_item->setText(2, QString::fromStdString(nix::data_type_to_string(p.dataType())));
+        child_item->setText(2, QString::fromStdString("Metadata"));
+        child_item->setText(3, QString::fromStdString(nix::data_type_to_string(p.dataType())));
     }
 }
 
@@ -162,19 +171,19 @@ void RawTreeView::item_info_requested(QTreeWidgetItem* item, int column) {
         }
         else  //data array/tag/multitag/source requested
         {
-            if (item->text(1) == QString("Data Array")) {
+            if (item->text(2) == QString("Data Array")) {
                 nix::DataArray da = block.getDataArray(nix_path[0]);
                 emit item_found(QVariant::fromValue(da));
-            } else if (item->text(1) == QString("Tag")) {
+            } else if (item->text(2) == QString("Tag")) {
                 nix::Tag tag = block.getTag(nix_path[0]);
                 emit item_found(QVariant::fromValue(tag));
-            } else if (item->text(1) == QString("MultiTag")) {
+            } else if (item->text(2) == QString("MultiTag")) {
                 nix::MultiTag mtag = block.getMultiTag(nix_path[0]);
                 emit item_found(QVariant::fromValue(mtag));
-            } else if (item->text(1) == QString("Source")) {
+            } else if (item->text(2) == QString("Source")) {
                 nix::Source source = block.getSource(nix_path[0]);
                 emit item_found(QVariant::fromValue(source));
-            }else if (item->text(1) == QString("Source/Link")) {
+            }else if (item->text(2) == QString("Source/Link")) {
                 nix::Source source = block.getSource(nix_path[0]);
                 emit item_found(QVariant::fromValue(source));
             }
