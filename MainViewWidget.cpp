@@ -13,6 +13,7 @@ MainViewWidget::MainViewWidget(std::string& nix_file_path, QWidget *parent) :
     ui->setupUi(this);
 
     nix_file = nix::File::open(nix_file_path, nix::FileMode::ReadOnly);
+    nix_model = new NixDataModel(nix_file);
 
     iw =  new InfoWidget();
     ui->horizontalLayout->addWidget(iw);
@@ -23,7 +24,7 @@ MainViewWidget::MainViewWidget(std::string& nix_file_path, QWidget *parent) :
 
 void MainViewWidget::populate_data_stacked_widget()
 {
-    rtv = new RawTreeView(nix_file);
+    rtv = new RawTreeView(nix_model);
     ui->data_stacked_Widget->addWidget(rtv);
 }
 

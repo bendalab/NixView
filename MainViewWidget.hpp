@@ -8,6 +8,7 @@
 #include <InfoWidget/InfoWidget.hpp>
 #include <boost/optional.hpp>
 #include "RawTreeView.hpp"
+#include <NixDataModel/NixDataModel.hpp>
 
 namespace Ui {
 class MainViewWidget;
@@ -30,6 +31,7 @@ public slots:
 private:
     Ui::MainViewWidget *ui;
     nix::File nix_file;
+    NixDataModel* nix_model;
 
     RawTreeView* rtv;
     InfoWidget* iw;

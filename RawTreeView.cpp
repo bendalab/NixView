@@ -5,14 +5,13 @@
 #include "common/Common.hpp"
 
 
-RawTreeView::RawTreeView(nix::File _nix_file, QWidget *parent) :
+RawTreeView::RawTreeView(NixDataModel* _nix_model, QWidget *parent) :
     QWidget(parent),
     ui(new Ui::RawTreeView)
 {
     ui->setupUi(this);
     filter_mode = 0;
-    nix_file =  _nix_file;
-    nix_model = new NixDataModel();
+    nix_model = _nix_model;
     ui->treeView->setModel(nix_model);
     init_tree_widget();
 }

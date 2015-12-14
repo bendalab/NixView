@@ -18,7 +18,7 @@ class RawTreeView : public QWidget
     Q_OBJECT
 
 public:
-    explicit RawTreeView(nix::File nix_file, QWidget *parent = 0);
+    explicit RawTreeView(NixDataModel* nix_model, QWidget *parent = 0);
     ~RawTreeView();
 
 public slots:
