@@ -28,7 +28,8 @@ SOURCES += main.cpp\
     nixview.cpp \
     plotwidget.cpp \
     plotter/lineplotter.cpp \
-    plotter/categoryplotter.cpp
+    plotter/categoryplotter.cpp\
+    NixDataModel/NixDataModel.cpp
 
 HEADERS  += MainWindow.hpp \
     MainViewWidget.hpp \
@@ -45,7 +46,8 @@ HEADERS  += MainWindow.hpp \
     nixview.h \
     plotter/lineplotter.h \
     plotwidget.h \
-    plotter/categoryplotter.h
+    plotter/categoryplotter.h\
+    NixDataModel/NixDataModel.hpp
 
 FORMS    += MainWindow.ui \
     MainViewWidget.ui \

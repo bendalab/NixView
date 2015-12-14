@@ -46,17 +46,17 @@ void MainViewWidget::connect_widgets()
 {
     // click in overview
     // - rawtreeview
-    QObject::connect(rtv->get_tree_widget(), SIGNAL(currentItemChanged(QTreeWidgetItem*, QTreeWidgetItem*)),
-                     rtv, SLOT(currentItemChanged_worker(QTreeWidgetItem*, QTreeWidgetItem*)));
-    QObject::connect(rtv, SIGNAL(item_found(QVariant)), iw, SLOT(update_info_widget(QVariant)));
-    QObject::connect(rtv, SIGNAL(empty_item()), iw, SLOT(update_info_widget()));
-    QObject::connect(rtv->get_filter_combo_box(), SIGNAL(activated(QString)), rtv, SLOT(filter_changed(QString)));
+//    QObject::connect(rtv->get_tree_widget(), SIGNAL(currentItemChanged(QTreeWidgetItem*, QTreeWidgetItem*)),
+//                     rtv, SLOT(currentItemChanged_worker(QTreeWidgetItem*, QTreeWidgetItem*)));
+//    QObject::connect(rtv, SIGNAL(item_found(QVariant)), iw, SLOT(update_info_widget(QVariant)));
+//    QObject::connect(rtv, SIGNAL(empty_item()), iw, SLOT(update_info_widget()));
+//    QObject::connect(rtv->get_filter_combo_box(), SIGNAL(activated(QString)), rtv, SLOT(filter_changed(QString)));
 
-    // - tag references
+//    // - tag references
 
-    // tree widget expanded/collapsed
-    QObject::connect(rtv->get_tree_widget(), SIGNAL(expanded(QModelIndex)), rtv, SLOT(resize_to_content(QModelIndex)));
-    QObject::connect(rtv->get_tree_widget(), SIGNAL(collapsed(QModelIndex)), rtv, SLOT(resize_to_content(QModelIndex)));
+//    // tree widget expanded/collapsed
+//    QObject::connect(rtv->get_tree_widget(), SIGNAL(expanded(QModelIndex)), rtv, SLOT(resize_to_content(QModelIndex)));
+//    QObject::connect(rtv->get_tree_widget(), SIGNAL(collapsed(QModelIndex)), rtv, SLOT(resize_to_content(QModelIndex)));
 
     // ALSO CHECK CONNECTIONS IN InfoWidget.cpp
 }

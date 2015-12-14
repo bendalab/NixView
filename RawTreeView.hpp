@@ -7,6 +7,7 @@
 #include <QTreeWidget>
 #include <QVariant>
 #include <QComboBox>
+#include "NixDataModel/NixDataModel.hpp"
 
 namespace Ui {
 class RawTreeView;
@@ -21,10 +22,10 @@ public:
     ~RawTreeView();
 
 public slots:
-    void currentItemChanged_worker(QTreeWidgetItem*,QTreeWidgetItem*);
-    void resize_to_content(QModelIndex);
-    void item_info_requested(QTreeWidgetItem*, int);
-    void filter_changed(QString);
+//    void currentItemChanged_worker(QTreeWidgetItem*,QTreeWidgetItem*);
+//    void resize_to_content(QModelIndex);
+//    void item_info_requested(QTreeWidgetItem*, int);
+//    void filter_changed(QString);
 
 signals:
     void item_found(QVariant);
@@ -42,22 +43,23 @@ private:
      */
     int filter_mode;
 
-    Ui::RawTreeView *ui;
+    Ui::RawTreeView* ui;
     nix::File nix_file;
+    NixDataModel* nix_model;
     void init_tree_widget();
-    void add_linked_sources(QTreeWidgetItem*, QVariant);
+//    void add_linked_sources(QTreeWidgetItem*, QVariant);
 
-    template <typename T>
-    void add_linked_sources_helper(QTreeWidgetItem*, T);
+//    template <typename T>
+//    void add_linked_sources_helper(QTreeWidgetItem*, T);
 
-    static void add_children_to_item(QTreeWidgetItem* item, nix::Section section);
+//    static void add_children_to_item(QTreeWidgetItem* item, nix::Section section);
 
-    void refresh();
-    void expand();
+//    void refresh();
+//    void expand();
 
-    // friend declaration and getters for signals and slots
-    friend class MainViewWidget;
-    const QTreeWidget* get_tree_widget();
-    const QComboBox* get_filter_combo_box();
+//    // friend declaration and getters for signals and slots
+//    friend class MainViewWidget;
+//    const QTreeWidget* get_tree_widget();
+//    const QComboBox* get_filter_combo_box();
 };
 #endif // RAWTREEVIEW_HPP
