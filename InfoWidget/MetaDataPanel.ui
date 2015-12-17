@@ -42,12 +42,22 @@
      </column>
      <column>
       <property name="text">
+       <string>Nix Type</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
        <string>Storage Type</string>
       </property>
      </column>
      <column>
       <property name="text">
        <string>Data Type</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Value, Uncertanty</string>
       </property>
      </column>
     </widget>

@@ -29,6 +29,7 @@ public:
 private:
     void add_children_to_item(QTreeWidgetItem*, nix::Section);
     void add_properties_to_item(QTreeWidgetItem*, nix::Section);
+    void add_values_to_property(QTreeWidgetItem*, nix::Property);
 
     Ui::MetaDataPanel *ui;
 };

@@ -37,7 +37,6 @@ signals:
 
 private:
     Ui::TagPanel *ui;
-    void clear_tag_panel();
     std::string extract_tag_info(nix::Tag);
     void extract_multitag_info(nix::MultiTag);
     std::vector<nix::DataArray> references;
@@ -47,6 +46,7 @@ private:
 
 // getter
 public:
+    void clear_tag_panel();
     QTreeWidget* get_reference_tree();
     QTreeWidget* get_feature_tree();
     QTableWidget* get_tag_table();

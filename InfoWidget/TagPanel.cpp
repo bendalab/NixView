@@ -9,6 +9,7 @@
 #include <boost/lexical_cast.hpp>
 #include <boost/algorithm/string.hpp>
 #include <boost/array.hpp>
+#include <boost/multi_array.hpp>
 
 TagPanel::TagPanel(QWidget *parent) :
     QWidget(parent),
@@ -19,6 +20,8 @@ TagPanel::TagPanel(QWidget *parent) :
     ui->tableWidget->setSelectionMode(QAbstractItemView::SingleSelection);
     ui->tableWidget->setSelectionBehavior(QAbstractItemView::SelectRows);
 }
+
+// TODO set all labels to "-" if empty item is emitted
 
 void TagPanel::update_tag_panel(QVariant v)
 {
@@ -95,17 +98,19 @@ void TagPanel::extract_multitag_info(nix::MultiTag mtag)
     std::stringstream ss;
 
     nix::DataArray positions = mtag.positions();
-    nix::NDSize size_pos = positions.dataExtent();
     nix::DataArray extents = mtag.extents();
-    std::vector<double> ext_array;
-    if(extents)
-        positions.getData(ext_array);
-    std::vector<std::string> units = mtag.units();
-    if (size_pos.size() == 1)
+
+    nix::NDSize pos_size = positions.dataExtent();
+
+    if (pos_size.size() == 1)  // 1-dimensional data
     {
+        std::vector<std::string> units = mtag.units();
         std::vector<double> pos_array;
+        std::vector<double> ext_array;
+        if(extents)
+            positions.getData(ext_array);
         positions.getData(pos_array);
-        for (int i = 0; i < (int)size_pos[0]; i++)
+        for (int i = 0; i < (int)pos_size[0]; i++)
         {
             std::ostringstream ss;
             ss << std::setprecision(5) << pos_array[i];
@@ -133,6 +138,66 @@ void TagPanel::extract_multitag_info(nix::MultiTag mtag)
     }
     else // TODO if (size_pos.size() > 2)  // = not 1-dimensional data
     {
+        int dim_1 = pos_size[0];
+        int dim_2 = pos_size[1];
+
+        // NOT WORKING
+//        typedef boost::multi_array<double, 2> array_type;
+//        array_type pos_array(boost::extents[dim_1][dim_2]);
+//        positions.getData(pos_array);
+
+        std::vector<std::string> units = mtag.units();
+        double* pos_array = new double[dim_1 * dim_2];
+        positions.getDataDirect(nix::DataType::Double, pos_array, pos_size, {0,0});
+        double* ext_array = new double[dim_1 * dim_2];
+        if (extents)
+            extents.getDataDirect(nix::DataType::Double, ext_array, pos_size, {0,0});
+        for (int i = 0; i < dim_1; ++i)
+        {
+            int new_row = ui->tableWidget->rowCount();
+            ui->tableWidget->insertRow(new_row);
+
+            std::ostringstream ss_pos;
+            std::ostringstream ss_ext;
+            std::ostringstream ss_units;
+
+            for (int j =  0; j < dim_2; ++j)
+            {
+                ss_pos << std::setprecision(5) << pos_array[i*dim_2 + j];
+                if (j < dim_2 - 1)
+                    ss_pos << ", ";
+
+                if (extents)
+                {
+                    ss_ext << std::setprecision(5) << ext_array[i*dim_2 + j];
+                    if (j < dim_2 - 1)
+                        ss_ext << ", ";
+                }
+
+                if (units.size() > 0)
+                {
+                    ss_units << units[j];
+                    if (j < dim_2 - 1)
+                        ss_units << ", ";
+                }
+
+            }
+            QTableWidgetItem* item = new QTableWidgetItem(QString::fromStdString(ss_pos.str()));
+            ui->tableWidget->setItem(new_row, 0, item);
+
+            if (extents)
+            {
+                QTableWidgetItem* item = new QTableWidgetItem(QString::fromStdString(ss_ext.str()));
+                ui->tableWidget->setItem(new_row, 1, item);
+            }
+
+            if(units.size() > 0)
+            {
+                QTableWidgetItem* item = new QTableWidgetItem(QString::fromStdString(ss_units.str()));
+                ui->tableWidget->setItem(new_row, 2, item);
+            }
+        }
+
 
     }
 
@@ -151,14 +216,15 @@ void TagPanel::fill_tree(QTreeWidget* tree, std::vector<nix::DataArray> ar)
     for (auto i : ar)
     {
         QTreeWidgetItem* item = new QTreeWidgetItem(tree, QStringList(QString::fromStdString(i.name())));
-        item->setText(1, QString::fromStdString("Data Array"));
-        item->setText(2, QString::fromStdString(nix::data_type_to_string(i.dataType())));
+        item->setText(1, QString::fromStdString(i.type()));
+        item->setText(2, QString::fromStdString("Data Array"));
+        item->setText(3, QString::fromStdString(nix::data_type_to_string(i.dataType())));
         std::stringstream s;
         s << i.dataExtent();
         std::string shape = s.str();
         boost::algorithm::trim(shape);
         shape = shape.substr(7, shape.length()-1);
-        item->setText(3, QString::fromStdString(shape));
+        item->setText(4, QString::fromStdString(shape));
     }
 }
 

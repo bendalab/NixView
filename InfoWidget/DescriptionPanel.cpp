@@ -1,6 +1,8 @@
 #include "DescriptionPanel.hpp"
 #include "ui_DescriptionPanel.h"
 #include <common/Common.hpp>
+#include <time.h>
+#include <boost/algorithm/string.hpp>
 
 DescriptionPanel::DescriptionPanel(QWidget *parent) :
     QWidget(parent),
@@ -8,6 +10,8 @@ DescriptionPanel::DescriptionPanel(QWidget *parent) :
 {
     ui->setupUi(this);
 }
+
+// TODO set all labels to "-" if empty item is emitted
 
 void DescriptionPanel::update_description_panel(QVariant v)
 {
@@ -21,7 +25,8 @@ void DescriptionPanel::update_description_panel(QVariant v)
         update(v.value<nix::Tag>());
     else if(v.canConvert<nix::Section>())
         update(v.value<nix::Section>());
-    // TODO look for better solution
+    else if(v.canConvert<nix::Source>())
+        update(v.value<nix::Source>());
     else if(v.canConvert<nix::Property>())
         update_typeless(v.value<nix::Property>());
 }
@@ -29,12 +34,20 @@ void DescriptionPanel::update_description_panel(QVariant v)
 template<typename T>
 void DescriptionPanel::update(T arg)
 {
-    // TODO created / updated at
+    time_t rawtime_cr = arg.createdAt();
+    struct tm *info_cr;
+    info_cr = localtime( &rawtime_cr );
+
+    time_t rawtime_up = arg.updatedAt();
+    struct tm *info_up;
+    info_up = localtime( &rawtime_up );
 
     std::stringstream ss;
     ss << "id: " << arg.id() << "\n"
        << "type: " << arg.type() << "\n"
        << "name: " << arg.name() << "\n"
+       << "created at: " << boost::algorithm::trim_right_copy(std::string(asctime(info_cr))) << "\n"
+       << "updated at: " << boost::algorithm::trim_right_copy(std::string(asctime(info_up))) << "\n"
        << "description: ";
     if (arg.definition().is_initialized())
         ss << arg.definition().get();
@@ -47,9 +60,19 @@ void DescriptionPanel::update(T arg)
 template<typename T>
 void DescriptionPanel::update_typeless(T arg)
 {
+    time_t rawtime_cr = arg.createdAt();
+    struct tm *info_cr;
+    info_cr = localtime( &rawtime_cr );
+
+    time_t rawtime_up = arg.updatedAt();
+    struct tm *info_up;
+    info_up = localtime( &rawtime_up );
+
     std::stringstream ss;
     ss << "id: " << arg.id() << "\n"
        << "name: " << arg.name() << "\n"
+       << "created at: " << boost::algorithm::trim_right_copy(std::string(asctime(info_cr))) << "\n"
+       << "updated at: " << boost::algorithm::trim_right_copy(std::string(asctime(info_up))) << "\n"
        << "description: ";
     if (arg.definition().is_initialized())
         ss << arg.definition().get();
