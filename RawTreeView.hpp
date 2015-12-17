@@ -6,6 +6,7 @@
 #include <QtGui>
 #include <QTreeWidget>
 #include <QVariant>
+#include <QComboBox>
 
 namespace Ui {
 class RawTreeView;
