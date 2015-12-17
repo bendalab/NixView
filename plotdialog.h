@@ -64,6 +64,7 @@ private:
     void add_scatter_plot(QVector<double> x_data, QVector<double> y_data, QString name);
     void add_bar_plot(QVector<QString> categories, QVector<double> y_data, QString name);
 
+    void data_array_to_qvector(const nix::DataArray &array, QVector<double> &xdata, QVector<double> &ydata, QVector<QString> &xlabels, nix::ndsize_t dim_index);
     QCustomPlot* get_plot();
 
 };
