@@ -216,10 +216,8 @@ void PlotDialog::add_line_plot(QVector<double> x_data, QVector<double> y_data, Q
 void PlotDialog::add_scatter_plot(QVector<double> x_data, QVector<double> y_data, QString name) {
     ui->plot->addGraph();
     ui->plot->graph()->addData(x_data, y_data);
-    QPen pen = ui->plot->graph()->pen();
-    pen.setStyle(Qt::PenStyle::NoPen);
     ui->plot->graph()->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, 10));
-    ui->plot->graph()->setLineStyle(QCPGraph::LineStyle::lsImpulse);
+    ui->plot->graph()->setLineStyle(QCPGraph::LineStyle::lsNone);
     ui->plot->graph()->setName(name);
 
     double y_min = *std::min_element(std::begin(y_data), std::end(y_data));
@@ -229,7 +227,6 @@ void PlotDialog::add_scatter_plot(QVector<double> x_data, QVector<double> y_data
 
     ui->plot->yAxis->setRange(1.05*y_min, 1.05*y_max);
     ui->plot->xAxis->setRange(x_data[0], x_data.last());
-    //ui->plot->graph()->setPen(pen);
 }
 
 
