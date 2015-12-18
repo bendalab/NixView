@@ -103,6 +103,30 @@ void PlotDialog::draw_segment(const nix::Tag &tag) {
 
 
 void PlotDialog::draw_multi_tag(const nix::MultiTag &mtag) {
+    if (mtag.referenceCount() == 1) {
+        draw_data_array(mtag.references()[0]);
+        if (mtag.positions().dimensionCount() == 1) {
+            draw_data_array(mtag.positions());
+        } else {
+            std::cerr << "Can only draw regions in one-d, so far!" << std::endl;
+        }
+    } else {
+        std::vector<nix::DataArray> arrays = mtag.references();
+        QStringList array_names;
+        for (size_t i = 0; i < arrays.size(); ++i)
+            array_names.append(QString::fromStdString(arrays[i].name()));
+        bool ok;
+        QString label = "Select one of the referenced data arrays for display:";
+        QString item = QInputDialog::getItem(this, "Select data array", label, array_names, 0, false, &ok);
+        if (ok && !item.isEmpty())
+            draw_data_array(mtag.getReference(item.toStdString()));
+        if (mtag.positions().dimensionCount() == 1) {
+        //    draw_segment(mtag);
+        } else {
+            std::cerr << "Can only draw regions in one-d, so far!" << std::endl;
+        }
+    }
+
     std::cerr << "Plotting of multitags is not yet supported." << std::endl;
 }
 
