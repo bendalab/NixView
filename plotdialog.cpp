@@ -294,8 +294,37 @@ bool PlotDialog::can_draw() {
     return item.canConvert<nix::DataArray>() | item.canConvert<nix::MultiTag>() | item.canConvert<nix::Tag>();
 }
 
+void PlotDialog::data_array_ax_labels(const nix::DataArray &array, QString &ylabel, QVector<QString> &labels) {
+    if (array.label())
+        ylabel = QString::fromStdString(*array.label());
+    if (array.unit())
+        ylabel = ylabel + " [" + QString::fromStdString(*array.unit()) + "]";
+    for (nix::ndsize_t i = 0; i < array.dimensionCount(); i++) {
+        nix::Dimension d = array.getDimension(i + 1);
+        std::string dim_label;
+        if (d.dimensionType() == nix::DimensionType::Sample) {
+            nix::SampledDimension dim = d.asSampledDimension();
+            if (dim.label())
+                dim_label = *dim.label();
+            if (dim.unit())
+                dim_label = dim_label + " [" + *dim.unit() + "]";
+        } else if (d.dimensionType() == nix::DimensionType::Range) {
+            nix::RangeDimension dim = d.asRangeDimension();
+            if (dim.label())
+                dim_label = *dim.label();
+            if (dim.unit())
+                dim_label = dim_label + " [" + *dim.unit() + "]";
+        } else if (d.dimensionType() == nix::DimensionType::Set) {
+            dim_label = "";
+        } else {
+            std::cerr << "unsupported dimension type" << std::endl;
+        }
+        labels.push_back(QString::fromStdString(dim_label));
+    }
+}
 
-void PlotDialog::data_array_to_qvector(const nix::DataArray &array, QVector<double> &xdata, QVector<double> &ydata, QVector<QString> &xlabels, nix::ndsize_t dim_index) {
+
+void PlotDialog::data_array_to_qvector(const nix::DataArray &array, QVector<double> &xdata, QVector<double> &ydata, QVector<QString> &xticklabels, nix::ndsize_t dim_index) {
     nix::Dimension d = array.getDimension(dim_index);
 
     if (d.dimensionType() == nix::DimensionType::Sample) {
