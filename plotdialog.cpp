@@ -130,78 +130,24 @@ void PlotDialog::draw_1d(const nix::DataArray &array) {
         QVector<QString> x_tick_labels;
         data_array_to_qvector(array, x_axis, y_axis, x_tick_labels, 1);
 
-        std::string x_label, y_label;
+        QString y_label;
+        QVector<QString> ax_labels;
+        data_array_ax_labels(array, y_label, ax_labels);
         if (d.dimensionType() == nix::DimensionType::Sample) {
-            nix::SampledDimension dim = d.asSampledDimension();
-            //std::vector<double> ax = dim.axis(array.dataExtent()[0]);
-            //x_axis = QVector<double>::fromStdVector(ax);
-            if (dim.label())
-                x_label = *dim.label();
-            if (dim.unit())
-                x_label = x_label + " [" + *dim.unit() + "]";
-
-            //std::vector<double> data(ax.size());
-            //array.getData(nix::DataType::Double, data.data(), {ax.size()}, {0});
-            //y_axis = QVector<double>::fromStdVector(data);
-
-            if (array.label())
-                y_label = *array.label();
-            if (array.unit())
-                y_label = y_label + " [" + *array.unit() + "]";
             add_line_plot(x_axis, y_axis, QString::fromStdString(array.name()));
         } else if (d.dimensionType() == nix::DimensionType::Range) {
-            nix::RangeDimension dim = d.asRangeDimension();
-            //std::vector<double> ax = dim.axis(array.dataExtent()[0]);
-            //x_axis = QVector<double>::fromStdVector(ax);
-
-            if (dim.label())
-                x_label = *dim.label();
-            if (dim.unit())
-                x_label = x_label + " [" + *dim.unit() + "]";
-            //std::vector<double> data(ax.size());
-            //array.getData(nix::DataType::Double, data.data(), {ax.size()}, {0});
-            //y_axis = QVector<double>::fromStdVector(data);
-
-            if (dim.alias()) {
-                y_axis.fill(1.0);
-                y_label = "event";
-            }
-            if (array.label()) {
-                y_label = *array.label();
-            }
-            if (array.unit()) {
-                y_label = y_label + " [" + *array.unit() + "]";
-            }
             add_scatter_plot(x_axis, y_axis, QString::fromStdString(array.name()));
-
         } else if (d.dimensionType() == nix::DimensionType::Set) {
-            //std::vector<double> data;
-            //array.getData(data);
-            //y_axis = QVector<double>::fromStdVector(data);
-            nix::SetDimension dim = d.asSetDimension();
-            //std::vector<std::string> labels = dim.labels();
-            //QVector<QString> categories;
-            //for (size_t i = 0; i < labels.size(); ++i)
-            //    categories.push_back(QString::fromStdString(labels[i]));
-            //if (labels.size() == 0) {
-             //   for (int i = 0; i < y_axis.size(); ++i)
-            //        categories.push_back(QString::fromStdString(nix::util::numToStr<int>(i)));
-            //}
-            if (array.label())
-                y_label = *array.label();
-            if (array.unit())
-                y_label = y_label + " [" + *array.unit() + "]";
-
             add_bar_plot(x_tick_labels, y_axis, QString::fromStdString(array.name()));
         } else {
             std::cerr << "unsupported dimension type" << std::endl;
         }
-
-        ui->plot->xAxis->setLabel(QString(x_label.c_str()));
-        ui->plot->yAxis->setLabel(QString(y_label.c_str()));
+        ui->plot->xAxis->setLabel(ax_labels[0]);
+        ui->plot->yAxis->setLabel(y_label);
         ui->plot->replot();
     }
 }
+
 
 void PlotDialog::add_line_plot(QVector<double> x_data, QVector<double> y_data, QString name) {
     ui->plot->addGraph();
