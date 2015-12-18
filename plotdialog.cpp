@@ -343,6 +343,9 @@ void PlotDialog::data_array_to_qvector(const nix::DataArray &array, QVector<doub
         std::vector<double> data(ax.size());
         array.getData(nix::DataType::Double, data.data(), {ax.size()}, {0});
         ydata = QVector<double>::fromStdVector(data);
+        if (dim.alias()) {
+            ydata.fill(1.0);
+        }
     } else if (d.dimensionType() == nix::DimensionType::Set) {
         std::vector<double> data;
         array.getData(data);
@@ -351,12 +354,12 @@ void PlotDialog::data_array_to_qvector(const nix::DataArray &array, QVector<doub
         nix::SetDimension dim = d.asSetDimension();
         std::vector<std::string> labels = dim.labels();
         for (size_t i = 0; i < labels.size(); ++i) {
-            xlabels.push_back(QString::fromStdString(labels[i]));
+            xticklabels.push_back(QString::fromStdString(labels[i]));
             xdata.push_back(static_cast<double>(i));
         }
         if (labels.size() == 0) {
             for (int i = 0; i < ydata.size(); ++i) {
-                xlabels.push_back(QString::fromStdString(nix::util::numToStr<int>(i)));
+                xticklabels.push_back(QString::fromStdString(nix::util::numToStr<int>(i)));
                 xdata.push_back(static_cast<double>(i));
             }
         }
