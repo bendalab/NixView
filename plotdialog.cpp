@@ -108,7 +108,7 @@ void PlotDialog::draw_multi_tag(const nix::MultiTag &mtag) {
         if (mtag.positions().dimensionCount() == 1) {
             draw_data_array(mtag.positions());
         } else {
-            std::cerr << "Can only draw regions in one-d, so far!" << std::endl;
+            std::cerr << "Can only draw one-d data, so far!" << std::endl;
         }
     } else {
         std::vector<nix::DataArray> arrays = mtag.references();
@@ -186,19 +186,21 @@ void PlotDialog::add_line_plot(QVector<double> x_data, QVector<double> y_data, Q
 }
 
 
-void PlotDialog::add_scatter_plot(QVector<double> x_data, QVector<double> y_data, QString name) {
+void PlotDialog::add_scatter_plot(QVector<double> x_data, QVector<double> y_data, QString name, bool y_scale) {
     ui->plot->addGraph();
     ui->plot->graph()->addData(x_data, y_data);
-    ui->plot->graph()->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, 10));
+    ui->plot->graph()->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, 5));
     ui->plot->graph()->setLineStyle(QCPGraph::LineStyle::lsNone);
     ui->plot->graph()->setName(name);
 
-    double y_min = *std::min_element(std::begin(y_data), std::end(y_data));
-    double y_max = *std::max_element(std::begin(y_data), std::end(y_data));
-    if (y_min == y_max)
-        y_min = 0.0;
+    if (y_scale) {
+        double y_min = *std::min_element(std::begin(y_data), std::end(y_data));
+        double y_max = *std::max_element(std::begin(y_data), std::end(y_data));
+        if (y_min == y_max)
+            y_min = 0.0;
 
-    ui->plot->yAxis->setRange(1.05*y_min, 1.05*y_max);
+        ui->plot->yAxis->setRange(1.05*y_min, 1.05*y_max);
+    }
     ui->plot->xAxis->setRange(x_data[0], x_data.last());
 }
 

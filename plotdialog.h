@@ -61,7 +61,7 @@ private:
     bool check_plottable_dtype(const nix::DataArray & array);
 
     void add_line_plot(QVector<double> x_data, QVector<double> y_data, QString name);
-    void add_scatter_plot(QVector<double> x_data, QVector<double> y_data, QString name);
+    void add_scatter_plot(QVector<double> x_data, QVector<double> y_data, QString name, bool y_scale=true);
     void add_bar_plot(QVector<QString> categories, QVector<double> y_data, QString name);
 
     void data_array_ax_labels(const nix::DataArray &array, QString &ylabel, QVector<QString> &labels);
