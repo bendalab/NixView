@@ -103,13 +103,9 @@ void PlotDialog::draw_segment(const nix::Tag &tag) {
 
 
 void PlotDialog::draw_multi_tag(const nix::MultiTag &mtag) {
+    nix::DataArray reference;
     if (mtag.referenceCount() == 1) {
-        draw_data_array(mtag.references()[0]);
-        if (mtag.positions().dimensionCount() == 1) {
-            draw_data_array(mtag.positions());
-        } else {
-            std::cerr << "Can only draw one-d data, so far!" << std::endl;
-        }
+        reference = mtag.getReference(0);
     } else {
         std::vector<nix::DataArray> arrays = mtag.references();
         QStringList array_names;
@@ -119,15 +115,25 @@ void PlotDialog::draw_multi_tag(const nix::MultiTag &mtag) {
         QString label = "Select one of the referenced data arrays for display:";
         QString item = QInputDialog::getItem(this, "Select data array", label, array_names, 0, false, &ok);
         if (ok && !item.isEmpty())
-            draw_data_array(mtag.getReference(item.toStdString()));
-        if (mtag.positions().dimensionCount() == 1) {
-        //    draw_segment(mtag);
-        } else {
-            std::cerr << "Can only draw regions in one-d, so far!" << std::endl;
-        }
+            reference = mtag.getReference(item.toStdString());
+    }
+    if (mtag.positions().dimensionCount() > 1) {
+        std::cerr << "Can only draw one-d data, so far!" << std::endl;
+    }
+    draw_data_array(reference);
+    if (mtag.positions().dimensionCount() > 1) {
+        std::cerr << "Can only draw regions in one-d, so far!" << std::endl;
     }
 
-    std::cerr << "Plotting of multitags is not yet supported." << std::endl;
+    std::vector<double> pos(mtag.positions().dataExtent()[0]);
+    std::vector<double> ext(mtag.positions().dataExtent()[0]);
+
+    mtag.positions().getData(nix::DataType::Double, pos.data(), {mtag.positions().dataExtent()[0]}, {0});
+    QVector<double> positions = QVector<double>::fromStdVector(pos);
+    mtag.extents().getData(nix::DataType::Double, ext.data(), {mtag.positions().dataExtent()[0]}, {0});
+    QVector<double> extents = QVector<double>::fromStdVector(ext);
+    QString name = QString::fromStdString(mtag.name());
+    add_segments(positions, extents, name);
 }
 
 
@@ -192,7 +198,7 @@ void PlotDialog::add_scatter_plot(QVector<double> x_data, QVector<double> y_data
     ui->plot->graph()->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, 5));
     ui->plot->graph()->setLineStyle(QCPGraph::LineStyle::lsNone);
     ui->plot->graph()->setName(name);
-
+    ui->plot->graph()->setPen(QPen(Qt::red));
     if (y_scale) {
         double y_min = *std::min_element(std::begin(y_data), std::end(y_data));
         double y_max = *std::max_element(std::begin(y_data), std::end(y_data));
@@ -246,6 +252,26 @@ void PlotDialog::add_bar_plot(QVector<QString> categories, QVector<double> y_dat
 }
 
 
+void PlotDialog::add_segments(QVector<double> &positions, QVector<double> &extents, QString &name) {
+    if (positions.size() != extents.size()) {
+        std::cerr << "Cannot draw segments, number of positions and extents does not match!" << std::endl;
+    }
+    for (int i = 0; i<positions.size(); i++) {
+        QCPItemRect *rect = new QCPItemRect(ui->plot);
+        double x_min, x_max, y_min, y_max;
+        y_max = ui->plot->yAxis->range().upper;
+        y_min = ui->plot->yAxis->range().lower;
+        x_min = positions[i];
+        x_max = x_min + extents[i];
+        rect->position("topLeft")->setCoords(x_min, y_max);
+        rect->position("bottomRight")->setCoords(x_max, y_min);
+        rect->setPen(QPen(Qt::red));
+        rect->setBrush(QBrush(QColor(255, 10, 10, 50)));
+        ui->plot->addItem(rect);
+    }
+}
+
+
 void PlotDialog::draw_2d(const nix::DataArray &array) {
 
 }
@@ -265,6 +291,7 @@ bool PlotDialog::check_plottable_dtype(const nix::DataArray &array) {
 bool PlotDialog::can_draw() {
     return item.canConvert<nix::DataArray>() | item.canConvert<nix::MultiTag>() | item.canConvert<nix::Tag>();
 }
+
 
 void PlotDialog::data_array_ax_labels(const nix::DataArray &array, QString &ylabel, QVector<QString> &labels) {
     if (array.label())
