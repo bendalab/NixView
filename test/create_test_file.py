@@ -92,8 +92,10 @@ def create_m_tag(f,b):
     mt.references.append(trace)
     
     positions = b.create_data_array('epoch_starts','nix.event', data=[0.05, 0.35])
+    positions.
     extents = b.create_data_array('epoch_ends','nix.event', data=[0.1, 0.1])
     mtag = b.create_multi_tag("epochs", "nix.event_epochs", positions)
+    mtag.references.append(trace)
     mtag.extents = extents
     
     feature_1 = b.create_data_array("feature 1", "nix.feature", 
@@ -112,6 +114,7 @@ def create_m_tag(f,b):
     feature_2.label = "voltage"
     mtag.create_feature(feature_1, nix.LinkType.Untagged)
     mtag.create_feature(feature_2, nix.LinkType.Untagged)
+
 
 def create_m_tag_3d(f, b):
     data = [da for da in b.data_arrays if da.name == 'lena'][0]
