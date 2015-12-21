@@ -24,7 +24,8 @@ SOURCES += main.cpp\
     InfoWidget/TagPanel.cpp \
     aboutdialog.cpp \
     plotdialog.cpp \
-    qcustomplot.cpp
+    qcustomplot.cpp \
+    Plotter/plotter.cpp
 
 HEADERS  += MainWindow.hpp \
     MainViewWidget.hpp \
@@ -36,7 +37,8 @@ HEADERS  += MainWindow.hpp \
     common/Common.hpp \
     aboutdialog.h \
     plotdialog.h \
-    qcustomplot.h
+    qcustomplot.h \
+    Plotter/plotter.h
 
 FORMS    += MainWindow.ui \
     MainViewWidget.ui \
