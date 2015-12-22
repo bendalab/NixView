@@ -58,7 +58,7 @@ def create_1d_range(f, b):
     eod = da[:]
     time = np.asarray(da.dimensions[0].axis(len(eod)))
     shift_eod = np.roll(eod,1) 
-    xings = time[(eod < 0) & (shift_eod > 0)]
+    xings = time[(eod > 0) & (shift_eod < 0)]
     
     range_da = b.create_data_array('zero crossings', 'nix.event', data=xings)
     d = range_da.append_alias_range_dimension()
@@ -92,8 +92,9 @@ def create_m_tag(f,b):
     mt.references.append(trace)
     
     positions = b.create_data_array('epoch_starts','nix.event', data=[0.05, 0.35])
-    positions.
+    positions.append_set_dimension()
     extents = b.create_data_array('epoch_ends','nix.event', data=[0.1, 0.1])
+    extents.append_set_dimension()
     mtag = b.create_multi_tag("epochs", "nix.event_epochs", positions)
     mtag.references.append(trace)
     mtag.extents = extents
