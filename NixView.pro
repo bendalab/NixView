@@ -25,7 +25,8 @@ SOURCES += main.cpp\
     aboutdialog.cpp \
     plotdialog.cpp \
     qcustomplot.cpp \
-    Plotter/plotter.cpp
+    Plotter/plotter.cpp \
+    nixview.cpp
 
 HEADERS  += MainWindow.hpp \
     MainViewWidget.hpp \
@@ -38,7 +39,8 @@ HEADERS  += MainWindow.hpp \
     aboutdialog.h \
     plotdialog.h \
     qcustomplot.h \
-    Plotter/plotter.h
+    Plotter/plotter.h \
+    nixview.h
 
 FORMS    += MainWindow.ui \
     MainViewWidget.ui \

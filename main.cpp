@@ -1,9 +1,10 @@
 #include "MainWindow.hpp"
 #include <QApplication>
+#include "nixview.h"
 
 int main(int argc, char *argv[])
 {
-    QApplication a(argc, argv);
+    NixView a(argc, argv);
     MainWindow w;
     w.show();
 
