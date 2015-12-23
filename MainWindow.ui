@@ -32,7 +32,7 @@
   <widget class="QWidget" name="centralWidget">
    <layout class="QGridLayout" name="gridLayout">
     <item row="0" column="0">
-     <layout class="QHBoxLayout" name="main_ho_layout"/>
+     <layout class="QVBoxLayout" name="main_layout"/>
     </item>
    </layout>
   </widget>
