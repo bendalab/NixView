@@ -25,8 +25,9 @@ SOURCES += main.cpp\
     aboutdialog.cpp \
     plotdialog.cpp \
     qcustomplot.cpp \
-    Plotter/plotter.cpp \
-    nixview.cpp
+    nixview.cpp \
+    lineplotter.cpp \
+    plotwidget.cpp
 
 HEADERS  += MainWindow.hpp \
     MainViewWidget.hpp \
@@ -40,7 +41,9 @@ HEADERS  += MainWindow.hpp \
     plotdialog.h \
     qcustomplot.h \
     Plotter/plotter.h \
-    nixview.h
+    nixview.h \
+    lineplotter.h \
+    plotwidget.h
 
 FORMS    += MainWindow.ui \
     MainViewWidget.ui \
@@ -50,7 +53,9 @@ FORMS    += MainWindow.ui \
     InfoWidget/MetaDataPanel.ui \
     InfoWidget/TagPanel.ui \
     aboutdialog.ui \
-    plotdialog.ui
+    plotdialog.ui \
+    lineplotter.ui \
+    plotwidget.ui
 
 
 #standard windows folder?
