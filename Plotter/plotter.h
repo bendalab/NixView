@@ -9,7 +9,12 @@
 
 namespace Ui {
     class Plotter;
+    class PlotterType;
 }
+
+enum class PlotterType : unsigned int {
+    Line, Category, Image
+};
 
 class Plotter {
 
@@ -20,6 +25,7 @@ public:
 
     void data_array_to_qvector(const nix::DataArray &array, QVector<double> &xdata, QVector<double> &ydata,
                                QVector<QString> &xticklabels, nix::ndsize_t dim_index) const {
+    virtual PlotterType plotter_type() const = 0;
         nix::Dimension d = array.getDimension(dim_index);
 
         if (d.dimensionType() == nix::DimensionType::Sample) {

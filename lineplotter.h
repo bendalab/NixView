@@ -21,6 +21,8 @@ public:
 
     void add_segments(const QVector<double> &positions, const QVector<double> &extents, const QString &name);
 
+    PlotterType plotter_type() const;
+
 private:
     Ui::LinePlotter *ui;
     QCustomPlot* get_plot();

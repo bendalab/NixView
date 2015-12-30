@@ -15,6 +15,10 @@ LinePlotter::~LinePlotter()
 }
 
 
+PlotterType LinePlotter::plotter_type() const {
+    return PlotterType::Line;
+}
+
 void LinePlotter::add_line_plot(const QVector<double> &x_data, const QVector<double> &y_data, const QString &name) {
     ui->plot->addGraph();
     ui->plot->graph()->addData(x_data, y_data);
