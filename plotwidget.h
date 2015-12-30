@@ -3,6 +3,10 @@
 
 #include <QWidget>
 #include <nix.hpp>
+#include <QVariant>
+#include <Plotter/plotter.h>
+//#include "common/Common.hpp"
+
 
 namespace Ui {
 class PlotWidget;
@@ -15,13 +19,21 @@ class PlotWidget : public QWidget
 public:
     explicit PlotWidget(QWidget *parent = 0);
     ~PlotWidget();
-/*
-    bool can_draw() {
-        return item.canConvert<nix::DataArray>() | item.canConvert<nix::MultiTag>() | item.canConvert<nix::Tag>();
-    }
-*/
+
+    bool can_draw() const;
+
+    void setEntity(QVariant var);
+
 private:
     Ui::PlotWidget *ui;
+    QVariant item;
+    Plotter *plot;
+
+    bool check_plottable_dtype(nix::DataType dtype) const;
+    void select_plotter();
+    void delete_widgets_from_layout();
+    void process(const nix::DataArray &array);
+    void draw_1d(const nix::DataArray &array);
 };
 
 #endif // PLOTWIDGET_H
