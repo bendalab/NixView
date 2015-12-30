@@ -23,6 +23,20 @@ PlotterType LinePlotter::plotter_type() const {
 void LinePlotter::set_label(const std::string &label) {
     ui->label->setText(QString::fromStdString(label));
 }
+
+
+void LinePlotter::set_xlabel(const QString &label){
+    ui->plot->xAxis->setLabel(label);
+    ui->plot->replot();
+}
+
+
+void LinePlotter::set_ylabel(const QString &label){
+    ui->plot->yAxis->setLabel(label);
+    ui->plot->replot();
+}
+
+
 void LinePlotter::add_line_plot(const QVector<double> &x_data, const QVector<double> &y_data, const QString &name) {
     ui->plot->addGraph();
     ui->plot->graph()->addData(x_data, y_data);
@@ -33,6 +47,7 @@ void LinePlotter::add_line_plot(const QVector<double> &x_data, const QVector<dou
         y_min = 0.0;
     ui->plot->yAxis->setRange(1.05*y_min, 1.05*y_max);
     ui->plot->graph()->setName(name);
+    ui->plot->replot();
 }
 
 
