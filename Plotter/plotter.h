@@ -22,10 +22,10 @@ public:
 
     virtual void add_events(const QVector<double> &x_data, const QVector<double> &y_data, const QString &name, bool y_scale=true) = 0;
     virtual void add_segments(const QVector<double> &positions, const QVector<double> &extents, const QString &name) = 0;
-
-    void data_array_to_qvector(const nix::DataArray &array, QVector<double> &xdata, QVector<double> &ydata,
-                               QVector<QString> &xticklabels, nix::ndsize_t dim_index) const {
+    virtual void set_label(const std::string &label) = 0;
     virtual PlotterType plotter_type() const = 0;
+    static void data_array_to_qvector(const nix::DataArray &array, QVector<double> &xdata, QVector<double> &ydata,
+                                      QVector<QString> &xticklabels, nix::ndsize_t dim_index) {
         nix::Dimension d = array.getDimension(dim_index);
 
         if (d.dimensionType() == nix::DimensionType::Sample) {
@@ -69,7 +69,7 @@ public:
         }
     }
 
-    void data_array_ax_labels(const nix::DataArray &array, QString &ylabel, QVector<QString> &labels) const {
+    static void data_array_ax_labels(const nix::DataArray &array, QString &ylabel, QVector<QString> &labels){
         if (array.label())
             ylabel = QString::fromStdString(*array.label());
         if (array.unit())
@@ -99,7 +99,7 @@ public:
     }
 
 
-    bool check_plottable_dtype(const nix::DataArray &array) {
+    static bool check_plottable_dtype(const nix::DataArray &array) {
         bool plottable = true;
         plottable = plottable && array.dataType() != nix::DataType::Bool;
         plottable = plottable && array.dataType() != nix::DataType::String;
