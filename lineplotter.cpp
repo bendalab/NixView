@@ -19,6 +19,10 @@ PlotterType LinePlotter::plotter_type() const {
     return PlotterType::Line;
 }
 
+
+void LinePlotter::set_label(const std::string &label) {
+    ui->label->setText(QString::fromStdString(label));
+}
 void LinePlotter::add_line_plot(const QVector<double> &x_data, const QVector<double> &y_data, const QString &name) {
     ui->plot->addGraph();
     ui->plot->graph()->addData(x_data, y_data);

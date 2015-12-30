@@ -15,6 +15,8 @@ public:
     explicit LinePlotter(QWidget *parent = 0);
     ~LinePlotter();
 
+    void set_label(const std::string &label);
+
     void add_line_plot(const QVector<double> &x_data, const QVector<double> &y_data, const QString &name);
 
     void add_events(const QVector<double> &x_data, const QVector<double> &y_data, const QString &name, bool y_scale);
