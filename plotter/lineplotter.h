@@ -2,7 +2,7 @@
 #define LINEPLOTTER_H
 
 #include <QWidget>
-#include "Plotter/plotter.h"
+#include "plotter.h"
 
 namespace Ui {
     class LinePlotter;
