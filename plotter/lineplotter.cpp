@@ -35,12 +35,18 @@ void LinePlotter::set_label(const std::string &label) {
     ui->label->setText(QString::fromStdString(label));
 }
 
+void LinePlotter::set_xlabel(const std::string &label) {
+    set_xlabel(QString::fromStdString(label));
+}
 
 void LinePlotter::set_xlabel(const QString &label){
     ui->plot->xAxis->setLabel(label);
     ui->plot->replot();
 }
 
+void LinePlotter::set_ylabel(const std::string &label) {
+    set_ylabel(QString::fromStdString(label));
+}
 
 void LinePlotter::set_ylabel(const QString &label){
     ui->plot->yAxis->setLabel(label);
@@ -107,7 +113,6 @@ QCustomPlot* LinePlotter::get_plot() {
 
 
 void LinePlotter::selection_changed() {
-    std::cerr << "selected " << std::endl;
     // make top and bottom axes be selected synchronously, and handle axis and tick labels as one selectable object:
     if (ui->plot->xAxis->selectedParts().testFlag(QCPAxis::spAxis) || ui->plot->xAxis->selectedParts().testFlag(QCPAxis::spTickLabels) ||
             ui->plot->xAxis->selectedParts().testFlag(QCPAxis::spAxisLabel) || ui->plot->xAxis2->selectedParts().testFlag(QCPAxis::spAxis) ||
@@ -138,7 +143,6 @@ void LinePlotter::selection_changed() {
 
 
 void LinePlotter::mouse_press() {
-    std::cerr << "mouse press " << std::endl;
     // if an axis is selected, only allow the direction of that axis to be dragged
     // if no axis is selected, both directions may be dragged
     if (ui->plot->xAxis->selectedParts().testFlag(QCPAxis::spAxis))
@@ -151,7 +155,6 @@ void LinePlotter::mouse_press() {
 
 
 void LinePlotter::mouse_wheel() {
-    std::cerr << "mouse wheel " << std::endl;
     // if an axis is selected, only allow the direction of that axis to be zoomed
     // if no axis is selected, both directions may be zoomed
     if (ui->plot->xAxis->selectedParts().testFlag(QCPAxis::spAxis))
@@ -164,7 +167,6 @@ void LinePlotter::mouse_wheel() {
 
 
 void LinePlotter::context_menu_request(QPoint pos) {
-    std::cerr << "context menu" << std::endl;
     QMenu *menu = new QMenu(this);
     menu->setAttribute(Qt::WA_DeleteOnClose);
 
