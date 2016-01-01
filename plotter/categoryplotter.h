@@ -21,9 +21,15 @@ public:
 
     void set_xlabel(const QString &label);
 
-    // void add_events(const QVector<double> &x_data, const QVector<double> &y_data, const QString &name, bool y_scale);
+    void set_ylabel(const std::string &label);
 
-    // void add_segments(const QVector<double> &positions, const QVector<double> &extents, const QString &name);
+    void set_xlabel(const std::string &label);
+
+    void add_bar_plot(QVector<QString> categories, QVector<double> y_data, const QString &name);
+
+    void add_events(const QVector<double> &x_data, const QVector<double> &y_data, const QString &name, bool y_scale);
+
+    void add_segments(const QVector<double> &positions, const QVector<double> &extents, const QString &name);
 
     PlotterType plotter_type() const;
 
