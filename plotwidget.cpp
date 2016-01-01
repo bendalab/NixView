@@ -1,6 +1,7 @@
 #include "plotwidget.h"
 #include "ui_plotwidget.h"
-#include "lineplotter.h"
+#include "plotter/lineplotter.h"
+#include "plotter/categoryplotter.h"
 #include "common/Common.hpp"
 
 PlotWidget::PlotWidget(QWidget *parent) :
@@ -47,6 +48,11 @@ void PlotWidget::process(const nix::DataArray &array) {
             ui->layout->addWidget(lp);
             this->plot = static_cast<Plotter*>(lp);
             draw_1d(array);
+        } else if (array.getDimension(1).dimensionType() == nix::DimensionType::Set) {
+            CategoryPlotter *cp = new CategoryPlotter();
+            ui->layout->addWidget(cp);
+            this->plot = static_cast<Plotter*>(cp);
+            draw_1d(array);
         }
         break;
     case 2:
@@ -62,10 +68,6 @@ void PlotWidget::process(const nix::DataArray &array) {
 void PlotWidget::draw_1d(const nix::DataArray &array) {
     if (check_plottable_dtype(array.dataType())) {
         std::cerr << "ping" << std::endl;
-        if (this->plot->plotter_type() != PlotterType::Line) {
-          return;
-        }
-        LinePlotter *plotter = static_cast<LinePlotter*>(this->plot);
         nix::Dimension d = array.getDimension(1);
         QVector<double> x_axis, y_axis;
         QVector<QString> x_tick_labels;
@@ -74,29 +76,60 @@ void PlotWidget::draw_1d(const nix::DataArray &array) {
         QString y_label;
         QVector<QString> ax_labels;
         Plotter::data_array_ax_labels(array, y_label, ax_labels);
+
         if (d.dimensionType() == nix::DimensionType::Sample) {
+            if (this->plot->plotter_type() != PlotterType::Line) {
+              return;
+            }
+            LinePlotter *plotter = static_cast<LinePlotter*>(this->plot);
+
             plotter->add_line_plot(x_axis, y_axis, QString::fromStdString(array.name()));
             plotter->set_ylabel(y_label);
             plotter->set_xlabel(ax_labels[0]);
             plotter->set_label(array.name());
         } else if (d.dimensionType() == nix::DimensionType::Range) {
+            if (this->plot->plotter_type() != PlotterType::Line) {
+              return;
+            }
+
+            LinePlotter *plotter = static_cast<LinePlotter*>(this->plot);
             plotter->add_events(x_axis, y_axis, QString::fromStdString(array.name()), true);
             plotter->set_ylabel(y_label);
             plotter->set_xlabel(ax_labels[0]);
             plotter->set_label(array.name());
         } else if (d.dimensionType() == nix::DimensionType::Set) {
-            //add_bar_plot(x_tick_labels, y_axis, QString::fromStdString(array.name()));
+            if (this->plot->plotter_type() != PlotterType::Category) {
+              return;
+            }
+            CategoryPlotter *plotter = static_cast<CategoryPlotter*>(this->plot);
+            plotter->add_bar_plot(x_tick_labels, y_axis, QString::fromStdString(array.name()));
+            plotter->set_label(array.name());
+            plotter->set_ylabel(array.label() ? *array.label() : "");
         } else {
             std::cerr << "unsupported dimension type" << std::endl;
         }
     }
 }
+
+void PlotWidget::process(const nix::Tag &tag) {
+
+}
+
+void PlotWidget::process(const nix::MultiTag &mtag) {
+
+}
+
 void PlotWidget::setEntity(QVariant var) {
     this->item = var;
     select_plotter();
     if (can_draw()) {
         draw();
     }
+}
+
+
+void PlotWidget::draw() {
+
 }
 
 

@@ -4,9 +4,7 @@
 #include <QWidget>
 #include <nix.hpp>
 #include <QVariant>
-#include <Plotter/plotter.h>
-//#include "common/Common.hpp"
-
+#include <plotter/plotter.h>
 
 namespace Ui {
 class PlotWidget;
@@ -29,10 +27,14 @@ private:
     QVariant item;
     Plotter *plot;
 
+    void draw();
     bool check_plottable_dtype(nix::DataType dtype) const;
     void select_plotter();
     void delete_widgets_from_layout();
     void process(const nix::DataArray &array);
+    void process(const nix::MultiTag &mtag);
+    void process(const nix::Tag &tag);
+
     void draw_1d(const nix::DataArray &array);
 };
 
