@@ -1,8 +1,14 @@
 import nix
+import lif
 import numpy as np
 import matplotlib.pyplot as plt
 import Image as img
 from IPython import embed
+
+def fake_neuron():
+    lif_model = lif.lif()
+    t, v, spike_times = lif_model.run_const_stim(10000, 0.005)
+    return t, v, spike_times
 
 
 def create_1d_sampled(f, b):
@@ -38,6 +44,15 @@ def create_1d_sampled(f, b):
     src2 = b.create_source('subject', 'nix.source.subject')
     src2.metadata = subj
     
+
+def create_2d(f, b, trials=10):
+    # create multiple responses of a lif model neuron
+    for t in range(trials):
+        time, voltage, spike_times = fake_neuron()
+        print (t)
+        
+    
+
 def create_3d(f, b):
     # taken from nix tutorial
     image = img.open('lena.bmp')
@@ -179,6 +194,15 @@ def create_test_file(filename):
     create_m_tag(nix_file, b)
     create_epoch_tag(nix_file, b)
     create_point_tag(nix_file, b)
+    
+    s2 = nix_file.create_section('Lif recording','recording')
+    s2['date'] = '2015-10-21'
+    s2['experimenter'] = 'John Doe'
+    s2['neuron'] = 'Leaky integrate and fire neuron'
+   
+    b2 = nix_file.create_block("2D data", "nix.recording_session")
+    b2.metadata = s2
+    create_2d(nix_file, b2)
     
     b3 = nix_file.create_block("3D data", "nix.image_data")
     b3.metadata  = s
