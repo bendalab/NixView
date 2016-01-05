@@ -47,11 +47,21 @@ def create_1d_sampled(f, b):
 
 def create_2d(f, b, trials=10):
     # create multiple responses of a lif model neuron
+    voltages = []
     for t in range(trials):
-        time, voltage, spike_times = fake_neuron()
-        print (t)
-        
+        time, voltage, _ = fake_neuron()
+        voltages.append(voltage)
     
+    voltages = np.asarray(voltages).T
+    
+    da = b.create_data_array("membrane voltages", "nix.regular_sampled.series", dtype=nix.DataType.Double, data=voltages)
+    d = da.append_sampled_dimension(time[1]-time[0])
+    d.label = "time"
+    d.unit = "s"
+    da.append_set_dimension()
+
+    
+
 
 def create_3d(f, b):
     # taken from nix tutorial
