@@ -36,6 +36,7 @@ private:
     void process(const nix::Tag &tag);
 
     void draw_1d(const nix::DataArray &array);
+    void draw_2d(const nix::DataArray &array);
 };
 
 #endif // PLOTWIDGET_H
