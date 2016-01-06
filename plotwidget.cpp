@@ -131,14 +131,47 @@ void PlotWidget::process(const nix::Tag &tag) {
             plt->add_segments(positions, extents, QString::fromStdString(tag.name()));
         }
     }
-    // if more than one reference add combo box with the selection
-    // what if there are features?
-    // or we could draw all references and the respective segment,
-    // event and add a checkbox list
 }
 
 void PlotWidget::process(const nix::MultiTag &mtag) {
+    std::cerr << "process MultiTag" << std::endl;
 
+    std::vector<double> pos(mtag.positions().dataExtent()[0]);
+    std::vector<double> ext;
+
+    mtag.positions().getData(nix::DataType::Double, pos.data(), {mtag.positions().dataExtent()[0]}, {0});
+    QVector<double> positions = QVector<double>::fromStdVector(pos);
+
+    if (mtag.extents() != nix::none) {
+        ext.resize(positions.size());
+        mtag.extents().getData(nix::DataType::Double, ext.data(), {mtag.positions().dataExtent()[0]}, {0});
+    }
+    QVector<double> extents = QVector<double>::fromStdVector(ext);
+    QString name = QString::fromStdString(mtag.name());
+
+    for (nix::ndsize_t i = 0; i < mtag.referenceCount(); i++){
+        process(mtag.getReference(i));
+        Plotter *currplot = this->plots[i];
+
+        if (currplot->plotter_type() == PlotterType::Category) {
+            CategoryPlotter* plt = static_cast<CategoryPlotter*>(this->plots[i]);
+            plt->setFixedHeight(200);
+            plt->add_segments(positions, extents, name);
+        } else if (currplot->plotter_type() == PlotterType::Line) {
+            LinePlotter *plt = static_cast<LinePlotter*>(this->plots[i]);
+            plt->setFixedHeight(200);
+            plt->add_segments(positions, extents, name);
+        }
+    }
+    /*
+    if (extents.size() > 0) {
+        add_segments(positions, extents, name);
+    } else {
+        QVector<double> y_pos(pos.size());
+        y_pos.fill(0.0);
+        add_scatter_plot(positions, y_pos, QString::fromStdString(mtag.name()));
+    }
+    */
 }
 
 void PlotWidget::setEntity(QVariant var) {
