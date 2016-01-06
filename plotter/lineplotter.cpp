@@ -88,7 +88,7 @@ void LinePlotter::add_events(const QVector<double> &x_data, const QVector<double
 
 
 void LinePlotter::add_segments(const QVector<double> &positions, const QVector<double> &extents, const QString &name) {
-    if (positions.size() != extents.size()) {
+    if (extents.size() > 0 && (positions.size() != extents.size())) {
         std::cerr << "Cannot draw segments, number of positions and extents does not match!" << std::endl;
         return;
     }
@@ -98,7 +98,11 @@ void LinePlotter::add_segments(const QVector<double> &positions, const QVector<d
         y_max = ui->plot->yAxis->range().upper;
         y_min = ui->plot->yAxis->range().lower;
         x_min = positions[i];
-        x_max = x_min + extents[i];
+        if (extents.size() > 0)
+            x_max = x_min + extents[i];
+        else
+            x_max = positions[i];
+
         rect->position("topLeft")->setCoords(x_min, y_max);
         rect->position("bottomRight")->setCoords(x_max, y_min);
         rect->setPen(QPen(Qt::red));
