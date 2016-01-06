@@ -23,7 +23,7 @@ bool PlotWidget::can_draw() const {
 }
 
 
-void PlotWidget::select_plotter() {
+void PlotWidget::process_item() {
     if (this->item.canConvert<nix::DataArray>()) {
         nix::DataArray array = item.value<nix::DataArray>();
         process(array);
@@ -45,13 +45,13 @@ void PlotWidget::process(const nix::DataArray &array) {
                 array.getDimension(1).dimensionType() == nix::DimensionType::Range) {
             // delete_widgets_from_layout();
             LinePlotter *lp = new LinePlotter();
-            ui->layout->addWidget(lp);
-            this->plot = static_cast<Plotter*>(lp);
+            ui->scrollAreaWidgetContents->layout()->addWidget(lp);
+            this->plots.push_back(static_cast<Plotter*>(lp));
             draw_1d(array);
         } else if (array.getDimension(1).dimensionType() == nix::DimensionType::Set) {
             CategoryPlotter *cp = new CategoryPlotter();
-            ui->layout->addWidget(cp);
-            this->plot = static_cast<Plotter*>(cp);
+            ui->scrollAreaWidgetContents->layout()->addWidget(cp);
+            this->plots.push_back(static_cast<Plotter*>(cp));
             draw_1d(array);
         }
         break;
@@ -78,30 +78,30 @@ void PlotWidget::draw_1d(const nix::DataArray &array) {
         Plotter::data_array_ax_labels(array, y_label, ax_labels);
 
         if (d.dimensionType() == nix::DimensionType::Sample) {
-            if (this->plot->plotter_type() != PlotterType::Line) {
+            if (this->plots[this->plots.size() - 1]->plotter_type() != PlotterType::Line) {
               return;
             }
-            LinePlotter *plotter = static_cast<LinePlotter*>(this->plot);
+            LinePlotter *plotter = static_cast<LinePlotter*>(this->plots[this->plots.size() - 1]);
 
             plotter->add_line_plot(x_axis, y_axis, QString::fromStdString(array.name()));
             plotter->set_ylabel(y_label);
             plotter->set_xlabel(ax_labels[0]);
             plotter->set_label(array.name());
         } else if (d.dimensionType() == nix::DimensionType::Range) {
-            if (this->plot->plotter_type() != PlotterType::Line) {
+            if (this->plots[this->plots.size() - 1]->plotter_type() != PlotterType::Line) {
               return;
             }
 
-            LinePlotter *plotter = static_cast<LinePlotter*>(this->plot);
+            LinePlotter *plotter = static_cast<LinePlotter*>(this->plots[this->plots.size() - 1]);
             plotter->add_events(x_axis, y_axis, QString::fromStdString(array.name()), true);
             plotter->set_ylabel(y_label);
             plotter->set_xlabel(ax_labels[0]);
             plotter->set_label(array.name());
         } else if (d.dimensionType() == nix::DimensionType::Set) {
-            if (this->plot->plotter_type() != PlotterType::Category) {
+            if (this->plots[this->plots.size() - 1]->plotter_type() != PlotterType::Category) {
               return;
             }
-            CategoryPlotter *plotter = static_cast<CategoryPlotter*>(this->plot);
+            CategoryPlotter *plotter = static_cast<CategoryPlotter*>(this->plots[this->plots.size() - 1]);
             plotter->add_bar_plot(x_tick_labels, y_axis, QString::fromStdString(array.name()));
             plotter->set_label(array.name());
             plotter->set_ylabel(array.label() ? *array.label() : "");
@@ -112,7 +112,29 @@ void PlotWidget::draw_1d(const nix::DataArray &array) {
 }
 
 void PlotWidget::process(const nix::Tag &tag) {
+    std::cerr << "process Tag" << std::endl;
+    for (nix::ndsize_t i = 0; i < tag.referenceCount(); i++) {
+        process(tag.getReference(i));
+        Plotter *currplot = this->plots[i];
+        QVector<double> positions, extents;
+        positions.push_back(tag.position()[0]);
+        if (tag.extent().size() > 0)
+            extents.push_back(tag.extent()[0]);
 
+        if (currplot->plotter_type() == PlotterType::Category) {
+            CategoryPlotter* plt = static_cast<CategoryPlotter*>(this->plots[i]);
+            plt->setFixedHeight(200);
+            plt->add_segments(positions, extents, QString::fromStdString(tag.name()));
+        } else if (currplot->plotter_type() == PlotterType::Line) {
+            LinePlotter *plt = static_cast<LinePlotter*>(this->plots[i]);
+            plt->setFixedHeight(200);
+            plt->add_segments(positions, extents, QString::fromStdString(tag.name()));
+        }
+    }
+    // if more than one reference add combo box with the selection
+    // what if there are features?
+    // or we could draw all references and the respective segment,
+    // event and add a checkbox list
 }
 
 void PlotWidget::process(const nix::MultiTag &mtag) {
@@ -121,7 +143,7 @@ void PlotWidget::process(const nix::MultiTag &mtag) {
 
 void PlotWidget::setEntity(QVariant var) {
     this->item = var;
-    select_plotter();
+    process_item();
     if (can_draw()) {
         draw();
     }

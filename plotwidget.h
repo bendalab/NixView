@@ -25,11 +25,11 @@ public:
 private:
     Ui::PlotWidget *ui;
     QVariant item;
-    Plotter *plot;
+    std::vector<Plotter *> plots;
 
     void draw();
     bool check_plottable_dtype(nix::DataType dtype) const;
-    void select_plotter();
+    void process_item();
     void delete_widgets_from_layout();
     void process(const nix::DataArray &array);
     void process(const nix::MultiTag &mtag);
