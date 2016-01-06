@@ -27,7 +27,6 @@ private:
     QVariant item;
     std::vector<Plotter *> plots;
 
-    void draw();
     bool check_plottable_dtype(nix::DataType dtype) const;
     void process_item();
     void delete_widgets_from_layout();

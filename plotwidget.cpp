@@ -163,28 +163,11 @@ void PlotWidget::process(const nix::MultiTag &mtag) {
             plt->add_segments(positions, extents, name);
         }
     }
-    /*
-    if (extents.size() > 0) {
-        add_segments(positions, extents, name);
-    } else {
-        QVector<double> y_pos(pos.size());
-        y_pos.fill(0.0);
-        add_scatter_plot(positions, y_pos, QString::fromStdString(mtag.name()));
-    }
-    */
 }
 
 void PlotWidget::setEntity(QVariant var) {
     this->item = var;
     process_item();
-    if (can_draw()) {
-        draw();
-    }
-}
-
-
-void PlotWidget::draw() {
-
 }
 
 
