@@ -90,6 +90,7 @@ void LinePlotter::add_events(const QVector<double> &x_data, const QVector<double
 void LinePlotter::add_segments(const QVector<double> &positions, const QVector<double> &extents, const QString &name) {
     if (positions.size() != extents.size()) {
         std::cerr << "Cannot draw segments, number of positions and extents does not match!" << std::endl;
+        return;
     }
     for (int i = 0; i<positions.size(); i++) {
         QCPItemRect *rect = new QCPItemRect(ui->plot);
