@@ -4,6 +4,9 @@
 #include <QStandardItemModel>
 #include <nix.hpp>
 
+typedef QList<QStandardItem*> Row;
+typedef QList<QString> RowStrings;
+
 class NixDataModel : public QStandardItemModel
 {
 public:
@@ -19,6 +22,9 @@ private:
     template<typename T>
     std::string get_updated_at(T);
     void nix_file_to_model();
+    void add_subsec_prop(QStandardItem*, nix::Section);
+    template<typename T>
+    RowStrings create_rowstrings(T arg, std::string storagetype, std::string nixtype="", std::string shape="");
 };
 
 #endif // NIXDATAMODEL_H

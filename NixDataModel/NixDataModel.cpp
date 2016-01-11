@@ -3,16 +3,22 @@
 #include <nix.hpp>
 #include <boost/algorithm/string.hpp>
 
-typedef QList<QStandardItem*> Row;
-typedef QList<QString> RowStrings;
-
 NixDataModel::NixDataModel(nix::File _nix_file) :
     QStandardItemModel()
 {
     nix_file = _nix_file;
 
     RowStrings headers;
-    headers << "Name" << "Nix Type" << "Storage Type" << "Data Type" << "Shape" << "ID" << "CreatedAt" << "UpdatedAt";
+    headers << "Name"           // 0
+            << "Nix Type"       // 1
+            << "Storage Type"   // 2
+            << "Data Type"      // 3
+            << "Shape"          // 4
+            << "ID"             // 5
+            << "CreatedAt"      // 6
+            << "UpdatedAt"      // 7
+            << "Value"          // 8
+            << "conMeta";       // 9
     setHorizontalHeaderLabels(headers);
 
     nix_file_to_model();
@@ -34,49 +40,25 @@ void NixDataModel::nix_file_to_model() {
         data_branch.first()->appendRow(b_m);
 
         for (nix::DataArray da  : b.dataArrays()) {
-            RowStrings da_list;
             std::stringstream s;
             s << da.dataExtent();
             std::string shape = s.str();
             boost::algorithm::trim(shape);
             shape = shape.substr(7, shape.length()-1);
-            da_list << s_to_q(da.name())
-                    << s_to_q(da.type())
-                    << "Data Array"
-                    << s_to_q(nix::data_type_to_string(da.dataType()))
-                    << s_to_q(shape)
-                    << s_to_q(da.id())
-                    << s_to_q(get_created_at(da))
-                    << s_to_q(get_updated_at(da));
+            RowStrings da_list = create_rowstrings(da, "Data Array", nix::data_type_to_string(da.dataType()), shape);
             Row da_m = create_entry_row(da_list);
             b_m.first()->appendRow(da_m);
 //            add_linked_sources(child_item, QVariant::fromValue(da));
         }
 
         for (nix::Tag t : b.tags()) {
-            RowStrings t_list;
-            t_list << s_to_q(t.name())
-                   << s_to_q(t.type())
-                   << "Tag"
-                   << ""
-                   << ""
-                   << s_to_q(t.id())
-                   << s_to_q(get_created_at(t))
-                   << s_to_q(get_updated_at(t));
+            RowStrings t_list = create_rowstrings(t, "Tag");
             Row t_m = create_entry_row(t_list);
             b_m.first()->appendRow(t_m);
         }
 
         for (nix::MultiTag m : b.multiTags()) {
-            RowStrings m_list;
-            m_list << s_to_q(m.name())
-                   << s_to_q(m.type())
-                   << "Multitag"
-                   << ""
-                   << ""
-                   << s_to_q(m.id())
-                   << s_to_q(get_created_at(m))
-                   << s_to_q(get_updated_at(m));
+            RowStrings m_list = create_rowstrings(m, "Multitag");
             Row m_m = create_entry_row(m_list);
             b_m.first()->appendRow(m_m);
 //            add_linked_sources(child_item, QVariant::fromValue(b));
@@ -84,15 +66,7 @@ void NixDataModel::nix_file_to_model() {
 
         for (nix::Source s : b.sources())
         {
-            RowStrings s_list;
-            s_list << s_to_q(s.name())
-                   << s_to_q(s.type())
-                   << "Source"
-                   << ""
-                   << ""
-                   << s_to_q(s.id())
-                   << s_to_q(get_created_at(s))
-                   << s_to_q(get_updated_at(s));
+            RowStrings s_list = create_rowstrings(s, "Source");
             Row s_m = create_entry_row(s_list);
             b_m.first()->appendRow(s_m);
         }
@@ -104,36 +78,37 @@ void NixDataModel::nix_file_to_model() {
     root_node->appendRow(metadata_branch);
 
     for (nix::Section s : nix_file.sections()) {
-        RowStrings s_list;
-        s_list << s_to_q(s.name())
-               << s_to_q(s.type())
-               << "Source"
-               << ""
-               << ""
-               << s_to_q(s.id())
-               << s_to_q(get_created_at(s))
-               << s_to_q(get_updated_at(s));
+        RowStrings s_list = create_rowstrings(s, "Section");
         Row s_m = create_entry_row(s_list);
         metadata_branch.first()->appendRow(s_m);
 
-//        add_children_to_item(tree_item, s);
+        add_subsec_prop(s_m.first(), s);
     }
 }
 
-//TODO
-//void RawTreeView::add_children_to_item(QTreeWidgetItem* item, nix::Section section) {
-//    for  (auto s : section.sections()) {
-//        QTreeWidgetItem* child_item = new QTreeWidgetItem(item, QStringList(QString::fromStdString(s.name())));
-//        child_item->setText(1, QString::fromStdString(s.type()));
-//        add_children_to_item(child_item, s);
-//    }
+void NixDataModel::add_subsec_prop(QStandardItem* item, nix::Section section) {
+    for  (auto s : section.sections()) {
+        RowStrings s_list = create_rowstrings(s, "Section");
+        Row s_m = create_entry_row(s_list);
+        item->appendRow(s_m);
 
-//    for (nix::Property p : section.properties()) {
-//        QTreeWidgetItem* child_item = new QTreeWidgetItem(item, QStringList(QString::fromStdString(p.name())));
-//        child_item->setText(2, QString::fromStdString("Metadata"));
-//        child_item->setText(3, QString::fromStdString(nix::data_type_to_string(p.dataType())));
-//    }
-//}
+        add_subsec_prop(s_m.first(), s);
+    }
+
+    for (nix::Property p : section.properties()) {
+        RowStrings p_list;
+        p_list << s_to_q(p.name())
+               << "Property"
+               << s_to_q(nix::data_type_to_string(p.dataType()))
+               << ""
+               << ""
+               << s_to_q(p.id())
+               << s_to_q(get_created_at(p))
+               << s_to_q(get_updated_at(p));
+        Row p_m = create_entry_row(p_list);
+        item->appendRow(p_m);
+    }
+}
 
 Row NixDataModel::create_entry_row(RowStrings row_entries)
 {
@@ -148,6 +123,21 @@ Row NixDataModel::create_entry_row(RowStrings row_entries)
 QString NixDataModel::s_to_q(std::string s)
 {
     return QString::fromStdString(s);
+}
+
+template<typename T>
+RowStrings NixDataModel::create_rowstrings(T arg, std::string storagetype, std::string nixtype, std::string shape)
+{
+    RowStrings s_list;
+    s_list << s_to_q(arg.name())
+           << s_to_q(arg.type())
+           << s_to_q(storagetype)
+           << s_to_q(nixtype)
+           << s_to_q(shape)
+           << s_to_q(arg.id())
+           << s_to_q(get_created_at(arg))
+           << s_to_q(get_updated_at(arg));
+    return s_list;
 }
 
 template<typename T>
