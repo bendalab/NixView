@@ -12,7 +12,7 @@ TARGET = NixView
 TEMPLATE = app
 
 QMAKE_CXXFLAGS+= -std=c++11
-
+# CONFIG += c++11
 
 SOURCES += main.cpp\
         MainWindow.cpp \
@@ -24,7 +24,11 @@ SOURCES += main.cpp\
     InfoWidget/TagPanel.cpp \
     aboutdialog.cpp \
     plotdialog.cpp \
-    qcustomplot.cpp
+    qcustomplot.cpp \
+    nixview.cpp \
+    plotwidget.cpp \
+    plotter/lineplotter.cpp \
+    plotter/categoryplotter.cpp
 
 HEADERS  += MainWindow.hpp \
     MainViewWidget.hpp \
@@ -36,7 +40,12 @@ HEADERS  += MainWindow.hpp \
     common/Common.hpp \
     aboutdialog.h \
     plotdialog.h \
-    qcustomplot.h
+    qcustomplot.h \
+    plotter/plotter.h \
+    nixview.h \
+    plotter/lineplotter.h \
+    plotwidget.h \
+    plotter/categoryplotter.h
 
 FORMS    += MainWindow.ui \
     MainViewWidget.ui \
@@ -46,8 +55,10 @@ FORMS    += MainWindow.ui \
     InfoWidget/MetaDataPanel.ui \
     InfoWidget/TagPanel.ui \
     aboutdialog.ui \
-    plotdialog.ui
-
+    plotdialog.ui \
+    plotter/lineplotter.ui \
+    plotwidget.ui \
+    plotter/categoryplotter.ui
 
 #standard windows folder?
 #win32:CONFIG(release, debug|release): LIBS += /usr/local/lib/release/ -lnix

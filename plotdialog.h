@@ -23,6 +23,7 @@ public:
     ~PlotDialog();
 
 public slots:
+   /*
     void show_context_menu();
     void show_legend();
     void mouse_press();
@@ -45,11 +46,11 @@ public slots:
     void marker_cross();
     void marker_dot();
     void marker_plus();
-
+*/
 private:
     Ui::PlotDialog *ui;
-    QVariant item;
-
+    //QVariant item;
+/*'
     void draw();
     bool can_draw();
     void draw_data_array(const nix::DataArray &array);
@@ -67,8 +68,8 @@ private:
 
     void data_array_ax_labels(const nix::DataArray &array, QString &ylabel, QVector<QString> &labels);
     void data_array_to_qvector(const nix::DataArray &array, QVector<double> &xdata, QVector<double> &ydata, QVector<QString> &xlabels, nix::ndsize_t dim_index);
-    QCustomPlot* get_plot();
-
+//    QCustomPlot* get_plot();
+*/
 };
 
 #endif // PLOTDIALOG_H

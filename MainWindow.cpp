@@ -87,7 +87,7 @@ void MainWindow::open_file() {
         return;
 
     if (mvw_is_set) {
-        ui->main_ho_layout->removeWidget(mvw);
+        ui->main_layout->removeWidget(mvw);
         mvw->deleteLater();
         mvw_is_set = false;
     }
@@ -96,7 +96,7 @@ void MainWindow::open_file() {
     std::cout << file_path << std::endl;
 
     mvw = new MainViewWidget(file_path);
-    ui->main_ho_layout->addWidget(mvw);
+    ui->main_layout->addWidget(mvw);
     mvw_is_set = true;
 
     connect_widgets();

@@ -1,8 +1,14 @@
 import nix
+import lif
 import numpy as np
 import matplotlib.pyplot as plt
 import Image as img
 from IPython import embed
+
+def fake_neuron():
+    lif_model = lif.lif()
+    t, v, spike_times = lif_model.run_const_stim(10000, 0.005)
+    return t, v, spike_times
 
 
 def create_1d_sampled(f, b):
@@ -38,6 +44,25 @@ def create_1d_sampled(f, b):
     src2 = b.create_source('subject', 'nix.source.subject')
     src2.metadata = subj
     
+
+def create_2d(f, b, trials=10):
+    # create multiple responses of a lif model neuron
+    voltages = []
+    for t in range(trials):
+        time, voltage, _ = fake_neuron()
+        voltages.append(voltage)
+    
+    voltages = np.asarray(voltages).T
+    
+    da = b.create_data_array("membrane voltages", "nix.regular_sampled.series", dtype=nix.DataType.Double, data=voltages)
+    d = da.append_sampled_dimension(time[1]-time[0])
+    d.label = "time"
+    d.unit = "s"
+    da.append_set_dimension()
+
+    
+
+
 def create_3d(f, b):
     # taken from nix tutorial
     image = img.open('lena.bmp')
@@ -58,7 +83,7 @@ def create_1d_range(f, b):
     eod = da[:]
     time = np.asarray(da.dimensions[0].axis(len(eod)))
     shift_eod = np.roll(eod,1) 
-    xings = time[(eod < 0) & (shift_eod > 0)]
+    xings = time[(eod > 0) & (shift_eod < 0)]
     
     range_da = b.create_data_array('zero crossings', 'nix.event', data=xings)
     d = range_da.append_alias_range_dimension()
@@ -92,8 +117,9 @@ def create_m_tag(f,b):
     mt.references.append(trace)
     
     positions = b.create_data_array('epoch_starts','nix.event', data=[0.05, 0.35])
-    positions.
+    positions.append_set_dimension()
     extents = b.create_data_array('epoch_ends','nix.event', data=[0.1, 0.1])
+    extents.append_set_dimension()
     mtag = b.create_multi_tag("epochs", "nix.event_epochs", positions)
     mtag.references.append(trace)
     mtag.extents = extents
@@ -178,6 +204,15 @@ def create_test_file(filename):
     create_m_tag(nix_file, b)
     create_epoch_tag(nix_file, b)
     create_point_tag(nix_file, b)
+    
+    s2 = nix_file.create_section('Lif recording','recording')
+    s2['date'] = '2015-10-21'
+    s2['experimenter'] = 'John Doe'
+    s2['neuron'] = 'Leaky integrate and fire neuron'
+   
+    b2 = nix_file.create_block("2D data", "nix.recording_session")
+    b2.metadata = s2
+    create_2d(nix_file, b2)
     
     b3 = nix_file.create_block("3D data", "nix.image_data")
     b3.metadata  = s
