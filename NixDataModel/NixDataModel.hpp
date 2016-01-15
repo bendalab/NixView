@@ -22,9 +22,20 @@ private:
     template<typename T>
     std::string get_updated_at(T);
     void nix_file_to_model();
-    void add_subsec_prop(QStandardItem*, nix::Section);
+
     template<typename T>
-    RowStrings create_rowstrings(T arg, std::string storagetype, std::string nixtype="", std::string shape="");
+    void add_content(QStandardItem*, T nix_entity);
+
+    void add_subsec_prop(QStandardItem*, nix::Section);
+
+    template<typename T>
+    RowStrings create_rowstrings(T arg, std::string storagetype, std::string root_child_link, std::string nixtype="", std::string shape="");
+
+    template<typename T>
+    void add_linked_sources(QStandardItem* item, T nix_entity);
+
+    template<typename T>
+    void add_linked_metadata(QStandardItem* item, T nix_entity);
 };
 
 #endif // NIXDATAMODEL_H
