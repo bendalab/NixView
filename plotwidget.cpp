@@ -27,12 +27,15 @@ void PlotWidget::process_item() {
     if (this->item.canConvert<nix::DataArray>()) {
         nix::DataArray array = item.value<nix::DataArray>();
         process(array);
+        describe(array);
     } else if (this->item.canConvert<nix::Tag>()) {
         nix::Tag tag = item.value<nix::Tag>();
         process(tag);
+        describe(tag);
     } else {
         nix::MultiTag mtag = item.value<nix::MultiTag>();
         process(mtag);
+        describe(mtag);
     }
 }
 
@@ -165,11 +168,47 @@ void PlotWidget::process(const nix::MultiTag &mtag) {
     }
 }
 
-void PlotWidget::setEntity(QVariant var) {
-    this->item = var;
-    process_item();
+QString PlotWidget::basic_description(const std::string &name, const std::string &type, const std::string &description,
+                                   const std::string &id, const std::string &created, const std::string &updated ) {
+    QString text = "<html>";
+    text = text + "<h2>" + QString::fromStdString(name) + "</h2>";
+    text = text + "<b>type:</b> " + QString::fromStdString(type) + "<br>";
+    text = text + "<b>desription:</b> <p>" + QString::fromStdString(description) + "</p>";
+    text = text + "<hr>";
+    text = text + "<small><b>id: </b>" + "<p>" + QString::fromStdString(id) + "</p></small>";
+    text = text + "<small><b>created: </b>" + "<p>" + QString::fromStdString(created) + "</p></small>";
+    text = text + "<small><b>updated: </b>" + "<p>" + QString::fromStdString(updated) + "</p></small>";
+    text = text + "</html>";
+    return text;
 }
 
+void PlotWidget::describe(const nix::DataArray &array) {
+    ui->entityDescription->clear();
+    QString text = basic_description(array.name(), array.type(), array.definition() ? *array.definition() : "", array.id(),
+                                     nix::util::timeToStr(array.createdAt()), nix::util::timeToStr(array.updatedAt()));
+    ui->entityDescription->setText(text);
+}
+
+void PlotWidget::describe(const nix::Tag &tag) {
+    ui->entityDescription->clear();
+    QString text = basic_description(tag.name(), tag.type(), tag.definition() ? *tag.definition() : "", tag.id(),
+                                     nix::util::timeToStr(tag.createdAt()), nix::util::timeToStr(tag.updatedAt()));
+    ui->entityDescription->setText(text);
+}
+
+void PlotWidget::describe(const nix::MultiTag &mtag) {
+    ui->entityDescription->clear();
+    QString text = basic_description(mtag.name(), mtag.type(), mtag.definition() ? *mtag.definition() : "", mtag.id(),
+                                     nix::util::timeToStr(mtag.createdAt()), nix::util::timeToStr(mtag.updatedAt()));
+    ui->entityDescription->setText(text);
+}
+
+void PlotWidget::setEntity(QVariant var) {
+    this->item = var;
+    if (can_draw()) {
+        process_item();
+    }
+}
 
 bool PlotWidget::check_plottable_dtype(nix::DataType dtype) const {
     bool plottable = true;
