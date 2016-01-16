@@ -175,9 +175,9 @@ QString PlotWidget::basic_description(const std::string &name, const std::string
     text = text + "<b>type:</b> " + QString::fromStdString(type) + "<br>";
     text = text + "<b>desription:</b> <p>" + QString::fromStdString(description) + "</p>";
     text = text + "<hr>";
-    text = text + "<small><b>id: </b>" + "<p>" + QString::fromStdString(id) + "</p></small>";
-    text = text + "<small><b>created: </b>" + "<p>" + QString::fromStdString(created) + "</p></small>";
-    text = text + "<small><b>updated: </b>" + "<p>" + QString::fromStdString(updated) + "</p></small>";
+    text = text + "<small><p><b>id: </b>" + QString::fromStdString(id) + "</p></small>";
+    text = text + "<small><p><b>created: </b>" + QString::fromStdString(created) + "</p></small>";
+    text = text + "<small><p><b>updated: </b>" + QString::fromStdString(updated) + "</p></small>";
     text = text + "</html>";
     return text;
 }
