@@ -2,7 +2,7 @@ import nix
 import lif
 import numpy as np
 import matplotlib.pyplot as plt
-import Image as img
+from PIL import Image as img
 from IPython import embed
 
 def fake_neuron():
@@ -20,6 +20,7 @@ def create_1d_sampled(f, b):
     a2 = 0.4
     eod = a1 * np.sin(t * f1 * 2* np.pi) + a2 * np.sin(f2 * t * 2 * np.pi)
     da = b.create_data_array('eod', 'nix.regular_sampled', data=eod)
+    da.definition = "Recording of an electric fish's electric organ discharge. Demontrates the use of DataArrays to store 1-D data that is regularly sampled in time. The DataArray contains one dimension descriptor that defines how the time-axis is resolved."
     da.unit = 'mV/cm'
     da.label = 'electric field'
     da.description = ""
@@ -86,6 +87,7 @@ def create_1d_range(f, b):
     xings = time[(eod > 0) & (shift_eod < 0)]
     
     range_da = b.create_data_array('zero crossings', 'nix.event', data=xings)
+    range_da.definition = "1-D data that is irregularly sampled in time. That is, the time betwee consecutive sampling points is not regular. Here we store the times at which a signal crossed the zero line. The content of the DataArray itself defines the time-axis the only dimension descriptor is thus an \"aliasRange\" dimension."
     d = range_da.append_alias_range_dimension()
     d.unit = 's'
     d.label = 'time'
@@ -95,6 +97,7 @@ def create_1d_set(f, b):
     temp = [13.7, 16.3, 14.6, 11.6, 8.6, 5.7, 4., 2.6, 3., 4., 8.5, 13.1]
     labels = ["Sep", "Aug", "Jul", "Jun", "Mai", "April", "Mar", "Feb", "Jan","Dec","Nov","Okt"]
     da =  b.create_data_array("average temperature", "nix.catergorical", data=temp)
+    da.definition = "1-D categorical data can also be stored in a DAtaArray entity. The dimension descriptor is in this case a SetDimension. The labels stored in this dimension are used to label the ticks of the x-axis."
     da.label = "temperature"
     da.unit = "C"
 
@@ -114,6 +117,7 @@ def create_m_tag(f,b):
     trace = b.data_arrays["eod"]
     event_times = b.data_arrays["zero crossings"]
     mt = b.create_multi_tag("special events", "nix.event_times", event_times)
+    mt.definition = "A MultiTag entity is used to annotate multiple events or segments in a number of referenced DataArrays. In this example, the events are the zero crossings (see 1-D DataArrays) in the EOD. Thus, the one DataArray (zeros crossings) is used to mark the time points in the other (EOD)."
     mt.references.append(trace)
     
     positions = b.create_data_array('epoch_starts','nix.event', data=[0.05, 0.35])
