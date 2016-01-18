@@ -46,7 +46,7 @@ private:
     Ui::RawTreeView* ui;
     nix::File nix_file;
     NixDataModel* nix_model;
-    void init_tree_widget();
+    std::vector<int> hidden_columns;
 //    void add_linked_sources(QTreeWidgetItem*, QVariant);
 
 //    template <typename T>

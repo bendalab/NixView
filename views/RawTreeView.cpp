@@ -13,12 +13,9 @@ RawTreeView::RawTreeView(NixDataModel* _nix_model, QWidget *parent) :
     filter_mode = 0;
     nix_model = _nix_model;
     ui->treeView->setModel(nix_model);
-    init_tree_widget();
-}
-
-
-void RawTreeView::init_tree_widget() {
-
+    hidden_columns = {5, 6, 7, 8, 9};
+    for (int entry : hidden_columns)
+        ui->treeView->setColumnHidden(entry, true);
 }
 
 //    if (!(filter_mode == 2))
