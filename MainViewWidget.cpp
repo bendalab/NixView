@@ -55,9 +55,9 @@ void MainViewWidget::connect_widgets()
 
 //    // - tag references
 
-//    // tree widget expanded/collapsed
-//    QObject::connect(rtv->get_tree_widget(), SIGNAL(expanded(QModelIndex)), rtv, SLOT(resize_to_content(QModelIndex)));
-//    QObject::connect(rtv->get_tree_widget(), SIGNAL(collapsed(QModelIndex)), rtv, SLOT(resize_to_content(QModelIndex)));
+    // tree widget expanded/collapsed
+    QObject::connect(rtv->get_tree_view(), SIGNAL(expanded(QModelIndex)), rtv, SLOT(resize_to_content(QModelIndex)));
+    QObject::connect(rtv->get_tree_view(), SIGNAL(collapsed(QModelIndex)), rtv, SLOT(resize_to_content(QModelIndex)));
 
     // ALSO CHECK CONNECTIONS IN InfoWidget.cpp
 }
