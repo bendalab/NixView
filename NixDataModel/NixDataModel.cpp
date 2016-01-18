@@ -9,16 +9,16 @@ NixDataModel::NixDataModel(nix::File _nix_file) :
     nix_file = _nix_file;
 
     RowStrings headers;
-    headers << "Name"               // 0
-            << "Nix Type"           // 1
-            << "Storage Type"       // 2
-            << "Data Type"          // 3
-            << "Shape"              // 4
-            << "ID"                 // 5
-            << "CreatedAt"          // 6
-            << "UpdatedAt"          // 7
-            << "Value"              // 8
-            << "root_child_link";   // 9
+    headers << "Name"               //  0
+            << "Nix Type"           //  1
+            << "Storage Type"       //  2
+            << "Data Type"          //  3
+            << "Shape"              //  4
+            << "ID"                 //  5
+            << "CreatedAt"          //  6
+            << "UpdatedAt"          //  7
+            << "Value"              //  8
+            << "root_child_link";   //  9
     setHorizontalHeaderLabels(headers);
 
     nix_file_to_model();
@@ -112,6 +112,7 @@ void NixDataModel::add_subsec_prop(QStandardItem* item, nix::Section section) {
     }
 
     for (nix::Property p : section.properties()) {
+        std::string v = get_property_value(p);
         RowStrings p_list;
         p_list << s_to_q(p.name())
                << "Property"
@@ -121,11 +122,54 @@ void NixDataModel::add_subsec_prop(QStandardItem* item, nix::Section section) {
                << s_to_q(p.id())
                << s_to_q(get_created_at(p))
                << s_to_q(get_updated_at(p))
-               << ""
+               << s_to_q(v)
                << "child";
         Row p_m = create_entry_row(p_list);
         item->appendRow(p_m);
     }
+}
+
+std::string NixDataModel::get_property_value(nix::Property p)
+{
+    std::vector<nix::Value> values = p.values();
+    std::string v_type = nix::data_type_to_string(p.dataType());
+    std::ostringstream oss;
+    oss << "(";
+    for (int i = 0; i < (int)values.size(); ++i)
+    {
+        if (v_type == "String") {
+            std::string value;
+            values[i].get(value);
+            oss << value << ", " << values[i].uncertainty;
+        } else if (v_type == "Bool"){
+            bool value;
+            values[i].get(value);
+            oss << value << ", " << values[i].uncertainty;
+        } else if (v_type == "Int32"){
+            int32_t value;
+            values[i].get(value);
+            oss << value << ", " << values[i].uncertainty;
+        } else if (v_type == "Int64"){
+            int64_t value;
+            values[i].get(value);
+            oss << value << ", " << values[i].uncertainty;
+        } else if (v_type == "UInt64"){
+            uint64_t value;
+            values[i].get(value);
+            oss << value << ", " << values[i].uncertainty;
+        } else if (v_type == "Double"){
+            double value;
+            values[i].get(value);
+            oss << value << ", " << values[i].uncertainty;
+        } else {
+            oss << "NOT READABLE" << values[i].uncertainty;
+        }
+        oss << ")";
+
+        if (i < (int)values.size()-1)
+            oss << ", (";
+    }
+    return oss.str();
 }
 
 template<typename T>

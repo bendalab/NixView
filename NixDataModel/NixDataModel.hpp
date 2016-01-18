@@ -36,6 +36,10 @@ private:
 
     template<typename T>
     void add_linked_metadata(QStandardItem* item, T nix_entity);
+
+    std::string get_property_value(nix::Property);
+    void add_tag_info(QStandardItem*, nix::Tag);
+    void add_multitag_info(QStandardItem*, nix::MultiTag);
 };
 
 #endif // NIXDATAMODEL_H
