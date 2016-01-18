@@ -17,7 +17,7 @@ QMAKE_CXXFLAGS+= -std=c++11
 SOURCES += main.cpp\
         MainWindow.cpp \
     MainViewWidget.cpp \
-    RawTreeView.cpp \
+    views/RawTreeView.cpp \
     InfoWidget/InfoWidget.cpp \
     InfoWidget/DescriptionPanel.cpp \
     InfoWidget/MetaDataPanel.cpp \
@@ -33,7 +33,7 @@ SOURCES += main.cpp\
 
 HEADERS  += MainWindow.hpp \
     MainViewWidget.hpp \
-    RawTreeView.hpp \
+    views/RawTreeView.hpp \
     InfoWidget/InfoWidget.hpp \
     InfoWidget/DescriptionPanel.hpp \
     InfoWidget/MetaDataPanel.hpp \
@@ -51,7 +51,7 @@ HEADERS  += MainWindow.hpp \
 
 FORMS    += MainWindow.ui \
     MainViewWidget.ui \
-    RawTreeView.ui \
+    views/RawTreeView.ui \
     InfoWidget/InfoWidget.ui \
     InfoWidget/DescriptionPanel.ui \
     InfoWidget/MetaDataPanel.ui \
