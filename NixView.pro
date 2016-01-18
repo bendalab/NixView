@@ -4,15 +4,20 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+# QT       += core gui widgets printsupport
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets printsupport
+greaterThan(QT_MAJOR_VERSION, 5): QT += core gui widgets printsupport
 
 TARGET = NixView
 TEMPLATE = app
 
-QMAKE_CXXFLAGS+= -std=c++11
-# CONFIG += c++11
+unix {
+    QMAKE_CXXFLAGS+= -std=c++11
+}
+
+macx {
+    CONFIG += c++11
+}
 
 SOURCES += main.cpp\
         MainWindow.cpp \
@@ -28,7 +33,8 @@ SOURCES += main.cpp\
     nixview.cpp \
     plotwidget.cpp \
     plotter/lineplotter.cpp \
-    plotter/categoryplotter.cpp
+    plotter/categoryplotter.cpp \
+    entitydescriptor.cpp
 
 HEADERS  += MainWindow.hpp \
     MainViewWidget.hpp \
@@ -45,7 +51,8 @@ HEADERS  += MainWindow.hpp \
     nixview.h \
     plotter/lineplotter.h \
     plotwidget.h \
-    plotter/categoryplotter.h
+    plotter/categoryplotter.h \
+    entitydescriptor.h
 
 FORMS    += MainWindow.ui \
     MainViewWidget.ui \
