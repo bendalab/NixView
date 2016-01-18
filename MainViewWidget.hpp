@@ -4,10 +4,10 @@
 #include <QWidget>
 #include <nix.hpp>
 #include <QtGui>
-#include <RawTreeView.hpp>
 #include <InfoWidget/InfoWidget.hpp>
 #include <boost/optional.hpp>
-#include "RawTreeView.hpp"
+#include "views/RawTreeView.hpp"
+#include "views/ColumnView.hpp"
 #include <NixDataModel/NixDataModel.hpp>
 
 namespace Ui {
@@ -34,6 +34,7 @@ private:
     NixDataModel* nix_model;
 
     RawTreeView* rtv;
+    ColumnView* cv;
     InfoWidget* iw;
 
     void populate_data_stacked_widget();

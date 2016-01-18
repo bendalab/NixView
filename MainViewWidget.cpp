@@ -26,6 +26,10 @@ void MainViewWidget::populate_data_stacked_widget()
 {
     rtv = new RawTreeView(nix_model);
     ui->data_stacked_Widget->addWidget(rtv);
+    cv = new ColumnView(nix_model);
+    ui->data_stacked_Widget->addWidget(cv);
+
+    ui->data_stacked_Widget->setCurrentIndex(0);
 }
 
 RawTreeView* MainViewWidget::get_rtv() {
