@@ -114,16 +114,16 @@ void NixDataModel::add_subsec_prop(QStandardItem* item, nix::Section section) {
     for (nix::Property p : section.properties()) {
         std::string v = get_property_value(p);
         RowStrings p_list;
-        p_list << s_to_q(p.name())
-               << "Property"
-               << s_to_q(nix::data_type_to_string(p.dataType()))
-               << ""
-               << ""
-               << s_to_q(p.id())
-               << s_to_q(get_created_at(p))
-               << s_to_q(get_updated_at(p))
-               << s_to_q(v)
-               << "child";
+        p_list << s_to_q(p.name())                                  //  0
+               << "Property"                                        //  1
+               << s_to_q(nix::data_type_to_string(p.dataType()))    //  2
+               << ""                                                //  3
+               << ""                                                //  4
+               << s_to_q(p.id())                                    //  5
+               << s_to_q(get_created_at(p))                         //  6
+               << s_to_q(get_updated_at(p))                         //  7
+               << s_to_q(v)                                         //  8
+               << "child";                                          //  9
         Row p_m = create_entry_row(p_list);
         item->appendRow(p_m);
     }
@@ -214,16 +214,16 @@ template<typename T>
 RowStrings NixDataModel::create_rowstrings(T arg, std::string storagetype, std::string root_child_link, std::string nixtype, std::string shape)
 {
     RowStrings s_list;
-    s_list << s_to_q(arg.name())
-           << s_to_q(arg.type())
-           << s_to_q(storagetype)
-           << s_to_q(nixtype)
-           << s_to_q(shape)
-           << s_to_q(arg.id())
-           << s_to_q(get_created_at(arg))
-           << s_to_q(get_updated_at(arg))
-           << ""
-           << s_to_q(root_child_link);
+    s_list << s_to_q(arg.name())            //  0
+           << s_to_q(arg.type())            //  1
+           << s_to_q(storagetype)           //  2
+           << s_to_q(nixtype)               //  3
+           << s_to_q(shape)                 //  4
+           << s_to_q(arg.id())              //  5
+           << s_to_q(get_created_at(arg))   //  6
+           << s_to_q(get_updated_at(arg))   //  7
+           << ""                            //  8
+           << s_to_q(root_child_link);      //  9
     return s_list;
 }
 
