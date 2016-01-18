@@ -2,7 +2,7 @@
 #include "ui_MainWindow.h"
 #include "aboutdialog.h"
 #include "plotdialog.h"
-#include "RawTreeView.hpp"
+#include "views/RawTreeView.hpp"
 #include "nix.hpp"
 #include "common/Common.hpp"
 

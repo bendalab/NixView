@@ -29,7 +29,8 @@ SOURCES += main.cpp\
     plotwidget.cpp \
     plotter/lineplotter.cpp \
     plotter/categoryplotter.cpp\
-    NixDataModel/NixDataModel.cpp
+    NixDataModel/NixDataModel.cpp \
+    views/ColumnView.cpp
 
 HEADERS  += MainWindow.hpp \
     MainViewWidget.hpp \
@@ -47,7 +48,8 @@ HEADERS  += MainWindow.hpp \
     plotter/lineplotter.h \
     plotwidget.h \
     plotter/categoryplotter.h\
-    NixDataModel/NixDataModel.hpp
+    NixDataModel/NixDataModel.hpp \
+    views/ColumnView.hpp
 
 FORMS    += MainWindow.ui \
     MainViewWidget.ui \
@@ -60,7 +62,8 @@ FORMS    += MainWindow.ui \
     plotdialog.ui \
     plotter/lineplotter.ui \
     plotwidget.ui \
-    plotter/categoryplotter.ui
+    plotter/categoryplotter.ui \
+    views/ColumnView.ui
 
 #standard windows folder?
 #win32:CONFIG(release, debug|release): LIBS += /usr/local/lib/release/ -lnix
