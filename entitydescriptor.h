@@ -16,6 +16,7 @@ public:
     void addFooter(const std::string &id, const std::string &created, const std::string &updated);
     void addSeparator();
     void addSection(const std::string &name);
+    void addItem(const std::string &item);
     void addInfo(const std::string &name, const std::string &value);
 
     void clear();

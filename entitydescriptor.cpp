@@ -13,7 +13,6 @@ EntityDescriptor::EntityDescriptor(const std::string &name, const std::string &t
 
     addInfo("type", type);
     addInfo("definition", definition);
-    addSeparator();
     addFooter(id, created_at, updated_at);
 }
 
@@ -34,6 +33,7 @@ void EntityDescriptor::addInfo(const std::string &name, const std::string &value
 
 
 void EntityDescriptor::addFooter(const std::string &id, const std::string &created, const std::string &updated) {
+    footer.push_back("<hr>");
     footer.push_back("<small><p><b>id: </b>" + id + "</p></small>");
     footer.push_back("<small><p><b>created at: </b>" + created + "</p></small>");
     footer.push_back("<small><p><b>updated at: </b>" + updated + "</p></small>");
@@ -47,6 +47,11 @@ void EntityDescriptor::addSeparator() {
 
 void EntityDescriptor::addSection(const std::string &name) {
     body.push_back("<h3>" + name + "</h3>");
+}
+
+
+void EntityDescriptor::addItem(const std::__1::string &item) {
+    body.push_back("<b> - " + item + "</b><br>");
 }
 
 
