@@ -45,6 +45,11 @@ void EntityDescriptor::addSeparator() {
 }
 
 
+void EntityDescriptor::addSection(const std::string &name) {
+    body.push_back("<h3>" + name + "</h3>");
+}
+
+
 void EntityDescriptor::clear() {
     this->footer.clear();
     this->body.clear();
