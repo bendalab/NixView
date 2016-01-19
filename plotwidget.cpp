@@ -168,8 +168,10 @@ void PlotWidget::process(const nix::MultiTag &mtag) {
     }
 }
 
-QString PlotWidget::basic_description(const std::string &name, const std::string &type, const std::string &description,
+EntityDescriptor PlotWidget::basic_description(const std::string &name, const std::string &type, const std::string &description,
                                    const std::string &id, const std::string &created, const std::string &updated ) {
+    EntityDescriptor descr(name, type, description, id, created, updated);
+    /*
     QString text = "<html>";
     text = text + "<h2>" + QString::fromStdString(name) + "</h2>";
     text = text + "<b>type:</b> " + QString::fromStdString(type) + "<br>";
@@ -179,28 +181,39 @@ QString PlotWidget::basic_description(const std::string &name, const std::string
     text = text + "<small><p><b>created: </b>" + QString::fromStdString(created) + "</p></small>";
     text = text + "<small><p><b>updated: </b>" + QString::fromStdString(updated) + "</p></small>";
     text = text + "</html>";
-    return text;
+    */
+    return descr;
 }
 
 void PlotWidget::describe(const nix::DataArray &array) {
     ui->entityDescription->clear();
-    QString text = basic_description(array.name(), array.type(), array.definition() ? *array.definition() : "", array.id(),
-                                     nix::util::timeToStr(array.createdAt()), nix::util::timeToStr(array.updatedAt()));
-    ui->entityDescription->setText(text);
+    EntityDescriptor descr = basic_description(array.name(), array.type(), array.definition() ? *array.definition() : "", array.id(),
+                                               nix::util::timeToStr(array.createdAt()), nix::util::timeToStr(array.updatedAt()));
+    ui->entityDescription->setText(QString::fromStdString(descr.toHtml()));
 }
 
 void PlotWidget::describe(const nix::Tag &tag) {
     ui->entityDescription->clear();
-    QString text = basic_description(tag.name(), tag.type(), tag.definition() ? *tag.definition() : "", tag.id(),
-                                     nix::util::timeToStr(tag.createdAt()), nix::util::timeToStr(tag.updatedAt()));
-    ui->entityDescription->setText(text);
+    EntityDescriptor descr = basic_description(tag.name(), tag.type(), tag.definition() ? *tag.definition() : "", tag.id(),
+                                               nix::util::timeToStr(tag.createdAt()), nix::util::timeToStr(tag.updatedAt()));
+    descr.addSection("References");
+    std::vector<nix::DataArray> refs = tag.references();
+    for (nix::DataArray a : refs) {
+        descr.addItem(a.name());
+    }
+    ui->entityDescription->setText(QString::fromStdString(descr.toHtml()));
 }
 
 void PlotWidget::describe(const nix::MultiTag &mtag) {
     ui->entityDescription->clear();
-    QString text = basic_description(mtag.name(), mtag.type(), mtag.definition() ? *mtag.definition() : "", mtag.id(),
-                                     nix::util::timeToStr(mtag.createdAt()), nix::util::timeToStr(mtag.updatedAt()));
-    ui->entityDescription->setText(text);
+    EntityDescriptor descr = basic_description(mtag.name(), mtag.type(), mtag.definition() ? *mtag.definition() : "", mtag.id(),
+                                               nix::util::timeToStr(mtag.createdAt()), nix::util::timeToStr(mtag.updatedAt()));
+    descr.addSection("References");
+    std::vector<nix::DataArray> refs = mtag.references();
+    for (nix::DataArray a : refs) {
+        descr.addItem(a.name());
+    }
+    ui->entityDescription->setText(QString::fromStdString(descr.toHtml()));
 }
 
 void PlotWidget::setEntity(QVariant var) {
