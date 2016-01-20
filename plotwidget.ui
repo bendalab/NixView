@@ -22,7 +22,7 @@
   <property name="styleSheet">
    <string notr="true"/>
   </property>
-  <layout class="QHBoxLayout" name="horizontalLayout">
+  <layout class="QVBoxLayout" name="verticalLayout_3">
    <property name="leftMargin">
     <number>0</number>
    </property>
@@ -58,8 +58,8 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>280</width>
-         <height>291</height>
+         <width>269</width>
+         <height>264</height>
         </rect>
        </property>
        <property name="sizePolicy">
@@ -122,7 +122,7 @@
          <x>0</x>
          <y>0</y>
          <width>482</width>
-         <height>291</height>
+         <height>264</height>
         </rect>
        </property>
        <property name="sizePolicy">
@@ -159,6 +159,16 @@
        </layout>
       </widget>
      </widget>
+    </widget>
+   </item>
+   <item alignment="Qt::AlignRight">
+    <widget class="QCheckBox" name="multiPlotCheckBox">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
+     <property name="text">
+      <string>plot in individual panels</string>
+     </property>
     </widget>
    </item>
   </layout>
