@@ -43,6 +43,7 @@ private:
 
     void draw_1d(const nix::DataArray &array);
     void draw_2d(const nix::DataArray &array);
+    void draw_multi_line(const nix::DataArray &array);
 };
 
 #endif // PLOTWIDGET_H
