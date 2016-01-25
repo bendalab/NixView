@@ -28,38 +28,13 @@
     </widget>
    </item>
    <item>
-    <widget class="QTreeWidget" name="treeWidget">
+    <widget class="QTreeView" name="treeView">
      <property name="sortingEnabled">
       <bool>false</bool>
      </property>
      <property name="animated">
       <bool>true</bool>
      </property>
-     <column>
-      <property name="text">
-       <string>Name</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Nix Type</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Storage Type</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Data Type</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Value, Uncertanty</string>
-      </property>
-     </column>
     </widget>
    </item>
   </layout>

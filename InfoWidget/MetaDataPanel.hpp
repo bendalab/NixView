@@ -5,6 +5,8 @@
 #include <nix.hpp>
 #include <QtGui>
 #include <QTreeWidget>
+#include <QSortFilterProxyModel>
+#include "NixDataModel/NixDataModel.hpp"
 
 namespace Ui {
 class MetaDataPanel;
@@ -15,18 +17,20 @@ class MetaDataPanel : public QWidget
     Q_OBJECT
 
 public:
-    explicit MetaDataPanel(QWidget *parent = 0);
+    explicit MetaDataPanel(NixDataModel *_nix_model, QWidget *parent = 0);
     ~MetaDataPanel();
 
 public slots:
-    void update_metadata_panel(QVariant);
+//    void update_metadata_panel(QVariant);
     void resize_to_content(QModelIndex);
 
 public:
-    const QTreeWidget* get_tree_widget();
+    const QTreeView* get_tree_view();
     void clear_metadata_panel();
 
 private:
+    QSortFilterProxyModel* proxy_model;
+
     void add_children_to_item(QTreeWidgetItem*, nix::Section);
     void add_properties_to_item(QTreeWidgetItem*, nix::Section);
     void add_values_to_property(QTreeWidgetItem*, nix::Property);
