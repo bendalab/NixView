@@ -30,6 +30,7 @@ public:
 
 private:
     QSortFilterProxyModel* proxy_model;
+    void set_proxy_model();
 
     void add_children_to_item(QTreeWidgetItem*, nix::Section);
     void add_properties_to_item(QTreeWidgetItem*, nix::Section);

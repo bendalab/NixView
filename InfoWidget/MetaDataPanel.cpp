@@ -12,9 +12,14 @@ MetaDataPanel::MetaDataPanel(NixDataModel *_nix_model, QWidget *parent) :
     proxy_model = new QSortFilterProxyModel(this);
     proxy_model->setSourceModel(_nix_model);
     ui->treeView->setModel(proxy_model);
+    set_proxy_model();
 }
 
-
+void MetaDataPanel::set_proxy_model()
+{
+    proxy_model->setFilterRegExp(QRegExp("Metadata", Qt::CaseInsensitive, QRegExp::FixedString));
+    proxy_model->setFilterKeyColumn(0);
+}
 
 void MetaDataPanel::clear_metadata_panel()
 {
