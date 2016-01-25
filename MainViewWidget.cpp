@@ -15,7 +15,7 @@ MainViewWidget::MainViewWidget(std::string& nix_file_path, QWidget *parent) :
     nix_file = nix::File::open(nix_file_path, nix::FileMode::ReadOnly);
     nix_model = new NixDataModel(nix_file);
 
-    iw =  new InfoWidget();
+    iw =  new InfoWidget(nix_model, this);
     ui->horizontalLayout->addWidget(iw);
 
     populate_data_stacked_widget();
@@ -24,9 +24,9 @@ MainViewWidget::MainViewWidget(std::string& nix_file_path, QWidget *parent) :
 
 void MainViewWidget::populate_data_stacked_widget()
 {
-    rtv = new RawTreeView(nix_model);
+    rtv = new RawTreeView(nix_model, this);
     ui->data_stacked_Widget->addWidget(rtv);
-    cv = new ColumnView(nix_model);
+    cv = new ColumnView(nix_model, this);
     ui->data_stacked_Widget->addWidget(cv);
 
     ui->data_stacked_Widget->setCurrentIndex(0);
@@ -51,13 +51,14 @@ void MainViewWidget::connect_widgets()
 {
     // click in overview
     // - rawtreeview
-//    QObject::connect(rtv->get_tree_widget(), SIGNAL(currentItemChanged(QTreeWidgetItem*, QTreeWidgetItem*)),
-//                     rtv, SLOT(currentItemChanged_worker(QTreeWidgetItem*, QTreeWidgetItem*)));
+    QObject::connect(rtv->get_tree_view()->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)), rtv, SLOT(current_changed(QModelIndex,QModelIndex)));
+    QObject::connect(rtv->get_tree_view()->selectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
+                     rtv, SLOT(selection_changed(QItemSelection,QItemSelection)));
 //    QObject::connect(rtv, SIGNAL(item_found(QVariant)), iw, SLOT(update_info_widget(QVariant)));
 //    QObject::connect(rtv, SIGNAL(empty_item()), iw, SLOT(update_info_widget()));
 //    QObject::connect(rtv->get_filter_combo_box(), SIGNAL(activated(QString)), rtv, SLOT(filter_changed(QString)));
 
-//    // - tag references
+    // - tag references
 
     // tree widget expanded/collapsed
     QObject::connect(rtv->get_tree_view(), SIGNAL(expanded(QModelIndex)), rtv, SLOT(resize_to_content(QModelIndex)));

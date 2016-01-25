@@ -138,6 +138,16 @@ void RawTreeView::resize_to_content(QModelIndex qml) {
 //        ui->treeWidget->expandToDepth(1);
 //}
 
+void RawTreeView::current_changed(QModelIndex qml_new, QModelIndex qml_old)
+{
+    qDebug() << qml_new;
+}
+
+void RawTreeView::selection_changed(QItemSelection qis_new, QItemSelection qis_old)
+{
+
+}
+
 //void RawTreeView::currentItemChanged_worker(QTreeWidgetItem* old_item, QTreeWidgetItem* new_item)
 //{
 //    if (old_item)

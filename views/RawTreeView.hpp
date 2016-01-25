@@ -24,6 +24,8 @@ public:
 public slots:
 //    void currentItemChanged_worker(QTreeWidgetItem*,QTreeWidgetItem*);
     void resize_to_content(QModelIndex);
+    void current_changed(QModelIndex, QModelIndex);
+    void selection_changed(QItemSelection, QItemSelection);
 //    void item_info_requested(QTreeWidgetItem*, int);
 //    void filter_changed(QString);
 
