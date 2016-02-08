@@ -16,7 +16,6 @@ public:
 
 private:
     nix::File nix_file;
-    QList<QStandardItem*> create_entry_row(QList<QString>);
     QString s_to_q(std::string);
     template<typename T>
     std::string get_created_at(T);
@@ -31,6 +30,9 @@ private:
 
     template<typename T>
     RowStrings create_rowstrings(T arg, std::string storagetype, std::string root_child_link, std::string nixtype="", std::string shape="");
+
+    template<typename T>
+    QList<QStandardItem*> create_entry_row(QList<QString>, T nix_entity);
 
     template<typename T>
     void add_linked_sources(QStandardItem* item, T nix_entity);
