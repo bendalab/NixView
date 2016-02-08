@@ -21,6 +21,8 @@ NixDataModel::NixDataModel(nix::File _nix_file) :
             << "root_child_link";   //  9
     setHorizontalHeaderLabels(headers);
 
+    num_columns = headers.size();
+
     nix_file_to_model();
 }
 

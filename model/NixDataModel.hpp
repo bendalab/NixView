@@ -3,6 +3,7 @@
 
 #include <QStandardItemModel>
 #include <nix.hpp>
+#include <model/NixModelItem.hpp>
 
 typedef QList<QStandardItem*> Row;
 typedef QList<QString> RowStrings;
@@ -11,10 +12,10 @@ class NixDataModel : public QStandardItemModel
 {
 public:
     NixDataModel(nix::File);
+    int num_columns;
 
 private:
     nix::File nix_file;
-    QStandardItem* root_node;
     QList<QStandardItem*> create_entry_row(QList<QString>);
     QString s_to_q(std::string);
     template<typename T>
