@@ -6,7 +6,7 @@
 #include <QtGui>
 #include <QTreeWidget>
 #include <QSortFilterProxyModel>
-#include "NixDataModel/NixDataModel.hpp"
+#include "model//NixDataModel.hpp"
 
 namespace Ui {
 class MetaDataPanel;

@@ -18,10 +18,10 @@ SOURCES += main.cpp\
         MainWindow.cpp \
     MainViewWidget.cpp \
     views/RawTreeView.cpp \
-    InfoWidget/InfoWidget.cpp \
-    InfoWidget/DescriptionPanel.cpp \
-    InfoWidget/MetaDataPanel.cpp \
-    InfoWidget/TagPanel.cpp \
+    infowidget/InfoWidget.cpp \
+    infowidget/DescriptionPanel.cpp \
+    infowidget/MetaDataPanel.cpp \
+    infowidget/TagPanel.cpp \
     aboutdialog.cpp \
     plotdialog.cpp \
     qcustomplot.cpp \
@@ -29,16 +29,17 @@ SOURCES += main.cpp\
     plotwidget.cpp \
     plotter/lineplotter.cpp \
     plotter/categoryplotter.cpp\
-    NixDataModel/NixDataModel.cpp \
-    views/ColumnView.cpp
+    model/NixDataModel.cpp \
+    views/ColumnView.cpp \
+    NixProxyModel.cpp
 
 HEADERS  += MainWindow.hpp \
     MainViewWidget.hpp \
     views/RawTreeView.hpp \
-    InfoWidget/InfoWidget.hpp \
-    InfoWidget/DescriptionPanel.hpp \
-    InfoWidget/MetaDataPanel.hpp \
-    InfoWidget/TagPanel.hpp \
+    infowidget/InfoWidget.hpp \
+    infowidget/DescriptionPanel.hpp \
+    infowidget/MetaDataPanel.hpp \
+    infowidget/TagPanel.hpp \
     common/Common.hpp \
     aboutdialog.h \
     plotdialog.h \
@@ -48,16 +49,17 @@ HEADERS  += MainWindow.hpp \
     plotter/lineplotter.h \
     plotwidget.h \
     plotter/categoryplotter.h\
-    NixDataModel/NixDataModel.hpp \
-    views/ColumnView.hpp
+    model/NixDataModel.hpp \
+    views/ColumnView.hpp \
+    NixProxyModel.hpp
 
 FORMS    += MainWindow.ui \
     MainViewWidget.ui \
     views/RawTreeView.ui \
-    InfoWidget/InfoWidget.ui \
-    InfoWidget/DescriptionPanel.ui \
-    InfoWidget/MetaDataPanel.ui \
-    InfoWidget/TagPanel.ui \
+    infowidget/InfoWidget.ui \
+    infowidget/DescriptionPanel.ui \
+    infowidget/MetaDataPanel.ui \
+    infowidget/TagPanel.ui \
     aboutdialog.ui \
     plotdialog.ui \
     plotter/lineplotter.ui \

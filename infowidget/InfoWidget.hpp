@@ -10,7 +10,7 @@
 #include "DescriptionPanel.hpp"
 #include "MetaDataPanel.hpp"
 #include "TagPanel.hpp"
-#include "NixDataModel/NixDataModel.hpp"
+#include "model/NixDataModel.hpp"
 
 namespace Ui {
 class InfoWidget;
