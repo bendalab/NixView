@@ -31,7 +31,8 @@ SOURCES += main.cpp\
     plotter/categoryplotter.cpp\
     model/NixDataModel.cpp \
     views/ColumnView.cpp \
-    NixProxyModel.cpp
+    filter/NixProxyModel.cpp \
+    model/NixModelItem.cpp
 
 HEADERS  += MainWindow.hpp \
     MainViewWidget.hpp \
@@ -51,7 +52,8 @@ HEADERS  += MainWindow.hpp \
     plotter/categoryplotter.h\
     model/NixDataModel.hpp \
     views/ColumnView.hpp \
-    NixProxyModel.hpp
+    filter/NixProxyModel.hpp \
+    model/NixModelItem.hpp
 
 FORMS    += MainWindow.ui \
     MainViewWidget.ui \
