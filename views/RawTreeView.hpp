@@ -7,7 +7,7 @@
 #include <QTreeWidget>
 #include <QVariant>
 #include <QComboBox>
-#include "NixDataModel/NixDataModel.hpp"
+#include "model/NixDataModel.hpp"
 
 namespace Ui {
 class RawTreeView;

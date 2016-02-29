@@ -3,7 +3,7 @@
 
 #include <QWidget>
 #include <QColumnView>
-#include "NixDataModel/NixDataModel.hpp"
+#include "model/NixDataModel.hpp"
 
 namespace Ui {
 class ColumnView;
