@@ -4,11 +4,11 @@
 #include <QWidget>
 #include <nix.hpp>
 #include <QtGui>
-#include <InfoWidget/InfoWidget.hpp>
+#include <infowidget/InfoWidget.hpp>
 #include <boost/optional.hpp>
 #include "views/RawTreeView.hpp"
 #include "views/ColumnView.hpp"
-#include <NixDataModel/NixDataModel.hpp>
+#include "model/NixDataModel.hpp"
 
 namespace Ui {
 class MainViewWidget;
