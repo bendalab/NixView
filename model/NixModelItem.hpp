@@ -4,13 +4,12 @@
 #include <QStandardItem>
 #include <QVariant>
 
-//TODO make it template class??
-
 class NixModelItem : public QStandardItem
 {
 public:
     NixModelItem();
     NixModelItem(const QString & text);
+    NixModelItem(const QString & text, QVariant _nix_entity);
 
 private:
     QVariant nix_entity;

@@ -12,3 +12,9 @@ NixModelItem::NixModelItem(const QString & text)
 {
 
 }
+
+NixModelItem::NixModelItem(const QString & text, QVariant _nix_entity)
+    : QStandardItem(text)
+{
+    nix_entity = _nix_entity;
+}

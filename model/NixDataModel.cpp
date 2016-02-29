@@ -2,6 +2,7 @@
 #include <iostream>
 #include <nix.hpp>
 #include <boost/algorithm/string.hpp>
+#include "common/Common.hpp"
 
 NixDataModel::NixDataModel(nix::File _nix_file) :
     QStandardItemModel()
@@ -199,6 +200,18 @@ void NixDataModel::add_linked_metadata(QStandardItem* item, T nix_entity)
 
 template<typename T>
 Row NixDataModel::create_entry_row(RowStrings row_entries, T nix_entity)
+{
+    Row row_items;
+
+    for (QString entry : row_entries)
+    {
+        NixModelItem *item = new NixModelItem(entry, QVariant::fromValue(nix_entity));
+        row_items << static_cast<QStandardItem*>(item);
+    }
+    return row_items;
+}
+
+Row NixDataModel::create_entry_row(RowStrings row_entries)
 {
     Row row_items;
     for (QString entry : row_entries)

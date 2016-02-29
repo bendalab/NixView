@@ -34,6 +34,8 @@ private:
     template<typename T>
     QList<QStandardItem*> create_entry_row(QList<QString>, T nix_entity);
 
+    QList<QStandardItem*> create_entry_row(QList<QString>);
+
     template<typename T>
     void add_linked_sources(QStandardItem* item, T nix_entity);
 
