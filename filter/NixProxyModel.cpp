@@ -4,44 +4,59 @@
 NixProxyModel::NixProxyModel(QObject *parent)
     :QSortFilterProxyModel(parent)
 {
-    setFilterRegExp(QRegExp("data"));
-    setFilterKeyColumn(0);
+    setFilterRegExp(QRegExp("Data"));
+    set_filter_mode(2);
 }
 
 bool NixProxyModel::filterAcceptsRow(int source_row, const QModelIndex &source_parent) const
 {
-//    NixDataModel *model = static_cast<NixDataModel*>(sourceModel());
-//    for (int i = 0; i < model->num_columns; ++i)
-//    {
-//        QModelIndex index = model->index(source_row, i, source_parent);
-//        if (model->data(index).toString().contains(filterRegExp()))
-//            return true;
-//    }
-//    return false;
-
-    // get source-model index for current row
-    QModelIndex parent_index = sourceModel()->index(source_row, this->filterKeyColumn(), source_parent);
-    if(parent_index.isValid())
+    if(filter_mode == 0)
     {
-        // if any of children matches the filter, then current index matches the filter as well
-        int i, nb = sourceModel()->rowCount(parent_index) ;
-        for(i=0; i<nb; ++i)
-        {
-            if(filterAcceptsRow(i, parent_index))
-            {
-                return true ;
-            }
-        }
-        // check current index itself :
-        QString key = sourceModel()->data(parent_index, filterRole()).toString();
-        return key.contains(filterRegExp()) ;
+        return check_entry_row(source_row, source_parent);
     }
 
+    else if(filter_mode == 1)
+    {
+        // get source-model index for current row
+        QModelIndex current_item = sourceModel()->index(source_row, 0, source_parent);
+        if(current_item.isValid())
+        {
+            // if any of children matches the filter, then current index matches the filter as well
+            int num_children = sourceModel()->rowCount(current_item) ;
+            for(int i = 0; i<num_children; ++i)
+            {
+                if(filterAcceptsRow(i, current_item))
+                {
+                    return true ;
+                }
+            }
+            // check current index itself
+            return check_entry_row(source_row, source_parent);
+        }
+    }
 
-//    qDebug() << source_row << " " << source_parent;
-//    return true;
+    else if(filter_mode == 2)
+    {
+        bool test = check_entry_row(source_parent.parent().row(), source_parent.parent()) ||
+                check_entry_row(source_row, source_parent);
 
-//    return false;
+
+        qDebug() << test << " ";
+        qDebug() << source_row << " " << source_parent.parent().row() << " " << source_parent << " " << source_parent.parent();
+        return test;
+    }
 }
 
+bool NixProxyModel::check_entry_row(int source_row, const QModelIndex &source_parent) const
+{
+    NixDataModel *model = static_cast<NixDataModel*>(sourceModel());
+
+    for (int c = 0; c < model->num_columns; ++c)
+    {
+        QModelIndex index = model->index(source_row, c, source_parent);
+        if (model->data(index).toString().contains(filterRegExp()))
+            return true;
+    }
+    return false;
+}
 
