@@ -37,13 +37,36 @@ bool NixProxyModel::filterAcceptsRow(int source_row, const QModelIndex &source_p
 
     else if(filter_mode == 2)
     {
-        bool test = check_entry_row(source_parent.parent().row(), source_parent.parent()) ||
-                check_entry_row(source_row, source_parent);
+//        QModelIndex current_item = sourceModel()->index(source_row, 0, source_parent);
+//        if (!(current_item.isValid()))
+//        {
+////            qDebug() << "invalid" << current_item;
+//            return false;
+//        }
+//        else
+//        {
+//            qDebug() << "valid" << current_item;
+//        }
+//        qDebug() << "current" << current_item  << current_item.row() << current_item.column();
+//        bool test = check_entry_row(source_row, source_parent);
 
+//        qDebug() << "parent " << sourceModel()->parent(current_item) << sourceModel()->parent(current_item).row() << sourceModel()->parent(current_item).column();
+//        bool test_rec =  filterAcceptsRow(sourceModel()->parent(current_item).row(), sourceModel()->parent(current_item));
 
-        qDebug() << test << " ";
-        qDebug() << source_row << " " << source_parent.parent().row() << " " << source_parent << " " << source_parent.parent();
-        return test;
+//        qDebug() << "test =" << test << "test_rec =" << test_rec;
+//        qDebug();
+//        return test || test_rec;
+
+        QModelIndex current_item = sourceModel()->index(source_row, 0, source_parent);
+        QModelIndex current_check = current_item;
+        while (current_check.isValid())
+        {
+            qDebug() << current_check;
+            if (check_entry_row(sourceModel()->parent(current_check).row(), sourceModel()->parent(current_check)))
+                return true;
+            current_check = sourceModel()->parent(current_check);
+        }
+        return check_entry_row(source_row, source_parent);
     }
 }
 
