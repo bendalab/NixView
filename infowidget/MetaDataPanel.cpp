@@ -20,6 +20,7 @@ void MetaDataPanel::set_proxy_model()
 //    proxy_model->setFilterRegExp(QRegExp("Metadata", Qt::CaseInsensitive, QRegExp::FixedString));
     proxy_model->setFilterRegExp("MetaData");
     proxy_model->set_filter_mode(1);
+    proxy_model->set_metadata_only_mode(true);
 }
 
 void MetaDataPanel::update_metadata_panel(QModelIndex qml)
