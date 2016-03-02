@@ -8,6 +8,10 @@ NixProxyModel::NixProxyModel(QObject *parent)
 
 bool NixProxyModel::filterAcceptsRow(int source_row, const QModelIndex &source_parent) const
 {
+    if(metadata_only_mode)
+        if(check_if_in_data_branch(source_row, source_parent))
+            return false;
+
     if(filter_mode == 1)
     {
         if(check_children(source_row, source_parent))
@@ -69,6 +73,19 @@ bool NixProxyModel::check_entry_row(int source_row, const QModelIndex &source_pa
         QModelIndex index = model->index(source_row, c, source_parent);
         if (model->data(index).toString().contains(filterRegExp()))
             return true;
+    }
+    return false;
+}
+
+bool NixProxyModel::check_if_in_data_branch(int source_row, const QModelIndex &source_parent) const
+{
+    QModelIndex parent = source_parent;
+    while (parent.isValid()) {
+        QModelIndex index = sourceModel()->index(parent.parent().row(), 0, parent.parent());
+        qDebug() << sourceModel()->data(index).toString();
+        if (strcmp(sourceModel()->data(index).toString().toStdString().c_str(), "Data") == 1)
+            return true;
+        parent = parent.parent();
     }
     return false;
 }
