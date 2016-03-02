@@ -58,6 +58,9 @@ void MainViewWidget::connect_widgets()
 //    QObject::connect(rtv, SIGNAL(empty_item()), iw, SLOT(update_info_widget()));
 //    QObject::connect(rtv->get_filter_combo_box(), SIGNAL(activated(QString)), rtv, SLOT(filter_changed(QString)));
 
+    // - InfoWidget
+    QObject::connect(rtv->get_tree_view()->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)), iw, SLOT(update_info_widget(QModelIndex,QModelIndex)));
+
     // - tag references
 
     // tree widget expanded/collapsed
