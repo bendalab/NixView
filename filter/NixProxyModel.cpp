@@ -4,70 +4,62 @@
 NixProxyModel::NixProxyModel(QObject *parent)
     :QSortFilterProxyModel(parent)
 {
-    setFilterRegExp(QRegExp("Data"));
-    set_filter_mode(2);
+    setFilterRegExp(QRegExp("source"));
+    set_filter_mode(3);
 }
 
 bool NixProxyModel::filterAcceptsRow(int source_row, const QModelIndex &source_parent) const
 {
-    if(filter_mode == 0)
+    if(filter_mode == 1)
     {
-        return check_entry_row(source_row, source_parent);
-    }
-
-    else if(filter_mode == 1)
-    {
-        // get source-model index for current row
-        QModelIndex current_item = sourceModel()->index(source_row, 0, source_parent);
-        if(current_item.isValid())
-        {
-            // if any of children matches the filter, then current index matches the filter as well
-            int num_children = sourceModel()->rowCount(current_item) ;
-            for(int i = 0; i<num_children; ++i)
-            {
-                if(filterAcceptsRow(i, current_item))
-                {
-                    return true ;
-                }
-            }
-            // check current index itself
-            return check_entry_row(source_row, source_parent);
-        }
+        if(check_children(source_row, source_parent))
+            return true;
     }
 
     else if(filter_mode == 2)
     {
-//        QModelIndex current_item = sourceModel()->index(source_row, 0, source_parent);
-//        if (!(current_item.isValid()))
-//        {
-////            qDebug() << "invalid" << current_item;
-//            return false;
-//        }
-//        else
-//        {
-//            qDebug() << "valid" << current_item;
-//        }
-//        qDebug() << "current" << current_item  << current_item.row() << current_item.column();
-//        bool test = check_entry_row(source_row, source_parent);
-
-//        qDebug() << "parent " << sourceModel()->parent(current_item) << sourceModel()->parent(current_item).row() << sourceModel()->parent(current_item).column();
-//        bool test_rec =  filterAcceptsRow(sourceModel()->parent(current_item).row(), sourceModel()->parent(current_item));
-
-//        qDebug() << "test =" << test << "test_rec =" << test_rec;
-//        qDebug();
-//        return test || test_rec;
-
-        QModelIndex current_item = sourceModel()->index(source_row, 0, source_parent);
-        QModelIndex current_check = current_item;
-        while (current_check.isValid())
-        {
-            qDebug() << current_check;
-            if (check_entry_row(sourceModel()->parent(current_check).row(), sourceModel()->parent(current_check)))
-                return true;
-            current_check = sourceModel()->parent(current_check);
-        }
-        return check_entry_row(source_row, source_parent);
+        if (check_parent(source_parent))
+            return true;
     }
+
+    else if(filter_mode == 3)
+    {
+        if (check_parent(source_parent) || check_children(source_row, source_parent))
+            return true;
+    }
+
+    return check_entry_row(source_row, source_parent);
+}
+
+
+bool NixProxyModel::check_parent(const QModelIndex &source_parent) const
+{
+    QModelIndex parent = source_parent;
+    while (parent.isValid()) {
+        if (check_entry_row(parent.row(), parent.parent()))
+            return true;
+        parent = parent.parent();
+    }
+    return false;
+}
+
+bool NixProxyModel::check_children(int source_row, const QModelIndex &source_parent) const
+{
+    // get source-model index for current row
+    QModelIndex current_item = sourceModel()->index(source_row, 0, source_parent);
+    if(current_item.isValid())
+    {
+        // if any of children matches the filter, then current index matches the filter as well
+        int num_children = sourceModel()->rowCount(current_item) ;
+        for(int i = 0; i<num_children; ++i)
+        {
+            if(filterAcceptsRow(i, current_item))
+            {
+                return true ;
+            }
+        }
+    }
+    return false;
 }
 
 bool NixProxyModel::check_entry_row(int source_row, const QModelIndex &source_parent) const

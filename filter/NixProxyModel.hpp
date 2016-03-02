@@ -25,6 +25,8 @@ public:
 
 private:
     bool filterAcceptsRow(int source_row, const QModelIndex &source_parent) const;
+    bool check_parent(const QModelIndex &source_parent) const;
+    bool check_children(int source_row, const QModelIndex &source_parent) const;
     bool check_entry_row(int source_row, const QModelIndex &source_parent) const;
 
 };
