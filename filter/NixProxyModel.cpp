@@ -4,8 +4,6 @@
 NixProxyModel::NixProxyModel(QObject *parent)
     :QSortFilterProxyModel(parent)
 {
-    setFilterRegExp(QRegExp("source"));
-    set_filter_mode(3);
 }
 
 bool NixProxyModel::filterAcceptsRow(int source_row, const QModelIndex &source_parent) const
