@@ -21,22 +21,10 @@ InfoWidget::InfoWidget(NixDataModel *_nix_model, QWidget *parent) :
     connect_widgets();
 }
 
-void InfoWidget::update_info_widget(QVariant v)
+void InfoWidget::update_info_widget(QModelIndex qml_new, QModelIndex  qml_old)
 {
-    if(v.canConvert<nix::Tag>() || v.canConvert<nix::MultiTag>())
-    {
-        ui->verticalLayout_page_tag->addWidget(dp);
-        ui->stackedWidget->setCurrentIndex(1);
-    }
-    else
-    {
-        ui->verticalLayout_page_meta->addWidget(dp);
-        ui->stackedWidget->setCurrentIndex(0);
-    }
-
-    dp->update_description_panel(v);
-//    mp->update_metadata_panel(v);
-    tp->update_tag_panel(v);
+    qDebug() << qml_old << qml_new;
+    mp->update_metadata_panel(qml_new);
 }
 
 void InfoWidget::update_info_widget()
