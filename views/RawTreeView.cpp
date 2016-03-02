@@ -140,12 +140,12 @@ void RawTreeView::resize_to_content(QModelIndex qml) {
 
 void RawTreeView::current_changed(QModelIndex qml_new, QModelIndex qml_old)
 {
-    qDebug() << qml_new;
+    //qDebug() << qml_new;
 }
 
-void RawTreeView::selection_changed(QItemSelection qis_new, QItemSelection qis_old)
+void RawTreeView::selection_changed(QItemSelection qml_new, QItemSelection qml_old)
 {
-
+    //qDebug() << "test";
 }
 
 //void RawTreeView::currentItemChanged_worker(QTreeWidgetItem* old_item, QTreeWidgetItem* new_item)
