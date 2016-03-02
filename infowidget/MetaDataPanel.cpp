@@ -18,7 +18,19 @@ MetaDataPanel::MetaDataPanel(NixDataModel *_nix_model, QWidget *parent) :
 void MetaDataPanel::set_proxy_model()
 {
 //    proxy_model->setFilterRegExp(QRegExp("Metadata", Qt::CaseInsensitive, QRegExp::FixedString));
-//    proxy_model->setFilterKeyColumn(0);
+    proxy_model->setFilterRegExp("MetaData");
+    proxy_model->set_filter_mode(1);
+}
+
+void MetaDataPanel::update_metadata_panel(QModelIndex qml)
+{
+    NixModelItem *item = static_cast<NixModelItem*>(static_cast<NixDataModel*>(proxy_model->sourceModel())->itemFromIndex(qml));
+    if(item->entity_can_have_metadata())
+    {
+        nix::Section metadata = item->get_entity_metadata();
+        qDebug() << QString::fromStdString(metadata.name());
+        proxy_model->setFilterRegExp(QString::fromStdString(metadata.name()));
+    }
 }
 
 void MetaDataPanel::clear_metadata_panel()
