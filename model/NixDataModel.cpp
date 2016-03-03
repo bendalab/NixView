@@ -85,6 +85,18 @@ void NixDataModel::add_content(QStandardItem* item, T nix_entity)
         RowStrings t_list = create_rowstrings(t, NIX_STRING_TAG, "child");
         Row t_m = create_entry_row(t_list, nix_entity);
         item->appendRow(t_m);
+        for(nix::DataArray da : t.references())
+        {
+            RowStrings da_list = create_rowstrings(da, REFERENCE_DATAARRAY, "link");
+            Row test = create_entry_row(da_list, da);
+            t_m.first()->appendRow(test);
+        }
+        for(nix::Feature f : t.features())
+        {
+            RowStrings da_list = create_rowstrings(f.data(), FEATURE_DATAARRAY, "link");
+            Row test = create_entry_row(da_list, f);
+            t_m.first()->appendRow(test);
+        }
         add_linked_metadata(t_m.first(), t);
     }
 

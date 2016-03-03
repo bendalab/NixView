@@ -45,6 +45,11 @@ NixModelItem::NixModelItem(const QString &text, QVariant _nix_entity)
         nix_entity_type = NIX_STRING_TAG;
         entity_metadata = true;
     }
+    else if(nix_entity.canConvert<nix::Feature>())
+    {
+        nix_entity_type = NIX_STRING_FEATURE;
+        entity_metadata = false;
+    }
     else if(nix_entity.canConvert<nix::Section>())
     {
         nix_entity_type = NIX_STRING_SECTION;
