@@ -8,6 +8,9 @@ NixProxyModel::NixProxyModel(QObject *parent)
 
 bool NixProxyModel::filterAcceptsRow(int source_row, const QModelIndex &source_parent) const
 {
+    if(block_mode)
+        return false;
+
     if(metadata_only_mode)
         if(check_if_in_data_branch(source_row, source_parent))
             return false;
@@ -86,5 +89,10 @@ bool NixProxyModel::check_if_in_data_branch(int source_row, const QModelIndex &s
         parent = parent.parent();
     }
     return false;
+}
+
+void NixProxyModel::refresh()
+{
+    invalidateFilter();
 }
 
