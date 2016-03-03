@@ -19,7 +19,6 @@ NixModelItem::NixModelItem(const QString &text, QVariant _nix_entity)
     : QStandardItem(text)
 {
     nix_entity = _nix_entity;
-    entity_metadata = false;
 
     if(nix_entity.canConvert<nix::Block>())
     {
