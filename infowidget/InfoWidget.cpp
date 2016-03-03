@@ -23,7 +23,6 @@ InfoWidget::InfoWidget(NixDataModel *_nix_model, QWidget *parent) :
 
 void InfoWidget::update_info_widget(QModelIndex qml_new, QModelIndex  qml_old)
 {
-    qDebug() << qml_old << qml_new;
     mp->update_metadata_panel(qml_new);
 }
 
