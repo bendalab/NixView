@@ -32,6 +32,7 @@ void MetaDataPanel::update_metadata_panel(QModelIndex qml)
         {
             proxy_model->set_block_mode(false);
             proxy_model->setFilterRegExp(QString::fromStdString(metadata.id()));
+            ui->treeView->expandAll();
         }
         else
             clear_metadata_panel();
