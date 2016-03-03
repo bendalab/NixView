@@ -7,6 +7,7 @@ Q_DECLARE_METATYPE(nix::Property);
 Q_DECLARE_METATYPE(nix::DataArray);
 Q_DECLARE_METATYPE(nix::Tag);
 Q_DECLARE_METATYPE(nix::MultiTag);
+Q_DECLARE_METATYPE(nix::Feature);
 Q_DECLARE_METATYPE(nix::Source);
 
 #define NIX_STRING_BLOCK "Block"
@@ -16,6 +17,7 @@ Q_DECLARE_METATYPE(nix::Source);
 #define NIX_STRING_DATAARRAY "DataArray"
 #define NIX_STRING_TAG "Tag"
 #define NIX_STRING_MULTITAG "MultiTag"
+#define NIX_STRING_FEATURE "Feature"
 #define NIX_STRING_SOURCE "Source"
 #define NIX_STRING_PROPERTY "Property"
 
@@ -25,3 +27,6 @@ Q_DECLARE_METATYPE(nix::Source);
 #define NIX_STRING_TYPE_INT64 "Int64"
 #define NIX_STRING_TYPE_UINT64 "UInt64"
 #define NIX_STRING_TYPE_DOUBLE "Double"
+
+#define REFERENCE_DATAARRAY "Reference/DataArray"
+#define FEATURE_DATAARRAY "Feature/DataArray"
