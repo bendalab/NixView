@@ -81,9 +81,7 @@ bool NixProxyModel::check_if_in_data_branch(int source_row, const QModelIndex &s
 {
     QModelIndex parent = source_parent;
     while (parent.isValid()) {
-        QModelIndex index = sourceModel()->index(parent.parent().row(), 0, parent.parent());
-        qDebug() << sourceModel()->data(index).toString();
-        if (strcmp(sourceModel()->data(index).toString().toStdString().c_str(), "Data") == 1)
+        if (!parent.parent().isValid() && strcmp(sourceModel()->data(parent).toString().toStdString().c_str(), "Data") == 0)
             return true;
         parent = parent.parent();
     }
