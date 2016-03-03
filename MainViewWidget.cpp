@@ -1,6 +1,7 @@
 #include "MainViewWidget.hpp"
 #include "ui_MainViewWidget.h"
 
+NixDataModel *MainViewWidget::CURRENT_MODEL = nullptr;
 
 /**
 * @brief Container for all widgets for data display.
@@ -14,6 +15,7 @@ MainViewWidget::MainViewWidget(std::string& nix_file_path, QWidget *parent) :
 
     nix_file = nix::File::open(nix_file_path, nix::FileMode::ReadOnly);
     nix_model = new NixDataModel(nix_file);
+    MainViewWidget::CURRENT_MODEL = nix_model;
 
     iw =  new InfoWidget(nix_model, this);
     ui->horizontalLayout->addWidget(iw);
