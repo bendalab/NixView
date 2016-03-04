@@ -54,8 +54,8 @@ void MainViewWidget::connect_widgets()
     // click in overview
     // - rawtreeview
     QObject::connect(rtv->get_tree_view()->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)), rtv, SLOT(current_changed(QModelIndex,QModelIndex)));
-    QObject::connect(rtv->get_tree_view()->selectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
-                     rtv, SLOT(selection_changed(QItemSelection,QItemSelection)));
+//    QObject::connect(rtv->get_tree_view()->selectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
+//                     rtv, SLOT(selection_changed(QItemSelection,QItemSelection)));
 //    QObject::connect(rtv, SIGNAL(item_found(QVariant)), iw, SLOT(update_info_widget(QVariant)));
 //    QObject::connect(rtv, SIGNAL(empty_item()), iw, SLOT(update_info_widget()));
 //    QObject::connect(rtv->get_filter_combo_box(), SIGNAL(activated(QString)), rtv, SLOT(filter_changed(QString)));
