@@ -68,14 +68,14 @@ void NixDataModel::nix_file_to_model() {
 template<typename T>
 void NixDataModel::add_content(QStandardItem* item, T nix_entity)
 {
-    for (nix::DataArray da  : nix_entity.dataArrays()) {
+    for (nix::DataArray da : nix_entity.dataArrays()) {
         std::stringstream s;
         s << da.dataExtent();
         std::string shape = s.str();
         boost::algorithm::trim(shape);
         shape = shape.substr(7, shape.length()-1);
         RowStrings da_list = create_rowstrings(da, NIX_STRING_DATAARRAY, "child", nix::data_type_to_string(da.dataType()), shape);
-        Row da_m = create_entry_row(da_list, nix_entity);
+        Row da_m = create_entry_row(da_list, da);
         item->appendRow(da_m);
         add_linked_sources(da_m.first(), da);
         add_linked_metadata(da_m.first(), da);
@@ -83,7 +83,7 @@ void NixDataModel::add_content(QStandardItem* item, T nix_entity)
 
     for (nix::Tag t : nix_entity.tags()) {
         RowStrings t_list = create_rowstrings(t, NIX_STRING_TAG, "child");
-        Row t_m = create_entry_row(t_list, nix_entity);
+        Row t_m = create_entry_row(t_list, t);
         item->appendRow(t_m);
         for(nix::DataArray da : t.references())
         {
@@ -102,7 +102,7 @@ void NixDataModel::add_content(QStandardItem* item, T nix_entity)
 
     for (nix::MultiTag m : nix_entity.multiTags()) {
         RowStrings m_list = create_rowstrings(m, NIX_STRING_MULTITAG, "child");
-        Row m_m = create_entry_row(m_list, nix_entity);
+        Row m_m = create_entry_row(m_list, m);
         item->appendRow(m_m);
         add_linked_sources(m_m.first(), m);
         add_linked_metadata(m_m.first(), m);
@@ -111,7 +111,7 @@ void NixDataModel::add_content(QStandardItem* item, T nix_entity)
     for (nix::Source s : nix_entity.sources())
     {
         RowStrings s_list = create_rowstrings(s, NIX_STRING_SOURCE, "child");
-        Row s_m = create_entry_row(s_list, nix_entity);
+        Row s_m = create_entry_row(s_list, s);
         item->appendRow(s_m);
         add_linked_metadata(s_m.first(), s);
     }
@@ -130,7 +130,7 @@ void NixDataModel::add_subsec_prop(QStandardItem* item, nix::Section section) {
         std::string v = get_property_value(p);
         RowStrings p_list;
         p_list << s_to_q(p.name())                                  //  0
-               << NIX_STRING_PROPERTY                                      //  1
+               << NIX_STRING_PROPERTY                               //  1
                << s_to_q(nix::data_type_to_string(p.dataType()))    //  2
                << ""                                                //  3
                << ""                                                //  4
