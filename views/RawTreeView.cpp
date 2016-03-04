@@ -13,6 +13,7 @@ RawTreeView::RawTreeView(NixDataModel* _nix_model, QWidget *parent) :
     filter_mode = 0;
     nix_model = _nix_model;
     ui->treeView->setModel(nix_model);
+    ui->treeView->setSelectionBehavior(QAbstractItemView::SelectRows);
     hidden_columns = {5, 6, 7, 8, 9};
     for (int entry : hidden_columns)
         ui->treeView->setColumnHidden(entry, true);
@@ -34,7 +35,8 @@ void RawTreeView::resize_to_content(QModelIndex qml) {
 
 void RawTreeView::current_changed(QModelIndex qml_new, QModelIndex qml_old)
 {
-    //qDebug() << qml_new;
+//    qDebug() << qml_old;
+//    qDebug() << qml_new;
 }
 
 void RawTreeView::selection_changed(QItemSelection qml_new, QItemSelection qml_old)
