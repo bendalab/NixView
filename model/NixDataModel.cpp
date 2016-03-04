@@ -32,6 +32,7 @@ void NixDataModel::nix_file_to_model() {
 
     RowStrings data_list;
     data_list << "Data";
+    fill_rowstrings(data_list);
     Row data_branch = create_entry_row(data_list);
     root_node->appendRow(data_branch);
 
@@ -53,6 +54,7 @@ void NixDataModel::nix_file_to_model() {
 
     RowStrings metadata_list;
     metadata_list << NIX_STRING_METADATA;
+    fill_rowstrings(metadata_list);
     Row metadata_branch = create_entry_row(metadata_list);
     root_node->appendRow(metadata_branch);
 
@@ -254,6 +256,12 @@ RowStrings NixDataModel::create_rowstrings(T arg, std::string storagetype, std::
            << ""                            //  8
            << s_to_q(root_child_link);      //  9
     return s_list;
+}
+
+void NixDataModel::fill_rowstrings(RowStrings &rowstrings)
+{
+    for(int i = rowstrings.size(); i < num_columns; ++i)
+        rowstrings << "";
 }
 
 template<typename T>
