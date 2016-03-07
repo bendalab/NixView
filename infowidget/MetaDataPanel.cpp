@@ -12,6 +12,9 @@ MetaDataPanel::MetaDataPanel(NixDataModel *_nix_model, QWidget *parent) :
     proxy_model = new NixProxyModel(this);
     proxy_model->setSourceModel(_nix_model);
     ui->treeView->setModel(proxy_model);
+    std::vector<int> hidden_columns = {2,3,4,5,6,7,9};
+    for(int c : hidden_columns)
+        ui->treeView->setColumnHidden(c, true);
     set_proxy_model();
 }
 
@@ -24,7 +27,7 @@ void MetaDataPanel::set_proxy_model()
 
 void MetaDataPanel::update_metadata_panel(QModelIndex qml)
 {
-    NixModelItem *item = static_cast<NixModelItem*>(static_cast<NixDataModel*>(proxy_model->sourceModel())->itemFromIndex(qml));
+    NixModelItem *item = proxy_model->get_item_from_qml(qml);
     if(item->entity_can_have_metadata())
     {
         nix::Section metadata = item->get_entity_metadata();
