@@ -13,11 +13,13 @@ InfoWidget::InfoWidget(NixDataModel *_nix_model, QWidget *parent) :
     mp = new MetaDataPanel(_nix_model, this);
     ui->verticalLayout_page_meta->addWidget(mp);
 
-    dp = new DescriptionPanel(this);
-    ui->verticalLayout_page_meta->addWidget(dp);
-
     tp = new TagPanel(this);
     ui->verticalLayout_page_tag->addWidget(tp);
+
+    dp = new DescriptionPanel(this);
+    ui->verticalLayout_page_info->addWidget(dp);
+
+    ui->tabWidget->setCurrentIndex(0);
 
     connect_widgets();
 }
@@ -32,10 +34,10 @@ void InfoWidget::update_info_widget(QModelIndex qml_new, QModelIndex  qml_old)
             strcmp(model_item->get_nix_qvariant_type().c_str(), NIX_STRING_TAG) == 0)
     {
         tp->update_tag_panel(qml_new);
-        ui->stackedWidget->setCurrentIndex(1);
+        ui->tabWidget->setCurrentIndex(1);
     }
     else
-        ui->stackedWidget->setCurrentIndex(0);
+        ui->tabWidget->setCurrentIndex(0);
 }
 
 void InfoWidget::update_info_widget()
