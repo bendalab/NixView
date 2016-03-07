@@ -14,6 +14,8 @@ public:
     bool metadata_only_mode = false;
     bool block_mode = false;
 
+    NixModelItem* get_item_from_qml(QModelIndex qml);
+
     // setter
     /**
      * @brief Sets the filter to specified mode.

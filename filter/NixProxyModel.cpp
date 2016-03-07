@@ -91,6 +91,11 @@ bool NixProxyModel::check_if_in_data_branch(int source_row, const QModelIndex &s
     return false;
 }
 
+NixModelItem* NixProxyModel::get_item_from_qml(QModelIndex qml)
+{
+    return static_cast<NixModelItem*>(static_cast<NixDataModel*>(sourceModel())->itemFromIndex(qml));
+}
+
 void NixProxyModel::refresh()
 {
     invalidateFilter();
