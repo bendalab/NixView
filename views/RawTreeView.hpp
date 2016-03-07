@@ -24,8 +24,6 @@ public:
 public slots:
 //    void currentItemChanged_worker(QTreeWidgetItem*,QTreeWidgetItem*);
     void resize_to_content(QModelIndex);
-    void current_changed(QModelIndex, QModelIndex);
-    void selection_changed(QItemSelection, QItemSelection);
 //    void item_info_requested(QTreeWidgetItem*, int);
 //    void filter_changed(QString);
 
@@ -60,7 +58,7 @@ private:
 //    void expand();
 
 //    // friend declaration and getters for signals and slots
-    friend class MainViewWidget;
+public:
     const QTreeView* get_tree_view();
 //    const QComboBox* get_filter_combo_box();
 };

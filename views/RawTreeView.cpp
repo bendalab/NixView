@@ -33,17 +33,6 @@ void RawTreeView::resize_to_content(QModelIndex qml) {
 //        ui->treeWidget->expandToDepth(1);
 //}
 
-void RawTreeView::current_changed(QModelIndex qml_new, QModelIndex qml_old)
-{
-//    qDebug() << qml_old;
-//    qDebug() << qml_new;
-}
-
-void RawTreeView::selection_changed(QItemSelection qml_new, QItemSelection qml_old)
-{
-    //qDebug() << "test";
-}
-
 // getter
 const QTreeView* RawTreeView::get_tree_view()
 {
