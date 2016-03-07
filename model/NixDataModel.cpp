@@ -281,3 +281,8 @@ std::string NixDataModel::get_updated_at(T arg)
     info_cr = localtime( &rawtime_cr );
     return boost::algorithm::trim_right_copy(std::string(asctime(info_cr)));
 }
+
+NixModelItem* NixDataModel::get_item_from_qml(QModelIndex qml)
+{
+    return static_cast<NixModelItem*>(itemFromIndex(qml));
+}

@@ -14,6 +14,8 @@ public:
     NixDataModel(nix::File);
     int num_columns;
 
+    NixModelItem* get_item_from_qml(QModelIndex qml);
+
 private:
     nix::File nix_file;
     QString s_to_q(std::string);
