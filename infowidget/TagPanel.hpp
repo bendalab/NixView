@@ -33,7 +33,7 @@ signals:
     void references_cleared();
     void emit_feature(nix::DataArray);
     void features_cleared();
-    void emit_tag(nix::Tag, int);
+    void emit_tag(QModelIndex, int);
 
 private:
     Ui::TagPanel *ui;

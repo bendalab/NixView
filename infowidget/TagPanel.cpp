@@ -274,11 +274,7 @@ void TagPanel::feature_item_requested(QTreeWidgetItem* item, int column)
 
 void TagPanel::tag_item_requested(int current_row, int current_column, int previous_row, int previous_column)
 {
-    NixDataModel *current_model = MainViewWidget::get_current_model();
-    NixModelItem *model_item = static_cast<NixModelItem*>(current_model->itemFromIndex(current_qml));
-    nix::Tag tag = model_item->get_nix_entity<nix::Tag>();
-
-    emit emit_tag(tag, current_row);
+    emit emit_tag(current_qml, current_row);
 }
 
 void TagPanel::currentItemChanged_reference_helper(QTreeWidgetItem* current, QTreeWidgetItem* previous)
