@@ -5,6 +5,8 @@
 #include <nix.hpp>
 #include <QVariant>
 #include <plotter/plotter.h>
+#include <QModelIndex>
+#include "MainViewWidget.hpp"
 
 namespace Ui {
 class PlotWidget;
@@ -20,11 +22,12 @@ public:
 
     bool can_draw() const;
 
-    void setEntity(QVariant var);
+    void setEntity(QModelIndex qml);
 
 private:
     Ui::PlotWidget *ui;
-    QVariant item;
+    QModelIndex item_qml;
+    NixModelItem* item;
     std::vector<Plotter *> plots;
 
     bool check_plottable_dtype(nix::DataType dtype) const;

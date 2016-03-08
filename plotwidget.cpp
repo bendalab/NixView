@@ -9,7 +9,7 @@ PlotWidget::PlotWidget(QWidget *parent) :
     ui(new Ui::PlotWidget)
 {
     ui->setupUi(this);
-    std::cerr << "PlotWidget" << std::endl;
+    item = nullptr;
 }
 
 PlotWidget::~PlotWidget()
@@ -19,21 +19,28 @@ PlotWidget::~PlotWidget()
 
 
 bool PlotWidget::can_draw() const {
-    return this->item.canConvert<nix::DataArray>() | this->item.canConvert<nix::MultiTag>() | this->item.canConvert<nix::Tag>();
+    return strcmp(this->item->get_nix_qvariant_type().c_str(), NIX_STRING_DATAARRAY) == 0 |
+            strcmp(this->item->get_nix_qvariant_type().c_str(), NIX_STRING_MULTITAG) == 0 |
+            strcmp(this->item->get_nix_qvariant_type().c_str(), NIX_STRING_TAG) == 0;
 }
 
 
 void PlotWidget::process_item() {
-    if (this->item.canConvert<nix::DataArray>()) {
-        nix::DataArray array = item.value<nix::DataArray>();
+    if (strcmp(this->item->get_nix_qvariant_type().c_str(), NIX_STRING_DATAARRAY) == 0)
+    {
+        nix::DataArray array = item->get_nix_entity<nix::DataArray>();
         process(array);
         describe(array);
-    } else if (this->item.canConvert<nix::Tag>()) {
-        nix::Tag tag = item.value<nix::Tag>();
+    }
+    else if (strcmp(this->item->get_nix_qvariant_type().c_str(), NIX_STRING_TAG) == 0)
+    {
+        nix::Tag tag = item->get_nix_entity<nix::Tag>();
         process(tag);
         describe(tag);
-    } else {
-        nix::MultiTag mtag = item.value<nix::MultiTag>();
+    }
+    else if (strcmp(this->item->get_nix_qvariant_type().c_str(), NIX_STRING_MULTITAG) == 0)
+    {
+        nix::MultiTag mtag = item->get_nix_entity<nix::MultiTag>();
         process(mtag);
         describe(mtag);
     }
@@ -70,7 +77,6 @@ void PlotWidget::process(const nix::DataArray &array) {
 
 void PlotWidget::draw_1d(const nix::DataArray &array) {
     if (check_plottable_dtype(array.dataType())) {
-        std::cerr << "ping" << std::endl;
         nix::Dimension d = array.getDimension(1);
         QVector<double> x_axis, y_axis;
         QVector<QString> x_tick_labels;
@@ -115,7 +121,6 @@ void PlotWidget::draw_1d(const nix::DataArray &array) {
 }
 
 void PlotWidget::process(const nix::Tag &tag) {
-    std::cerr << "process Tag" << std::endl;
     for (nix::ndsize_t i = 0; i < tag.referenceCount(); i++) {
         process(tag.getReference(i));
         Plotter *currplot = this->plots[i];
@@ -137,8 +142,6 @@ void PlotWidget::process(const nix::Tag &tag) {
 }
 
 void PlotWidget::process(const nix::MultiTag &mtag) {
-    std::cerr << "process MultiTag" << std::endl;
-
     std::vector<double> pos(mtag.positions().dataExtent()[0]);
     std::vector<double> ext;
 
@@ -203,8 +206,9 @@ void PlotWidget::describe(const nix::MultiTag &mtag) {
     ui->entityDescription->setText(text);
 }
 
-void PlotWidget::setEntity(QVariant var) {
-    this->item = var;
+void PlotWidget::setEntity(QModelIndex qml) {
+    this->item_qml = qml;
+    this->item = MainViewWidget::get_current_model()->get_item_from_qml(qml);
     if (can_draw()) {
         process_item();
     }
