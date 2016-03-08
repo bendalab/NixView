@@ -30,12 +30,10 @@ void InfoWidget::update_info_widget(QModelIndex qml_new, QModelIndex  qml_old)
 
     NixDataModel *current_model = MainViewWidget::get_current_model();
     NixModelItem *model_item = static_cast<NixModelItem*>(current_model->itemFromIndex(qml_new));
+    tp->update_tag_panel(qml_new);
     if(strcmp(model_item->get_nix_qvariant_type().c_str(), NIX_STRING_MULTITAG) == 0 ||
             strcmp(model_item->get_nix_qvariant_type().c_str(), NIX_STRING_TAG) == 0)
-    {
-        tp->update_tag_panel(qml_new);
         ui->tabWidget->setCurrentIndex(1);
-    }
     else
         ui->tabWidget->setCurrentIndex(0);
 }
