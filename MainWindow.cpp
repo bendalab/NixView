@@ -16,9 +16,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
 
 void MainWindow::connect_widgets() {
     QObject::connect(this, SIGNAL(view_requested_raw_data(int)), mvw, SLOT(set_view(int)));
-//    QObject::connect(mvw->get_rtv(), SIGNAL(item_found(QVariant)), this, SLOT(activate_plot(QVariant)));
-    // TODO
-     QObject::connect(mvw->get_rtv()->get_tree_view()->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)), this, SLOT(activate_plot(QModelIndex, QModelIndex)));
+    QObject::connect(mvw->get_rtv()->get_tree_view()->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)), this, SLOT(activate_plot(QModelIndex, QModelIndex)));
 }
 
 MainWindow::~MainWindow() {
@@ -78,8 +76,7 @@ void MainWindow::show_about() {
 
 void MainWindow::show_plot() {
     PlotDialog d(this);
-    d.set_entity(selected_item);
-
+    d.set_entity(selected_qml);
     d.exec();
 }
 

@@ -37,7 +37,6 @@ private:
     MainViewWidget* mvw;
     bool mvw_is_set;
     void connect_widgets();
-    QVariant selected_item;
     QModelIndex selected_qml;
 };
 
