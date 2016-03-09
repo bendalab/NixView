@@ -4,15 +4,20 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+# QT       += core gui widgets printsupport
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets printsupport
+greaterThan(QT_MAJOR_VERSION, 5): QT += core gui widgets printsupport
 
 TARGET = NixView
 TEMPLATE = app
 
-QMAKE_CXXFLAGS+= -std=c++11
-# CONFIG += c++11
+unix {
+    QMAKE_CXXFLAGS+= -std=c++11
+}
+
+macx {
+    CONFIG += c++11
+}
 
 SOURCES += main.cpp\
         MainWindow.cpp \
@@ -33,6 +38,7 @@ SOURCES += main.cpp\
     views/ColumnView.cpp \
     filter/NixProxyModel.cpp \
     model/NixModelItem.cpp
+    entitydescriptor.cpp
 
 HEADERS  += MainWindow.hpp \
     MainViewWidget.hpp \
@@ -54,6 +60,7 @@ HEADERS  += MainWindow.hpp \
     views/ColumnView.hpp \
     filter/NixProxyModel.hpp \
     model/NixModelItem.hpp
+    entitydescriptor.h
 
 FORMS    += MainWindow.ui \
     MainViewWidget.ui \

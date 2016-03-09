@@ -66,11 +66,56 @@ void PlotWidget::process(const nix::DataArray &array) {
         }
         break;
     case 2:
-//        draw_2d(array);
+        if (array.getDimension(1).dimensionType() == nix::DimensionType::Sample ||
+                array.getDimension(1).dimensionType() == nix::DimensionType::Range) {
+            ui->multiPlotCheckBox->setEnabled(true);
+            if (array.getDimension(2).dimensionType() == nix::DimensionType::Set) {
+                draw_multi_line(array);
+            } else {
+                // handle 2D image/heatmap plotting not supported, yet TODO
+            }
+        } else {
+            // handle 2 D set plotting  TODO
+        }
         break;
     default:
         std::cerr << "Sorry, cannot plot data with more than 2d!" << std::endl;
         break;
+    }
+}
+
+
+void PlotWidget::draw_multi_line(const nix::DataArray &array) {
+    if (ui->multiPlotCheckBox->isChecked()) {
+        // TODO
+    } else {
+        LinePlotter *lp = new LinePlotter();
+        ui->scrollAreaWidgetContents->layout()->addWidget(lp);
+        this->plots.push_back(static_cast<Plotter*>(lp));
+
+        QVector<double> x_axis, y_axis;
+        QVector<QString> y_tick_labels;
+        std::vector<std::string> labels;
+        nix::Dimension d = array.getDimension(2);
+        if (d.dimensionType() != nix::DimensionType::Set) {
+            return;
+        }
+        nix::SetDimension sd = d.asSetDimension();
+        sd.labels(labels);
+        lp->get_data_array_axis(array, x_axis, y_tick_labels, 1);
+        y_tick_labels.resize(0);
+        for (std::string s : labels)
+            y_tick_labels.push_back(QString::fromStdString(s));
+        for (nix::ndsize_t i = 0; i < array.dataExtent()[1]; i++) {
+            std::vector<double> data;
+            data.resize(array.dataExtent()[0]);
+            nix::NDSize count(array.dataExtent()[0], 1);
+            nix::NDSize offset(0, i);
+            array.getData(nix::DataType::Double, data.data(), count, offset);
+            y_axis = QVector<double>::fromStdVector(data);
+            lp->add_line_plot(x_axis, y_axis, y_tick_labels[i]);
+        }
+
     }
 }
 
@@ -171,39 +216,41 @@ void PlotWidget::process(const nix::MultiTag &mtag) {
     }
 }
 
-QString PlotWidget::basic_description(const std::string &name, const std::string &type, const std::string &description,
+EntityDescriptor PlotWidget::basic_description(const std::string &name, const std::string &type, const std::string &description,
                                    const std::string &id, const std::string &created, const std::string &updated ) {
-    QString text = "<html>";
-    text = text + "<h2>" + QString::fromStdString(name) + "</h2>";
-    text = text + "<b>type:</b> " + QString::fromStdString(type) + "<br>";
-    text = text + "<p><b>desription:</b> " + QString::fromStdString(description) + "</p>";
-    text = text + "<hr>";
-    text = text + "<small><p><b>id: </b>" + QString::fromStdString(id) + "</p></small>";
-    text = text + "<small><p><b>created: </b>" + QString::fromStdString(created) + "</p></small>";
-    text = text + "<small><p><b>updated: </b>" + QString::fromStdString(updated) + "</p></small>";
-    text = text + "</html>";
-    return text;
+    EntityDescriptor descr(name, type, description, id, created, updated);
+    return descr;
 }
 
 void PlotWidget::describe(const nix::DataArray &array) {
     ui->entityDescription->clear();
-    QString text = basic_description(array.name(), array.type(), array.definition() ? *array.definition() : "", array.id(),
-                                     nix::util::timeToStr(array.createdAt()), nix::util::timeToStr(array.updatedAt()));
-    ui->entityDescription->setText(text);
+    EntityDescriptor descr = basic_description(array.name(), array.type(), array.definition() ? *array.definition() : "", array.id(),
+                                               nix::util::timeToStr(array.createdAt()), nix::util::timeToStr(array.updatedAt()));
+    ui->entityDescription->setText(QString::fromStdString(descr.toHtml()));
 }
 
 void PlotWidget::describe(const nix::Tag &tag) {
     ui->entityDescription->clear();
-    QString text = basic_description(tag.name(), tag.type(), tag.definition() ? *tag.definition() : "", tag.id(),
-                                     nix::util::timeToStr(tag.createdAt()), nix::util::timeToStr(tag.updatedAt()));
-    ui->entityDescription->setText(text);
+    EntityDescriptor descr = basic_description(tag.name(), tag.type(), tag.definition() ? *tag.definition() : "", tag.id(),
+                                               nix::util::timeToStr(tag.createdAt()), nix::util::timeToStr(tag.updatedAt()));
+    descr.addSection("References");
+    std::vector<nix::DataArray> refs = tag.references();
+    for (nix::DataArray a : refs) {
+        descr.addItem(a.name());
+    }
+    ui->entityDescription->setText(QString::fromStdString(descr.toHtml()));
 }
 
 void PlotWidget::describe(const nix::MultiTag &mtag) {
     ui->entityDescription->clear();
-    QString text = basic_description(mtag.name(), mtag.type(), mtag.definition() ? *mtag.definition() : "", mtag.id(),
-                                     nix::util::timeToStr(mtag.createdAt()), nix::util::timeToStr(mtag.updatedAt()));
-    ui->entityDescription->setText(text);
+    EntityDescriptor descr = basic_description(mtag.name(), mtag.type(), mtag.definition() ? *mtag.definition() : "", mtag.id(),
+                                               nix::util::timeToStr(mtag.createdAt()), nix::util::timeToStr(mtag.updatedAt()));
+    descr.addSection("References");
+    std::vector<nix::DataArray> refs = mtag.references();
+    for (nix::DataArray a : refs) {
+        descr.addItem(a.name());
+    }
+    ui->entityDescription->setText(QString::fromStdString(descr.toHtml()));
 }
 
 void PlotWidget::setEntity(QModelIndex qml) {
