@@ -23,6 +23,7 @@ private:
 
 public:
     explicit MainViewWidget(std::string& nix_file_path, QWidget *parent = 0);
+    explicit MainViewWidget(QWidget *parent = 0);
     ~MainViewWidget();
 
     RawTreeView* get_rtv();

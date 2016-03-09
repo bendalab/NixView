@@ -3,6 +3,19 @@
 
 NixDataModel *MainViewWidget::CURRENT_MODEL = nullptr;
 
+MainViewWidget::MainViewWidget(QWidget *parent) :
+    QWidget(parent),
+    ui(new Ui::MainViewWidget)
+{
+    if (nix_file.isOpen())
+        nix_file.close();
+
+    nix_model = nullptr;
+    iw = nullptr;
+    rtv = nullptr;
+    cv = nullptr;
+}
+
 /**
 * @brief Container for all widgets for data display.
 * @param nix_file_path: path to opened nix file
