@@ -19,9 +19,9 @@ PlotWidget::~PlotWidget()
 
 
 bool PlotWidget::can_draw() const {
-    return strcmp(this->item->get_nix_qvariant_type().c_str(), NIX_STRING_DATAARRAY) == 0 |
-            strcmp(this->item->get_nix_qvariant_type().c_str(), NIX_STRING_MULTITAG) == 0 |
-            strcmp(this->item->get_nix_qvariant_type().c_str(), NIX_STRING_TAG) == 0;
+    return (strcmp(this->item->get_nix_qvariant_type().c_str(), NIX_STRING_DATAARRAY) == 0) |
+           (strcmp(this->item->get_nix_qvariant_type().c_str(), NIX_STRING_MULTITAG) == 0) |
+           (strcmp(this->item->get_nix_qvariant_type().c_str(), NIX_STRING_TAG) == 0);
 }
 
 

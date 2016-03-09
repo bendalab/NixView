@@ -53,9 +53,9 @@ void MainWindow::activate_plot(QModelIndex qml_new, QModelIndex) {
 
     NixModelItem *item = mvw->get_current_model()->get_item_from_qml(qml_new);
 
-    if(strcmp(item->get_nix_qvariant_type().c_str(), NIX_STRING_DATAARRAY) == 0 |
-            strcmp(item->get_nix_qvariant_type().c_str(), NIX_STRING_TAG) == 0 |
-            strcmp(item->get_nix_qvariant_type().c_str(), NIX_STRING_MULTITAG) == 0){
+    if((strcmp(item->get_nix_qvariant_type().c_str(), NIX_STRING_DATAARRAY) == 0) |
+            (strcmp(item->get_nix_qvariant_type().c_str(), NIX_STRING_TAG) == 0) |
+            (strcmp(item->get_nix_qvariant_type().c_str(), NIX_STRING_MULTITAG) == 0)){
         if (found_action) {
             plot_action->setEnabled(true);
         }

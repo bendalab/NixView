@@ -81,4 +81,5 @@ nix::Section NixModelItem::get_entity_metadata()
         return nix_entity.value<nix::Tag>().metadata();
     if(nix_entity_type == NIX_STRING_SOURCE)
         return nix_entity.value<nix::Source>().metadata();
+    return nix::Section();
 }

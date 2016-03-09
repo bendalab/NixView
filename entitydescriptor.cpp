@@ -50,7 +50,7 @@ void EntityDescriptor::addSection(const std::string &name) {
 }
 
 
-void EntityDescriptor::addItem(const std::__1::string &item) {
+void EntityDescriptor::addItem(const std::string &item) {
     body.push_back("<b> - " + item + "</b><br>");
 }
 

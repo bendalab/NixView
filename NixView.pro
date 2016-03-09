@@ -37,7 +37,7 @@ SOURCES += main.cpp\
     model/NixDataModel.cpp \
     views/ColumnView.cpp \
     filter/NixProxyModel.cpp \
-    model/NixModelItem.cpp
+    model/NixModelItem.cpp \
     entitydescriptor.cpp
 
 HEADERS  += MainWindow.hpp \
@@ -59,7 +59,7 @@ HEADERS  += MainWindow.hpp \
     model/NixDataModel.hpp \
     views/ColumnView.hpp \
     filter/NixProxyModel.hpp \
-    model/NixModelItem.hpp
+    model/NixModelItem.hpp \
     entitydescriptor.h
 
 FORMS    += MainWindow.ui \

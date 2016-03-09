@@ -16,10 +16,10 @@ public:
     nix::Section get_entity_metadata();
 
     // getter
-    const std::string get_nix_qvariant_type() const { return nix_entity_type; }
+    std::string get_nix_qvariant_type() const { return nix_entity_type; }
     template <typename T>
-    const T get_nix_entity() const { return nix_entity.value<T>(); }
-    const bool entity_can_have_metadata() const { return entity_metadata; }
+    T get_nix_entity() const { return nix_entity.value<T>(); }
+    bool entity_can_have_metadata() const { return entity_metadata; }
 
 private:
     QVariant nix_entity;

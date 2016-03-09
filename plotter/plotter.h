@@ -44,7 +44,7 @@ public:
                 axis_data.push_back(static_cast<double>(i));
             }
             if (labels.size() == 0) {
-                for (int i = 0; i < array.dataExtent()[dim - 1]; ++i) {
+                for (nix::ndsize_t i = 0; i < array.dataExtent()[dim - 1]; ++i) {
                     axis_labels.push_back(QString::fromStdString(nix::util::numToStr<int>(i)));
                     axis_data.push_back(static_cast<double>(i));
                 }
