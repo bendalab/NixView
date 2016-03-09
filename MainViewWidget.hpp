@@ -9,6 +9,7 @@
 #include "views/RawTreeView.hpp"
 #include "views/ColumnView.hpp"
 #include "model/NixDataModel.hpp"
+#include "filter/NixProxyModel.hpp"
 
 namespace Ui {
 class MainViewWidget;
@@ -27,16 +28,22 @@ public:
     ~MainViewWidget();
 
     RawTreeView* get_rtv();
+    ColumnView* get_cv();
     static NixDataModel* get_current_model() {return CURRENT_MODEL; }
 
 public slots:
     void set_view(int);
     void activate_info_widget();
+    void emit_current_qml_worker_slot(QModelIndex qml, QModelIndex);
+
+signals:
+    void emit_current_qml(QModelIndex qml);
 
 private:
     Ui::MainViewWidget *ui;
     nix::File nix_file;
-    NixDataModel* nix_model;
+    NixDataModel *nix_model;
+    NixProxyModel *nix_proxy_model;
 
     RawTreeView* rtv;
     ColumnView* cv;

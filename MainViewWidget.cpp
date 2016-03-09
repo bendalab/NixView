@@ -30,7 +30,10 @@ MainViewWidget::MainViewWidget(std::string& nix_file_path, QWidget *parent) :
     nix_model = new NixDataModel(nix_file);
     MainViewWidget::CURRENT_MODEL = nix_model;
 
-    iw =  new InfoWidget(nix_model, this);
+    nix_proxy_model = new NixProxyModel();
+    nix_proxy_model->setSourceModel(nix_model);
+
+    iw = new InfoWidget(nix_model, this);
     ui->horizontalLayout->addWidget(iw);
 
     populate_data_stacked_widget();
@@ -39,16 +42,20 @@ MainViewWidget::MainViewWidget(std::string& nix_file_path, QWidget *parent) :
 
 void MainViewWidget::populate_data_stacked_widget()
 {
-    rtv = new RawTreeView(nix_model, this);
+    rtv = new RawTreeView(nix_proxy_model, this);
     ui->data_stacked_Widget->addWidget(rtv);
-    cv = new ColumnView(nix_model, this);
+    cv = new ColumnView(nix_proxy_model, this);
     ui->data_stacked_Widget->addWidget(cv);
 
-    ui->data_stacked_Widget->setCurrentIndex(0);
+    ui->data_stacked_Widget->setCurrentIndex(1);
 }
 
 RawTreeView* MainViewWidget::get_rtv() {
     return rtv;
+}
+
+ColumnView* MainViewWidget::get_cv() {
+    return cv;
 }
 
 // slots
@@ -61,14 +68,20 @@ void MainViewWidget::activate_info_widget()
     ui->horizontalLayout->addWidget(iw);
 }
 
+void MainViewWidget::emit_current_qml_worker_slot(QModelIndex qml, QModelIndex)
+{
+    emit emit_current_qml(nix_proxy_model->mapToSource(qml));
+}
+
 // widget connection
 void MainViewWidget::connect_widgets()
 {
-    // click in overview
-    // - rawtreeview
+    // connections from views to current-index emitter
+    QObject::connect(rtv->get_tree_view()->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)), this, SLOT(emit_current_qml_worker_slot(QModelIndex,QModelIndex)));
+    QObject::connect(cv->get_column_view()->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)), this, SLOT(emit_current_qml_worker_slot(QModelIndex,QModelIndex)));
 
     // - InfoWidget
-    QObject::connect(rtv->get_tree_view()->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)), iw, SLOT(update_info_widget(QModelIndex,QModelIndex)));
+    QObject::connect(this, SIGNAL(emit_current_qml(QModelIndex)), iw, SLOT(update_info_widget(QModelIndex)));
 
     // tree widget expanded/collapsed
     QObject::connect(rtv->get_tree_view(), SIGNAL(expanded(QModelIndex)), rtv, SLOT(resize_to_content(QModelIndex)));
