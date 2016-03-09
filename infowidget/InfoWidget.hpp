@@ -25,7 +25,7 @@ public:
     ~InfoWidget();
 
 public slots:
-    void update_info_widget(QVariant);
+    void update_info_widget(QModelIndex, QModelIndex);
     void update_info_widget();
 
 private:

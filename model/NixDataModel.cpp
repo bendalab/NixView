@@ -32,17 +32,18 @@ void NixDataModel::nix_file_to_model() {
 
     RowStrings data_list;
     data_list << "Data";
+    fill_rowstrings(data_list);
     Row data_branch = create_entry_row(data_list);
     root_node->appendRow(data_branch);
 
     for (nix::Block b : nix_file.blocks()) {
-        RowStrings block_list = create_rowstrings(b, "Block", "root", b.type(), (std::string)"");
+        RowStrings block_list = create_rowstrings(b, NIX_STRING_BLOCK, "root", b.type(), (std::string)"");
         Row b_m = create_entry_row(block_list, b);
         data_branch.first()->appendRow(b_m);
 
         for (nix::Group g : b.groups())
         {
-            RowStrings group_list = create_rowstrings(g, "Group", "child", g.type(), (std::string)"");
+            RowStrings group_list = create_rowstrings(g, NIX_STRING_GROUP, "child", g.type(), (std::string)"");
             Row g_m = create_entry_row(group_list, g);
             add_content(g_m.first(), g);
         }
@@ -52,12 +53,13 @@ void NixDataModel::nix_file_to_model() {
     }
 
     RowStrings metadata_list;
-    metadata_list << "MetaData";
+    metadata_list << NIX_STRING_METADATA;
+    fill_rowstrings(metadata_list);
     Row metadata_branch = create_entry_row(metadata_list);
     root_node->appendRow(metadata_branch);
 
     for (nix::Section s : nix_file.sections()) {
-        RowStrings s_list = create_rowstrings(s, "Section", "root");
+        RowStrings s_list = create_rowstrings(s, NIX_STRING_SECTION, "root");
         Row s_m = create_entry_row(s_list, s);
         metadata_branch.first()->appendRow(s_m);
 
@@ -68,29 +70,41 @@ void NixDataModel::nix_file_to_model() {
 template<typename T>
 void NixDataModel::add_content(QStandardItem* item, T nix_entity)
 {
-    for (nix::DataArray da  : nix_entity.dataArrays()) {
+    for (nix::DataArray da : nix_entity.dataArrays()) {
         std::stringstream s;
         s << da.dataExtent();
         std::string shape = s.str();
         boost::algorithm::trim(shape);
         shape = shape.substr(7, shape.length()-1);
-        RowStrings da_list = create_rowstrings(da, "Data Array", "child", nix::data_type_to_string(da.dataType()), shape);
-        Row da_m = create_entry_row(da_list, nix_entity);
+        RowStrings da_list = create_rowstrings(da, NIX_STRING_DATAARRAY, "child", nix::data_type_to_string(da.dataType()), shape);
+        Row da_m = create_entry_row(da_list, da);
         item->appendRow(da_m);
         add_linked_sources(da_m.first(), da);
         add_linked_metadata(da_m.first(), da);
     }
 
     for (nix::Tag t : nix_entity.tags()) {
-        RowStrings t_list = create_rowstrings(t, "Tag", "child");
-        Row t_m = create_entry_row(t_list, nix_entity);
+        RowStrings t_list = create_rowstrings(t, NIX_STRING_TAG, "child");
+        Row t_m = create_entry_row(t_list, t);
         item->appendRow(t_m);
+        for(nix::DataArray da : t.references())
+        {
+            RowStrings da_list = create_rowstrings(da, REFERENCE_DATAARRAY, "link");
+            Row test = create_entry_row(da_list, da);
+            t_m.first()->appendRow(test);
+        }
+        for(nix::Feature f : t.features())
+        {
+            RowStrings da_list = create_rowstrings(f.data(), FEATURE_DATAARRAY, "link");
+            Row test = create_entry_row(da_list, f);
+            t_m.first()->appendRow(test);
+        }
         add_linked_metadata(t_m.first(), t);
     }
 
     for (nix::MultiTag m : nix_entity.multiTags()) {
-        RowStrings m_list = create_rowstrings(m, "Multitag", "child");
-        Row m_m = create_entry_row(m_list, nix_entity);
+        RowStrings m_list = create_rowstrings(m, NIX_STRING_MULTITAG, "child");
+        Row m_m = create_entry_row(m_list, m);
         item->appendRow(m_m);
         add_linked_sources(m_m.first(), m);
         add_linked_metadata(m_m.first(), m);
@@ -98,8 +112,8 @@ void NixDataModel::add_content(QStandardItem* item, T nix_entity)
 
     for (nix::Source s : nix_entity.sources())
     {
-        RowStrings s_list = create_rowstrings(s, "Source", "child");
-        Row s_m = create_entry_row(s_list, nix_entity);
+        RowStrings s_list = create_rowstrings(s, NIX_STRING_SOURCE, "child");
+        Row s_m = create_entry_row(s_list, s);
         item->appendRow(s_m);
         add_linked_metadata(s_m.first(), s);
     }
@@ -107,7 +121,7 @@ void NixDataModel::add_content(QStandardItem* item, T nix_entity)
 
 void NixDataModel::add_subsec_prop(QStandardItem* item, nix::Section section) {
     for  (auto s : section.sections()) {
-        RowStrings s_list = create_rowstrings(s, "Section", "child");
+        RowStrings s_list = create_rowstrings(s, NIX_STRING_SECTION, "child");
         Row s_m = create_entry_row(s_list, s);
         item->appendRow(s_m);
 
@@ -118,7 +132,7 @@ void NixDataModel::add_subsec_prop(QStandardItem* item, nix::Section section) {
         std::string v = get_property_value(p);
         RowStrings p_list;
         p_list << s_to_q(p.name())                                  //  0
-               << "Property"                                        //  1
+               << NIX_STRING_PROPERTY                               //  1
                << s_to_q(nix::data_type_to_string(p.dataType()))    //  2
                << ""                                                //  3
                << ""                                                //  4
@@ -140,27 +154,27 @@ std::string NixDataModel::get_property_value(nix::Property p)
     oss << "(";
     for (int i = 0; i < (int)values.size(); ++i)
     {
-        if (v_type == "String") {
+        if (v_type == NIX_STRING_TYPE_STRING) {
             std::string value;
             values[i].get(value);
             oss << value << ", " << values[i].uncertainty;
-        } else if (v_type == "Bool"){
+        } else if (v_type == NIX_STRING_TYPE_BOOL){
             bool value;
             values[i].get(value);
             oss << value << ", " << values[i].uncertainty;
-        } else if (v_type == "Int32"){
+        } else if (v_type == NIX_STRING_TYPE_INT32){
             int32_t value;
             values[i].get(value);
             oss << value << ", " << values[i].uncertainty;
-        } else if (v_type == "Int64"){
+        } else if (v_type == NIX_STRING_TYPE_INT64){
             int64_t value;
             values[i].get(value);
             oss << value << ", " << values[i].uncertainty;
-        } else if (v_type == "UInt64"){
+        } else if (v_type == NIX_STRING_TYPE_UINT64){
             uint64_t value;
             values[i].get(value);
             oss << value << ", " << values[i].uncertainty;
-        } else if (v_type == "Double"){
+        } else if (v_type == NIX_STRING_TYPE_DOUBLE){
             double value;
             values[i].get(value);
             oss << value << ", " << values[i].uncertainty;
@@ -244,6 +258,12 @@ RowStrings NixDataModel::create_rowstrings(T arg, std::string storagetype, std::
     return s_list;
 }
 
+void NixDataModel::fill_rowstrings(RowStrings &rowstrings)
+{
+    for(int i = rowstrings.size(); i < num_columns; ++i)
+        rowstrings << "";
+}
+
 template<typename T>
 std::string NixDataModel::get_created_at(T arg)
 {
@@ -260,4 +280,9 @@ std::string NixDataModel::get_updated_at(T arg)
     struct tm *info_cr;
     info_cr = localtime( &rawtime_cr );
     return boost::algorithm::trim_right_copy(std::string(asctime(info_cr)));
+}
+
+NixModelItem* NixDataModel::get_item_from_qml(QModelIndex qml)
+{
+    return static_cast<NixModelItem*>(itemFromIndex(qml));
 }

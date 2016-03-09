@@ -24,7 +24,7 @@ public:
 public slots:
     void on_action_raw_data_triggered();
     void on_action_another_tree_triggered();
-    void activate_plot(QVariant var);
+    void activate_plot(QModelIndex qml_new, QModelIndex);
     void open_file();
     void show_about();
     void show_plot();
@@ -37,7 +37,7 @@ private:
     MainViewWidget* mvw;
     bool mvw_is_set;
     void connect_widgets();
-    QVariant selected_item;
+    QModelIndex selected_qml;
 };
 
 #endif // MAINWINDOW_HPP

@@ -21,7 +21,7 @@ public:
     ~TagPanel();
 
 public slots:
-    void update_tag_panel(QVariant v);
+    void update_tag_panel(QModelIndex qml);
     void reference_item_requested(QTreeWidgetItem*, int);
     void feature_item_requested(QTreeWidgetItem*, int);
     void tag_item_requested(int, int, int, int);
@@ -33,7 +33,7 @@ signals:
     void references_cleared();
     void emit_feature(nix::DataArray);
     void features_cleared();
-    void emit_tag(QVariant, int);
+    void emit_tag(QModelIndex, int);
 
 private:
     Ui::TagPanel *ui;
@@ -41,7 +41,7 @@ private:
     void extract_multitag_info(nix::MultiTag);
     std::vector<nix::DataArray> references;
     std::vector<nix::DataArray> features;
-    QVariant current_tag;
+    QModelIndex current_qml;
     static void fill_tree(QTreeWidget*, std::vector<nix::DataArray>);
 
 // getter

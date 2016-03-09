@@ -3,6 +3,7 @@
 #include <common/Common.hpp>
 #include <time.h>
 #include <boost/algorithm/string.hpp>
+#include "MainViewWidget.hpp"
 
 DescriptionPanel::DescriptionPanel(QWidget *parent) :
     QWidget(parent),
@@ -11,24 +12,26 @@ DescriptionPanel::DescriptionPanel(QWidget *parent) :
     ui->setupUi(this);
 }
 
-// TODO set all labels to "-" if empty item is emitted
-
-void DescriptionPanel::update_description_panel(QVariant v)
+void DescriptionPanel::update_description_panel(QModelIndex qml)
 {
-    if(v.canConvert<nix::Block>())
-        update(v.value<nix::Block>());
-    else if(v.canConvert<nix::DataArray>())
-        update(v.value<nix::DataArray>());
-    else if(v.canConvert<nix::MultiTag>())
-        update(v.value<nix::MultiTag>());
-    else if(v.canConvert<nix::Tag>())
-        update(v.value<nix::Tag>());
-    else if(v.canConvert<nix::Section>())
-        update(v.value<nix::Section>());
-    else if(v.canConvert<nix::Source>())
-        update(v.value<nix::Source>());
-    else if(v.canConvert<nix::Property>())
-        update_typeless(v.value<nix::Property>());
+    NixModelItem* item = MainViewWidget::get_current_model()->get_item_from_qml(qml);
+
+    if(strcmp(item->get_nix_qvariant_type().c_str(), NIX_STRING_BLOCK) == 0)
+        update(item->get_nix_entity<nix::Block>());
+    else if(strcmp(item->get_nix_qvariant_type().c_str(), NIX_STRING_DATAARRAY) == 0)
+            update(item->get_nix_entity<nix::DataArray>());
+    else if(strcmp(item->get_nix_qvariant_type().c_str(), NIX_STRING_MULTITAG) == 0)
+            update(item->get_nix_entity<nix::MultiTag>());
+    else if(strcmp(item->get_nix_qvariant_type().c_str(), NIX_STRING_TAG) == 0)
+            update(item->get_nix_entity<nix::Tag>());
+    else if(strcmp(item->get_nix_qvariant_type().c_str(), NIX_STRING_SECTION) == 0)
+            update(item->get_nix_entity<nix::Section>());
+    else if(strcmp(item->get_nix_qvariant_type().c_str(), NIX_STRING_SOURCE) == 0)
+            update(item->get_nix_entity<nix::Source>());
+    else if(strcmp(item->get_nix_qvariant_type().c_str(), NIX_STRING_PROPERTY) == 0)
+            update_typeless(item->get_nix_entity<nix::Property>());
+    else
+        clear_description_panel();
 }
 
 template<typename T>

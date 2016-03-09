@@ -27,6 +27,7 @@ public slots:
 
 public:
     const QTreeView* get_tree_view();
+    void update_metadata_panel(QModelIndex qml);
     void clear_metadata_panel();
 
 private:

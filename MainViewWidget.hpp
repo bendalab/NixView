@@ -18,11 +18,15 @@ class MainViewWidget : public QWidget
 {
     Q_OBJECT
 
+private:
+    static NixDataModel *CURRENT_MODEL;
+
 public:
     explicit MainViewWidget(std::string& nix_file_path, QWidget *parent = 0);
     ~MainViewWidget();
 
     RawTreeView* get_rtv();
+    static NixDataModel* get_current_model() {return CURRENT_MODEL; }
 
 public slots:
     void set_view(int);

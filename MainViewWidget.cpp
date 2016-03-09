@@ -1,6 +1,7 @@
 #include "MainViewWidget.hpp"
 #include "ui_MainViewWidget.h"
 
+NixDataModel *MainViewWidget::CURRENT_MODEL = nullptr;
 
 /**
 * @brief Container for all widgets for data display.
@@ -14,6 +15,7 @@ MainViewWidget::MainViewWidget(std::string& nix_file_path, QWidget *parent) :
 
     nix_file = nix::File::open(nix_file_path, nix::FileMode::ReadOnly);
     nix_model = new NixDataModel(nix_file);
+    MainViewWidget::CURRENT_MODEL = nix_model;
 
     iw =  new InfoWidget(nix_model, this);
     ui->horizontalLayout->addWidget(iw);
@@ -51,14 +53,9 @@ void MainViewWidget::connect_widgets()
 {
     // click in overview
     // - rawtreeview
-    QObject::connect(rtv->get_tree_view()->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)), rtv, SLOT(current_changed(QModelIndex,QModelIndex)));
-    QObject::connect(rtv->get_tree_view()->selectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
-                     rtv, SLOT(selection_changed(QItemSelection,QItemSelection)));
-//    QObject::connect(rtv, SIGNAL(item_found(QVariant)), iw, SLOT(update_info_widget(QVariant)));
-//    QObject::connect(rtv, SIGNAL(empty_item()), iw, SLOT(update_info_widget()));
-//    QObject::connect(rtv->get_filter_combo_box(), SIGNAL(activated(QString)), rtv, SLOT(filter_changed(QString)));
 
-    // - tag references
+    // - InfoWidget
+    QObject::connect(rtv->get_tree_view()->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)), iw, SLOT(update_info_widget(QModelIndex,QModelIndex)));
 
     // tree widget expanded/collapsed
     QObject::connect(rtv->get_tree_view(), SIGNAL(expanded(QModelIndex)), rtv, SLOT(resize_to_content(QModelIndex)));

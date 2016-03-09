@@ -14,6 +14,8 @@ public:
     NixDataModel(nix::File);
     int num_columns;
 
+    NixModelItem* get_item_from_qml(QModelIndex qml);
+
 private:
     nix::File nix_file;
     QString s_to_q(std::string);
@@ -30,6 +32,7 @@ private:
 
     template<typename T>
     RowStrings create_rowstrings(T arg, std::string storagetype, std::string root_child_link, std::string nixtype="", std::string shape="");
+    void fill_rowstrings(RowStrings &rowstrings);
 
     template<typename T>
     QList<QStandardItem*> create_entry_row(QList<QString>, T nix_entity);
