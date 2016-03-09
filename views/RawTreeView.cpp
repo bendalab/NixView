@@ -5,14 +5,16 @@
 #include "common/Common.hpp"
 
 
-RawTreeView::RawTreeView(NixDataModel* _nix_model, QWidget *parent) :
+RawTreeView::RawTreeView(NixProxyModel* _nix_proxy_model, QWidget *parent) :
     QWidget(parent),
     ui(new Ui::RawTreeView)
 {
     ui->setupUi(this);
     filter_mode = 0;
-    nix_model = _nix_model;
-    ui->treeView->setModel(nix_model);
+
+    nix_proxy_model = _nix_proxy_model;
+
+    ui->treeView->setModel(nix_proxy_model);
     ui->treeView->setSelectionBehavior(QAbstractItemView::SelectRows);
     hidden_columns = {5, 6, 7, 8, 9};
     for (int entry : hidden_columns)
@@ -20,8 +22,8 @@ RawTreeView::RawTreeView(NixDataModel* _nix_model, QWidget *parent) :
 }
 
 // slots
-void RawTreeView::resize_to_content(QModelIndex qml) {
-    for (int c = 0; c<nix_model->columnCount();c++)
+void RawTreeView::resize_to_content(QModelIndex) {
+    for (int c = 0; c<nix_proxy_model->columnCount();c++)
         ui->treeView->resizeColumnToContents(c);
 }
 
