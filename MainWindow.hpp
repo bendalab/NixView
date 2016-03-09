@@ -24,7 +24,7 @@ public:
 public slots:
     void on_action_raw_data_triggered();
     void on_action_another_tree_triggered();
-    void activate_plot(QModelIndex qml_new, QModelIndex);
+    void activate_plot(QModelIndex qml);
     void open_file();
     void show_about();
     void show_plot();

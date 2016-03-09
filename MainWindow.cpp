@@ -16,7 +16,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
 
 void MainWindow::connect_widgets() {
     QObject::connect(this, SIGNAL(view_requested_raw_data(int)), mvw, SLOT(set_view(int)));
-    QObject::connect(mvw->get_rtv()->get_tree_view()->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)), this, SLOT(activate_plot(QModelIndex, QModelIndex)));
+    QObject::connect(mvw, SIGNAL(emit_current_qml(QModelIndex)), this, SLOT(activate_plot(QModelIndex)));
 }
 
 MainWindow::~MainWindow() {
@@ -32,7 +32,7 @@ void MainWindow::on_action_another_tree_triggered() {
     emit view_requested_raw_data(1);
 }
 
-void MainWindow::activate_plot(QModelIndex qml_new, QModelIndex) {
+void MainWindow::activate_plot(QModelIndex qml) {
     QAction* plot_action;
     bool found_action = false;
     QList<QMenu*> list = this->menuBar()->findChildren<QMenu*>(QString("menuPlot"));
@@ -49,9 +49,9 @@ void MainWindow::activate_plot(QModelIndex qml_new, QModelIndex) {
         }
     }
 
-    selected_qml = qml_new;
+    selected_qml = qml;
 
-    NixModelItem *item = mvw->get_current_model()->get_item_from_qml(qml_new);
+    NixModelItem *item = mvw->get_current_model()->get_item_from_qml(qml);
 
     if((strcmp(item->get_nix_qvariant_type().c_str(), NIX_STRING_DATAARRAY) == 0) |
             (strcmp(item->get_nix_qvariant_type().c_str(), NIX_STRING_TAG) == 0) |
