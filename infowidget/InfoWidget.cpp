@@ -3,6 +3,7 @@
 #include <sstream>
 #include "common/Common.hpp"
 #include "MainViewWidget.hpp"
+#include <QDebug>
 
 InfoWidget::InfoWidget(NixDataModel *_nix_model, QWidget *parent) :
     QWidget(parent),
@@ -24,27 +25,20 @@ InfoWidget::InfoWidget(NixDataModel *_nix_model, QWidget *parent) :
     connect_widgets();
 }
 
-void InfoWidget::update_info_widget(QModelIndex qml_new, QModelIndex  qml_old)
+void InfoWidget::update_info_widget(QModelIndex qml)
 {
-    mp->update_metadata_panel(qml_new);
+    mp->update_metadata_panel(qml);
 
     NixDataModel *current_model = MainViewWidget::get_current_model();
-    NixModelItem *model_item = static_cast<NixModelItem*>(current_model->itemFromIndex(qml_new));
+    NixModelItem *model_item = static_cast<NixModelItem*>(current_model->itemFromIndex(qml));
 
-    tp->update_tag_panel(qml_new);
-    dp->update_description_panel(qml_new);
+    tp->update_tag_panel(qml);
+    dp->update_description_panel(qml);
     if(strcmp(model_item->get_nix_qvariant_type().c_str(), NIX_STRING_MULTITAG) == 0 ||
             strcmp(model_item->get_nix_qvariant_type().c_str(), NIX_STRING_TAG) == 0)
         ui->tabWidget->setCurrentIndex(1);
     else
         ui->tabWidget->setCurrentIndex(0);
-}
-
-void InfoWidget::update_info_widget()
-{
-    dp->clear_description_panel();
-    mp->clear_metadata_panel();
-    tp->clear_tag_panel();
 }
 
 void InfoWidget::connect_widgets()
