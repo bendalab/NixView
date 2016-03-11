@@ -6,7 +6,7 @@
 
 # QT       += core gui widgets printsupport
 
-greaterThan(QT_MAJOR_VERSION, 5): QT += core gui widgets printsupport
+greaterThan(QT_MAJOR_VERSION, 4): QT += core gui widgets printsupport
 
 TARGET = NixView
 TEMPLATE = app
