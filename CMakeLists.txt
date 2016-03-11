@@ -48,10 +48,10 @@ include_directories(AFTER ${Boost_INCLUDE_DIR})
 # Configure the target
 include_directories(${CMAKE_BINARY_DIR})
 
-file(GLOB NIXVIEW_SOURCES *.cpp InfoWidget/*.cpp plotter/*.cpp)
-file(GLOB NIXVIEW_INCLUDES *.hpp InfoWidget/*.hpp plotter/*.h)
-file(GLOB NIXVIEW_UI *.ui InfoWidget/*.ui plotter/*.ui)
-file(GLOB NIXVIEW_RES *.qrc InfoWidget/*.qrc)
+file(GLOB NIXVIEW_SOURCES *.cpp infowidget/*.cpp plotter/*.cpp model/*.cpp views/*.cpp filter/*.cpp)
+file(GLOB NIXVIEW_INCLUDES *.hpp infowidget/*.hpp plotter/*.h model/*.hpp views/*.hpp filter/*.hpp)
+file(GLOB NIXVIEW_UI *.ui infowidget/*.ui plotter/*.ui views/*ui)
+file(GLOB NIXVIEW_RES *.qrc infowidget/*.qrc)
 
 QT5_WRAP_UI(NIXVIEW_UI_HDRS ${NIXVIEW_UI})
 QT5_ADD_RESOURCES(NIXVIEW_RES_SOURCES ${NIXVIEW_RES})
