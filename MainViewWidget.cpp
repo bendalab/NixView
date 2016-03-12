@@ -57,6 +57,16 @@ void MainViewWidget::activate_info_widget()
     ui->horizontalLayout->addWidget(iw);
 }
 
+void MainViewWidget::scan_progress()
+{
+    emit scan_progress_update();
+}
+
+int MainViewWidget::get_scan_progress()
+{
+    return nix_model->progress();
+}
+
 // widget connection
 void MainViewWidget::connect_widgets()
 {
