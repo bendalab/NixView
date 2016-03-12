@@ -20,6 +20,8 @@ public:
 
     NixModelItem* get_item_from_qml(QModelIndex qml);
     void nix_file_to_model(const nix::File &nix_file);
+    double progress();
+
 
 private:
     double scan_progress = 0.0;
