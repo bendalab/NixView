@@ -17,6 +17,7 @@ public:
     int num_columns;
 
     NixModelItem* get_item_from_qml(QModelIndex qml);
+    void nix_file_to_model(const nix::File &nix_file);
 
 private:
     nix::File nix_file;
@@ -26,7 +27,6 @@ private:
     std::string get_created_at(T);
     template<typename T>
     std::string get_updated_at(T);
-    void nix_file_to_model();
 
     template<typename T>
     void add_content(QStandardItem*, T nix_entity);

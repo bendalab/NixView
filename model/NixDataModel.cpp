@@ -27,7 +27,7 @@ NixDataModel::NixDataModel(nix::File _nix_file) :
     nix_file_to_model();
 }
 
-void NixDataModel::nix_file_to_model() {
+void NixDataModel::nix_file_to_model(const nix::File &nix_file) {
     QStandardItem* root_node = this->invisibleRootItem();
 
     RowStrings data_list;
