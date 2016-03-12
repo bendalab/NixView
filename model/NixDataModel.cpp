@@ -4,11 +4,7 @@
 #include <boost/algorithm/string.hpp>
 #include "common/Common.hpp"
 
-NixDataModel::NixDataModel(nix::File _nix_file) :
-    QStandardItemModel()
-{
-    nix_file = _nix_file;
-
+NixDataModel::NixDataModel() : QStandardItemModel(){
     RowStrings headers;
     headers << "Name"               //  0
             << "Nix Type"           //  1
@@ -21,10 +17,12 @@ NixDataModel::NixDataModel(nix::File _nix_file) :
             << "Value"              //  8
             << "root_child_link";   //  9
     setHorizontalHeaderLabels(headers);
-
     num_columns = headers.size();
+}
 
-    nix_file_to_model();
+NixDataModel::NixDataModel(const nix::File &nix_file) : NixDataModel()
+{
+    nix_file_to_model(nix_file);
 }
 
 void NixDataModel::nix_file_to_model(const nix::File &nix_file) {

@@ -13,14 +13,15 @@ class NixDataModel : public QStandardItemModel
     Q_OBJECT
 
 public:
-    NixDataModel(nix::File);
+    NixDataModel();
+    NixDataModel(const nix::File &nix_file);
+
     int num_columns;
 
     NixModelItem* get_item_from_qml(QModelIndex qml);
     void nix_file_to_model(const nix::File &nix_file);
 
 private:
-    nix::File nix_file;
     double scan_progress = 0.0;
     QString s_to_q(std::string);
     template<typename T>
