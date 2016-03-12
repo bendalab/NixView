@@ -20,11 +20,11 @@ public:
 
     NixModelItem* get_item_from_qml(QModelIndex qml);
     void nix_file_to_model(const nix::File &nix_file);
-    double progress();
+    int progress();
 
 
 private:
-    double scan_progress = 0.0;
+    int scan_progress = 0;
     QString s_to_q(std::string);
     template<typename T>
     std::string get_created_at(T);

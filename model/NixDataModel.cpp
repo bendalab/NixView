@@ -26,7 +26,7 @@ NixDataModel::NixDataModel(const nix::File &nix_file) : NixDataModel()
 }
 
 void NixDataModel::nix_file_to_model(const nix::File &nix_file) {
-    scan_progress = 0.0;
+    scan_progress = 0;
     emit file_scan_progress();
     QStandardItem* root_node = this->invisibleRootItem();
 
@@ -65,7 +65,7 @@ void NixDataModel::nix_file_to_model(const nix::File &nix_file) {
 
         add_subsec_prop(s_m.first(), s);
     }
-    scan_progress = 1.0;
+    scan_progress = 100;
     emit file_scan_progress();
 }
 
@@ -289,7 +289,7 @@ NixModelItem* NixDataModel::get_item_from_qml(QModelIndex qml)
     return static_cast<NixModelItem*>(itemFromIndex(qml));
 }
 
-double NixDataModel::progress()
+int NixDataModel::progress()
 {
     return this->scan_progress;
 }
