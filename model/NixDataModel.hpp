@@ -10,6 +10,8 @@ typedef QList<QString> RowStrings;
 
 class NixDataModel : public QStandardItemModel
 {
+    Q_OBJECT
+
 public:
     NixDataModel(nix::File);
     int num_columns;
@@ -18,6 +20,7 @@ public:
 
 private:
     nix::File nix_file;
+    double scan_progress = 0.0;
     QString s_to_q(std::string);
     template<typename T>
     std::string get_created_at(T);
@@ -48,6 +51,9 @@ private:
     std::string get_property_value(nix::Property);
     void add_tag_info(QStandardItem*, nix::Tag);
     void add_multitag_info(QStandardItem*, nix::MultiTag);
+
+signals:
+    void file_scan_progress();
 };
 
 #endif // NIXDATAMODEL_H
