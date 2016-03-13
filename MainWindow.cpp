@@ -12,6 +12,12 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
     ui(new Ui::MainWindow) {
     ui->setupUi(this);
     mvw_is_set = false;
+    file_label = new QLabel(this);
+    file_progress = new QProgressBar(this);
+    ui->statusBar->addPermanentWidget(new QLabel("File: ", this));
+    ui->statusBar->addPermanentWidget(file_label);
+    ui->statusBar->addPermanentWidget(new QLabel("File scanning: ", this));
+    ui->statusBar->addPermanentWidget(file_progress, 1);
 }
 
 void MainWindow::connect_widgets() {
@@ -99,11 +105,10 @@ void MainWindow::open_file() {
     }
 
     std::string file_path = fileNames.front().toStdString();
-    std::cout << file_path << std::endl;
-
-    mvw = new MainViewWidget(file_path);
+    file_label->setText(file_path.c_str());
+    mvw = new MainViewWidget();
+    mvw->set_nix_file(file_path);
     ui->main_layout->addWidget(mvw);
     mvw_is_set = true;
-
     connect_widgets();
 }
