@@ -30,6 +30,7 @@ public slots:
     void open_file();
     void show_about();
     void show_plot();
+    void file_scan_progress();
 
 signals:
     void view_requested_raw_data(int);

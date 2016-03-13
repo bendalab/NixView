@@ -87,6 +87,13 @@ void MainWindow::show_plot() {
 }
 
 
+void MainWindow::file_scan_progress()
+{
+    file_progress->setValue(mvw->get_scan_progress());
+    QCoreApplication::processEvents();
+}
+
+
 void MainWindow::open_file() {
     QFileDialog fd(this);
     fd.setFileMode(QFileDialog::ExistingFile);
@@ -107,6 +114,7 @@ void MainWindow::open_file() {
     std::string file_path = fileNames.front().toStdString();
     file_label->setText(file_path.c_str());
     mvw = new MainViewWidget();
+    connect(mvw, SIGNAL(scan_progress_update()), this, SLOT(file_scan_progress()));
     mvw->set_nix_file(file_path);
     ui->main_layout->addWidget(mvw);
     mvw_is_set = true;
