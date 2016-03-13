@@ -24,7 +24,7 @@ public:
 
 
 private:
-    int scan_progress = 0;
+    double scan_progress = 0.0;
     QString s_to_q(std::string);
     template<typename T>
     std::string get_created_at(T);
@@ -32,7 +32,7 @@ private:
     std::string get_updated_at(T);
 
     template<typename T>
-    void add_content(QStandardItem*, T nix_entity);
+    void add_content(QStandardItem*, T nix_entity, double prog_incr=0);
 
     void add_subsec_prop(QStandardItem*, nix::Section);
 

@@ -3,6 +3,7 @@
 #include <nix.hpp>
 #include <boost/algorithm/string.hpp>
 #include "common/Common.hpp"
+#include <math.h>
 
 NixDataModel::NixDataModel() : QStandardItemModel(){
     RowStrings headers;
@@ -26,7 +27,7 @@ NixDataModel::NixDataModel(const nix::File &nix_file) : NixDataModel()
 }
 
 void NixDataModel::nix_file_to_model(const nix::File &nix_file) {
-    scan_progress = 0;
+    scan_progress = 0.0;
     emit file_scan_progress();
     QStandardItem* root_node = this->invisibleRootItem();
 
@@ -35,8 +36,10 @@ void NixDataModel::nix_file_to_model(const nix::File &nix_file) {
     fill_rowstrings(data_list);
     Row data_branch = create_entry_row(data_list);
     root_node->appendRow(data_branch);
-
+    double max_progress = 100 / nix_file.blockCount();
     for (nix::Block b : nix_file.blocks()) {
+        nix::ndsize_t top_level_count = b.dataArrayCount() + b.multiTagCount() + b.groupCount() + b.tagCount() + b.sourceCount();
+        double prog_incr = max_progress/top_level_count;
         RowStrings block_list = create_rowstrings(b, NIX_STRING_BLOCK, "root", b.type(), (std::string)"");
         Row b_m = create_entry_row(block_list, b);
         data_branch.first()->appendRow(b_m);
@@ -45,10 +48,12 @@ void NixDataModel::nix_file_to_model(const nix::File &nix_file) {
         {
             RowStrings group_list = create_rowstrings(g, NIX_STRING_GROUP, "child", g.type(), (std::string)"");
             Row g_m = create_entry_row(group_list, g);
-            add_content(g_m.first(), g);
+            add_content(g_m.first(), g, 0);
+            scan_progress += prog_incr;
+            emit file_scan_progress();
         }
 
-        add_content(b_m.first(), b);
+        add_content(b_m.first(), b, prog_incr);
         add_linked_metadata(b_m.first(), b);
     }
 
@@ -65,12 +70,12 @@ void NixDataModel::nix_file_to_model(const nix::File &nix_file) {
 
         add_subsec_prop(s_m.first(), s);
     }
-    scan_progress = 100;
+    scan_progress = 100.0;
     emit file_scan_progress();
 }
 
 template<typename T>
-void NixDataModel::add_content(QStandardItem* item, T nix_entity)
+void NixDataModel::add_content(QStandardItem* item, T nix_entity, double prog_incr)
 {
     for (nix::DataArray da : nix_entity.dataArrays()) {
         std::stringstream s;
@@ -83,6 +88,8 @@ void NixDataModel::add_content(QStandardItem* item, T nix_entity)
         item->appendRow(da_m);
         add_linked_sources(da_m.first(), da);
         add_linked_metadata(da_m.first(), da);
+        scan_progress += prog_incr;
+        emit file_scan_progress();
     }
 
     for (nix::Tag t : nix_entity.tags()) {
@@ -102,6 +109,8 @@ void NixDataModel::add_content(QStandardItem* item, T nix_entity)
             t_m.first()->appendRow(test);
         }
         add_linked_metadata(t_m.first(), t);
+        scan_progress += prog_incr;
+        emit file_scan_progress();
     }
 
     for (nix::MultiTag m : nix_entity.multiTags()) {
@@ -110,6 +119,8 @@ void NixDataModel::add_content(QStandardItem* item, T nix_entity)
         item->appendRow(m_m);
         add_linked_sources(m_m.first(), m);
         add_linked_metadata(m_m.first(), m);
+        scan_progress += prog_incr;
+        emit file_scan_progress();
     }
 
     for (nix::Source s : nix_entity.sources())
@@ -118,6 +129,8 @@ void NixDataModel::add_content(QStandardItem* item, T nix_entity)
         Row s_m = create_entry_row(s_list, s);
         item->appendRow(s_m);
         add_linked_metadata(s_m.first(), s);
+        scan_progress += prog_incr;
+        emit file_scan_progress();
     }
 }
 
@@ -291,5 +304,5 @@ NixModelItem* NixDataModel::get_item_from_qml(QModelIndex qml)
 
 int NixDataModel::progress()
 {
-    return this->scan_progress;
+    return rint(this->scan_progress);
 }
