@@ -1,19 +1,30 @@
 #include "MainViewWidget.hpp"
 #include "ui_MainViewWidget.h"
+#include "common/Common.hpp"
 
 NixDataModel *MainViewWidget::CURRENT_MODEL = nullptr;
 
-
-MainViewWidget::MainViewWidget(QWidget *parent) : QWidget(parent), ui(new Ui::MainViewWidget)
+MainViewWidget::MainViewWidget(QWidget *parent) :
+    QWidget(parent),
+    ui(new Ui::MainViewWidget)
 {
     ui->setupUi(this);
+
+    if (nix_file.isOpen())
+        nix_file.close();
+
+    nix_model = nullptr;
+    iw = nullptr;
+    rtv = nullptr;
+    cv = nullptr;
 }
 
 /**
 * @brief Container for all widgets for data display.
 * @param nix_file_path: path to opened nix file
 */
-MainViewWidget::MainViewWidget(const std::string &nix_file_path, QWidget *parent) : MainViewWidget(parent)
+MainViewWidget::MainViewWidget(const std::string &nix_file_path, QWidget *parent) :
+    MainViewWidget(parent)
 {
     set_nix_file(nix_file_path);
 }
@@ -26,7 +37,10 @@ void MainViewWidget::set_nix_file(const std::string &nix_file_path)
     nix_model->nix_file_to_model(nix_file);
     MainViewWidget::CURRENT_MODEL = nix_model;
 
-    iw =  new InfoWidget(nix_model, this);
+    nix_proxy_model = new NixProxyModel();
+    nix_proxy_model->setSourceModel(nix_model);
+
+    iw = new InfoWidget(nix_model, this);
     ui->horizontalLayout->addWidget(iw);
 
     populate_data_stacked_widget();
@@ -35,9 +49,12 @@ void MainViewWidget::set_nix_file(const std::string &nix_file_path)
 
 void MainViewWidget::populate_data_stacked_widget()
 {
-    rtv = new RawTreeView(nix_model, this);
+    // order of adding views has to be consistent with integers defined in Common.hpp
+    // 0
+    rtv = new RawTreeView(nix_proxy_model, this);
     ui->data_stacked_Widget->addWidget(rtv);
-    cv = new ColumnView(nix_model, this);
+    // 1
+    cv = new ColumnView(nix_proxy_model, this);
     ui->data_stacked_Widget->addWidget(cv);
 
     ui->data_stacked_Widget->setCurrentIndex(0);
@@ -45,6 +62,10 @@ void MainViewWidget::populate_data_stacked_widget()
 
 RawTreeView* MainViewWidget::get_rtv() {
     return rtv;
+}
+
+ColumnView* MainViewWidget::get_cv() {
+    return cv;
 }
 
 // slots
@@ -55,6 +76,11 @@ void MainViewWidget::set_view(int index) {
 void MainViewWidget::activate_info_widget()
 {
     ui->horizontalLayout->addWidget(iw);
+}
+
+void MainViewWidget::emit_current_qml_worker_slot(QModelIndex qml, QModelIndex)
+{
+    emit emit_current_qml(nix_proxy_model->mapToSource(qml));
 }
 
 void MainViewWidget::scan_progress()
@@ -70,15 +96,19 @@ int MainViewWidget::get_scan_progress()
 // widget connection
 void MainViewWidget::connect_widgets()
 {
-    // click in overview
-    // - rawtreeview
+    // connections from views to current-index emitter
+    QObject::connect(rtv->get_tree_view()->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)), this, SLOT(emit_current_qml_worker_slot(QModelIndex,QModelIndex)));
+    QObject::connect(cv->get_column_view()->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)), this, SLOT(emit_current_qml_worker_slot(QModelIndex,QModelIndex)));
 
-    // - InfoWidget
-    QObject::connect(rtv->get_tree_view()->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)), iw, SLOT(update_info_widget(QModelIndex,QModelIndex)));
+    // InfoWidget
+    QObject::connect(this, SIGNAL(emit_current_qml(QModelIndex)), iw, SLOT(update_info_widget(QModelIndex)));
 
     // tree widget expanded/collapsed
     QObject::connect(rtv->get_tree_view(), SIGNAL(expanded(QModelIndex)), rtv, SLOT(resize_to_content(QModelIndex)));
     QObject::connect(rtv->get_tree_view(), SIGNAL(collapsed(QModelIndex)), rtv, SLOT(resize_to_content(QModelIndex)));
+
+    // filter
+    QObject::connect(ui->cbx_filter, SIGNAL(currentIndexChanged(QString)), this, update_filter(QString));
 
     // ALSO CHECK CONNECTIONS IN InfoWidget.cpp
 }

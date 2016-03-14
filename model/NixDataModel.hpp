@@ -15,6 +15,7 @@ class NixDataModel : public QStandardItemModel
 public:
     NixDataModel();
     NixDataModel(const nix::File &nix_file);
+    ~NixDataModel();
 
     int num_columns;
 

@@ -36,6 +36,12 @@
    <enum>QTabWidget::Rounded</enum>
   </property>
   <widget class="QWidget" name="centralWidget">
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
    <layout class="QGridLayout" name="gridLayout">
     <item row="0" column="0">
      <layout class="QVBoxLayout" name="main_layout"/>
@@ -68,7 +74,8 @@
     <property name="title">
      <string>&amp;View</string>
     </property>
-    <addaction name="action_raw_data"/>
+    <addaction name="actionTree"/>
+    <addaction name="actionColumn"/>
    </widget>
    <widget class="QMenu" name="menuPlot">
     <property name="title">
@@ -135,9 +142,9 @@
     <string>Ctrl+O</string>
    </property>
   </action>
-  <action name="action_raw_data">
+  <action name="actionTree">
    <property name="text">
-    <string>&amp;Raw Data</string>
+    <string>&amp;Tree</string>
    </property>
   </action>
   <action name="action_another_tree">
@@ -214,6 +221,11 @@
    </property>
    <property name="shortcut">
     <string>F1</string>
+   </property>
+  </action>
+  <action name="actionColumn">
+   <property name="text">
+    <string>&amp;Column</string>
    </property>
   </action>
  </widget>

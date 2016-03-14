@@ -8,6 +8,7 @@
 #include <QVariant>
 #include <QComboBox>
 #include "model/NixDataModel.hpp"
+#include "filter/NixProxyModel.hpp"
 
 namespace Ui {
 class RawTreeView;
@@ -18,14 +19,12 @@ class RawTreeView : public QWidget
     Q_OBJECT
 
 public:
-    explicit RawTreeView(NixDataModel* nix_model, QWidget *parent = 0);
+    explicit RawTreeView(NixProxyModel *nix_proxy_model, QWidget *parent = 0);
+    explicit RawTreeView(QWidget *parent = 0);
     ~RawTreeView();
 
 public slots:
-//    void currentItemChanged_worker(QTreeWidgetItem*,QTreeWidgetItem*);
     void resize_to_content(QModelIndex);
-//    void item_info_requested(QTreeWidgetItem*, int);
-//    void filter_changed(QString);
 
 signals:
     void item_found(QVariant);
@@ -45,21 +44,12 @@ private:
 
     Ui::RawTreeView* ui;
     nix::File nix_file;
-    NixDataModel* nix_model;
+    NixProxyModel *nix_proxy_model;
     std::vector<int> hidden_columns;
-//    void add_linked_sources(QTreeWidgetItem*, QVariant);
 
-//    template <typename T>
-//    void add_linked_sources_helper(QTreeWidgetItem*, T);
-
-//    static void add_children_to_item(QTreeWidgetItem* item, nix::Section section);
-
-//    void refresh();
-//    void expand();
-
-//    // friend declaration and getters for signals and slots
 public:
     const QTreeView* get_tree_view();
+    void  set_proxy_model(NixProxyModel *proxy_model);
 //    const QComboBox* get_filter_combo_box();
 };
 #endif // RAWTREEVIEW_HPP

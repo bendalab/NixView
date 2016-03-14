@@ -9,7 +9,8 @@ class NixProxyModel : public QSortFilterProxyModel
 public:
     NixProxyModel(QObject * parent = 0);
 
-    std::string current_keyword;
+    std::string fine_filter;
+    std::string rough_filter;
     int filter_mode = 0;
     bool metadata_only_mode = false;
     bool block_mode = false;

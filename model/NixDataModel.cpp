@@ -21,7 +21,8 @@ NixDataModel::NixDataModel() : QStandardItemModel(){
     num_columns = headers.size();
 }
 
-NixDataModel::NixDataModel(const nix::File &nix_file) : NixDataModel()
+NixDataModel::NixDataModel(const nix::File &nix_file) :
+    NixDataModel()
 {
     nix_file_to_model(nix_file);
 }
@@ -305,4 +306,8 @@ NixModelItem* NixDataModel::get_item_from_qml(QModelIndex qml)
 int NixDataModel::progress()
 {
     return rint(this->scan_progress);
+}
+
+NixDataModel::~NixDataModel()
+{
 }
