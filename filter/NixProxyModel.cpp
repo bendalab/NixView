@@ -80,7 +80,7 @@ bool NixProxyModel::check_entry_row(int source_row, const QModelIndex &source_pa
     return false;
 }
 
-bool NixProxyModel::check_if_in_data_branch(int source_row, const QModelIndex &source_parent) const
+bool NixProxyModel::check_if_in_data_branch(int, const QModelIndex &source_parent) const
 {
     QModelIndex parent = source_parent;
     while (parent.isValid()) {
@@ -94,6 +94,18 @@ bool NixProxyModel::check_if_in_data_branch(int source_row, const QModelIndex &s
 NixModelItem* NixProxyModel::get_item_from_qml(QModelIndex qml)
 {
     return static_cast<NixModelItem*>(static_cast<NixDataModel*>(sourceModel())->itemFromIndex(qml));
+}
+
+void NixProxyModel::set_rough_filter(QString exp)
+{
+    rough_filter = exp;
+    qDebug() << exp;
+}
+
+void NixProxyModel::set_fine_filter(QString exp)
+{
+    fine_filter = exp;
+    qDebug() << exp;
 }
 
 void NixProxyModel::refresh()

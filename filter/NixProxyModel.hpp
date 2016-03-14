@@ -6,11 +6,13 @@
 
 class NixProxyModel : public QSortFilterProxyModel
 {
+    Q_OBJECT
+
 public:
     NixProxyModel(QObject * parent = 0);
 
-    std::string fine_filter;
-    std::string rough_filter;
+    QString fine_filter;
+    QString rough_filter;
     int filter_mode = 0;
     bool metadata_only_mode = false;
     bool block_mode = false;
@@ -38,6 +40,10 @@ private:
     bool check_children(int source_row, const QModelIndex &source_parent) const;
     bool check_entry_row(int source_row, const QModelIndex &source_parent) const;
     bool check_if_in_data_branch(int source_row, const QModelIndex &source_parent) const;
+
+public slots:
+    void set_rough_filter(QString exp);
+    void set_fine_filter(QString exp);
 
 };
 
