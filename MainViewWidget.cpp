@@ -3,18 +3,27 @@
 
 NixDataModel *MainViewWidget::CURRENT_MODEL = nullptr;
 
+
+MainViewWidget::MainViewWidget(QWidget *parent) : QWidget(parent), ui(new Ui::MainViewWidget)
+{
+    ui->setupUi(this);
+}
+
 /**
 * @brief Container for all widgets for data display.
 * @param nix_file_path: path to opened nix file
 */
-MainViewWidget::MainViewWidget(std::string& nix_file_path, QWidget *parent) :
-    QWidget(parent),
-    ui(new Ui::MainViewWidget)
+MainViewWidget::MainViewWidget(const std::string &nix_file_path, QWidget *parent) : MainViewWidget(parent)
 {
-    ui->setupUi(this);
+    set_nix_file(nix_file_path);
+}
 
+void MainViewWidget::set_nix_file(const std::string &nix_file_path)
+{
     nix_file = nix::File::open(nix_file_path, nix::FileMode::ReadOnly);
-    nix_model = new NixDataModel(nix_file);
+    nix_model = new NixDataModel();
+    connect(nix_model, SIGNAL(file_scan_progress()), this, SLOT(scan_progress()));
+    nix_model->nix_file_to_model(nix_file);
     MainViewWidget::CURRENT_MODEL = nix_model;
 
     iw =  new InfoWidget(nix_model, this);
@@ -46,6 +55,16 @@ void MainViewWidget::set_view(int index) {
 void MainViewWidget::activate_info_widget()
 {
     ui->horizontalLayout->addWidget(iw);
+}
+
+void MainViewWidget::scan_progress()
+{
+    emit scan_progress_update();
+}
+
+int MainViewWidget::get_scan_progress()
+{
+    return nix_model->progress();
 }
 
 // widget connection
