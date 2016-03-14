@@ -23,7 +23,7 @@
    <item>
     <widget class="QLabel" name="label">
      <property name="text">
-      <string>Tag Properties</string>
+      <string>Regions</string>
      </property>
     </widget>
    </item>
@@ -58,7 +58,7 @@
    <item>
     <widget class="QLabel" name="label_2">
      <property name="text">
-      <string>Tag References</string>
+      <string>References</string>
      </property>
     </widget>
    </item>
@@ -94,7 +94,7 @@
    <item>
     <widget class="QLabel" name="label_3">
      <property name="text">
-      <string>Tag Features</string>
+      <string>Features</string>
      </property>
     </widget>
    </item>
