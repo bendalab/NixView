@@ -44,31 +44,6 @@
            <string>-</string>
           </property>
          </item>
-         <item>
-          <property name="text">
-           <string>Data</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Metadata</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>DataArray</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Tag/Multitag</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Reference</string>
-          </property>
-         </item>
         </widget>
        </item>
        <item>
