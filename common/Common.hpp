@@ -1,5 +1,6 @@
 #include <nix.hpp>
 
+// declare NIX entitites as QVariant types
 Q_DECLARE_METATYPE(nix::Block);
 Q_DECLARE_METATYPE(nix::Group);
 Q_DECLARE_METATYPE(nix::Section);
@@ -10,6 +11,7 @@ Q_DECLARE_METATYPE(nix::MultiTag);
 Q_DECLARE_METATYPE(nix::Feature);
 Q_DECLARE_METATYPE(nix::Source);
 
+// define strings regarding NIX for consistent use
 #define NIX_STRING_BLOCK "Block"
 #define NIX_STRING_GROUP "Group"
 #define NIX_STRING_METADATA "MetaData"
@@ -30,3 +32,7 @@ Q_DECLARE_METATYPE(nix::Source);
 
 #define REFERENCE_DATAARRAY "Reference/DataArray"
 #define FEATURE_DATAARRAY "Feature/DataArray"
+
+// define views as integers
+#define VIEW_TREE 0
+#define VIEW_COLUMN 1
