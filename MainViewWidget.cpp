@@ -1,5 +1,6 @@
 #include "MainViewWidget.hpp"
 #include "ui_MainViewWidget.h"
+#include "common/Common.hpp"
 
 NixDataModel *MainViewWidget::CURRENT_MODEL = nullptr;
 
@@ -99,12 +100,15 @@ void MainViewWidget::connect_widgets()
     QObject::connect(rtv->get_tree_view()->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)), this, SLOT(emit_current_qml_worker_slot(QModelIndex,QModelIndex)));
     QObject::connect(cv->get_column_view()->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)), this, SLOT(emit_current_qml_worker_slot(QModelIndex,QModelIndex)));
 
-    // - InfoWidget
+    // InfoWidget
     QObject::connect(this, SIGNAL(emit_current_qml(QModelIndex)), iw, SLOT(update_info_widget(QModelIndex)));
 
     // tree widget expanded/collapsed
     QObject::connect(rtv->get_tree_view(), SIGNAL(expanded(QModelIndex)), rtv, SLOT(resize_to_content(QModelIndex)));
     QObject::connect(rtv->get_tree_view(), SIGNAL(collapsed(QModelIndex)), rtv, SLOT(resize_to_content(QModelIndex)));
+
+    // filter
+    QObject::connect(ui->cbx_filter, SIGNAL(currentIndexChanged(QString)), this, update_filter(QString));
 
     // ALSO CHECK CONNECTIONS IN InfoWidget.cpp
 }
