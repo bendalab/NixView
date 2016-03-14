@@ -6,6 +6,7 @@
 #include <boost/optional.hpp>
 #include <sstream>
 #include <nix.hpp>
+#include <QModelIndex>
 
 namespace Ui {
 class DescriptionPanel;
@@ -20,7 +21,7 @@ public:
     ~DescriptionPanel();
 
 public slots:
-    void update_description_panel(QVariant v);
+    void update_description_panel(QModelIndex qml);
     void clear_description_panel();
 
 private:

@@ -5,6 +5,9 @@
 #include <nix.hpp>
 #include <QVariant>
 #include <plotter/plotter.h>
+#include <QModelIndex>
+#include "MainViewWidget.hpp"
+#include <entitydescriptor.h>
 
 namespace Ui {
 class PlotWidget;
@@ -20,11 +23,12 @@ public:
 
     bool can_draw() const;
 
-    void setEntity(QVariant var);
+    void setEntity(QModelIndex qml);
 
 private:
     Ui::PlotWidget *ui;
-    QVariant item;
+    QModelIndex item_qml;
+    NixModelItem* item;
     std::vector<Plotter *> plots;
 
     bool check_plottable_dtype(nix::DataType dtype) const;
@@ -34,7 +38,7 @@ private:
     void process(const nix::MultiTag &mtag);
     void process(const nix::Tag &tag);
 
-    QString basic_description(const std::string &name, const std::string &type, const std::string &description,
+    EntityDescriptor basic_description(const std::string &name, const std::string &type, const std::string &description,
                               const std::string &id, const std::string &created, const std::string &updated);
     void describe(const nix::DataArray &array);
     void describe(const nix::MultiTag &mtag);
@@ -42,6 +46,7 @@ private:
 
     void draw_1d(const nix::DataArray &array);
     void draw_2d(const nix::DataArray &array);
+    void draw_multi_line(const nix::DataArray &array);
 };
 
 #endif // PLOTWIDGET_H

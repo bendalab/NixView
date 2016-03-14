@@ -12,8 +12,8 @@ PlotDialog::PlotDialog(QWidget *parent) :
     ui->setupUi(this);
 }
 
-void PlotDialog::set_entity(QVariant var) {
-    ui->plot->setEntity(var);
+void PlotDialog::set_entity(QModelIndex qml) {
+    ui->plot->setEntity(qml);
 }
 
 PlotDialog::~PlotDialog()

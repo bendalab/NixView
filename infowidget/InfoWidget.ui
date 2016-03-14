@@ -30,8 +30,17 @@
     <number>0</number>
    </property>
    <item row="0" column="0">
-    <widget class="QStackedWidget" name="stackedWidget">
-     <widget class="QWidget" name="page_meta">
+    <widget class="QTabWidget" name="tabWidget">
+     <property name="accessibleName">
+      <string/>
+     </property>
+     <property name="currentIndex">
+      <number>2</number>
+     </property>
+     <widget class="QWidget" name="tabWidgetPage1" native="true">
+      <attribute name="title">
+       <string>Metadata</string>
+      </attribute>
       <layout class="QGridLayout" name="gridLayout_3">
        <property name="topMargin">
         <number>0</number>
@@ -44,7 +53,10 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="page_tag">
+     <widget class="QWidget" name="tabWidgetPage2" native="true">
+      <attribute name="title">
+       <string>Tag Info</string>
+      </attribute>
       <layout class="QGridLayout" name="gridLayout_2">
        <property name="topMargin">
         <number>0</number>
@@ -54,6 +66,16 @@
        </property>
        <item row="0" column="0">
         <layout class="QVBoxLayout" name="verticalLayout_page_tag"/>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tabWidgetPage3">
+      <attribute name="title">
+       <string>Item Info</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout_4">
+       <item row="0" column="0">
+        <layout class="QVBoxLayout" name="verticalLayout_page_info"/>
        </item>
       </layout>
      </widget>

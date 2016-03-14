@@ -2,41 +2,42 @@
 #include "ui_InfoWidget.h"
 #include <sstream>
 #include "common/Common.hpp"
+#include "MainViewWidget.hpp"
 
-InfoWidget::InfoWidget(QWidget *parent) :
+InfoWidget::InfoWidget(NixDataModel *_nix_model, QWidget *parent) :
     QWidget(parent),
     ui(new Ui::InfoWidget)
 {
     ui->setupUi(this);
 
-    mp = new MetaDataPanel();
+    mp = new MetaDataPanel(_nix_model, this);
     ui->verticalLayout_page_meta->addWidget(mp);
 
-    dp = new DescriptionPanel();
-    ui->verticalLayout_page_meta->addWidget(dp);
-
-    tp = new TagPanel();
+    tp = new TagPanel(this);
     ui->verticalLayout_page_tag->addWidget(tp);
+
+    dp = new DescriptionPanel(this);
+    ui->verticalLayout_page_info->addWidget(dp);
+
+    ui->tabWidget->setCurrentIndex(0);
 
     connect_widgets();
 }
 
-void InfoWidget::update_info_widget(QVariant v)
+void InfoWidget::update_info_widget(QModelIndex qml_new, QModelIndex  qml_old)
 {
-    if(v.canConvert<nix::Tag>() || v.canConvert<nix::MultiTag>())
-    {
-        ui->verticalLayout_page_tag->addWidget(dp);
-        ui->stackedWidget->setCurrentIndex(1);
-    }
-    else
-    {
-        ui->verticalLayout_page_meta->addWidget(dp);
-        ui->stackedWidget->setCurrentIndex(0);
-    }
+    mp->update_metadata_panel(qml_new);
 
-    dp->update_description_panel(v);
-    mp->update_metadata_panel(v);
-    tp->update_tag_panel(v);
+    NixDataModel *current_model = MainViewWidget::get_current_model();
+    NixModelItem *model_item = static_cast<NixModelItem*>(current_model->itemFromIndex(qml_new));
+
+    tp->update_tag_panel(qml_new);
+    dp->update_description_panel(qml_new);
+    if(strcmp(model_item->get_nix_qvariant_type().c_str(), NIX_STRING_MULTITAG) == 0 ||
+            strcmp(model_item->get_nix_qvariant_type().c_str(), NIX_STRING_TAG) == 0)
+        ui->tabWidget->setCurrentIndex(1);
+    else
+        ui->tabWidget->setCurrentIndex(0);
 }
 
 void InfoWidget::update_info_widget()
@@ -48,8 +49,8 @@ void InfoWidget::update_info_widget()
 
 void InfoWidget::connect_widgets()
 {
-    QObject::connect(mp->get_tree_widget(), SIGNAL(expanded(QModelIndex)), mp, SLOT(resize_to_content(QModelIndex)));
-    QObject::connect(mp->get_tree_widget(), SIGNAL(collapsed(QModelIndex)), mp, SLOT(resize_to_content(QModelIndex)));
+//    QObject::connect(mp->get_tree_widget(), SIGNAL(expanded(QModelIndex)), mp, SLOT(resize_to_content(QModelIndex)));
+//    QObject::connect(mp->get_tree_widget(), SIGNAL(collapsed(QModelIndex)), mp, SLOT(resize_to_content(QModelIndex)));
     QObject::connect(tp->get_tag_table(), SIGNAL(currentCellChanged(int,int,int,int)), tp, SLOT(tag_item_requested(int, int, int, int)));
 
     QObject::connect(tp->get_reference_tree(), SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)),

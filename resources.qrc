@@ -4,7 +4,10 @@
         <file>images/nix_close.png</file>
         <file>images/nix_open.png</file>
         <file>images/quit.png</file>
-        <file>images/nix_fav1_cut.png</file>
-        <file>images/nix_view_icon.png</file>
+        <file>images/nix_logo.png</file>
+        <file>images/nixview32.png</file>
+        <file>images/nixview64.png</file>
+        <file>images/nixview128.png</file>
+        <file>images/nixview256.png</file>
     </qresource>
 </RCC>

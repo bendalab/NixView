@@ -14,47 +14,6 @@
    <string>Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="1" column="0">
-    <widget class="QTreeWidget" name="treeWidget">
-     <property name="autoExpandDelay">
-      <number>1</number>
-     </property>
-     <property name="itemsExpandable">
-      <bool>true</bool>
-     </property>
-     <property name="sortingEnabled">
-      <bool>false</bool>
-     </property>
-     <property name="animated">
-      <bool>true</bool>
-     </property>
-     <column>
-      <property name="text">
-       <string>Name</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Nix Type</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Storage Type</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Data Type</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Shape</string>
-      </property>
-     </column>
-    </widget>
-   </item>
    <item row="0" column="0">
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
@@ -100,6 +59,25 @@
       </widget>
      </item>
     </layout>
+   </item>
+   <item row="1" column="0">
+    <widget class="QTreeView" name="treeView">
+     <property name="editTriggers">
+      <set>QAbstractItemView::NoEditTriggers</set>
+     </property>
+     <property name="autoExpandDelay">
+      <number>1</number>
+     </property>
+     <property name="itemsExpandable">
+      <bool>true</bool>
+     </property>
+     <property name="sortingEnabled">
+      <bool>false</bool>
+     </property>
+     <property name="animated">
+      <bool>true</bool>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>

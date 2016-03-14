@@ -2,9 +2,11 @@
 #include "ui_MainWindow.h"
 #include "aboutdialog.h"
 #include "plotdialog.h"
-#include "RawTreeView.hpp"
+#include "views/RawTreeView.hpp"
 #include "nix.hpp"
 #include "common/Common.hpp"
+#include "model/NixDataModel.hpp"
+#include "model/NixModelItem.hpp"
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
     ui(new Ui::MainWindow) {
@@ -14,7 +16,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
 
 void MainWindow::connect_widgets() {
     QObject::connect(this, SIGNAL(view_requested_raw_data(int)), mvw, SLOT(set_view(int)));
-    QObject::connect(mvw->get_rtv(), SIGNAL(item_found(QVariant)), this, SLOT(activate_plot(QVariant)));
+    QObject::connect(mvw->get_rtv()->get_tree_view()->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)), this, SLOT(activate_plot(QModelIndex, QModelIndex)));
 }
 
 MainWindow::~MainWindow() {
@@ -30,7 +32,7 @@ void MainWindow::on_action_another_tree_triggered() {
     emit view_requested_raw_data(1);
 }
 
-void MainWindow::activate_plot(QVariant var) {
+void MainWindow::activate_plot(QModelIndex qml_new, QModelIndex) {
     QAction* plot_action;
     bool found_action = false;
     QList<QMenu*> list = this->menuBar()->findChildren<QMenu*>(QString("menuPlot"));
@@ -46,9 +48,14 @@ void MainWindow::activate_plot(QVariant var) {
             }
         }
     }
-    selected_item = var;
 
-    if(var.canConvert<nix::DataArray>() | var.canConvert<nix::MultiTag>() | var.canConvert<nix::Tag>()){
+    selected_qml = qml_new;
+
+    NixModelItem *item = mvw->get_current_model()->get_item_from_qml(qml_new);
+
+    if((strcmp(item->get_nix_qvariant_type().c_str(), NIX_STRING_DATAARRAY) == 0) |
+            (strcmp(item->get_nix_qvariant_type().c_str(), NIX_STRING_TAG) == 0) |
+            (strcmp(item->get_nix_qvariant_type().c_str(), NIX_STRING_MULTITAG) == 0)){
         if (found_action) {
             plot_action->setEnabled(true);
         }
@@ -69,8 +76,7 @@ void MainWindow::show_about() {
 
 void MainWindow::show_plot() {
     PlotDialog d(this);
-    d.set_entity(selected_item);
-
+    d.set_entity(selected_qml);
     d.exec();
 }
 

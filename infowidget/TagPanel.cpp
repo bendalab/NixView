@@ -1,6 +1,9 @@
 #include "TagPanel.hpp"
 #include "ui_TagPanel.h"
 #include "common/Common.hpp"
+#include <model/NixDataModel.hpp>
+#include "model/NixModelItem.hpp"
+#include "MainViewWidget.hpp"
 
 #include <iostream>
 #include <sstream>
@@ -23,20 +26,23 @@ TagPanel::TagPanel(QWidget *parent) :
 
 // TODO set all labels to "-" if empty item is emitted
 
-void TagPanel::update_tag_panel(QVariant v)
+void TagPanel::update_tag_panel(QModelIndex qml)
 {
+    NixDataModel *current_model = MainViewWidget::get_current_model();
+    NixModelItem *model_item = static_cast<NixModelItem*>(current_model->itemFromIndex(qml));
+
     clear_tag_panel();
-    if(v.canConvert<nix::Tag>())
+    if(strcmp(model_item->get_nix_qvariant_type().c_str(), NIX_STRING_TAG) == 0)
     {
-        nix::Tag tag = v.value<nix::Tag>();
+        nix::Tag tag = model_item->get_nix_entity<nix::Tag>();
         extract_tag_info(tag);
-        current_tag = v;
+        current_qml = qml;
     }
-    else if(v.canConvert<nix::MultiTag>())
+    else if(strcmp(model_item->get_nix_qvariant_type().c_str(), NIX_STRING_MULTITAG) == 0)
     {
-        nix::MultiTag mtag = v.value<nix::MultiTag>();
+        nix::MultiTag mtag = model_item->get_nix_entity<nix::MultiTag>();
         extract_multitag_info(mtag);
-        current_tag = v;
+        current_qml = qml;
     }
     ui->tableWidget->resizeColumnsToContents();
     ui->tableWidget->horizontalHeader()->setStretchLastSection(true);
@@ -268,7 +274,7 @@ void TagPanel::feature_item_requested(QTreeWidgetItem* item, int column)
 
 void TagPanel::tag_item_requested(int current_row, int current_column, int previous_row, int previous_column)
 {
-    emit emit_tag(current_tag, current_row);
+    emit emit_tag(current_qml, current_row);
 }
 
 void TagPanel::currentItemChanged_reference_helper(QTreeWidgetItem* current, QTreeWidgetItem* previous)

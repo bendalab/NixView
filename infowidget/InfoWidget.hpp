@@ -10,6 +10,7 @@
 #include "DescriptionPanel.hpp"
 #include "MetaDataPanel.hpp"
 #include "TagPanel.hpp"
+#include "model/NixDataModel.hpp"
 
 namespace Ui {
 class InfoWidget;
@@ -20,11 +21,11 @@ class InfoWidget : public QWidget
     Q_OBJECT
 
 public:
-    explicit InfoWidget(QWidget *parent = 0);
+    explicit InfoWidget(NixDataModel *_nix_model, QWidget *parent = 0);
     ~InfoWidget();
 
 public slots:
-    void update_info_widget(QVariant);
+    void update_info_widget(QModelIndex, QModelIndex);
     void update_info_widget();
 
 private:

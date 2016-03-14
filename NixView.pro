@@ -4,39 +4,49 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+# QT       += core gui widgets printsupport
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets printsupport
+greaterThan(QT_MAJOR_VERSION, 4): QT += core gui widgets printsupport
 
 TARGET = NixView
 TEMPLATE = app
 
-QMAKE_CXXFLAGS+= -std=c++11
-# CONFIG += c++11
+unix {
+    QMAKE_CXXFLAGS+= -std=c++11
+}
+
+macx {
+    CONFIG += c++11
+}
 
 SOURCES += main.cpp\
         MainWindow.cpp \
     MainViewWidget.cpp \
-    RawTreeView.cpp \
-    InfoWidget/InfoWidget.cpp \
-    InfoWidget/DescriptionPanel.cpp \
-    InfoWidget/MetaDataPanel.cpp \
-    InfoWidget/TagPanel.cpp \
+    views/RawTreeView.cpp \
+    infowidget/InfoWidget.cpp \
+    infowidget/DescriptionPanel.cpp \
+    infowidget/MetaDataPanel.cpp \
+    infowidget/TagPanel.cpp \
     aboutdialog.cpp \
     plotdialog.cpp \
     qcustomplot.cpp \
     nixview.cpp \
     plotwidget.cpp \
     plotter/lineplotter.cpp \
-    plotter/categoryplotter.cpp
+    plotter/categoryplotter.cpp\
+    model/NixDataModel.cpp \
+    views/ColumnView.cpp \
+    filter/NixProxyModel.cpp \
+    model/NixModelItem.cpp \
+    entitydescriptor.cpp
 
 HEADERS  += MainWindow.hpp \
     MainViewWidget.hpp \
-    RawTreeView.hpp \
-    InfoWidget/InfoWidget.hpp \
-    InfoWidget/DescriptionPanel.hpp \
-    InfoWidget/MetaDataPanel.hpp \
-    InfoWidget/TagPanel.hpp \
+    views/RawTreeView.hpp \
+    infowidget/InfoWidget.hpp \
+    infowidget/DescriptionPanel.hpp \
+    infowidget/MetaDataPanel.hpp \
+    infowidget/TagPanel.hpp \
     common/Common.hpp \
     aboutdialog.h \
     plotdialog.h \
@@ -45,20 +55,26 @@ HEADERS  += MainWindow.hpp \
     nixview.h \
     plotter/lineplotter.h \
     plotwidget.h \
-    plotter/categoryplotter.h
+    plotter/categoryplotter.h\
+    model/NixDataModel.hpp \
+    views/ColumnView.hpp \
+    filter/NixProxyModel.hpp \
+    model/NixModelItem.hpp \
+    entitydescriptor.h
 
 FORMS    += MainWindow.ui \
     MainViewWidget.ui \
-    RawTreeView.ui \
-    InfoWidget/InfoWidget.ui \
-    InfoWidget/DescriptionPanel.ui \
-    InfoWidget/MetaDataPanel.ui \
-    InfoWidget/TagPanel.ui \
+    views/RawTreeView.ui \
+    infowidget/InfoWidget.ui \
+    infowidget/DescriptionPanel.ui \
+    infowidget/MetaDataPanel.ui \
+    infowidget/TagPanel.ui \
     aboutdialog.ui \
     plotdialog.ui \
     plotter/lineplotter.ui \
     plotwidget.ui \
-    plotter/categoryplotter.ui
+    plotter/categoryplotter.ui \
+    views/ColumnView.ui
 
 #standard windows folder?
 #win32:CONFIG(release, debug|release): LIBS += /usr/local/lib/release/ -lnix

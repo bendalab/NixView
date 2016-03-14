@@ -24,10 +24,42 @@ public:
     virtual void add_segments(const QVector<double> &positions, const QVector<double> &extents, const QString &name) = 0;
     virtual void set_label(const std::string &label) = 0;
     virtual PlotterType plotter_type() const = 0;
+    static bool get_data_array_axis(const nix::DataArray &array, QVector<double> &axis_data, QVector<QString> &axis_labels, nix::ndsize_t dim) {
+        if (dim == 0 || dim > array.dimensionCount())
+            return false;
+        nix::Dimension d = array.getDimension(dim);
+        if (d.dimensionType() == nix::DimensionType::Sample) {
+            nix::SampledDimension sd = d.asSampledDimension();
+            std::vector<double> ax = sd.axis(array.dataExtent()[dim - 1]);
+            axis_data = QVector<double>::fromStdVector(ax);
+        } else if (d.dimensionType() == nix::DimensionType::Range) {
+            nix::RangeDimension rd = d.asRangeDimension();
+            std::vector<double> ax = rd.axis(array.dataExtent()[0]);
+            axis_data = QVector<double>::fromStdVector(ax);
+        } else if (d.dimensionType() == nix::DimensionType::Set) {
+            nix::SetDimension sd = d.asSetDimension();
+            std::vector<std::string> labels = sd.labels();
+            for (size_t i = 0; i < labels.size(); ++i) {
+                axis_labels.push_back(QString::fromStdString(labels[i]));
+                axis_data.push_back(static_cast<double>(i));
+            }
+            if (labels.size() == 0) {
+                for (nix::ndsize_t i = 0; i < array.dataExtent()[dim - 1]; ++i) {
+                    axis_labels.push_back(QString::fromStdString(nix::util::numToStr<int>(i)));
+                    axis_data.push_back(static_cast<double>(i));
+                }
+            }
+        } else {
+            std::cerr << "Unsupported dimension type" << std::endl;
+            //unsupported
+        }
+        return true;
+    }
+
     static void data_array_to_qvector(const nix::DataArray &array, QVector<double> &xdata, QVector<double> &ydata,
                                       QVector<QString> &xticklabels, nix::ndsize_t dim_index) {
         nix::Dimension d = array.getDimension(dim_index);
-
+        //FIXME this would probably not work for any other than the first dimension...
         if (d.dimensionType() == nix::DimensionType::Sample) {
             nix::SampledDimension dim = d.asSampledDimension();
             std::vector<double> ax = dim.axis(array.dataExtent()[0]);
