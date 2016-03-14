@@ -42,12 +42,15 @@ MainViewWidget::MainViewWidget(std::string& nix_file_path, QWidget *parent) :
 
 void MainViewWidget::populate_data_stacked_widget()
 {
+    // order of adding views has to be consistent with integers defined in Common.hpp
+    // 0
     rtv = new RawTreeView(nix_proxy_model, this);
     ui->data_stacked_Widget->addWidget(rtv);
+    // 1
     cv = new ColumnView(nix_proxy_model, this);
     ui->data_stacked_Widget->addWidget(cv);
 
-    ui->data_stacked_Widget->setCurrentIndex(1);
+    ui->data_stacked_Widget->setCurrentIndex(0);
 }
 
 RawTreeView* MainViewWidget::get_rtv() {

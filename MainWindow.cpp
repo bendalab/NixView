@@ -15,7 +15,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
 }
 
 void MainWindow::connect_widgets() {
-    QObject::connect(this, SIGNAL(view_requested_raw_data(int)), mvw, SLOT(set_view(int)));
+    QObject::connect(this, SIGNAL(emit_view_change(int)), mvw, SLOT(set_view(int)));
     QObject::connect(mvw, SIGNAL(emit_current_qml(QModelIndex)), this, SLOT(activate_plot(QModelIndex)));
 }
 
@@ -24,12 +24,12 @@ MainWindow::~MainWindow() {
 }
 
 // slots
-void MainWindow::on_action_raw_data_triggered() {
-    emit view_requested_raw_data(0);
+void MainWindow::on_actionTree_triggered() {
+    emit emit_view_change(VIEW_TREE);
 }
 
-void MainWindow::on_action_another_tree_triggered() {
-    emit view_requested_raw_data(1);
+void MainWindow::on_actionColumn_triggered() {
+    emit emit_view_change(VIEW_COLUMN);
 }
 
 void MainWindow::activate_plot(QModelIndex qml) {

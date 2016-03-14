@@ -48,7 +48,7 @@
      <x>0</x>
      <y>0</y>
      <width>1400</width>
-     <height>27</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -68,7 +68,8 @@
     <property name="title">
      <string>&amp;View</string>
     </property>
-    <addaction name="action_raw_data"/>
+    <addaction name="actionTree"/>
+    <addaction name="actionColumn"/>
    </widget>
    <widget class="QMenu" name="menuPlot">
     <property name="title">
@@ -131,9 +132,9 @@
     <string>Ctrl+O</string>
    </property>
   </action>
-  <action name="action_raw_data">
+  <action name="actionTree">
    <property name="text">
-    <string>&amp;Raw Data</string>
+    <string>&amp;Tree</string>
    </property>
   </action>
   <action name="action_another_tree">
@@ -210,6 +211,11 @@
    </property>
    <property name="shortcut">
     <string>F1</string>
+   </property>
+  </action>
+  <action name="actionColumn">
+   <property name="text">
+    <string>&amp;Column</string>
    </property>
   </action>
  </widget>
