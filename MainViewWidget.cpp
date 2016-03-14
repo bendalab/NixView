@@ -7,6 +7,8 @@ MainViewWidget::MainViewWidget(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::MainViewWidget)
 {
+    ui->setupUi(this);
+
     if (nix_file.isOpen())
         nix_file.close();
 
@@ -20,14 +22,18 @@ MainViewWidget::MainViewWidget(QWidget *parent) :
 * @brief Container for all widgets for data display.
 * @param nix_file_path: path to opened nix file
 */
-MainViewWidget::MainViewWidget(std::string& nix_file_path, QWidget *parent) :
-    QWidget(parent),
-    ui(new Ui::MainViewWidget)
+MainViewWidget::MainViewWidget(const std::string &nix_file_path, QWidget *parent) :
+    MainViewWidget(parent)
 {
-    ui->setupUi(this);
+    set_nix_file(nix_file_path);
+}
 
+void MainViewWidget::set_nix_file(const std::string &nix_file_path)
+{
     nix_file = nix::File::open(nix_file_path, nix::FileMode::ReadOnly);
-    nix_model = new NixDataModel(nix_file);
+    nix_model = new NixDataModel();
+    connect(nix_model, SIGNAL(file_scan_progress()), this, SLOT(scan_progress()));
+    nix_model->nix_file_to_model(nix_file);
     MainViewWidget::CURRENT_MODEL = nix_model;
 
     nix_proxy_model = new NixProxyModel();
@@ -74,6 +80,16 @@ void MainViewWidget::activate_info_widget()
 void MainViewWidget::emit_current_qml_worker_slot(QModelIndex qml, QModelIndex)
 {
     emit emit_current_qml(nix_proxy_model->mapToSource(qml));
+}
+
+void MainViewWidget::scan_progress()
+{
+    emit scan_progress_update();
+}
+
+int MainViewWidget::get_scan_progress()
+{
+    return nix_model->progress();
 }
 
 // widget connection
