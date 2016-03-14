@@ -28,17 +28,8 @@ InfoWidget::InfoWidget(NixDataModel *_nix_model, QWidget *parent) :
 void InfoWidget::update_info_widget(QModelIndex qml)
 {
     mp->update_metadata_panel(qml);
-
-    NixDataModel *current_model = MainViewWidget::get_current_model();
-    NixModelItem *model_item = static_cast<NixModelItem*>(current_model->itemFromIndex(qml));
-
     tp->update_tag_panel(qml);
     dp->update_description_panel(qml);
-    if(strcmp(model_item->get_nix_qvariant_type().c_str(), NIX_STRING_MULTITAG) == 0 ||
-            strcmp(model_item->get_nix_qvariant_type().c_str(), NIX_STRING_TAG) == 0)
-        ui->tabWidget->setCurrentIndex(1);
-    else
-        ui->tabWidget->setCurrentIndex(0);
 }
 
 void InfoWidget::connect_widgets()
