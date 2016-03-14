@@ -108,7 +108,7 @@ void MainViewWidget::connect_widgets()
     QObject::connect(rtv->get_tree_view(), SIGNAL(collapsed(QModelIndex)), rtv, SLOT(resize_to_content(QModelIndex)));
 
     // filter
-    QObject::connect(ui->cbx_filter, SIGNAL(currentIndexChanged(QString)), this, update_filter(QString));
+    // QObject::connect(ui->cbx_filter, SIGNAL(currentIndexChanged(QString)), this, update_filter(QString));
 
     // ALSO CHECK CONNECTIONS IN InfoWidget.cpp
 }
