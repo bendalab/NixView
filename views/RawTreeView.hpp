@@ -20,6 +20,7 @@ class RawTreeView : public QWidget
 
 public:
     explicit RawTreeView(NixProxyModel *nix_proxy_model, QWidget *parent = 0);
+    explicit RawTreeView(QWidget *parent = 0);
     ~RawTreeView();
 
 public slots:
@@ -48,6 +49,7 @@ private:
 
 public:
     const QTreeView* get_tree_view();
+    void  set_proxy_model(NixProxyModel *proxy_model);
 //    const QComboBox* get_filter_combo_box();
 };
 #endif // RAWTREEVIEW_HPP

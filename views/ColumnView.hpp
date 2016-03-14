@@ -15,10 +15,12 @@ class ColumnView : public QWidget
     Q_OBJECT
 
 public:
+    explicit ColumnView(QWidget *parent=0);
     explicit ColumnView(NixProxyModel*, QWidget *parent = 0);
     ~ColumnView();
 
     QColumnView* get_column_view();
+    void set_proxy_model(NixProxyModel *proxy_model);
 
 private:
     NixProxyModel* nix_proxy_model;

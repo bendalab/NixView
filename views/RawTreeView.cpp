@@ -4,21 +4,32 @@
 #include <boost/algorithm/string.hpp>
 #include "common/Common.hpp"
 
-
-RawTreeView::RawTreeView(NixProxyModel* _nix_proxy_model, QWidget *parent) :
+RawTreeView::RawTreeView(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::RawTreeView)
 {
     ui->setupUi(this);
     filter_mode = 0;
 
-    nix_proxy_model = _nix_proxy_model;
+    nix_proxy_model = nullptr;
+}
+
+RawTreeView::RawTreeView(NixProxyModel* _nix_proxy_model, QWidget *parent) :
+    RawTreeView(parent)
+{
+    set_proxy_model(_nix_proxy_model);
+}
+
+void RawTreeView::set_proxy_model(NixProxyModel *proxy_model)
+{
+    nix_proxy_model = proxy_model;
 
     ui->treeView->setModel(nix_proxy_model);
     ui->treeView->setSelectionBehavior(QAbstractItemView::SelectRows);
     hidden_columns = {5, 6, 7, 8, 9};
     for (int entry : hidden_columns)
         ui->treeView->setColumnHidden(entry, true);
+
 }
 
 // slots
