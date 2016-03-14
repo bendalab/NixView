@@ -244,7 +244,7 @@ void TagPanel::clear_tag_panel()
 }
 
 // slots
-void TagPanel::reference_item_requested(QTreeWidgetItem* item, int column)
+void TagPanel::reference_item_requested(QTreeWidgetItem* item, int)
 {
     if (!item)
     {
@@ -258,7 +258,7 @@ void TagPanel::reference_item_requested(QTreeWidgetItem* item, int column)
     }
 }
 
-void TagPanel::feature_item_requested(QTreeWidgetItem* item, int column)
+void TagPanel::feature_item_requested(QTreeWidgetItem* item, int)
 {
     if (!item)
     {
@@ -272,17 +272,17 @@ void TagPanel::feature_item_requested(QTreeWidgetItem* item, int column)
     }
 }
 
-void TagPanel::tag_item_requested(int current_row, int current_column, int previous_row, int previous_column)
+void TagPanel::tag_item_requested(int current_row, int, int, int)
 {
     emit emit_tag(current_qml, current_row);
 }
 
-void TagPanel::currentItemChanged_reference_helper(QTreeWidgetItem* current, QTreeWidgetItem* previous)
+void TagPanel::currentItemChanged_reference_helper(QTreeWidgetItem* current, QTreeWidgetItem*)
 {
     reference_item_requested(current, 0);
 }
 
-void TagPanel::currentItemChanged_feature_helper(QTreeWidgetItem* current, QTreeWidgetItem* previous)
+void TagPanel::currentItemChanged_feature_helper(QTreeWidgetItem* current, QTreeWidgetItem*)
 {
     feature_item_requested(current, 0);
 }
