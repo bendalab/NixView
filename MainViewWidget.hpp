@@ -41,7 +41,7 @@ public slots:
 
 signals:
     void scan_progress_update();
-    void emit_current_qml(QModelIndex qml);
+    void emit_current_qml(QModelIndex);
 
 private:
     Ui::MainViewWidget *ui;
