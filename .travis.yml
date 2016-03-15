@@ -29,6 +29,4 @@ install:
     clang --version;
     fi
 
-script:
-  - cmake .;
-  - make -j;
+script: cmake . && make
