@@ -1,9 +1,12 @@
 #include "NixProxyModel.hpp"
 #include <qdebug.h>
+#include "common/Common.hpp"
 
 NixProxyModel::NixProxyModel(QObject *parent)
     :QSortFilterProxyModel(parent)
 {
+    fine_filter = "";
+    rough_filter = FILTER_EXP_NONE;
 }
 
 bool NixProxyModel::filterAcceptsRow(int source_row, const QModelIndex &source_parent) const
@@ -71,10 +74,36 @@ bool NixProxyModel::check_entry_row(int source_row, const QModelIndex &source_pa
 {
     NixDataModel *model = static_cast<NixDataModel*>(sourceModel());
 
+    bool rough_filter_satisfied;
+    (strcmp(rough_filter.toStdString().c_str(), FILTER_EXP_NONE) == 0 || strcmp(rough_filter.toStdString().c_str(), FILTER_EXP_METADATA) == 0)?
+                rough_filter_satisfied = true:
+                rough_filter_satisfied = false;
+
+    // DataArray check
+    if (strcmp(rough_filter.toStdString().c_str(), FILTER_EXP_DATAARRAY) == 0)
+    {
+        int c = 2; //Storage Type, see NixDataModel.cpp
+        QModelIndex index = model->index(source_row, c, source_parent);
+        if (strcmp(model->data(index).toString().toStdString().c_str(), NIX_STRING_DATAARRAY) == 0)
+            rough_filter_satisfied = true;
+    }
+
+    // NameContains check
+    if (strcmp(rough_filter.toStdString().c_str(), FILTER_EXP_NAME) == 0)
+    {
+        QModelIndex index = model->index(source_row, 0, source_parent);
+        return model->data(index).toString().contains(fine_filter);
+    }
+
+    // check if rough filter  satisfied
+    if (!rough_filter_satisfied)
+        return false;
+
+    // fine filter --> check if entry row contains fine_filter experession
     for (int c = 0; c < model->num_columns; ++c)
     {
         QModelIndex index = model->index(source_row, c, source_parent);
-        if (model->data(index).toString().contains(filterRegExp()))
+        if (model->data(index).toString().contains(fine_filter))
             return true;
     }
     return false;
@@ -100,12 +129,19 @@ void NixProxyModel::set_rough_filter(QString exp)
 {
     rough_filter = exp;
     qDebug() << exp;
+
+    (strcmp(rough_filter.toStdString().c_str(), FILTER_EXP_METADATA) == 0)?
+                metadata_only_mode = true:
+                metadata_only_mode = false;
+
+    refresh();
 }
 
 void NixProxyModel::set_fine_filter(QString exp)
 {
     fine_filter = exp;
     qDebug() << exp;
+    refresh();
 }
 
 void NixProxyModel::refresh()
