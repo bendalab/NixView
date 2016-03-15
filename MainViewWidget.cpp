@@ -19,6 +19,8 @@ MainViewWidget::MainViewWidget(QWidget *parent) :
     cv = nullptr;
 
     QStringList filter_expressions = {FILTER_EXP_NONE,
+                                      FILTER_EXP_BLOCK,
+                                      FILTER_EXP_GROUP,
                                       FILTER_EXP_METADATA,
                                       FILTER_EXP_DATAARRAY,
                                       FILTER_EXP_TAG,
