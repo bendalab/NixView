@@ -21,7 +21,10 @@ MainViewWidget::MainViewWidget(QWidget *parent) :
     QStringList filter_expressions = {FILTER_EXP_NONE,
                                       FILTER_EXP_METADATA,
                                       FILTER_EXP_DATAARRAY,
-                                      FILTER_EXP_NAME};
+                                      FILTER_EXP_TAG,
+                                      FILTER_EXP_MULTITAG,
+                                      FILTER_EXP_NAME_CONTAINS,
+                                      FILTER_EXP_NIXTYPE_CONTAINS};
     ui->cmbx_filter->addItems(filter_expressions);
 }
 

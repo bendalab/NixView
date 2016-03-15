@@ -83,20 +83,36 @@ bool NixProxyModel::check_entry_row(int source_row, const QModelIndex &source_pa
     // DataArray check
     if (strcmp(rough_filter.toStdString().c_str(), FILTER_EXP_DATAARRAY) == 0)
     {
-        int c = 2; //Storage Type, see NixDataModel.cpp
-        QModelIndex index = model->index(source_row, c, source_parent);
-        if (strcmp(model->data(index).toString().toStdString().c_str(), NIX_STRING_DATAARRAY) == 0)
-            rough_filter_satisfied = true;
+        rough_filter_satisfied = entitiy_check(source_row, source_parent, NIX_STRING_DATAARRAY);
+    }
+
+    // Tag check
+    else if (strcmp(rough_filter.toStdString().c_str(), FILTER_EXP_TAG) == 0)
+    {
+        rough_filter_satisfied = entitiy_check(source_row, source_parent, NIX_STRING_TAG);
+    }
+
+    // MultiTag check
+    else if (strcmp(rough_filter.toStdString().c_str(), FILTER_EXP_MULTITAG) == 0)
+    {
+        rough_filter_satisfied = entitiy_check(source_row, source_parent, NIX_STRING_MULTITAG);
     }
 
     // NameContains check
-    if (strcmp(rough_filter.toStdString().c_str(), FILTER_EXP_NAME) == 0)
+    else if (strcmp(rough_filter.toStdString().c_str(), FILTER_EXP_NAME_CONTAINS) == 0)
     {
         QModelIndex index = model->index(source_row, 0, source_parent);
         return qml_contains_fine_filter(index);
     }
 
-    // check if rough filter  satisfied
+    // NixTypeContains check
+    else if (strcmp(rough_filter.toStdString().c_str(), FILTER_EXP_NIXTYPE_CONTAINS) == 0)
+    {
+        QModelIndex index = model->index(source_row, 1, source_parent);
+        return qml_contains_fine_filter(index);
+    }
+
+    // check if rough filter satisfied
     if (!rough_filter_satisfied)
         return false;
 
@@ -123,6 +139,13 @@ bool NixProxyModel::qml_contains_fine_filter(QModelIndex qml) const
             return true;
     }
     return false;
+}
+
+bool NixProxyModel::entitiy_check(int source_row, const QModelIndex &source_parent, const char* entity_type) const
+{
+    int c = 2; //Storage Type column, see NixDataModel.cpp
+    QModelIndex index = sourceModel()->index(source_row, c, source_parent);
+    return (strcmp(sourceModel()->data(index).toString().toStdString().c_str(), entity_type) == 0);
 }
 
 bool NixProxyModel::check_if_in_data_branch(int source_row, const QModelIndex &source_parent) const
