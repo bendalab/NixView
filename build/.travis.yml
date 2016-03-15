@@ -1,0 +1,41 @@
+language: cpp
+
+sudo: required
+dist: trusty
+
+compiler:
+  - gcc
+
+os:
+  - linux
+
+before_install:
+  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then 
+    sudo apt-get update -qq;
+    sudo apt-get install -q gcc-4.8 g++-4.8 libstdc++-4.8-dev libcppunit-dev libboost-all-dev libhdf5-serial-dev libhdf5-dev libhdf5-7 -y;
+    sudo apt-get install qt5-default qttools5-dev-tools
+    # build NIX
+    git clone https://github.com/G-Node/nix.git nix-build
+    cd nix-build
+    cmake -DCMAKE_INSTALL_PREFIX=./inst -DBUILD_TESTING=OFF .
+    make
+    sudo make install
+    cd ..
+    fi
+  - if [ "$CXX" == "g++" ]; then
+    g++ --version; 
+    else clang --version;
+    fi
+
+install:
+  - if [ "$CXX" == "g++" ]; then 
+    export CXX="g++-4.8"; 
+    export COMPILER="g++";
+    $CXX --version; 
+    else 
+    clang --version;
+    fi
+
+script:
+  - cmake .
+  - make 
