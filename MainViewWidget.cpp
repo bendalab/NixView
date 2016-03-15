@@ -22,7 +22,7 @@ MainViewWidget::MainViewWidget(QWidget *parent) :
                                       FILTER_EXP_METADATA,
                                       FILTER_EXP_DATAARRAY,
                                       FILTER_EXP_NAME};
-    ui->cbx_filter->addItems(filter_expressions);
+    ui->cmbx_filter->addItems(filter_expressions);
 }
 
 /**
@@ -115,8 +115,9 @@ void MainViewWidget::connect_widgets()
     QObject::connect(rtv->get_tree_view(), SIGNAL(collapsed(QModelIndex)), rtv, SLOT(resize_to_content(QModelIndex)));
 
     // filter
-    QObject::connect(ui->cbx_filter, SIGNAL(currentIndexChanged(QString)), nix_proxy_model, SLOT(set_rough_filter(QString)));
+    QObject::connect(ui->cmbx_filter, SIGNAL(currentIndexChanged(QString)), nix_proxy_model, SLOT(set_rough_filter(QString)));
     QObject::connect(ui->line_edit_filter, SIGNAL(textChanged(QString)), nix_proxy_model, SLOT(set_fine_filter(QString)));
+    QObject::connect(ui->cbx_filter, SIGNAL(toggled(bool)), nix_proxy_model, SLOT(set_case_sensitivity(bool)));
 
     // ALSO CHECK CONNECTIONS IN InfoWidget.cpp
 }

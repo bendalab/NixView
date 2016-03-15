@@ -7,6 +7,7 @@ NixProxyModel::NixProxyModel(QObject *parent)
 {
     fine_filter = "";
     rough_filter = FILTER_EXP_NONE;
+    case_sensitive = false;
 }
 
 bool NixProxyModel::filterAcceptsRow(int source_row, const QModelIndex &source_parent) const
@@ -92,7 +93,7 @@ bool NixProxyModel::check_entry_row(int source_row, const QModelIndex &source_pa
     if (strcmp(rough_filter.toStdString().c_str(), FILTER_EXP_NAME) == 0)
     {
         QModelIndex index = model->index(source_row, 0, source_parent);
-        return model->data(index).toString().contains(fine_filter);
+        return qml_contains_fine_filter(index);
     }
 
     // check if rough filter  satisfied
@@ -103,19 +104,34 @@ bool NixProxyModel::check_entry_row(int source_row, const QModelIndex &source_pa
     for (int c = 0; c < model->num_columns; ++c)
     {
         QModelIndex index = model->index(source_row, c, source_parent);
-        if (model->data(index).toString().contains(fine_filter))
+        if (qml_contains_fine_filter(index))
             return true;
     }
     return false;
 }
 
-bool NixProxyModel::check_if_in_data_branch(int, const QModelIndex &source_parent) const
+bool NixProxyModel::qml_contains_fine_filter(QModelIndex qml) const
 {
-    QModelIndex parent = source_parent;
-    while (parent.isValid()) {
-        if (!parent.parent().isValid() && strcmp(sourceModel()->data(parent).toString().toStdString().c_str(), "Data") == 0)
+    if (case_sensitive)
+    {
+        if (sourceModel()->data(qml).toString().contains(fine_filter, Qt::CaseSensitive))
             return true;
-        parent = parent.parent();
+    }
+    else
+    {
+        if (sourceModel()->data(qml).toString().contains(fine_filter, Qt::CaseInsensitive))
+            return true;
+    }
+    return false;
+}
+
+bool NixProxyModel::check_if_in_data_branch(int source_row, const QModelIndex &source_parent) const
+{
+    QModelIndex current = sourceModel()->index(source_row, 0, source_parent);
+    while (current.isValid()) {
+        if (!current.parent().isValid() && strcmp(sourceModel()->data(current).toString().toStdString().c_str(), "Data") == 0)
+            return true;
+        current = current.parent();
     }
     return false;
 }
@@ -141,6 +157,13 @@ void NixProxyModel::set_fine_filter(QString exp)
 {
     fine_filter = exp;
     qDebug() << exp;
+    refresh();
+}
+
+void NixProxyModel::set_case_sensitivity(bool b)
+{
+    case_sensitive = b;
+    qDebug() << b;
     refresh();
 }
 

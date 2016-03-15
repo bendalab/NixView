@@ -32,7 +32,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QComboBox" name="cbx_filter">
+        <widget class="QComboBox" name="cmbx_filter">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
            <horstretch>0</horstretch>
@@ -43,6 +43,16 @@
        </item>
        <item>
         <widget class="QLineEdit" name="line_edit_filter"/>
+       </item>
+       <item>
+        <widget class="QCheckBox" name="cbx_filter">
+         <property name="toolTip">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;CaseSensitive&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+         <property name="text">
+          <string>Aa</string>
+         </property>
+        </widget>
        </item>
       </layout>
      </item>
