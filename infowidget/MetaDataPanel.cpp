@@ -28,13 +28,12 @@ void MetaDataPanel::set_proxy_model()
 void MetaDataPanel::update_metadata_panel(QModelIndex qml)
 {
     NixModelItem *item = proxy_model->get_item_from_qml(qml);
-    if(item->entity_can_have_metadata())
+    if(qml.isValid() && item->entity_can_have_metadata())
     {
         nix::Section metadata = item->get_entity_metadata();
         if(metadata)
         {
             proxy_model->set_block_mode(false);
-//            proxy_model->setFilterRegExp(QString::fromStdString(metadata.id()));
             proxy_model->set_fine_filter(QString::fromStdString(metadata.id()));
             ui->treeView->expandAll();
         }
