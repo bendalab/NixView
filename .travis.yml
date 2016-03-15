@@ -22,11 +22,7 @@ before_install:
     sudo make install
     cd ..
     fi
-  - if [ "$CXX" == "g++" ]; then
-    g++ --version; 
-    else clang --version;
-    fi
-
+ 
 install:
   - if [ "$CXX" == "g++" ]; then 
     export CXX="g++-4.8"; 
