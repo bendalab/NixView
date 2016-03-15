@@ -18,7 +18,8 @@ MainViewWidget::MainViewWidget(QWidget *parent) :
     rtv = nullptr;
     cv = nullptr;
 
-    QStringList filter_expressions = {FILTER_EXP_METADATA,
+    QStringList filter_expressions = {FILTER_EXP_NONE,
+                                      FILTER_EXP_METADATA,
                                       FILTER_EXP_DATAARRAY,
                                       FILTER_EXP_NAME};
     ui->cbx_filter->addItems(filter_expressions);
@@ -44,6 +45,7 @@ void MainViewWidget::set_nix_file(const std::string &nix_file_path)
 
     nix_proxy_model = new NixProxyModel();
     nix_proxy_model->setSourceModel(nix_model);
+    nix_proxy_model->set_filter_mode(3);
 
     iw = new InfoWidget(nix_model, this);
     ui->horizontalLayout->addWidget(iw);
