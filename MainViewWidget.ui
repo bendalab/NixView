@@ -27,9 +27,12 @@
        <item>
         <widget class="QLabel" name="label_filter">
          <property name="text">
-          <string>Filter</string>
+          <string>Search</string>
          </property>
         </widget>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="line_edit_filter"/>
        </item>
        <item>
         <widget class="QComboBox" name="cmbx_filter">
@@ -42,9 +45,6 @@
         </widget>
        </item>
        <item>
-        <widget class="QLineEdit" name="line_edit_filter"/>
-       </item>
-       <item>
         <widget class="QCheckBox" name="cbx_filter">
          <property name="toolTip">
           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;CaseSensitive&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
@@ -55,19 +55,6 @@
         </widget>
        </item>
       </layout>
-     </item>
-     <item>
-      <widget class="QLabel" name="label_overview">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="text">
-        <string>Content Overview</string>
-       </property>
-      </widget>
      </item>
      <item>
       <widget class="QStackedWidget" name="data_stacked_Widget">
