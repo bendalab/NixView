@@ -1,9 +1,13 @@
 #include "NixProxyModel.hpp"
 #include <qdebug.h>
+#include "common/Common.hpp"
 
 NixProxyModel::NixProxyModel(QObject *parent)
     :QSortFilterProxyModel(parent)
 {
+    fine_filter = "";
+    rough_filter = FILTER_EXP_NONE;
+    case_sensitive = false;
 }
 
 bool NixProxyModel::filterAcceptsRow(int source_row, const QModelIndex &source_parent) const
@@ -71,22 +75,98 @@ bool NixProxyModel::check_entry_row(int source_row, const QModelIndex &source_pa
 {
     NixDataModel *model = static_cast<NixDataModel*>(sourceModel());
 
+    bool rough_filter_satisfied;
+    (strcmp(rough_filter.toStdString().c_str(), FILTER_EXP_NONE) == 0 || strcmp(rough_filter.toStdString().c_str(), FILTER_EXP_METADATA) == 0)?
+                rough_filter_satisfied = true:
+                rough_filter_satisfied = false;
+
+    // Block check
+    if (strcmp(rough_filter.toStdString().c_str(), FILTER_EXP_BLOCK) == 0)
+    {
+        rough_filter_satisfied = entitiy_check(source_row, source_parent, NIX_STRING_BLOCK);
+    }
+
+    // Group check
+    if (strcmp(rough_filter.toStdString().c_str(), FILTER_EXP_GROUP) == 0)
+    {
+        rough_filter_satisfied = entitiy_check(source_row, source_parent, NIX_STRING_GROUP);
+    }
+
+    // DataArray check
+    if (strcmp(rough_filter.toStdString().c_str(), FILTER_EXP_DATAARRAY) == 0)
+    {
+        rough_filter_satisfied = entitiy_check(source_row, source_parent, NIX_STRING_DATAARRAY);
+    }
+
+    // Tag check
+    else if (strcmp(rough_filter.toStdString().c_str(), FILTER_EXP_TAG) == 0)
+    {
+        rough_filter_satisfied = entitiy_check(source_row, source_parent, NIX_STRING_TAG);
+    }
+
+    // MultiTag check
+    else if (strcmp(rough_filter.toStdString().c_str(), FILTER_EXP_MULTITAG) == 0)
+    {
+        rough_filter_satisfied = entitiy_check(source_row, source_parent, NIX_STRING_MULTITAG);
+    }
+
+    // NameContains check
+    else if (strcmp(rough_filter.toStdString().c_str(), FILTER_EXP_NAME_CONTAINS) == 0)
+    {
+        QModelIndex index = model->index(source_row, 0, source_parent);
+        return qml_contains_fine_filter(index);
+    }
+
+    // NixTypeContains check
+    else if (strcmp(rough_filter.toStdString().c_str(), FILTER_EXP_NIXTYPE_CONTAINS) == 0)
+    {
+        QModelIndex index = model->index(source_row, 1, source_parent);
+        return qml_contains_fine_filter(index);
+    }
+
+    // check if rough filter satisfied
+    if (!rough_filter_satisfied)
+        return false;
+
+    // fine filter --> check if entry row contains fine_filter experession
     for (int c = 0; c < model->num_columns; ++c)
     {
         QModelIndex index = model->index(source_row, c, source_parent);
-        if (model->data(index).toString().contains(filterRegExp()))
+        if (qml_contains_fine_filter(index))
             return true;
     }
     return false;
 }
 
+bool NixProxyModel::qml_contains_fine_filter(QModelIndex qml) const
+{
+    if (case_sensitive)
+    {
+        if (sourceModel()->data(qml).toString().contains(fine_filter, Qt::CaseSensitive))
+            return true;
+    }
+    else
+    {
+        if (sourceModel()->data(qml).toString().contains(fine_filter, Qt::CaseInsensitive))
+            return true;
+    }
+    return false;
+}
+
+bool NixProxyModel::entitiy_check(int source_row, const QModelIndex &source_parent, const char* entity_type) const
+{
+    int c = 2; //Storage Type column, see NixDataModel.cpp
+    QModelIndex index = sourceModel()->index(source_row, c, source_parent);
+    return (strcmp(sourceModel()->data(index).toString().toStdString().c_str(), entity_type) == 0);
+}
+
 bool NixProxyModel::check_if_in_data_branch(int source_row, const QModelIndex &source_parent) const
 {
-    QModelIndex parent = source_parent;
-    while (parent.isValid()) {
-        if (!parent.parent().isValid() && strcmp(sourceModel()->data(parent).toString().toStdString().c_str(), "Data") == 0)
+    QModelIndex current = sourceModel()->index(source_row, 0, source_parent);
+    while (current.isValid()) {
+        if (!current.parent().isValid() && strcmp(sourceModel()->data(current).toString().toStdString().c_str(), "Data") == 0)
             return true;
-        parent = parent.parent();
+        current = current.parent();
     }
     return false;
 }
@@ -94,6 +174,32 @@ bool NixProxyModel::check_if_in_data_branch(int source_row, const QModelIndex &s
 NixModelItem* NixProxyModel::get_item_from_qml(QModelIndex qml)
 {
     return static_cast<NixModelItem*>(static_cast<NixDataModel*>(sourceModel())->itemFromIndex(qml));
+}
+
+void NixProxyModel::set_rough_filter(QString exp)
+{
+    rough_filter = exp;
+    qDebug() << exp;
+
+    (strcmp(rough_filter.toStdString().c_str(), FILTER_EXP_METADATA) == 0)?
+                metadata_only_mode = true:
+                metadata_only_mode = false;
+
+    refresh();
+}
+
+void NixProxyModel::set_fine_filter(QString exp)
+{
+    fine_filter = exp;
+    qDebug() << exp;
+    refresh();
+}
+
+void NixProxyModel::set_case_sensitivity(bool b)
+{
+    case_sensitive = b;
+    qDebug() << b;
+    refresh();
 }
 
 void NixProxyModel::refresh()

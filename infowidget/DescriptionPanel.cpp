@@ -14,6 +14,12 @@ DescriptionPanel::DescriptionPanel(QWidget *parent) :
 
 void DescriptionPanel::update_description_panel(QModelIndex qml)
 {
+    if(!qml.isValid())
+    {
+        clear_description_panel();
+        return;
+    }
+
     NixModelItem* item = MainViewWidget::get_current_model()->get_item_from_qml(qml);
 
     if(strcmp(item->get_nix_qvariant_type().c_str(), NIX_STRING_BLOCK) == 0)

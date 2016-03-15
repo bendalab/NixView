@@ -47,7 +47,7 @@ void RawTreeView::resize_to_content(QModelIndex) {
 //}
 
 // getter
-const QTreeView* RawTreeView::get_tree_view()
+QTreeView* RawTreeView::get_tree_view()
 {
     return ui->treeView;
 }

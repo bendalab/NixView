@@ -32,17 +32,20 @@ void TagPanel::update_tag_panel(QModelIndex qml)
     NixModelItem *model_item = static_cast<NixModelItem*>(current_model->itemFromIndex(qml));
 
     clear_tag_panel();
-    if(strcmp(model_item->get_nix_qvariant_type().c_str(), NIX_STRING_TAG) == 0)
+    if(qml.isValid())
     {
-        nix::Tag tag = model_item->get_nix_entity<nix::Tag>();
-        extract_tag_info(tag);
-        current_qml = qml;
-    }
-    else if(strcmp(model_item->get_nix_qvariant_type().c_str(), NIX_STRING_MULTITAG) == 0)
-    {
-        nix::MultiTag mtag = model_item->get_nix_entity<nix::MultiTag>();
-        extract_multitag_info(mtag);
-        current_qml = qml;
+        if(strcmp(model_item->get_nix_qvariant_type().c_str(), NIX_STRING_TAG) == 0)
+        {
+            nix::Tag tag = model_item->get_nix_entity<nix::Tag>();
+            extract_tag_info(tag);
+            current_qml = qml;
+        }
+        else if(strcmp(model_item->get_nix_qvariant_type().c_str(), NIX_STRING_MULTITAG) == 0)
+        {
+            nix::MultiTag mtag = model_item->get_nix_entity<nix::MultiTag>();
+            extract_multitag_info(mtag);
+            current_qml = qml;
+        }
     }
     ui->tableWidget->resizeColumnsToContents();
     ui->tableWidget->horizontalHeader()->setStretchLastSection(true);
@@ -244,7 +247,7 @@ void TagPanel::clear_tag_panel()
 }
 
 // slots
-void TagPanel::reference_item_requested(QTreeWidgetItem* item, int column)
+void TagPanel::reference_item_requested(QTreeWidgetItem* item, int)
 {
     if (!item)
     {
@@ -258,7 +261,7 @@ void TagPanel::reference_item_requested(QTreeWidgetItem* item, int column)
     }
 }
 
-void TagPanel::feature_item_requested(QTreeWidgetItem* item, int column)
+void TagPanel::feature_item_requested(QTreeWidgetItem* item, int)
 {
     if (!item)
     {
@@ -272,17 +275,17 @@ void TagPanel::feature_item_requested(QTreeWidgetItem* item, int column)
     }
 }
 
-void TagPanel::tag_item_requested(int current_row, int current_column, int previous_row, int previous_column)
+void TagPanel::tag_item_requested(int current_row, int, int, int)
 {
     emit emit_tag(current_qml, current_row);
 }
 
-void TagPanel::currentItemChanged_reference_helper(QTreeWidgetItem* current, QTreeWidgetItem* previous)
+void TagPanel::currentItemChanged_reference_helper(QTreeWidgetItem* current, QTreeWidgetItem*)
 {
     reference_item_requested(current, 0);
 }
 
-void TagPanel::currentItemChanged_feature_helper(QTreeWidgetItem* current, QTreeWidgetItem* previous)
+void TagPanel::currentItemChanged_feature_helper(QTreeWidgetItem* current, QTreeWidgetItem*)
 {
     feature_item_requested(current, 0);
 }

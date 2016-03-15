@@ -36,3 +36,15 @@ Q_DECLARE_METATYPE(nix::Source)
 // define views as integers
 #define VIEW_TREE 0
 #define VIEW_COLUMN 1
+
+// define filter expressions
+#define FILTER_EXP_NONE "-"
+#define FILTER_EXP_GROUP "is Group"
+#define FILTER_EXP_BLOCK "is Block"
+#define FILTER_EXP_METADATA "is MetaData"
+#define FILTER_EXP_DATAARRAY "is DataArray"
+#define FILTER_EXP_TAG "is Tag"
+#define FILTER_EXP_MULTITAG "is MultiTag"
+#define FILTER_EXP_NAME_CONTAINS "Name contains"
+#define FILTER_EXP_NIXTYPE_CONTAINS "Nix Type contains"
+//TODO more expressions

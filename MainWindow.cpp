@@ -57,6 +57,12 @@ void MainWindow::activate_plot(QModelIndex qml) {
 
     selected_qml = qml;
 
+    if(!qml.isValid())
+    {
+        plot_action->setEnabled(false);
+        return;
+    }
+
     NixModelItem *item = mvw->get_current_model()->get_item_from_qml(qml);
 
     if((strcmp(item->get_nix_qvariant_type().c_str(), NIX_STRING_DATAARRAY) == 0) |
