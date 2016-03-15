@@ -30,9 +30,9 @@ install:
     fi
 
 script:
-  - cd
-    cd NixView
-    mkdir build
-    cd build
-  - cmake ..
-  - make 
+  - cd;
+  - cd NixView;
+  - mkdir build;
+  - cd build;
+  - cmake ..;
+  - make -j;
