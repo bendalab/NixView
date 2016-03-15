@@ -15,9 +15,9 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
     file_label = new QLabel(this);
     file_progress = new QProgressBar(this);
     ui->statusBar->addPermanentWidget(new QLabel("File: ", this));
-    ui->statusBar->addPermanentWidget(file_label);
-    ui->statusBar->addPermanentWidget(new QLabel("File scanning: ", this));
-    ui->statusBar->addPermanentWidget(file_progress, 1);
+    ui->statusBar->addPermanentWidget(file_label, 1);
+    ui->statusBar->addPermanentWidget(file_progress, 10);
+    file_progress->setVisible(false);
 }
 
 void MainWindow::connect_widgets() {
@@ -119,10 +119,12 @@ void MainWindow::open_file() {
 
     std::string file_path = fileNames.front().toStdString();
     file_label->setText(file_path.c_str());
+    file_progress->setVisible(true);
     mvw = new MainViewWidget();
     connect(mvw, SIGNAL(scan_progress_update()), this, SLOT(file_scan_progress()));
     mvw->set_nix_file(file_path);
     ui->main_layout->addWidget(mvw);
     mvw_is_set = true;
     connect_widgets();
+    file_progress->setVisible(false);
 }
