@@ -97,7 +97,7 @@ void MainWindow::file_scan_progress()
 void MainWindow::open_file() {
     QFileDialog fd(this);
     fd.setFileMode(QFileDialog::ExistingFile);
-    fd.setNameFilter(tr("NIX File (*.h5)"));
+    fd.setNameFilter(tr("NIX File (*.nix *.h5)"));
     fd.setViewMode(QFileDialog::Detail);
     QStringList fileNames;
     if (fd.exec())
