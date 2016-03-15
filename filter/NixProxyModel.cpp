@@ -80,6 +80,18 @@ bool NixProxyModel::check_entry_row(int source_row, const QModelIndex &source_pa
                 rough_filter_satisfied = true:
                 rough_filter_satisfied = false;
 
+    // Block check
+    if (strcmp(rough_filter.toStdString().c_str(), FILTER_EXP_BLOCK) == 0)
+    {
+        rough_filter_satisfied = entitiy_check(source_row, source_parent, NIX_STRING_BLOCK);
+    }
+
+    // Group check
+    if (strcmp(rough_filter.toStdString().c_str(), FILTER_EXP_GROUP) == 0)
+    {
+        rough_filter_satisfied = entitiy_check(source_row, source_parent, NIX_STRING_GROUP);
+    }
+
     // DataArray check
     if (strcmp(rough_filter.toStdString().c_str(), FILTER_EXP_DATAARRAY) == 0)
     {
