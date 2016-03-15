@@ -38,6 +38,7 @@ Q_DECLARE_METATYPE(nix::Source);
 #define VIEW_COLUMN 1
 
 // define filter expressions
+#define FILTER_EXP_NONE "-"
 #define FILTER_EXP_METADATA "is MetaData"
 #define FILTER_EXP_DATAARRAY "is DataArray"
 #define FILTER_EXP_NAME "Name contains"
