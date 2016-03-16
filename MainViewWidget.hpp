@@ -28,8 +28,8 @@ public:
     ~MainViewWidget();
 
     void set_nix_file(const std::string &nix_file_path);
-    RawTreeView* get_rtv();
-    ColumnView* get_cv();
+    RawTreeView *get_rtv();
+    ColumnView *get_cv();
     static NixDataModel* get_current_model() {return CURRENT_MODEL; }
     int get_scan_progress();
 
@@ -49,9 +49,11 @@ private:
     NixDataModel *nix_model;
     NixProxyModel *nix_proxy_model;
 
-    RawTreeView* rtv;
-    ColumnView* cv;
-    InfoWidget* iw;
+    RawTreeView *rtv;
+    ColumnView *cv;
+    InfoWidget *iw;
+
+    QShortcut *shortcut_filter;
 
     void populate_data_stacked_widget();
     void connect_widgets();

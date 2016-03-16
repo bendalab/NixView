@@ -28,6 +28,8 @@ MainViewWidget::MainViewWidget(QWidget *parent) :
                                       FILTER_EXP_NAME_CONTAINS,
                                       FILTER_EXP_NIXTYPE_CONTAINS};
     ui->cmbx_filter->addItems(filter_expressions);
+
+    shortcut_filter = new QShortcut(QKeySequence("Ctrl+f"), this);
 }
 
 /**
@@ -123,6 +125,8 @@ void MainViewWidget::connect_widgets()
     QObject::connect(ui->cmbx_filter, SIGNAL(currentIndexChanged(QString)), nix_proxy_model, SLOT(set_rough_filter(QString)));
     QObject::connect(ui->line_edit_filter, SIGNAL(textChanged(QString)), nix_proxy_model, SLOT(set_fine_filter(QString)));
     QObject::connect(ui->cbx_filter, SIGNAL(toggled(bool)), nix_proxy_model, SLOT(set_case_sensitivity(bool)));
+
+    QObject::connect(shortcut_filter, SIGNAL(activated()), ui->line_edit_filter, SLOT(setFocus()));
 
     // ALSO CHECK CONNECTIONS IN InfoWidget.cpp
 }
