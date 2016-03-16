@@ -1,7 +1,7 @@
 #include "MainViewWidget.hpp"
 #include "ui_MainViewWidget.h"
 #include "common/Common.hpp"
-#include "qkeysequence.h"
+#include "QShortcut"
 
 NixDataModel *MainViewWidget::CURRENT_MODEL = nullptr;
 
