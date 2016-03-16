@@ -5,7 +5,6 @@
 NixProxyModel::NixProxyModel(QObject *parent)
     :QSortFilterProxyModel(parent)
 {
-    fine_filter = "";
     rough_filter = FILTER_EXP_NONE;
     case_sensitive = false;
 }
@@ -140,17 +139,21 @@ bool NixProxyModel::check_entry_row(int source_row, const QModelIndex &source_pa
 
 bool NixProxyModel::qml_contains_fine_filter(QModelIndex qml) const
 {
-    if (case_sensitive)
+    bool fine_filter_satisfied = true;
+    for(QString str : fine_filter)
     {
-        if (sourceModel()->data(qml).toString().contains(fine_filter, Qt::CaseSensitive))
-            return true;
+        if (case_sensitive)
+        {
+            if (!(sourceModel()->data(qml).toString().contains(str, Qt::CaseSensitive)))
+                fine_filter_satisfied = false;
+        }
+        else
+        {
+            if (!(sourceModel()->data(qml).toString().contains(str, Qt::CaseInsensitive)))
+                fine_filter_satisfied = false;
+        }
     }
-    else
-    {
-        if (sourceModel()->data(qml).toString().contains(fine_filter, Qt::CaseInsensitive))
-            return true;
-    }
-    return false;
+    return fine_filter_satisfied;
 }
 
 bool NixProxyModel::entitiy_check(int source_row, const QModelIndex &source_parent, const char* entity_type) const
@@ -189,7 +192,7 @@ void NixProxyModel::set_rough_filter(QString exp)
 
 void NixProxyModel::set_fine_filter(QString exp)
 {
-    fine_filter = exp;
+    fine_filter = exp.split(QString(" "), QString::SkipEmptyParts);
     refresh();
 }
 
