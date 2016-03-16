@@ -10,6 +10,7 @@
 #include "views/ColumnView.hpp"
 #include "model/NixDataModel.hpp"
 #include "filter/NixProxyModel.hpp"
+#include "QShortcut"
 
 namespace Ui {
 class MainViewWidget;
