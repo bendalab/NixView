@@ -11,7 +11,7 @@ class NixProxyModel : public QSortFilterProxyModel
 public:
     NixProxyModel(QObject * parent = 0);
 
-    QString fine_filter;
+    QStringList fine_filter;
     QString rough_filter;
     bool case_sensitive;
     int filter_mode = 0;
