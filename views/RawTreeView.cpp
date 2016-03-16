@@ -26,7 +26,7 @@ void RawTreeView::set_proxy_model(NixProxyModel *proxy_model)
 
     ui->treeView->setModel(nix_proxy_model);
     ui->treeView->setSelectionBehavior(QAbstractItemView::SelectRows);
-    hidden_columns = {5, 6, 7, 8, 9};
+    hidden_columns = {5, 6, 7, 10};
     for (int entry : hidden_columns)
         ui->treeView->setColumnHidden(entry, true);
 
@@ -38,23 +38,11 @@ void RawTreeView::resize_to_content(QModelIndex) {
         ui->treeView->resizeColumnToContents(c);
 }
 
-//void RawTreeView::expand()
-//{
-//    if (filter_mode == 0 || filter_mode == 2)
-//        ui->treeWidget->expandToDepth(0);
-//    else
-//        ui->treeWidget->expandToDepth(1);
-//}
-
 // getter
 QTreeView* RawTreeView::get_tree_view()
 {
     return ui->treeView;
 }
-//const QComboBox* RawTreeView::get_filter_combo_box()
-//{
-//    return ui->comboBox;
-//}
 
 
 // destructor
