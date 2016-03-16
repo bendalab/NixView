@@ -158,7 +158,7 @@ void NixDataModel::add_subsec_prop(QStandardItem* item, nix::Section section) {
                << s_to_q(get_created_at(p))                         //  6
                << s_to_q(get_updated_at(p))                         //  7
                << s_to_q(v)                                         //  8
-               << s_to_q(u)                                        //  9
+               << s_to_q(u)                                         //  9
                << "child";                                          // 10
         Row p_m = create_entry_row(p_list, p);
         item->appendRow(p_m);
