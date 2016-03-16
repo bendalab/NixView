@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/bendalab/NixView.svg?branch=master)](https://travis-ci.org/bendalab/NixView)
+
 # NixView
 A Qt based viewer for nix datafiles
 
