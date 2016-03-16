@@ -16,7 +16,8 @@ NixDataModel::NixDataModel() : QStandardItemModel(){
             << "CreatedAt"          //  6
             << "UpdatedAt"          //  7
             << "Value"              //  8
-            << "root_child_link";   //  9
+            << "Uncertainty"        //  9
+            << "root_child_link";   // 10
     setHorizontalHeaderLabels(headers);
     num_columns = headers.size();
 }
@@ -146,6 +147,7 @@ void NixDataModel::add_subsec_prop(QStandardItem* item, nix::Section section) {
 
     for (nix::Property p : section.properties()) {
         std::string v = get_property_value(p);
+        std::string u = get_property_uncertainty(p);
         RowStrings p_list;
         p_list << s_to_q(p.name())                                  //  0
                << NIX_STRING_PROPERTY                               //  1
@@ -156,7 +158,8 @@ void NixDataModel::add_subsec_prop(QStandardItem* item, nix::Section section) {
                << s_to_q(get_created_at(p))                         //  6
                << s_to_q(get_updated_at(p))                         //  7
                << s_to_q(v)                                         //  8
-               << "child";                                          //  9
+               << s_to_q(u)                                        //  9
+               << "child";                                          // 10
         Row p_m = create_entry_row(p_list, p);
         item->appendRow(p_m);
     }
@@ -167,40 +170,79 @@ std::string NixDataModel::get_property_value(nix::Property p)
     std::vector<nix::Value> values = p.values();
     std::string v_type = nix::data_type_to_string(p.dataType());
     std::ostringstream oss;
-    oss << "(";
     for (int i = 0; i < (int)values.size(); ++i)
     {
         if (v_type == NIX_STRING_TYPE_STRING) {
             std::string value;
             values[i].get(value);
-            oss << value << ", " << values[i].uncertainty;
+            oss << value;
         } else if (v_type == NIX_STRING_TYPE_BOOL){
             bool value;
             values[i].get(value);
-            oss << value << ", " << values[i].uncertainty;
+            oss << value;
         } else if (v_type == NIX_STRING_TYPE_INT32){
             int32_t value;
             values[i].get(value);
-            oss << value << ", " << values[i].uncertainty;
+            oss << value;
         } else if (v_type == NIX_STRING_TYPE_INT64){
             int64_t value;
             values[i].get(value);
-            oss << value << ", " << values[i].uncertainty;
+            oss << value;
         } else if (v_type == NIX_STRING_TYPE_UINT64){
             uint64_t value;
             values[i].get(value);
-            oss << value << ", " << values[i].uncertainty;
+            oss << value;
         } else if (v_type == NIX_STRING_TYPE_DOUBLE){
             double value;
             values[i].get(value);
-            oss << value << ", " << values[i].uncertainty;
+            oss << value;
         } else {
-            oss << "NOT READABLE" << values[i].uncertainty;
+            oss << "NOT READABLE";
         }
-        oss << ")";
 
         if (i < (int)values.size()-1)
-            oss << ", (";
+            oss << ", ";
+    }
+    return oss.str();
+}
+
+std::string NixDataModel::get_property_uncertainty(nix::Property p)
+{
+    std::vector<nix::Value> values = p.values();
+    std::string v_type = nix::data_type_to_string(p.dataType());
+    std::ostringstream oss;
+    for (int i = 0; i < (int)values.size(); ++i)
+    {
+        if (v_type == NIX_STRING_TYPE_STRING) {
+            std::string value;
+            values[i].get(value);
+            oss << values[i].uncertainty;
+        } else if (v_type == NIX_STRING_TYPE_BOOL){
+            bool value;
+            values[i].get(value);
+            oss << values[i].uncertainty;
+        } else if (v_type == NIX_STRING_TYPE_INT32){
+            int32_t value;
+            values[i].get(value);
+            oss << values[i].uncertainty;
+        } else if (v_type == NIX_STRING_TYPE_INT64){
+            int64_t value;
+            values[i].get(value);
+            oss << values[i].uncertainty;
+        } else if (v_type == NIX_STRING_TYPE_UINT64){
+            uint64_t value;
+            values[i].get(value);
+            oss << values[i].uncertainty;
+        } else if (v_type == NIX_STRING_TYPE_DOUBLE){
+            double value;
+            values[i].get(value);
+            oss << values[i].uncertainty;
+        } else {
+            oss << "NOT READABLE";
+        }
+
+        if (i < (int)values.size()-1)
+            oss << ", ";
     }
     return oss.str();
 }
@@ -270,7 +312,8 @@ RowStrings NixDataModel::create_rowstrings(T arg, std::string storagetype, std::
            << s_to_q(get_created_at(arg))   //  6
            << s_to_q(get_updated_at(arg))   //  7
            << ""                            //  8
-           << s_to_q(root_child_link);      //  9
+           << ""                            //  9
+           << s_to_q(root_child_link);      // 10
     return s_list;
 }
 

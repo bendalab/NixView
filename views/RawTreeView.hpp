@@ -50,6 +50,5 @@ private:
 public:
     QTreeView* get_tree_view();
     void  set_proxy_model(NixProxyModel *proxy_model);
-//    const QComboBox* get_filter_combo_box();
 };
 #endif // RAWTREEVIEW_HPP

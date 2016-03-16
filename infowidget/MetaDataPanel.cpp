@@ -12,7 +12,7 @@ MetaDataPanel::MetaDataPanel(NixDataModel *_nix_model, QWidget *parent) :
     proxy_model = new NixProxyModel(this);
     proxy_model->setSourceModel(_nix_model);
     ui->treeView->setModel(proxy_model);
-    std::vector<int> hidden_columns = {2,3,4,5,6,7,9};
+    std::vector<int> hidden_columns = {2,3,4,5,6,7,10};
     for(int c : hidden_columns)
         ui->treeView->setColumnHidden(c, true);
     set_proxy_model();
