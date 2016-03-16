@@ -179,7 +179,6 @@ NixModelItem* NixProxyModel::get_item_from_qml(QModelIndex qml)
 void NixProxyModel::set_rough_filter(QString exp)
 {
     rough_filter = exp;
-    qDebug() << exp;
 
     (strcmp(rough_filter.toStdString().c_str(), FILTER_EXP_METADATA) == 0)?
                 metadata_only_mode = true:
@@ -191,14 +190,12 @@ void NixProxyModel::set_rough_filter(QString exp)
 void NixProxyModel::set_fine_filter(QString exp)
 {
     fine_filter = exp;
-    qDebug() << exp;
     refresh();
 }
 
 void NixProxyModel::set_case_sensitivity(bool b)
 {
     case_sensitive = b;
-    qDebug() << b;
     refresh();
 }
 
