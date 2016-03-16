@@ -147,7 +147,7 @@ void NixDataModel::add_subsec_prop(QStandardItem* item, nix::Section section) {
 
     for (nix::Property p : section.properties()) {
         std::string v = get_property_value(p);
-        std::string pr = get_property_uncertainty(p);
+        std::string u = get_property_uncertainty(p);
         RowStrings p_list;
         p_list << s_to_q(p.name())                                  //  0
                << NIX_STRING_PROPERTY                               //  1
@@ -158,7 +158,7 @@ void NixDataModel::add_subsec_prop(QStandardItem* item, nix::Section section) {
                << s_to_q(get_created_at(p))                         //  6
                << s_to_q(get_updated_at(p))                         //  7
                << s_to_q(v)                                         //  8
-               << s_to_q(pr)                                        //  9
+               << s_to_q(u)                                        //  9
                << "child";                                          // 10
         Row p_m = create_entry_row(p_list, p);
         item->appendRow(p_m);
