@@ -38,7 +38,9 @@ SOURCES += main.cpp\
     views/ColumnView.cpp \
     filter/NixProxyModel.cpp \
     model/NixModelItem.cpp \
-    entitydescriptor.cpp
+    entitydescriptor.cpp \
+    options/OptionsWidget.cpp \
+    options/OptionsTabWidget.cpp
 
 HEADERS  += MainWindow.hpp \
     MainViewWidget.hpp \
@@ -60,7 +62,9 @@ HEADERS  += MainWindow.hpp \
     views/ColumnView.hpp \
     filter/NixProxyModel.hpp \
     model/NixModelItem.hpp \
-    entitydescriptor.h
+    entitydescriptor.h \
+    options/OptionsWidget.hpp \
+    options/OptionsTabWidget.hpp
 
 FORMS    += MainWindow.ui \
     MainViewWidget.ui \
@@ -74,7 +78,8 @@ FORMS    += MainWindow.ui \
     plotter/lineplotter.ui \
     plotwidget.ui \
     plotter/categoryplotter.ui \
-    views/ColumnView.ui
+    views/ColumnView.ui \
+    options/OptionsWidget.ui
 
 #standard windows folder?
 #win32:CONFIG(release, debug|release): LIBS += /usr/local/lib/release/ -lnix
