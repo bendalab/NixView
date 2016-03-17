@@ -64,6 +64,9 @@
    </item>
    <item>
     <widget class="QTreeWidget" name="treeWidget_references">
+     <property name="sortingEnabled">
+      <bool>true</bool>
+     </property>
      <column>
       <property name="text">
        <string>Name</string>
@@ -100,6 +103,9 @@
    </item>
    <item>
     <widget class="QTreeWidget" name="treeWidget_features">
+     <property name="sortingEnabled">
+      <bool>true</bool>
+     </property>
      <column>
       <property name="text">
        <string>Name</string>
