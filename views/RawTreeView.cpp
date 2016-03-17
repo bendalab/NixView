@@ -29,6 +29,7 @@ void RawTreeView::set_proxy_model(NixProxyModel *proxy_model)
     hidden_columns = {5, 6, 7, 10};
     for (int entry : hidden_columns)
         ui->treeView->setColumnHidden(entry, true);
+    ui->treeView->sortByColumn(0, Qt::AscendingOrder);
 
 }
 
