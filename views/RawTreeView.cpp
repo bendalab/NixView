@@ -26,7 +26,8 @@ void RawTreeView::set_proxy_model(NixProxyModel *proxy_model)
 
     ui->treeView->setModel(nix_proxy_model);
     ui->treeView->setSelectionBehavior(QAbstractItemView::SelectRows);
-    hidden_columns = {5, 6, 7, 10};
+    fixed_hidden_columns = {10};
+    set_hidden_columns({5, 6, 7});
     for (int entry : hidden_columns)
         ui->treeView->setColumnHidden(entry, true);
     ui->treeView->sortByColumn(0, Qt::AscendingOrder);
@@ -34,9 +35,17 @@ void RawTreeView::set_proxy_model(NixProxyModel *proxy_model)
 }
 
 // slots
-void RawTreeView::resize_to_content(QModelIndex) {
+void RawTreeView::resize_to_content(QModelIndex)
+{
     for (int c = 0; c<nix_proxy_model->columnCount();c++)
         ui->treeView->resizeColumnToContents(c);
+}
+
+void RawTreeView::set_hidden_columns(std::vector<int> cols)
+{
+    for(int c : fixed_hidden_columns)
+        cols.push_back(c);
+    hidden_columns = cols;
 }
 
 // getter

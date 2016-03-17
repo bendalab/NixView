@@ -25,6 +25,7 @@ public:
 
 public slots:
     void resize_to_content(QModelIndex);
+    void set_hidden_columns(std::vector<int> cols);
 
 signals:
     void item_found(QVariant);
@@ -46,6 +47,7 @@ private:
     nix::File nix_file;
     NixProxyModel *nix_proxy_model;
     std::vector<int> hidden_columns;
+    std::vector<int> fixed_hidden_columns;
 
 public:
     QTreeView* get_tree_view();
