@@ -54,7 +54,7 @@
      <x>0</x>
      <y>0</y>
      <width>1400</width>
-     <height>27</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -69,6 +69,7 @@
     <property name="title">
      <string>&amp;Options</string>
     </property>
+    <addaction name="actionProperties"/>
    </widget>
    <widget class="QMenu" name="menuView">
     <property name="title">
@@ -235,6 +236,11 @@
   <action name="actionColumn">
    <property name="text">
     <string>&amp;Column</string>
+   </property>
+  </action>
+  <action name="actionProperties">
+   <property name="text">
+    <string>&amp;Properties</string>
    </property>
   </action>
  </widget>

@@ -18,6 +18,9 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
     ui->statusBar->addPermanentWidget(file_label, 1);
     ui->statusBar->addPermanentWidget(file_progress, 10);
     file_progress->setVisible(false);
+
+    ow = new OptionsWidget();
+//    ow->show();
 }
 
 void MainWindow::connect_widgets() {
@@ -30,12 +33,19 @@ MainWindow::~MainWindow() {
 }
 
 // slots
-void MainWindow::on_actionTree_triggered() {
+void MainWindow::on_actionTree_triggered()
+{
     emit emit_view_change(VIEW_TREE);
 }
 
-void MainWindow::on_actionColumn_triggered() {
+void MainWindow::on_actionColumn_triggered()
+{
     emit emit_view_change(VIEW_COLUMN);
+}
+
+void MainWindow::on_actionProperties_triggered()
+{
+    ow->show();
 }
 
 void MainWindow::activate_plot(QModelIndex qml) {
