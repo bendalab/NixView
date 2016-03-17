@@ -20,7 +20,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
     file_progress->setVisible(false);
 
     ow = new OptionsWidget();
-//    ow->show();
 }
 
 void MainWindow::connect_widgets() {
