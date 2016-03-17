@@ -38,7 +38,7 @@ OptionsWidget::OptionsWidget(QWidget *parent) :
     ui(new Ui::OptionsWidget)
 {
     ui->setupUi(this);
-    setWindowTitle("Options");
+    setWindowTitle("Properties");
 
     tw = new OptionsTabWidget();
     tw->tabBar()->setStyle(new HorizontalTabBarStyle);
