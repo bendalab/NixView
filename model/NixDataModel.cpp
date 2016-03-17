@@ -7,17 +7,17 @@
 
 NixDataModel::NixDataModel() : QStandardItemModel(){
     RowStrings headers;
-    headers << "Name"               //  0
-            << "Nix Type"           //  1
-            << "Storage Type"       //  2
-            << "Data Type"          //  3
-            << "Shape"              //  4
-            << "ID"                 //  5
-            << "CreatedAt"          //  6
-            << "UpdatedAt"          //  7
-            << "Value"              //  8
-            << "Uncertainty"        //  9
-            << "root_child_link";   // 10
+    headers << MODEL_HEADER_NAME               //  0
+            << MODEL_HEADER_NIXTYPE            //  1
+            << MODEL_HEADER_STORAGETYPE        //  2
+            << MODEL_HEADER_DATATYPE           //  3
+            << MODEL_HEADER_SHAPE              //  4
+            << MODEL_HEADER_ID                 //  5
+            << MODEL_HEADER_CREATEDAT          //  6
+            << MODEL_HEADER_UPDATEDAT          //  7
+            << MODEL_HEADER_VALUE              //  8
+            << MODEL_HEADER_UNERTAINTY         //  9
+            << MODEL_HEADER_ROOTCHILDLINK;     // 10
     setHorizontalHeaderLabels(headers);
     num_columns = headers.size();
 }
