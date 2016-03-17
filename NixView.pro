@@ -40,7 +40,8 @@ SOURCES += main.cpp\
     model/NixModelItem.cpp \
     entitydescriptor.cpp \
     options/OptionsWidget.cpp \
-    options/OptionsTabWidget.cpp
+    options/OptionsTabWidget.cpp \
+    options/viewoptions/TreeViewOptions.cpp
 
 HEADERS  += MainWindow.hpp \
     MainViewWidget.hpp \
@@ -64,7 +65,8 @@ HEADERS  += MainWindow.hpp \
     model/NixModelItem.hpp \
     entitydescriptor.h \
     options/OptionsWidget.hpp \
-    options/OptionsTabWidget.hpp
+    options/OptionsTabWidget.hpp \
+    options/viewoptions/TreeViewOptions.hpp
 
 FORMS    += MainWindow.ui \
     MainViewWidget.ui \
@@ -79,7 +81,8 @@ FORMS    += MainWindow.ui \
     plotwidget.ui \
     plotter/categoryplotter.ui \
     views/ColumnView.ui \
-    options/OptionsWidget.ui
+    options/OptionsWidget.ui \
+    options/viewoptions/TreeViewOptions.ui
 
 #standard windows folder?
 #win32:CONFIG(release, debug|release): LIBS += /usr/local/lib/release/ -lnix
