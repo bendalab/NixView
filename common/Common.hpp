@@ -11,6 +11,19 @@ Q_DECLARE_METATYPE(nix::MultiTag)
 Q_DECLARE_METATYPE(nix::Feature)
 Q_DECLARE_METATYPE(nix::Source)
 
+// define model headers
+#define MODEL_HEADER_NAME "Name"
+#define MODEL_HEADER_NIXTYPE "Nix Type"
+#define MODEL_HEADER_STORAGETYPE "Storage Type"
+#define MODEL_HEADER_DATATYPE "Data Type"
+#define MODEL_HEADER_SHAPE "Shape"
+#define MODEL_HEADER_ID "ID"
+#define MODEL_HEADER_CREATEDAT "Created at"
+#define MODEL_HEADER_UPDATEDAT "Updated at"
+#define MODEL_HEADER_VALUE "Value"
+#define MODEL_HEADER_UNERTAINTY "Uncertainty"
+#define MODEL_HEADER_ROOTCHILDLINK "root_child_link"
+
 // define strings regarding NIX for consistent use
 #define NIX_STRING_BLOCK "Block"
 #define NIX_STRING_GROUP "Group"
@@ -47,4 +60,6 @@ Q_DECLARE_METATYPE(nix::Source)
 #define FILTER_EXP_MULTITAG "is MultiTag"
 #define FILTER_EXP_NAME_CONTAINS "Name contains"
 #define FILTER_EXP_NIXTYPE_CONTAINS "Nix Type contains"
-//TODO more expressions
+
+
+
