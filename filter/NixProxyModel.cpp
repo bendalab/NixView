@@ -127,9 +127,7 @@ bool NixProxyModel::check_entry_row(int source_row, const QModelIndex &source_pa
     if (!rough_filter_satisfied)
         return false;
 
-
     // fine filter --> check if entry row contains all fine_filter experessions
-    std::vector<bool> fine_filter_satisfied;
     for (int i = 0; i < fine_filter.size(); ++i)
     {
         QString str = fine_filter[i];
@@ -137,17 +135,13 @@ bool NixProxyModel::check_entry_row(int source_row, const QModelIndex &source_pa
         for (int c = 0; c < model->num_columns; ++c)
         {
             QModelIndex index = model->index(source_row, c, source_parent);
-            if (qml_contains_expression(index, str))
-                filter_expression_found = true;
+            filter_expression_found = filter_expression_found || qml_contains_expression(index, str);
+            if (filter_expression_found)
+                break;
         }
-        if (filter_expression_found)
-            fine_filter_satisfied.push_back(true);
-        else
-            fine_filter_satisfied.push_back(false);
-    }
-    for (bool b : fine_filter_satisfied)
-        if (!b)
+        if (!filter_expression_found)
             return false;
+    }
     return true;
 }
 
