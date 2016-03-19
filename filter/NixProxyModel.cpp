@@ -168,17 +168,7 @@ bool NixProxyModel::qml_contains_fine_filter(QModelIndex qml) const
 
 bool NixProxyModel::qml_contains_expression(QModelIndex qml, QString str) const
 {
-    if (case_sensitive)
-    {
-        if (sourceModel()->data(qml).toString().contains(str, Qt::CaseSensitive))
-            return true;
-    }
-    else
-    {
-        if (sourceModel()->data(qml).toString().contains(str, Qt::CaseInsensitive))
-            return true;
-    }
-    return false;
+    return sourceModel()->data(qml).toString().contains(str, case_sensitive ? Qt::CaseSensitive : Qt::CaseInsensitive);
 }
 
 bool NixProxyModel::entitiy_check(int source_row, const QModelIndex &source_parent, const char* entity_type) const
