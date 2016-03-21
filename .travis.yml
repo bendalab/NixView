@@ -5,26 +5,43 @@ dist: trusty
 
 compiler:
   - gcc
+  - clang
 
 os:
   - linux
+  - osx
+
+matrix:
+  exclude:
+    - os: osx
+      compiler: gcc
+    - os: linux
+      compiler: clang
 
 before_install:
-  - sudo apt-get update -qq
-  - sudo apt-get install -q gcc-4.8 g++-4.8 libstdc++-4.8-dev libboost-all-dev -y libcppunit-dev libboost-all-dev libhdf5-serial-dev libhdf5-dev libhdf5-7;
-  - sudo apt-get install qt5-default qttools5-dev-tools -y;
-  - g++ --version
-  # build nix library
-  - mkdir nix-build
-  - cd nix-build
-  - git clone https://github.com/G-Node/nix
-  - cd nix
-  - mkdir build
-  - cd build
-  - cmake -DBUILD_TESTING=OFF ..
-  - make all
-  - sudo make install
-  - cd ../../..
+  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then 
+    sudo apt-get update -qq
+    sudo apt-get install -q gcc-4.8 g++-4.8 libstdc++-4.8-dev libboost-all-dev -y libcppunit-dev libboost-all-dev libhdf5-serial-dev libhdf5-dev libhdf5-7;
+    sudo apt-get install qt5-default qttools5-dev-tools -y;
+    g++ --version
+    # build nix library
+    mkdir nix-build
+    cd nix-build
+    git clone https://github.com/G-Node/nix
+    cd nix
+    mkdir build
+    cd build
+    cmake -DBUILD_TESTING=OFF ..
+    make all
+    sudo make install
+    cd ../../..
+  fi
+  if [ "$TRAVIS_OS_NAME" == "osx" ]; then
+    brew update;
+    brew install qt5 cmake boost;
+    brew install homebrew/science/nixio --HEAD;
+    export CMAKE_PREFIX_PATH=/usr/local/Cellar/qt5/5.5.1_2;
+  fi
   
 install:
   - if [ "$CXX" == "g++" ]; then 
