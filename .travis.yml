@@ -28,7 +28,8 @@ before_install:
 
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then
     sudo apt-get install -qq
-    sudo apt-get install -q gcc-4.8 g++-4.8 libstdc++-4.8-dev libboost-all-dev -y libcppunit-dev libboost-all-dev libhdf5-serial-dev libhdf5-dev libhdf5-7;
+    sudo apt-get install -q gcc-4.8 g++-4.8 libstdc++-4.8-dev libboost-all-dev -y;
+    sudo apt-get install libcppunit-dev libboost-all-dev libhdf5-serial-dev libhdf5-dev libhdf5-7 -y;
     sudo apt-get install qt5-default qttools5-dev-tools -y;
     g++ --version;
     mkdir nix-build;
