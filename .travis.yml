@@ -22,6 +22,8 @@ before_install:
   - if [ "$TRAVIS_OS_NAME" == "osx" ]; then
     brew update;
     brew install qt5 cmake boost;
+    brew unlink qt4;
+    brew link qt5;
     brew install homebrew/science/nixio --HEAD;
     fi
 
@@ -59,6 +61,5 @@ script:
     fi
   
   - if [ "$TRAVIS_OS_NAME" == "osx" ]; then
-    export CMAKE_PREFIX_PATH=/usr/local/Cellar/qt5;
     cmake . && make;
     fi
