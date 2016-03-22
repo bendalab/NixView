@@ -56,9 +56,9 @@ install:
 script: 
   - if [  "$TRAVIS_OS_NAME" == "linux" ]; then
     cmake . && make
-  fi
+    fi
   
-  -if [ "$TRAVIS_OS_NAME" == "osx" ]; then
+  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then
     export CMAKE_PREFIX_PATH=/usr/local/Cellar/qt5;
     cmake . && make
-  fi
+    fi
