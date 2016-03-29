@@ -42,6 +42,7 @@ private:
     bool check_entry_row(int source_row, const QModelIndex &source_parent) const;
     bool check_if_in_data_branch(int source_row, const QModelIndex &source_parent) const;
     bool qml_contains_fine_filter(QModelIndex qml) const;
+    bool qml_contains_expression(QModelIndex qml, QString str) const;
     bool entitiy_check(int source_row, const QModelIndex &source_parent, const char* entity_type) const;
 
 public slots:
