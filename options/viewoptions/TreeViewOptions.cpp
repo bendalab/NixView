@@ -19,7 +19,7 @@ TreeViewOptions::TreeViewOptions(QWidget *parent) :
     ui->checkBox_createdat->setText(QString(MODEL_HEADER_CREATEDAT));
     ui->checkBox_updatedat->setText(QString(MODEL_HEADER_UPDATEDAT));
     ui->checkBox_value->setText(QString(MODEL_HEADER_VALUE));
-    ui->checkBox_uncertainty->setText(QString(MODEL_HEADER_UNERTAINTY));
+    ui->checkBox_uncertainty->setText(QString(MODEL_HEADER_UNCERTAINTY));
 
     load_settings();
 
@@ -42,7 +42,7 @@ void TreeViewOptions::load_settings()
     ui->checkBox_createdat->setChecked(!(settings->value(MODEL_HEADER_CREATEDAT, default_hidden_columns.contains(MODEL_HEADER_CREATEDAT) ? true : false).toBool()));
     ui->checkBox_updatedat->setChecked(!(settings->value(MODEL_HEADER_UPDATEDAT, default_hidden_columns.contains(MODEL_HEADER_UPDATEDAT) ? true : false).toBool()));
     ui->checkBox_value->setChecked(!(settings->value(MODEL_HEADER_VALUE, default_hidden_columns.contains(MODEL_HEADER_VALUE) ? true : false).toBool()));
-    ui->checkBox_uncertainty->setChecked(!(settings->value(MODEL_HEADER_UNERTAINTY, default_hidden_columns.contains(MODEL_HEADER_UNERTAINTY) ? true : false).toBool()));
+    ui->checkBox_uncertainty->setChecked(!(settings->value(MODEL_HEADER_UNCERTAINTY, default_hidden_columns.contains(MODEL_HEADER_UNCERTAINTY) ? true : false).toBool()));
 
     settings->endGroup();
     settings->endGroup();
@@ -51,6 +51,15 @@ void TreeViewOptions::load_settings()
 void TreeViewOptions::connect_widgets()
 {
     QObject::connect(ui->checkBox_name, SIGNAL(clicked(bool)), this, SLOT(set_name_column_hidden(bool)));
+    QObject::connect(ui->checkBox_nixtype, SIGNAL(clicked(bool)), this, SLOT(set_nixtype_column_hidden(bool)));
+    QObject::connect(ui->checkBox_storagetype, SIGNAL(clicked(bool)), this, SLOT(set_storagetype_column_hidden(bool)));
+    QObject::connect(ui->checkBox_datatype, SIGNAL(clicked(bool)), this, SLOT(set_datatype_column_hidden(bool)));
+    QObject::connect(ui->checkBox_shape, SIGNAL(clicked(bool)), this, SLOT(set_shape_column_hidden(bool)));
+    QObject::connect(ui->checkBox_id, SIGNAL(clicked(bool)), this, SLOT(set_id_column_hidden(bool)));
+    QObject::connect(ui->checkBox_createdat, SIGNAL(clicked(bool)), this, SLOT(set_createdat_column_hidden(bool)));
+    QObject::connect(ui->checkBox_updatedat, SIGNAL(clicked(bool)), this, SLOT(set_updatedat_column_hidden(bool)));
+    QObject::connect(ui->checkBox_value, SIGNAL(clicked(bool)), this, SLOT(set_value_column_hidden(bool)));
+    QObject::connect(ui->checkBox_uncertainty, SIGNAL(clicked(bool)), this, SLOT(set_uncertainty_column_hidden(bool)));
 }
 
 void TreeViewOptions::set_name_column_hidden(bool b)
@@ -58,6 +67,87 @@ void TreeViewOptions::set_name_column_hidden(bool b)
     settings->beginGroup(S_RAWTREEVIEW);
     settings->beginGroup(S_COLUMNSHIDDEN);
     settings->setValue(MODEL_HEADER_NAME, !b);
+    settings->endGroup();
+    settings->endGroup();
+}
+
+void TreeViewOptions::set_nixtype_column_hidden(bool b)
+{
+    settings->beginGroup(S_RAWTREEVIEW);
+    settings->beginGroup(S_COLUMNSHIDDEN);
+    settings->setValue(MODEL_HEADER_NIXTYPE, !b);
+    settings->endGroup();
+    settings->endGroup();
+}
+
+void TreeViewOptions::set_storagetype_column_hidden(bool b)
+{
+    settings->beginGroup(S_RAWTREEVIEW);
+    settings->beginGroup(S_COLUMNSHIDDEN);
+    settings->setValue(MODEL_HEADER_STORAGETYPE, !b);
+    settings->endGroup();
+    settings->endGroup();
+}
+
+void TreeViewOptions::set_datatype_column_hidden(bool b)
+{
+    settings->beginGroup(S_RAWTREEVIEW);
+    settings->beginGroup(S_COLUMNSHIDDEN);
+    settings->setValue(MODEL_HEADER_DATATYPE, !b);
+    settings->endGroup();
+    settings->endGroup();
+}
+
+void TreeViewOptions::set_shape_column_hidden(bool b)
+{
+    settings->beginGroup(S_RAWTREEVIEW);
+    settings->beginGroup(S_COLUMNSHIDDEN);
+    settings->setValue(MODEL_HEADER_SHAPE, !b);
+    settings->endGroup();
+    settings->endGroup();
+}
+
+void TreeViewOptions::set_id_column_hidden(bool b)
+{
+    settings->beginGroup(S_RAWTREEVIEW);
+    settings->beginGroup(S_COLUMNSHIDDEN);
+    settings->setValue(MODEL_HEADER_ID, !b);
+    settings->endGroup();
+    settings->endGroup();
+}
+
+void TreeViewOptions::set_createdat_column_hidden(bool b)
+{
+    settings->beginGroup(S_RAWTREEVIEW);
+    settings->beginGroup(S_COLUMNSHIDDEN);
+    settings->setValue(MODEL_HEADER_CREATEDAT, !b);
+    settings->endGroup();
+    settings->endGroup();
+}
+
+void TreeViewOptions::set_updatedat_column_hidden(bool b)
+{
+    settings->beginGroup(S_RAWTREEVIEW);
+    settings->beginGroup(S_COLUMNSHIDDEN);
+    settings->setValue(MODEL_HEADER_UPDATEDAT, !b);
+    settings->endGroup();
+    settings->endGroup();
+}
+
+void TreeViewOptions::set_value_column_hidden(bool b)
+{
+    settings->beginGroup(S_RAWTREEVIEW);
+    settings->beginGroup(S_COLUMNSHIDDEN);
+    settings->setValue(MODEL_HEADER_VALUE, !b);
+    settings->endGroup();
+    settings->endGroup();
+}
+
+void TreeViewOptions::set_uncertainty_column_hidden(bool b)
+{
+    settings->beginGroup(S_RAWTREEVIEW);
+    settings->beginGroup(S_COLUMNSHIDDEN);
+    settings->setValue(MODEL_HEADER_UNCERTAINTY, !b);
     settings->endGroup();
     settings->endGroup();
 }

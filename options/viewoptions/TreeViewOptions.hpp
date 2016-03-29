@@ -18,6 +18,15 @@ public:
 
 public slots:
     void set_name_column_hidden(bool b);
+    void set_nixtype_column_hidden(bool b);
+    void set_storagetype_column_hidden(bool b);
+    void set_datatype_column_hidden(bool b);
+    void set_shape_column_hidden(bool b);
+    void set_id_column_hidden(bool b);
+    void set_createdat_column_hidden(bool b);
+    void set_updatedat_column_hidden(bool b);
+    void set_value_column_hidden(bool b);
+    void set_uncertainty_column_hidden(bool b);
 
 private:
     Ui::TreeViewOptions *ui;
