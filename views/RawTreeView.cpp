@@ -3,6 +3,7 @@
 #include <iostream>
 #include <boost/algorithm/string.hpp>
 #include "common/Common.hpp"
+#include <qdebug.h>
 
 RawTreeView::RawTreeView(QWidget *parent) :
     QWidget(parent),
@@ -12,6 +13,13 @@ RawTreeView::RawTreeView(QWidget *parent) :
     filter_mode = 0;
 
     nix_proxy_model = nullptr;
+
+    default_hidden_columns = {MODEL_HEADER_ID,
+                              MODEL_HEADER_CREATEDAT,
+                              MODEL_HEADER_UPDATEDAT,
+                              MODEL_HEADER_ROOTCHILDLINK};
+
+    settings = new QSettings();
 }
 
 RawTreeView::RawTreeView(NixProxyModel* _nix_proxy_model, QWidget *parent) :
@@ -26,10 +34,7 @@ void RawTreeView::set_proxy_model(NixProxyModel *proxy_model)
 
     ui->treeView->setModel(nix_proxy_model);
     ui->treeView->setSelectionBehavior(QAbstractItemView::SelectRows);
-    fixed_hidden_columns = {10};
-    set_hidden_columns({5, 6, 7});
-    for (int entry : hidden_columns)
-        ui->treeView->setColumnHidden(entry, true);
+    hide_columns();
     ui->treeView->sortByColumn(0, Qt::AscendingOrder);
 
 }
@@ -41,11 +46,19 @@ void RawTreeView::resize_to_content(QModelIndex)
         ui->treeView->resizeColumnToContents(c);
 }
 
-void RawTreeView::set_hidden_columns(std::vector<int> cols)
+void RawTreeView::hide_columns()
 {
-    for(int c : fixed_hidden_columns)
-        cols.push_back(c);
-    hidden_columns = cols;
+    settings->beginGroup(S_RAWTREEVIEW);
+    settings->beginGroup(S_COLUMNS);
+    RowStrings headers = static_cast<NixDataModel*>(nix_proxy_model->sourceModel())->get_headers();
+    if (!(nix_proxy_model == nullptr))
+        for (int i = 0; i < headers.size(); ++i)
+        {
+            bool hidden = settings->value(headers[i], default_hidden_columns.contains(headers[i]) ? true : false).toBool();
+            ui->treeView->setColumnHidden(i, hidden);
+        }
+    settings->endGroup();
+    settings->endGroup();
 }
 
 // getter

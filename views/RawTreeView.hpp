@@ -9,6 +9,7 @@
 #include <QComboBox>
 #include "model/NixDataModel.hpp"
 #include "filter/NixProxyModel.hpp"
+#include <QSettings>
 
 namespace Ui {
 class RawTreeView;
@@ -25,7 +26,7 @@ public:
 
 public slots:
     void resize_to_content(QModelIndex);
-    void set_hidden_columns(std::vector<int> cols);
+    void hide_columns();
 
 signals:
     void item_found(QVariant);
@@ -46,8 +47,9 @@ private:
     Ui::RawTreeView* ui;
     nix::File nix_file;
     NixProxyModel *nix_proxy_model;
-    std::vector<int> hidden_columns;
-    std::vector<int> fixed_hidden_columns;
+    QStringList default_hidden_columns;
+
+    QSettings *settings;
 
 public:
     QTreeView* get_tree_view();
