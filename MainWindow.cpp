@@ -10,6 +10,10 @@
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
     ui(new Ui::MainWindow) {
+
+    QCoreApplication::setOrganizationName("G-Node");
+    QCoreApplication::setApplicationName("NixView");
+
     ui->setupUi(this);
     mvw_is_set = false;
     file_label = new QLabel(this);
