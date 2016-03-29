@@ -63,5 +63,5 @@ Q_DECLARE_METATYPE(nix::Source)
 
 // define setting expressions
 #define S_RAWTREEVIEW "rawtreeview"
-#define S_COLUMNS "columns"
+#define S_COLUMNSHIDDEN "columnshidden"
 
