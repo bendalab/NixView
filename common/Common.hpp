@@ -61,5 +61,7 @@ Q_DECLARE_METATYPE(nix::Source)
 #define FILTER_EXP_NAME_CONTAINS "Name contains"
 #define FILTER_EXP_NIXTYPE_CONTAINS "Nix Type contains"
 
-
+// define setting expressions
+#define S_RAWTREEVIEW "rawtreeview"
+#define S_COLUMNS "columns"
 
