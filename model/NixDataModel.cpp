@@ -6,7 +6,6 @@
 #include <math.h>
 
 NixDataModel::NixDataModel() : QStandardItemModel(){
-    RowStrings headers;
     headers << MODEL_HEADER_NAME               //  0
             << MODEL_HEADER_NIXTYPE            //  1
             << MODEL_HEADER_STORAGETYPE        //  2
