@@ -11,6 +11,7 @@
 #include "filter/NixProxyModel.hpp"
 #include <QSettings>
 
+
 namespace Ui {
 class RawTreeView;
 }
@@ -47,12 +48,13 @@ private:
     Ui::RawTreeView* ui;
     nix::File nix_file;
     NixProxyModel *nix_proxy_model;
-    QStringList default_hidden_columns;
+    static QStringList DEFAULT_HIDDEN_COLUMNS;
 
     QSettings *settings;
 
 public:
     QTreeView* get_tree_view();
     void  set_proxy_model(NixProxyModel *proxy_model);
+    static QStringList get_default_hidden_columns() {return DEFAULT_HIDDEN_COLUMNS; }
 };
 #endif // RAWTREEVIEW_HPP
