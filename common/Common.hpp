@@ -21,7 +21,7 @@ Q_DECLARE_METATYPE(nix::Source)
 #define MODEL_HEADER_CREATEDAT "Created at"
 #define MODEL_HEADER_UPDATEDAT "Updated at"
 #define MODEL_HEADER_VALUE "Value"
-#define MODEL_HEADER_UNERTAINTY "Uncertainty"
+#define MODEL_HEADER_UNCERTAINTY "Uncertainty"
 #define MODEL_HEADER_ROOTCHILDLINK "root_child_link"
 
 // define strings regarding NIX for consistent use
