@@ -15,7 +15,7 @@ NixDataModel::NixDataModel() : QStandardItemModel(){
             << MODEL_HEADER_CREATEDAT          //  6
             << MODEL_HEADER_UPDATEDAT          //  7
             << MODEL_HEADER_VALUE              //  8
-            << MODEL_HEADER_UNERTAINTY         //  9
+            << MODEL_HEADER_UNCERTAINTY         //  9
             << MODEL_HEADER_ROOTCHILDLINK;     // 10
     setHorizontalHeaderLabels(headers);
     num_columns = headers.size();
