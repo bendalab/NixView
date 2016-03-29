@@ -127,9 +127,7 @@ bool NixProxyModel::check_entry_row(int source_row, const QModelIndex &source_pa
     if (!rough_filter_satisfied)
         return false;
 
-
     // fine filter --> check if entry row contains all fine_filter experessions
-    std::vector<bool> fine_filter_satisfied;
     for (int i = 0; i < fine_filter.size(); ++i)
     {
         QString str = fine_filter[i];
@@ -137,50 +135,34 @@ bool NixProxyModel::check_entry_row(int source_row, const QModelIndex &source_pa
         for (int c = 0; c < model->num_columns; ++c)
         {
             QModelIndex index = model->index(source_row, c, source_parent);
-            if (qml_contains_expression(index, str))
-                filter_expression_found = true;
+            filter_expression_found = filter_expression_found || qml_contains_expression(index, str);
+            if (filter_expression_found)
+                break;
         }
-        if (filter_expression_found)
-            fine_filter_satisfied.push_back(true);
-        else
-            fine_filter_satisfied.push_back(false);
-    }
-    for (bool b : fine_filter_satisfied)
-        if (!b)
+        if (!filter_expression_found)
             return false;
+    }
     return true;
 }
 
 bool NixProxyModel::qml_contains_fine_filter(QModelIndex qml) const
 {
-    bool fine_filter_satisfied = true;
-    for (QString str : fine_filter)
-        if (case_sensitive)
-        {
-            if (!(sourceModel()->data(qml).toString().contains(str, Qt::CaseSensitive)))
-                fine_filter_satisfied = false;
-        }
-        else
-        {
-            if (!(sourceModel()->data(qml).toString().contains(str, Qt::CaseInsensitive)))
-                fine_filter_satisfied = false;
-        }
-    return fine_filter_satisfied;
+    bool match = true;
+    int index = 0;
+    Qt::CaseSensitivity cs = case_sensitive ? Qt::CaseSensitive : Qt::CaseInsensitive;
+    QString str = "";
+    while (match && index < fine_filter.size())
+    {
+        str = fine_filter[index];
+        match = match && sourceModel()->data(qml).toString().contains(str, cs);
+        index ++;
+    }
+    return match;
 }
 
 bool NixProxyModel::qml_contains_expression(QModelIndex qml, QString str) const
 {
-    if (case_sensitive)
-    {
-        if (sourceModel()->data(qml).toString().contains(str, Qt::CaseSensitive))
-            return true;
-    }
-    else
-    {
-        if (sourceModel()->data(qml).toString().contains(str, Qt::CaseInsensitive))
-            return true;
-    }
-    return false;
+    return sourceModel()->data(qml).toString().contains(str, case_sensitive ? Qt::CaseSensitive : Qt::CaseInsensitive);
 }
 
 bool NixProxyModel::entitiy_check(int source_row, const QModelIndex &source_parent, const char* entity_type) const
