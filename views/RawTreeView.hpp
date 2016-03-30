@@ -28,6 +28,10 @@ public:
 public slots:
     void resize_to_content(QModelIndex);
     void hide_columns();
+    void expand_collapse(QString);
+    void expand_collapse(bool);
+    void set_current_depth_expanded(QModelIndex);
+    void set_current_depth_collapsed(QModelIndex);
 
 signals:
     void item_found(QVariant);
@@ -49,6 +53,9 @@ private:
     nix::File nix_file;
     NixProxyModel *nix_proxy_model;
     static QStringList DEFAULT_HIDDEN_COLUMNS;
+
+    int current_depth;
+    int calc_depth_from_qml(QModelIndex);
 
     QSettings *settings;
 

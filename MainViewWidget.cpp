@@ -120,13 +120,19 @@ void MainViewWidget::connect_widgets()
     // tree widget expanded/collapsed
     QObject::connect(rtv->get_tree_view(), SIGNAL(expanded(QModelIndex)), rtv, SLOT(resize_to_content(QModelIndex)));
     QObject::connect(rtv->get_tree_view(), SIGNAL(collapsed(QModelIndex)), rtv, SLOT(resize_to_content(QModelIndex)));
+    QObject::connect(rtv->get_tree_view(), SIGNAL(expanded(QModelIndex)), rtv, SLOT(set_current_depth_expanded(QModelIndex)));
+    QObject::connect(rtv->get_tree_view(), SIGNAL(collapsed(QModelIndex)), rtv, SLOT(set_current_depth_collapsed(QModelIndex)));
 
     // filter
     QObject::connect(ui->cmbx_filter, SIGNAL(currentIndexChanged(QString)), nix_proxy_model, SLOT(set_rough_filter(QString)));
+    QObject::connect(ui->cmbx_filter, SIGNAL(currentIndexChanged(QString)), rtv, SLOT(expand_collapse(QString)));
     QObject::connect(ui->line_edit_filter, SIGNAL(textChanged(QString)), nix_proxy_model, SLOT(set_fine_filter(QString)));
+    QObject::connect(ui->line_edit_filter, SIGNAL(textChanged(QString)), rtv, SLOT(expand_collapse(QString)));
     QObject::connect(ui->cbx_filter, SIGNAL(toggled(bool)), nix_proxy_model, SLOT(set_case_sensitivity(bool)));
+    QObject::connect(ui->cbx_filter, SIGNAL(toggled(bool)), rtv, SLOT(expand_collapse(bool)));
 
     QObject::connect(shortcut_filter, SIGNAL(activated()), ui->line_edit_filter, SLOT(setFocus()));
+
 
     // ALSO CHECK CONNECTIONS IN InfoWidget.cpp
 }

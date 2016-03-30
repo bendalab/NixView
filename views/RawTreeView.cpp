@@ -19,6 +19,8 @@ RawTreeView::RawTreeView(QWidget *parent) :
 
     nix_proxy_model = nullptr;
 
+    current_depth = 0;
+
     settings = new QSettings();
 }
 
@@ -39,11 +41,43 @@ void RawTreeView::set_proxy_model(NixProxyModel *proxy_model)
 
 }
 
+int RawTreeView::calc_depth_from_qml(QModelIndex qml)
+{
+    QModelIndex index = qml;
+    int depth = 0;
+    while (index.parent().isValid())
+    {
+        index = index.parent();
+        ++depth;
+    }
+    return depth;
+}
+
 // slots
 void RawTreeView::resize_to_content(QModelIndex)
 {
     for (int c = 0; c<nix_proxy_model->columnCount();c++)
         ui->treeView->resizeColumnToContents(c);
+}
+
+void RawTreeView::expand_collapse(QString)
+{
+    ui->treeView->expandToDepth(current_depth);
+}
+
+void RawTreeView::expand_collapse(bool)
+{
+    ui->treeView->expandToDepth(current_depth);
+}
+
+void RawTreeView::set_current_depth_expanded(QModelIndex qml)
+{
+    current_depth = calc_depth_from_qml(qml);
+}
+
+void RawTreeView::set_current_depth_collapsed(QModelIndex qml)
+{
+    current_depth = calc_depth_from_qml(qml) - 1;
 }
 
 void RawTreeView::hide_columns()
