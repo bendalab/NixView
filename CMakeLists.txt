@@ -70,7 +70,7 @@ file(GLOB NIXVIEW_UI *.ui
   infowidget/*.ui 
   plotter/*.ui 
   views/*.ui 
-  options/.*ui
+  options/*.ui
   options/viewoptions/*.ui)
 
 file(GLOB NIXVIEW_RES *.qrc 
