@@ -10,6 +10,10 @@
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
     ui(new Ui::MainWindow) {
+
+    QCoreApplication::setOrganizationName("g-node");
+    QCoreApplication::setApplicationName("nixview");
+
     ui->setupUi(this);
     mvw_is_set = false;
     file_label = new QLabel(this);
@@ -18,11 +22,15 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
     ui->statusBar->addPermanentWidget(file_label, 1);
     ui->statusBar->addPermanentWidget(file_progress, 10);
     file_progress->setVisible(false);
+
+    ow = new OptionsWidget();
 }
 
 void MainWindow::connect_widgets() {
     QObject::connect(this, SIGNAL(emit_view_change(int)), mvw, SLOT(set_view(int)));
     QObject::connect(mvw, SIGNAL(emit_current_qml(QModelIndex)), this, SLOT(activate_plot(QModelIndex)));
+
+    QObject::connect(ow->tree_view_options, SIGNAL(emit_rtv_column_display_changed()), mvw->get_rtv(), SLOT(hide_columns()));
 }
 
 MainWindow::~MainWindow() {
@@ -30,12 +38,19 @@ MainWindow::~MainWindow() {
 }
 
 // slots
-void MainWindow::on_actionTree_triggered() {
+void MainWindow::on_actionTree_triggered()
+{
     emit emit_view_change(VIEW_TREE);
 }
 
-void MainWindow::on_actionColumn_triggered() {
+void MainWindow::on_actionColumn_triggered()
+{
     emit emit_view_change(VIEW_COLUMN);
+}
+
+void MainWindow::on_actionProperties_triggered()
+{
+    ow->show();
 }
 
 void MainWindow::activate_plot(QModelIndex qml) {

@@ -8,6 +8,7 @@
 #include <QProgressBar>
 #include <nix.hpp>
 #include "MainViewWidget.hpp"
+#include "options/OptionsWidget.hpp"
 
 class QVariant;
 
@@ -26,6 +27,7 @@ public:
 public slots:
     void on_actionTree_triggered();
     void on_actionColumn_triggered();
+    void on_actionProperties_triggered();
     void activate_plot(QModelIndex qml);
     void open_file();
     void show_about();
@@ -39,6 +41,7 @@ private:
     Ui::MainWindow *ui;
     MainViewWidget* mvw;
     bool mvw_is_set;
+    OptionsWidget *ow;
     void connect_widgets();
     QModelIndex selected_qml;
     QLabel* file_label;

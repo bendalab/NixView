@@ -23,8 +23,12 @@ public:
     void nix_file_to_model(const nix::File &nix_file);
     int progress();
 
+    const RowStrings get_headers() const {return headers; }
+
 
 private:
+    RowStrings headers;
+
     double scan_progress = 0.0;
     QString s_to_q(std::string);
     template<typename T>
