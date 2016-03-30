@@ -2,7 +2,6 @@
 #include "ui_OptionsWidget.h"
 #include <QProxyStyle>
 #include "infowidget/DescriptionPanel.hpp"
-#include "options/viewoptions/TreeViewOptions.hpp"
 
 class HorizontalTabBarStyle : public QProxyStyle
 {
@@ -45,7 +44,8 @@ OptionsWidget::OptionsWidget(QWidget *parent) :
 
     // view options
     QTabWidget *view_tab_widget = new QTabWidget();
-    view_tab_widget->addTab(new TreeViewOptions(), "TreeView");
+    tree_view_options = new TreeViewOptions();
+    view_tab_widget->addTab(tree_view_options, "TreeView");
 
     tw->addTab(view_tab_widget, "Views");
     tw->addTab(new DescriptionPanel(), "Other Stuff");

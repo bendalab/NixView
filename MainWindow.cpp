@@ -11,8 +11,8 @@
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
     ui(new Ui::MainWindow) {
 
-    QCoreApplication::setOrganizationName("G-Node");
-    QCoreApplication::setApplicationName("NixView");
+    QCoreApplication::setOrganizationName("g-node");
+    QCoreApplication::setApplicationName("nixview");
 
     ui->setupUi(this);
     mvw_is_set = false;
@@ -29,6 +29,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
 void MainWindow::connect_widgets() {
     QObject::connect(this, SIGNAL(emit_view_change(int)), mvw, SLOT(set_view(int)));
     QObject::connect(mvw, SIGNAL(emit_current_qml(QModelIndex)), this, SLOT(activate_plot(QModelIndex)));
+
+    QObject::connect(ow->tree_view_options, SIGNAL(emit_rtv_column_display_changed()), mvw->get_rtv(), SLOT(hide_columns()));
 }
 
 MainWindow::~MainWindow() {

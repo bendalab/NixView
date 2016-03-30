@@ -69,6 +69,7 @@ void TreeViewOptions::set_name_column_hidden(bool b)
     settings->setValue(MODEL_HEADER_NAME, !b);
     settings->endGroup();
     settings->endGroup();
+    emit_rtv_column_display_changed();
 }
 
 void TreeViewOptions::set_nixtype_column_hidden(bool b)
@@ -78,6 +79,7 @@ void TreeViewOptions::set_nixtype_column_hidden(bool b)
     settings->setValue(MODEL_HEADER_NIXTYPE, !b);
     settings->endGroup();
     settings->endGroup();
+    emit_rtv_column_display_changed();
 }
 
 void TreeViewOptions::set_storagetype_column_hidden(bool b)
@@ -87,6 +89,7 @@ void TreeViewOptions::set_storagetype_column_hidden(bool b)
     settings->setValue(MODEL_HEADER_STORAGETYPE, !b);
     settings->endGroup();
     settings->endGroup();
+    emit_rtv_column_display_changed();
 }
 
 void TreeViewOptions::set_datatype_column_hidden(bool b)
@@ -96,6 +99,7 @@ void TreeViewOptions::set_datatype_column_hidden(bool b)
     settings->setValue(MODEL_HEADER_DATATYPE, !b);
     settings->endGroup();
     settings->endGroup();
+    emit_rtv_column_display_changed();
 }
 
 void TreeViewOptions::set_shape_column_hidden(bool b)
@@ -105,6 +109,7 @@ void TreeViewOptions::set_shape_column_hidden(bool b)
     settings->setValue(MODEL_HEADER_SHAPE, !b);
     settings->endGroup();
     settings->endGroup();
+    emit_rtv_column_display_changed();
 }
 
 void TreeViewOptions::set_id_column_hidden(bool b)
@@ -114,6 +119,7 @@ void TreeViewOptions::set_id_column_hidden(bool b)
     settings->setValue(MODEL_HEADER_ID, !b);
     settings->endGroup();
     settings->endGroup();
+    emit_rtv_column_display_changed();
 }
 
 void TreeViewOptions::set_createdat_column_hidden(bool b)
@@ -123,6 +129,7 @@ void TreeViewOptions::set_createdat_column_hidden(bool b)
     settings->setValue(MODEL_HEADER_CREATEDAT, !b);
     settings->endGroup();
     settings->endGroup();
+    emit_rtv_column_display_changed();
 }
 
 void TreeViewOptions::set_updatedat_column_hidden(bool b)
@@ -132,6 +139,7 @@ void TreeViewOptions::set_updatedat_column_hidden(bool b)
     settings->setValue(MODEL_HEADER_UPDATEDAT, !b);
     settings->endGroup();
     settings->endGroup();
+    emit_rtv_column_display_changed();
 }
 
 void TreeViewOptions::set_value_column_hidden(bool b)
@@ -141,6 +149,7 @@ void TreeViewOptions::set_value_column_hidden(bool b)
     settings->setValue(MODEL_HEADER_VALUE, !b);
     settings->endGroup();
     settings->endGroup();
+    emit_rtv_column_display_changed();
 }
 
 void TreeViewOptions::set_uncertainty_column_hidden(bool b)
@@ -150,6 +159,7 @@ void TreeViewOptions::set_uncertainty_column_hidden(bool b)
     settings->setValue(MODEL_HEADER_UNCERTAINTY, !b);
     settings->endGroup();
     settings->endGroup();
+    emit_rtv_column_display_changed();
 }
 
 TreeViewOptions::~TreeViewOptions()

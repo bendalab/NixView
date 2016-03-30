@@ -28,6 +28,9 @@ public slots:
     void set_value_column_hidden(bool b);
     void set_uncertainty_column_hidden(bool b);
 
+signals:
+    void emit_rtv_column_display_changed();
+
 private:
     Ui::TreeViewOptions *ui;
     QSettings *settings;
