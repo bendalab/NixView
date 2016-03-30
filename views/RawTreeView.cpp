@@ -59,6 +59,8 @@ void RawTreeView::hide_columns()
         }
     settings->endGroup();
     settings->endGroup();
+
+   resize_to_content(QModelIndex());
 }
 
 // getter
