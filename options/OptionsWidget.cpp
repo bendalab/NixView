@@ -48,7 +48,7 @@ OptionsWidget::OptionsWidget(QWidget *parent) :
     view_tab_widget->addTab(tree_view_options, "TreeView");
 
     tw->addTab(view_tab_widget, "Views");
-    tw->addTab(new DescriptionPanel(), "Other Stuff");
+//    tw->addTab(new DescriptionPanel(), "Other Stuff");
 
     ui->verticalLayout->addWidget(tw);
 }
