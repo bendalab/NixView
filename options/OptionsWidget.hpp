@@ -4,7 +4,7 @@
 #include <QWidget>
 #include <QTabWidget>
 #include "options/OptionsTabWidget.hpp"
-#include "options/viewoptions/TreeViewOptions.hpp"
+#include "options/TreeViewOptions.hpp"
 
 namespace Ui {
 class OptionsWidget;
