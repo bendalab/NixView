@@ -34,6 +34,7 @@ public slots:
     void show_about();
     void show_plot();
     void file_scan_progress();
+    void invalid_file_error();
 
 signals:
     void emit_view_change(int);
