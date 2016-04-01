@@ -8,7 +8,7 @@
 #include "model/NixDataModel.hpp"
 #include "model/NixModelItem.hpp"
 
-MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
+MainWindow::MainWindow(QWidget *parent, QApplication *app) : QMainWindow(parent),
     ui(new Ui::MainWindow) {
 
     QCoreApplication::setOrganizationName("g-node");
