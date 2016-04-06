@@ -31,7 +31,6 @@ void NixDataModel::nix_file_to_model(const nix::File &nix_file) {
     scan_progress = 0.0;
     emit file_scan_progress();
     QStandardItem* root_node = this->invisibleRootItem();
-
     RowStrings data_list;
     data_list << "Data";
     fill_rowstrings(data_list);
@@ -288,6 +287,7 @@ Row NixDataModel::create_entry_row(RowStrings row_entries)
     for (QString entry : row_entries)
     {
         NixModelItem *item = new NixModelItem(entry);
+        item->setToolTip("");
         row_items << static_cast<QStandardItem*>(item);
     }
     return row_items;
