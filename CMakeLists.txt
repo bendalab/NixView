@@ -58,6 +58,7 @@ file(GLOB NIXVIEW_SOURCES *.cpp
   options/viewoptions/*.cpp)
 
 file(GLOB NIXVIEW_INCLUDES *.hpp 
+  *.h
   infowidget/*.hpp 
   plotter/*.h 
   model/*.hpp 

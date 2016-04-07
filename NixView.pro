@@ -41,7 +41,8 @@ SOURCES += main.cpp\
     entitydescriptor.cpp \
     options/OptionsWidget.cpp \
     options/OptionsTabWidget.cpp \
-    options/viewoptions/TreeViewOptions.cpp
+    options/viewoptions/TreeViewOptions.cpp \
+    tagview.cpp
 
 HEADERS  += MainWindow.hpp \
     MainViewWidget.hpp \
@@ -66,7 +67,8 @@ HEADERS  += MainWindow.hpp \
     entitydescriptor.h \
     options/OptionsWidget.hpp \
     options/OptionsTabWidget.hpp \
-    options/viewoptions/TreeViewOptions.hpp
+    options/viewoptions/TreeViewOptions.hpp \
+    tagview.h
 
 FORMS    += MainWindow.ui \
     MainViewWidget.ui \
@@ -82,7 +84,8 @@ FORMS    += MainWindow.ui \
     plotter/categoryplotter.ui \
     views/ColumnView.ui \
     options/OptionsWidget.ui \
-    options/viewoptions/TreeViewOptions.ui
+    options/viewoptions/TreeViewOptions.ui \
+    tagview.ui
 
 #standard windows folder?
 #win32:CONFIG(release, debug|release): LIBS += /usr/local/lib/release/ -lnix

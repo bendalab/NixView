@@ -35,9 +35,9 @@
       <string/>
      </property>
      <property name="currentIndex">
-      <number>2</number>
+      <number>3</number>
      </property>
-     <widget class="QWidget" name="tabWidgetPage1" native="true">
+     <widget class="QWidget" name="tabWidgetPage1">
       <attribute name="title">
        <string>Metadata</string>
       </attribute>
@@ -53,7 +53,7 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="tabWidgetPage2" native="true">
+     <widget class="QWidget" name="tabWidgetPage2">
       <attribute name="title">
        <string>Tag Info</string>
       </attribute>
@@ -76,6 +76,16 @@
       <layout class="QGridLayout" name="gridLayout_4">
        <item row="0" column="0">
         <layout class="QVBoxLayout" name="verticalLayout_page_info"/>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tag_info">
+      <attribute name="title">
+       <string>Tag View</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout_5">
+       <item row="0" column="0">
+        <layout class="QVBoxLayout" name="tag_info_layout"/>
        </item>
       </layout>
      </widget>

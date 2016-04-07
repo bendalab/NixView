@@ -54,7 +54,7 @@
      <x>0</x>
      <y>0</y>
      <width>1400</width>
-     <height>22</height>
+     <height>27</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -241,6 +241,11 @@
   <action name="actionProperties">
    <property name="text">
     <string>&amp;Properties</string>
+   </property>
+  </action>
+  <action name="actionOpen">
+   <property name="text">
+    <string>open</string>
    </property>
   </action>
  </widget>
