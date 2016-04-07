@@ -30,6 +30,8 @@ private:
 
     EntityDescriptor basic_description(const std::string &name, const std::string &type, const std::string &description,
                                        const std::string &id, const std::string &created, const std::string &updated);
+    void fill_references();
+    void fill_features();
 };
 
 #endif // TAGVIEW_H
