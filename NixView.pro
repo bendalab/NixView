@@ -42,7 +42,7 @@ SOURCES += main.cpp\
     options/OptionsWidget.cpp \
     options/OptionsTabWidget.cpp \
     options/TreeViewOptions.cpp \
-    tagview.cpp
+    TagView.cpp
 
 HEADERS  += MainWindow.hpp \
     MainViewWidget.hpp \
@@ -69,7 +69,7 @@ HEADERS  += MainWindow.hpp \
     options/OptionsTabWidget.hpp \
     options/TreeViewOptions.hpp\
     options/viewoptions/TreeViewOptions.hpp \
-    tagview.h
+    TagView.hpp
 
 FORMS    += MainWindow.ui \
     MainViewWidget.ui \
@@ -86,7 +86,7 @@ FORMS    += MainWindow.ui \
     views/ColumnView.ui \
     options/OptionsWidget.ui \
     options/TreeViewOptions.ui \
-    tagview.ui
+    TagView.ui
 
 #standard windows folder?
 #win32:CONFIG(release, debug|release): LIBS += /usr/local/lib/release/ -lnix

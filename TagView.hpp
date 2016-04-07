@@ -4,7 +4,6 @@
 #include <QScrollArea>
 #include <nix.hpp>
 #include <QModelIndex>
-#include "MainViewWidget.hpp"
 #include "model/NixModelItem.hpp"
 #include "entitydescriptor.h"
 

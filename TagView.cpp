@@ -1,4 +1,4 @@
-#include "tagview.h"
+#include "TagView.hpp"
 #include "ui_tagview.h"
 #include "plotwidget.h"
 #include "common/Common.hpp"
