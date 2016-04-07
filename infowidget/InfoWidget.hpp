@@ -10,7 +10,7 @@
 #include "DescriptionPanel.hpp"
 #include "MetaDataPanel.hpp"
 #include "TagPanel.hpp"
-//#include "tagview.h"
+#include "TagView.hpp"
 #include "model/NixDataModel.hpp"
 
 namespace Ui {
@@ -34,7 +34,7 @@ private:
     DescriptionPanel* dp;
     MetaDataPanel* mp;
     TagPanel* tp;
-    //TagView* tv;
+    TagView* tv;
 
     void update_meta_info(nix::Section);
     void add_children_to_item(QTreeWidgetItem*, nix::Section);

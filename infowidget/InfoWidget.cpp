@@ -17,8 +17,9 @@ InfoWidget::InfoWidget(NixDataModel *_nix_model, QWidget *parent) :
     tp = new TagPanel(this);
     ui->verticalLayout_page_tag->addWidget(tp);
 
-    //tv = new TagView(this);
-    //ui->tag_info_layout->addWidget(tv);
+    tv = new TagView(this);
+    ui->tag_info_layout->addWidget(tv);
+
     dp = new DescriptionPanel(this);
     ui->verticalLayout_page_info->addWidget(dp);
 
@@ -32,7 +33,7 @@ void InfoWidget::update_info_widget(QModelIndex qml)
     mp->update_metadata_panel(qml);
     tp->update_tag_panel(qml);
     dp->update_description_panel(qml);
-    //tv->setEntity(qml);
+    tv->setEntity(qml);
 }
 
 void InfoWidget::connect_widgets()
