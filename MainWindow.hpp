@@ -21,7 +21,8 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit MainWindow(QWidget *parent = 0);
+    //explicit MainWindow(QWidget *parent = 0);
+    MainWindow(QWidget *parent, QApplication *app);
     ~MainWindow();
 
 public slots:
@@ -33,6 +34,7 @@ public slots:
     void show_about();
     void show_plot();
     void file_scan_progress();
+    void invalid_file_error();
 
 signals:
     void emit_view_change(int);

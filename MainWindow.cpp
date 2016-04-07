@@ -8,7 +8,7 @@
 #include "model/NixDataModel.hpp"
 #include "model/NixModelItem.hpp"
 
-MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
+MainWindow::MainWindow(QWidget *parent, QApplication *app) : QMainWindow(parent),
     ui(new Ui::MainWindow) {
 
     QCoreApplication::setOrganizationName("g-node");
@@ -22,7 +22,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
     ui->statusBar->addPermanentWidget(file_label, 1);
     ui->statusBar->addPermanentWidget(file_progress, 10);
     file_progress->setVisible(false);
-
+    QObject::connect(app, SIGNAL(invalid_file_error()), this, SLOT(invalid_file_error()));
     ow = new OptionsWidget();
 }
 
@@ -115,8 +115,16 @@ void MainWindow::file_scan_progress()
 }
 
 
+void MainWindow::invalid_file_error() {
+    file_label->setText("");
+    file_progress->setVisible(false);
+    QMessageBox::information(this, "Invalid file", "Nix library reports an error. The selected file is not a valid nix file.");
+}
+
+
 void MainWindow::open_file() {
     QFileDialog fd(this);
+    fd.setAcceptMode(QFileDialog::AcceptOpen);
     fd.setFileMode(QFileDialog::ExistingFile);
     fd.setNameFilter(tr("NIX File (*.nix *.h5)"));
     fd.setViewMode(QFileDialog::Detail);

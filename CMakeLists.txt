@@ -54,8 +54,7 @@ file(GLOB NIXVIEW_SOURCES *.cpp
   model/*.cpp 
   views/*.cpp 
   filter/*.cpp 
-  options/*.cpp
-  options/viewoptions/*.cpp)
+  options/*.cpp)
 
 file(GLOB NIXVIEW_INCLUDES *.hpp 
   infowidget/*.hpp 
@@ -63,15 +62,13 @@ file(GLOB NIXVIEW_INCLUDES *.hpp
   model/*.hpp 
   views/*.hpp 
   filter/*.hpp 
-  options/*.hpp
-  options/viewoptions/*.hpp)
+  options/*.hpp)
 
 file(GLOB NIXVIEW_UI *.ui 
   infowidget/*.ui 
   plotter/*.ui 
   views/*.ui 
-  options/*.ui
-  options/viewoptions/*.ui)
+  options/*.ui)
 
 file(GLOB NIXVIEW_RES *.qrc 
   infowidget/*.qrc)
