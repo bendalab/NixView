@@ -1,5 +1,5 @@
 #include "TagView.hpp"
-#include "ui_tagview.h"
+#include "ui_TagView.h"
 #include "plotwidget.h"
 #include "common/Common.hpp"
 #include <QListWidgetItem>
@@ -37,10 +37,10 @@ EntityDescriptor TagView::basic_description(const std::string &name, const std::
 
 
 void TagView::fill_references() {
-    ui->refernce_list->clear();
+    ui->reference_list->clear();
     for (nix::DataArray da : this->tag.references()) {
         QListWidgetItem *item = new QListWidgetItem(QString::fromStdString(da.name() + " [" + da.type() + "]"));
-        ui->refernce_list->addItem(item);
+        ui->reference_list->addItem(item);
     }
 }
 
