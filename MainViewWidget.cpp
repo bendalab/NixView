@@ -57,6 +57,7 @@ void MainViewWidget::set_nix_file(const std::string &nix_file_path)
     nix_proxy_model->setSourceModel(nix_model);
     nix_proxy_model->set_filter_mode(3);
 
+    emit emit_model_update(nix_model);
     rtv->set_proxy_model(nix_proxy_model);
     cv->set_proxy_model(nix_proxy_model);
 
