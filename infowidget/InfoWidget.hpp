@@ -22,8 +22,10 @@ class InfoWidget : public QWidget
     Q_OBJECT
 
 public:
-    explicit InfoWidget(NixDataModel *_nix_model, QWidget *parent = 0);
+    explicit InfoWidget(QWidget *parent =0);
     ~InfoWidget();
+
+    void setDataModel(NixDataModel *_nix_model);
 
 public slots:
     void update_info_widget(QModelIndex qml);

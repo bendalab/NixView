@@ -18,9 +18,10 @@ class MetaDataPanel : public QWidget
     Q_OBJECT
 
 public:
-    explicit MetaDataPanel(NixDataModel *_nix_model, QWidget *parent = 0);
+    explicit MetaDataPanel(QWidget *parent = 0);
     ~MetaDataPanel();
 
+    void setDataModel(NixDataModel *_nix_model);
 public slots:
 //    void update_metadata_panel(QVariant);
     void resize_to_content(QModelIndex);

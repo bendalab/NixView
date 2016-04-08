@@ -5,13 +5,13 @@
 #include "MainViewWidget.hpp"
 #include <QDebug>
 
-InfoWidget::InfoWidget(NixDataModel *_nix_model, QWidget *parent) :
+InfoWidget::InfoWidget(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::InfoWidget)
 {
     ui->setupUi(this);
 
-    mp = new MetaDataPanel(_nix_model, this);
+    mp = new MetaDataPanel(this);
     ui->verticalLayout_page_meta->addWidget(mp);
 
     tp = new TagPanel(this);
@@ -26,6 +26,11 @@ InfoWidget::InfoWidget(NixDataModel *_nix_model, QWidget *parent) :
     ui->tabWidget->setCurrentIndex(0);
 
     connect_widgets();
+}
+
+
+void InfoWidget::setDataModel(NixDataModel *_nix_model) {
+    mp->setDataModel(_nix_model);
 }
 
 void InfoWidget::update_info_widget(QModelIndex qml)

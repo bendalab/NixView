@@ -21,9 +21,10 @@ class RawTreeView : public QWidget
     Q_OBJECT
 
 public:
-    explicit RawTreeView(NixProxyModel *nix_proxy_model, QWidget *parent = 0);
     explicit RawTreeView(QWidget *parent = 0);
     ~RawTreeView();
+
+    void setProxyModel(NixProxyModel *nix_proxy_model);
 
 public slots:
     void resize_to_content(QModelIndex);
