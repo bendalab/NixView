@@ -20,6 +20,11 @@ public:
     ~TagView();
 
     void setEntity(QModelIndex qml);
+    void clear();
+
+public slots:
+    void reference_selected();
+    void feature_selected();
 
 private:
     Ui::TagView *ui;
