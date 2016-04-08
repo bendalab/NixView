@@ -13,7 +13,7 @@ namespace Ui {
 }
 
 enum class PlotterType : unsigned int {
-    Line, Category, Image
+    Line, Category, Image, Unsupported
 };
 
 class Plotter {
@@ -139,6 +139,44 @@ public:
         plottable = plottable && array.dataType() != nix::DataType::Opaque;
         plottable = plottable && array.dataType() != nix::DataType::Nothing;
         return plottable;
+    }
+
+
+    static PlotterType suggested_plotter(const nix::DataArray &array) {
+        size_t dim_count = array.dimensionCount();
+        switch (dim_count) {
+        case 1:
+            if (array.getDimension(1).dimensionType() == nix::DimensionType::Sample ||
+                    array.getDimension(1).dimensionType() == nix::DimensionType::Range) {
+                return PlotterType::Line;
+            } else if (array.getDimension(1).dimensionType() == nix::DimensionType::Set) {
+               return PlotterType::Category;
+            }
+            break;
+        case 2:
+            if (array.getDimension(1).dimensionType() == nix::DimensionType::Sample ||
+                    array.getDimension(1).dimensionType() == nix::DimensionType::Range) {
+                if (array.getDimension(2).dimensionType() == nix::DimensionType::Set) {
+                    return PlotterType::Line;
+                } else {
+                    // handle 2D image/heatmap plotting not supported, yet TODO
+                    return PlotterType::Unsupported;
+                }
+            } else {
+                if (array.getDimension(2).dimensionType() == nix::DimensionType::Sample ||
+                      array.getDimension(1).dimensionType() == nix::DimensionType::Range) {
+                    return PlotterType::Line;
+                } else {
+                    return PlotterType::Category;
+                }
+            }
+            break;
+        default:
+            std::cerr << "Sorry, cannot plot data with more than 2d!" << std::endl;
+            break;
+        }
+
+        return PlotterType::Unsupported;
     }
 };
 #endif // NIXVIEW_PLOTTER_H
