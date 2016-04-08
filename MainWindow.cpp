@@ -15,7 +15,6 @@ MainWindow::MainWindow(QWidget *parent, QApplication *app) : QMainWindow(parent)
     QCoreApplication::setApplicationName("nixview");
 
     ui->setupUi(this);
-    mvw_is_set = false;
     file_label = new QLabel(this);
     file_progress = new QProgressBar(this);
     ui->statusBar->addPermanentWidget(new QLabel("File: ", this));
@@ -24,13 +23,16 @@ MainWindow::MainWindow(QWidget *parent, QApplication *app) : QMainWindow(parent)
     file_progress->setVisible(false);
     QObject::connect(app, SIGNAL(invalid_file_error()), this, SLOT(invalid_file_error()));
     ow = new OptionsWidget();
+    connect_widgets();
 }
 
 void MainWindow::connect_widgets() {
-    QObject::connect(this, SIGNAL(emit_view_change(int)), mvw, SLOT(set_view(int)));
-    QObject::connect(mvw, SIGNAL(emit_current_qml(QModelIndex)), this, SLOT(activate_plot(QModelIndex)));
-
-    QObject::connect(ow->tree_view_options, SIGNAL(emit_rtv_column_display_changed()), mvw->get_rtv(), SLOT(hide_columns()));
+    QObject::connect(this, SIGNAL(emit_view_change(int)), ui->main_view, SLOT(set_view(int)));
+    QObject::connect(ui->main_view, SIGNAL(emit_current_qml(QModelIndex)), this, SLOT(activate_plot(QModelIndex)));
+    QObject::connect(ui->main_view, SIGNAL(emit_model_update(NixDataModel*)), this, SLOT(nix_model_update(NixDataModel*)));
+    QObject::connect(ui->main_view, SIGNAL(emit_current_qml(QModelIndex)), ui->info_view, SLOT(update_info_widget(QModelIndex)));
+    QObject::connect(ow->tree_view_options, SIGNAL(emit_rtv_column_display_changed()), ui->main_view->get_rtv(), SLOT(hide_columns()));
+    QObject::connect(ui->main_view, SIGNAL(scan_progress_update()), this, SLOT(file_scan_progress()));
 }
 
 MainWindow::~MainWindow() {
@@ -51,6 +53,10 @@ void MainWindow::on_actionColumn_triggered()
 void MainWindow::on_actionProperties_triggered()
 {
     ow->show();
+}
+
+void MainWindow::nix_model_update(NixDataModel *model) {
+    ui->info_view->setDataModel(model);
 }
 
 void MainWindow::activate_plot(QModelIndex qml) {
@@ -78,8 +84,7 @@ void MainWindow::activate_plot(QModelIndex qml) {
         return;
     }
 
-    NixModelItem *item = mvw->get_current_model()->get_item_from_qml(qml);
-
+    NixModelItem *item = ui->main_view->get_current_model()->get_item_from_qml(qml);
     if((strcmp(item->get_nix_qvariant_type().c_str(), NIX_STRING_DATAARRAY) == 0) |
             (strcmp(item->get_nix_qvariant_type().c_str(), NIX_STRING_TAG) == 0) |
             (strcmp(item->get_nix_qvariant_type().c_str(), NIX_STRING_MULTITAG) == 0)){
@@ -110,7 +115,7 @@ void MainWindow::show_plot() {
 
 void MainWindow::file_scan_progress()
 {
-    file_progress->setValue(mvw->get_scan_progress());
+    file_progress->setValue(ui->main_view->get_scan_progress());
     QCoreApplication::processEvents();
 }
 
@@ -134,20 +139,10 @@ void MainWindow::open_file() {
     if (fileNames.size() == 0)
         return;
 
-    if (mvw_is_set) {
-        ui->main_layout->removeWidget(mvw);
-        mvw->deleteLater();
-        mvw_is_set = false;
-    }
-
     std::string file_path = fileNames.front().toStdString();
     file_label->setText(file_path.c_str());
     file_progress->setVisible(true);
-    mvw = new MainViewWidget();
-    connect(mvw, SIGNAL(scan_progress_update()), this, SLOT(file_scan_progress()));
-    mvw->set_nix_file(file_path);
-    ui->main_layout->addWidget(mvw);
-    mvw_is_set = true;
-    connect_widgets();
+
+    ui->main_view->set_nix_file(file_path);
     file_progress->setVisible(false);
 }
