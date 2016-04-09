@@ -56,6 +56,43 @@ public:
         return true;
     }
 
+    /*
+     *
+     *
+     */
+    static void data_array_axis(const nix::DataArray &array, QVector<double> &axis_data,
+                                QVector<QString> &ticklabels, nix::ndsize_t dim) {
+        if (dim > array.dimensionCount()) {
+            return;
+        }
+        nix::Dimension d = array.getDimension(dim);
+        if (d.dimensionType() == nix::DimensionType::Sample) {
+            nix::SampledDimension dim = d.asSampledDimension();
+            std::vector<double> ax = dim.axis(array.dataExtent()[0]);
+            axis_data = QVector<double>::fromStdVector(ax);
+        } else if (d.dimensionType() == nix::DimensionType::Range) {
+            nix::RangeDimension dim = d.asRangeDimension();
+            std::vector<double> ax = dim.axis(array.dataExtent()[0]);
+            axis_data = QVector<double>::fromStdVector(ax);
+        } else if (d.dimensionType() == nix::DimensionType::Set) {
+            nix::SetDimension dim = d.asSetDimension();
+            std::vector<std::string> labels = dim.labels();
+            for (size_t i = 0; i < labels.size(); ++i) {
+                xticklabels.push_back(QString::fromStdString(labels[i]));
+                xdata.push_back(static_cast<double>(i));
+            }
+            if (labels.size() == 0) {
+                for (int i = 0; i < ydata.size(); ++i) {
+                    xticklabels.push_back(QString::fromStdString(nix::util::numToStr<int>(i)));
+                    xdata.push_back(static_cast<double>(i));
+                }
+            }
+        } else {
+            std::cerr << "unsupported dimension type" << std::endl;
+        }
+    }
+
+
     static void data_array_to_qvector(const nix::DataArray &array, QVector<double> &xdata, QVector<double> &ydata,
                                       QVector<QString> &xticklabels, nix::ndsize_t dim_index) {
         nix::Dimension d = array.getDimension(dim_index);
