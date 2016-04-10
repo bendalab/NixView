@@ -2,6 +2,7 @@ import nix
 import lif
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib.mlab as mlab
 from PIL import Image as img
 from IPython import embed
 
@@ -60,9 +61,7 @@ def create_2d(f, b, trials=10):
     d.label = "time"
     d.unit = "s"
     da.append_set_dimension()
-
     
-
 
 def create_3d(f, b):
     # taken from nix tutorial
@@ -178,18 +177,28 @@ def create_m_tag_3d(f, b):
 
 def create_epoch_tag(f, b):
     trace = b.data_arrays["eod"]
-    xings = b.data_arrays["zero crossings"]
+    sampling_rate = 1./trace.dimensions[0].sampling_interval
+    p,f = mlab.psd(trace[:], Fs=1./trace.dimensions[0].sampling_interval, NFFT=4096,
+                       noverlap=2048, sides="twosided")
+    power = b.create_data_array("power spectrum", "nix.sampled.spectrum.psd", data=p)
+    power.label = "power"
+    power.unit = "mV^2/cm^2*Hz^-1"
+    dim = power.append_sampled_dimension(np.mean(np.diff(f)))
+    dim.offset = f[0]
+    dim.label = "frequency"
+    dim.unit = "Hz"
+    
     tag = b.create_tag("interesting epoch", "nix.epoch", [0.1])
     tag.extent = [0.3]
     tag.references.append(trace)
-    tag.references.append(xings)
+    tag.create_feature(power, nix.LinkType.Untagged)
 
 
 def create_point_tag(f, b):
-    trace = b.data_arrays["eod"]
+    trace = b.data_arrays["eod"]                                  
     tag = b.create_tag("interesting point", "nix.point", [0.05])
     tag.references.append(trace)
-
+    
 
 def create_test_file(filename):
     nix_file = nix.File.open(filename, nix.FileMode.Overwrite)
