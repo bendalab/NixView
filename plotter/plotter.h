@@ -93,6 +93,43 @@ public:
     }
 
 
+    /*
+     * Returns a line of the data stored in an 2D data array along a certain dimension at a given index.
+     * Note: dimensions start with index 1!
+     *
+     * @param array: the nix::DataArray
+     * @param index: nix::ndsize_t the index of the desired line starts with 0!
+     * @param dim: the dimension along which the data should be returned (dim starts with 1)
+     *
+     * @return Qvector of doubles, the line.
+     *
+     */
+    static QVector<double> get_data_line(const nix::DataArray &array, nix::ndsize_t index, nix::ndsize_t dim) {
+        std::vector<double> data;
+        nix::NDSize shape = array.dataExtent();
+        if (shape.size() > 2) {
+            std::cerr << "Plotter::get_data_line: Method works only for 2D data!" << std::endl;
+            return QVector<double>::fromStdVector(data);
+        }
+        if (dim > shape.size()) {
+            std::cerr << "Plotter::get_data_line: Invalid dimension."<< std::endl;
+            return QVector<double>::fromStdVector(data);
+        }
+        nix::ndsize_t other_dim = dim == 1 ? 2 : 1;
+        if (index > shape[other_dim - 1]) {
+            std::cerr << "Plotter::get_data_line(): index exceed array dimensions!" << std::endl;
+            return QVector<double>::fromStdVector(data);
+        }
+        data.resize(shape[dim - 1]);
+        nix::NDSize count(shape.size(), 1);
+        count[dim -1] = shape[dim - 1];
+        nix::NDSize offset(shape.size(), 0);
+        offset[other_dim - 1] = index;
+        array.getData(nix::DataType::Double, data.data(), count, offset);
+        return QVector<double>::fromStdVector(data);
+    }
+
+
     static void data_array_to_qvector(const nix::DataArray &array, QVector<double> &xdata, QVector<double> &ydata,
                                       QVector<QString> &xticklabels, nix::ndsize_t dim_index) {
         nix::Dimension d = array.getDimension(dim_index);
