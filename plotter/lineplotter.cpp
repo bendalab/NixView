@@ -109,6 +109,11 @@ void LinePlotter::draw_2d(const nix::DataArray &array) {
         QVector<double> data = get_data_line(array, i, best_dim);
         add_line_plot(x_axis, data, labels[i]);
     }
+    QString y_label;
+    QVector<QString> ax_labels;
+    data_array_ax_labels(array, y_label, ax_labels);
+    this->set_ylabel(y_label);
+    this->set_xlabel(ax_labels[best_dim-1]);
 }
 
 
