@@ -39,6 +39,19 @@ void TagView::clear() {
     ui->reference_list->clear();
     ui->entity_description->clear();
     ui->feature_list->clear();
+    clear_plot_widget(ui->reference_plot);
+    clear_plot_widget(ui->feature_plot);
+}
+
+
+void TagView::clear_plot_widget(QWidget *plot_widget) {
+    if (!plot_widget->layout()->isEmpty()) {
+        QLayoutItem *item = plot_widget->layout()->itemAt(0);
+        if (item->widget()) {
+            plot_widget->layout()->removeItem(item);
+            delete item;
+        }
+    }
 }
 
 
@@ -69,32 +82,37 @@ void TagView::fill_features() {
 
 
 void TagView::reference_selected() {
-    QList<QListWidgetItem*> items = ui->reference_list->selectedItems();
-    if (items.size() > 0) {
-        int index = ui->reference_list->row(items[0]);
-        nix::DataArray da = tag.getReference(index);
-        if (!ui->reference_plot->layout()->isEmpty()) {
-            QLayoutItem *item = ui->reference_plot->layout()->itemAt(0);
-            if (item->widget()) {
-                ui->reference_plot->layout()->removeItem(item);
-                delete item;
-            }
-        }
-        if (Plotter::check_plottable_dtype(da)) {
-            PlotterType type = Plotter::suggested_plotter(da);
-            if (type == PlotterType::Unsupported || type == PlotterType::Image) {
-                std::cerr << "unsupported plotter" << std::endl;
-                // TODO show error message
-            } else if (type == PlotterType::Line){
-                LinePlotter *lp = new LinePlotter(this);
-                lp->draw(da);
-                ui->reference_plot->layout()->addWidget(lp);
-            }
-        }
+   QList<QListWidgetItem*> items = ui->reference_list->selectedItems();
+   if (items.size() > 0) {
+       int index = ui->reference_list->row(items[0]);
+       nix::DataArray da = tag.getReference(index);
+       plot_data(ui->reference_plot, da);
     }
 }
 
 
 void TagView::feature_selected() {
+    QList<QListWidgetItem*> items = ui->feature_list->selectedItems();
+    if (items.size() > 0) {
+        int index = ui->feature_list->row(items[0]);
+        nix::DataArray da = tag.getFeature(index).data();
+        plot_data(ui->feature_plot, da);
+    }
+}
+
+
+void TagView::plot_data(QWidget *plot_widget, const nix::DataArray &array) {
+        clear_plot_widget(plot_widget);
+        if (Plotter::check_plottable_dtype(array)) {
+            PlotterType type = Plotter::suggested_plotter(array);
+            if (type == PlotterType::Unsupported || type == PlotterType::Image) {
+                std::cerr << "unsupported plotter" << std::endl;
+                // TODO show error message
+            } else if (type == PlotterType::Line){
+                LinePlotter *lp = new LinePlotter(this);
+                lp->draw(array);
+                plot_widget->layout()->addWidget(lp);
+            }
+        }
 
 }

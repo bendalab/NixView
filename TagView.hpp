@@ -4,6 +4,7 @@
 #include <QScrollArea>
 #include <nix.hpp>
 #include <QModelIndex>
+#include <QListWidget>
 #include "model/NixModelItem.hpp"
 #include "entitydescriptor.h"
 
@@ -37,6 +38,8 @@ private:
                                        const std::string &id, const std::string &created, const std::string &updated);
     void fill_references();
     void fill_features();
+    void clear_plot_widget(QWidget *plot_widget);
+    void plot_data(QWidget *plot_widget, const nix::DataArray &array);
 };
 
 #endif // TAGVIEW_H
