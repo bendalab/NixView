@@ -17,7 +17,6 @@ MainViewWidget::MainViewWidget(QWidget *parent) :
     iw = nullptr;
     rtv = nullptr;
     cv = nullptr;
-    std::cerr << (rtv == nullptr) << std::endl;
     QStringList filter_expressions = {FILTER_EXP_NONE,
                                       FILTER_EXP_BLOCK,
                                       FILTER_EXP_GROUP,
