@@ -98,8 +98,17 @@ void LinePlotter::draw_1d(const nix::DataArray &array) {
 
 
 void LinePlotter::draw_2d(const nix::DataArray &array) {
-
-
+    int best_dim = guess_best_xdim(array);
+    nix::Dimension x_dim = array.getDimension(best_dim);
+    nix::Dimension y_dim = array.getDimension(3 - best_dim);
+    QVector<double> x_axis, y_axis;
+    QVector<QString> labels;
+    get_data_array_axis(array, x_axis, labels, best_dim);
+    get_data_array_axis(array, y_axis, labels, 3-best_dim);
+    for (int i = 0; i < y_axis.size(); i++) {
+        QVector<double> data = get_data_line(array, i, best_dim);
+        add_line_plot(x_axis, data, labels[i]);
+    }
 }
 
 
