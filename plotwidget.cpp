@@ -47,6 +47,17 @@ void PlotWidget::process_item() {
 }
 
 
+void PlotWidget::delete_widgets_from_layout() {
+    if (!ui->scrollAreaWidgetContents->layout()->isEmpty()) {
+        QLayoutItem *item = ui->scrollAreaWidgetContents->layout()->itemAt(0);
+        if (item->widget()) {
+            ui->scrollAreaWidgetContents->layout()->removeItem(item);
+            delete item;
+        }
+    }
+}
+
+
 void PlotWidget::process(const nix::DataArray &array) {
     size_t dim_count = array.dimensionCount();
     switch (dim_count) {
