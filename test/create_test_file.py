@@ -60,9 +60,24 @@ def create_2d(f, b, trials=10):
     d = da.append_sampled_dimension(time[1]-time[0])
     d.label = "time"
     d.unit = "s"
+    da.label = "voltage"
+    da.unit = "mV"
     da.append_set_dimension()
-    
 
+    average_v = b.create_data_array("average response", "nix.regular_sampled", dtype=nix.DataType.Double, data=np.mean(voltages, axis=1))
+    average_v.label = "voltage"
+    average_v.unit = "mV"
+    dim = average_v.append_sampled_dimension(time[1] - time[0])
+    dim.unit = "s"
+    dim.label = "time"
+
+    tag = b.create_tag("average response", "nix.epoch", [0.0])
+    tag.extent = [time[-1]]
+    tag.definition = "Average repsonse of the model neuron. The original responses are referenced and the average response is linked as a feature of these."
+    tag.references.append(da)
+    tag.create_feature(average_v, nix.LinkType.Untagged)
+
+    
 def create_3d(f, b):
     # taken from nix tutorial
     image = img.open('lena.bmp')
@@ -190,6 +205,7 @@ def create_epoch_tag(f, b):
     
     tag = b.create_tag("interesting epoch", "nix.epoch", [0.1])
     tag.extent = [0.3]
+    tag.definition = "This tag tags a region in the referenced DataArray (EOD). One feature of the referenced epoch, or region, is the power spectrum of the EOD signal in that region."
     tag.references.append(trace)
     tag.create_feature(power, nix.LinkType.Untagged)
 
