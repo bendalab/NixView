@@ -59,16 +59,28 @@ void PlotWidget::delete_widgets_from_layout() {
 
 
 void PlotWidget::process(const nix::DataArray &array) {
+    if (Plotter::suggested_plotter(array) == PlotterType::Line) {
+        delete_widgets_from_layout();
+        LinePlotter *lp = new LinePlotter();
+        ui->scrollAreaWidgetContents->layout()->addWidget(lp);
+        lp->draw(array);
+    } else if (Plotter::suggested_plotter(array) == PlotterType::Category) {
+
+    }
+
+
     size_t dim_count = array.dimensionCount();
     switch (dim_count) {
     case 1:
         if (array.getDimension(1).dimensionType() == nix::DimensionType::Sample ||
                 array.getDimension(1).dimensionType() == nix::DimensionType::Range) {
             // delete_widgets_from_layout();
+            /*
             LinePlotter *lp = new LinePlotter();
             ui->scrollAreaWidgetContents->layout()->addWidget(lp);
             this->plots.push_back(static_cast<Plotter*>(lp));
             draw_1d(array);
+            */
         } else if (array.getDimension(1).dimensionType() == nix::DimensionType::Set) {
             CategoryPlotter *cp = new CategoryPlotter();
             ui->scrollAreaWidgetContents->layout()->addWidget(cp);
@@ -79,12 +91,14 @@ void PlotWidget::process(const nix::DataArray &array) {
     case 2:
         if (array.getDimension(1).dimensionType() == nix::DimensionType::Sample ||
                 array.getDimension(1).dimensionType() == nix::DimensionType::Range) {
+            /*
             ui->multiPlotCheckBox->setEnabled(true);
             if (array.getDimension(2).dimensionType() == nix::DimensionType::Set) {
                 draw_multi_line(array);
             } else {
                 // handle 2D image/heatmap plotting not supported, yet TODO
             }
+            */
         } else {
             // handle 2 D set plotting  TODO
         }
