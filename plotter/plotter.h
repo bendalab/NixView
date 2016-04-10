@@ -56,35 +56,36 @@ public:
         return true;
     }
 
+
     /*
      *
      *
      */
     static void data_array_axis(const nix::DataArray &array, QVector<double> &axis_data,
-                                QVector<QString> &ticklabels, nix::ndsize_t dim) {
+                                QVector<QString> &ticklabels, size_t dim) {
         if (dim > array.dimensionCount()) {
             return;
         }
         nix::Dimension d = array.getDimension(dim);
         if (d.dimensionType() == nix::DimensionType::Sample) {
-            nix::SampledDimension dim = d.asSampledDimension();
-            std::vector<double> ax = dim.axis(array.dataExtent()[0]);
+            nix::SampledDimension sdim = d.asSampledDimension();
+            std::vector<double> ax = sdim.axis(array.dataExtent()[dim]);
             axis_data = QVector<double>::fromStdVector(ax);
         } else if (d.dimensionType() == nix::DimensionType::Range) {
-            nix::RangeDimension dim = d.asRangeDimension();
-            std::vector<double> ax = dim.axis(array.dataExtent()[0]);
+            nix::RangeDimension rdim = d.asRangeDimension();
+            std::vector<double> ax = rdim.axis(array.dataExtent()[dim]);
             axis_data = QVector<double>::fromStdVector(ax);
         } else if (d.dimensionType() == nix::DimensionType::Set) {
-            nix::SetDimension dim = d.asSetDimension();
-            std::vector<std::string> labels = dim.labels();
+            nix::SetDimension sdim = d.asSetDimension();
+            std::vector<std::string> labels = sdim.labels();
             for (size_t i = 0; i < labels.size(); ++i) {
-                xticklabels.push_back(QString::fromStdString(labels[i]));
-                xdata.push_back(static_cast<double>(i));
+                ticklabels.push_back(QString::fromStdString(labels[i]));
+                axis_data.push_back(static_cast<double>(i));
             }
             if (labels.size() == 0) {
-                for (int i = 0; i < ydata.size(); ++i) {
-                    xticklabels.push_back(QString::fromStdString(nix::util::numToStr<int>(i)));
-                    xdata.push_back(static_cast<double>(i));
+                for (int i = 0; i < array.dataExtent()[dim]; ++i) {
+                    ticklabels.push_back(QString::fromStdString(nix::util::numToStr<int>(i)));
+                    axis_data.push_back(static_cast<double>(i));
                 }
             }
         } else {
