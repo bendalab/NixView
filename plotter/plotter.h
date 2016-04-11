@@ -83,8 +83,8 @@ public:
                 axis_data.push_back(static_cast<double>(i));
             }
             if (labels.size() == 0) {
-                for (int i = 0; i < array.dataExtent()[dim]; ++i) {
-                    ticklabels.push_back(QString::fromStdString(nix::util::numToStr<int>(i)));
+                for (nix::ndsize_t i = 0; i < array.dataExtent()[dim]; ++i) {
+                    ticklabels.push_back(QString::fromStdString(nix::util::numToStr<nix::ndsize_t>(i)));
                     axis_data.push_back(static_cast<double>(i));
                 }
             }
