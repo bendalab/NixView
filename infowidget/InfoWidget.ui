@@ -20,7 +20,7 @@
    <string>Form</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">background-color: white;</string>
+   <string notr="true"/>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <property name="leftMargin">
@@ -41,10 +41,10 @@
       <string/>
      </property>
      <property name="styleSheet">
-      <string notr="true">background-color: white;</string>
+      <string notr="true"/>
      </property>
      <property name="currentIndex">
-      <number>3</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="tabWidgetPage1">
       <attribute name="title">

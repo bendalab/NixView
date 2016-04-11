@@ -44,12 +44,14 @@ void TagView::clear() {
 }
 
 
-void TagView::clear_plot_widget(QWidget *plot_widget) {
+void TagView::clear_plot_widget(QWidget *plot_widget) { //TODO this does not seem to work properly (linux)
     if (!plot_widget->layout()->isEmpty()) {
         QLayoutItem *item = plot_widget->layout()->itemAt(0);
         if (item->widget()) {
             plot_widget->layout()->removeItem(item);
             delete item;
+            plot_widget->update();
+            plot_widget->repaint();
         }
     }
 }
