@@ -4,6 +4,7 @@
 #include <QWidget>
 #include "plotter.h"
 #include <nix.hpp>
+#include "colormap.hpp"
 
 namespace Ui {
     class LinePlotter;
@@ -44,6 +45,8 @@ public:
 
 private:
     Ui::LinePlotter *ui;
+    ColorMap cmap;
+
     QCustomPlot* get_plot();
 
 public slots:

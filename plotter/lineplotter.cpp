@@ -3,7 +3,7 @@
 #include <QMenu>
 
 LinePlotter::LinePlotter(QWidget *parent) :
-    QWidget(parent), ui(new Ui::LinePlotter) {
+    QWidget(parent), ui(new Ui::LinePlotter), cmap() {
     ui->setupUi(this);
     // connect slot that ties some axis selections together (especially opposite axes):
     connect(ui->plot, SIGNAL(selectionChangedByUser()), this, SLOT(selection_changed()));
@@ -99,8 +99,6 @@ void LinePlotter::draw_1d(const nix::DataArray &array) {
 
 void LinePlotter::draw_2d(const nix::DataArray &array) {
     int best_dim = guess_best_xdim(array);
-    nix::Dimension x_dim = array.getDimension(best_dim);
-    nix::Dimension y_dim = array.getDimension(3 - best_dim);
     QVector<double> x_axis, y_axis;
     QVector<QString> labels;
     get_data_array_axis(array, x_axis, labels, best_dim);
@@ -157,6 +155,9 @@ bool LinePlotter::check_dimensions(const nix::DataArray &array) const {
 
 void LinePlotter::add_line_plot(const QVector<double> &x_data, const QVector<double> &y_data, const QString &name) {
     ui->plot->addGraph();
+    QPen pen;
+    pen.setColor(cmap.next());
+    ui->plot->graph()->setPen(pen);
     ui->plot->graph()->addData(x_data, y_data);
     ui->plot->xAxis->setRange(x_data[0], x_data.last());
     double y_min = *std::min_element(std::begin(y_data), std::end(y_data));
