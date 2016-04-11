@@ -9,5 +9,6 @@
         <file>images/nixview64.png</file>
         <file>images/nixview128.png</file>
         <file>images/nixview256.png</file>
+        <file>images/nix_table.png</file>
     </qresource>
 </RCC>
