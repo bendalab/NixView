@@ -1,4 +1,4 @@
-import nix
+import nixio as nix
 import lif
 import numpy as np
 import matplotlib.pyplot as plt
@@ -110,6 +110,7 @@ def create_1d_range(f, b):
 def create_1d_set(f, b):
     temp = [13.7, 16.3, 14.6, 11.6, 8.6, 5.7, 4., 2.6, 3., 4., 8.5, 13.1]
     labels = ["Sep", "Aug", "Jul", "Jun", "Mai", "April", "Mar", "Feb", "Jan","Dec","Nov","Okt"]
+    
     da =  b.create_data_array("average temperature", "nix.catergorical", data=temp)
     da.definition = "1-D categorical data can also be stored in a DAtaArray entity. The dimension descriptor is in this case a SetDimension. The labels stored in this dimension are used to label the ticks of the x-axis."
     da.label = "temperature"
@@ -125,7 +126,25 @@ def create_1d_set(f, b):
     s["period"] = "201509 - 201410"
     s["url"] = "http://www.dwd.de/DE/leistungen/klimadatendeutschland/klimadatendeutschland.html"
     src.metadata = s
+    return src
 
+
+def create_2d_set(f, b, source):
+    temp = [13.7, 16.3, 14.6, 11.6, 8.6, 5.7, 4., 2.6, 3., 4., 8.5, 13.1]
+    temp_min = [12.3, 13.8, 12.1, 9.9, 6.6, 1.4, 1.5, -0.2, -1.5, -1.4, 0.5, 9.4]
+    temp_max = [18.7, 23.6, 25.9, 20., 16.6, 11.7, 9.5, 7.2, 9.8, 10.5, 15.8, 18.8]
+    xlabels = ["Sep", "Aug", "Jul", "Jun", "Mai", "April", "Mar", "Feb", "Jan","Dec","Nov","Okt"]
+    ylabels = ["Min", "Avg", "Max"]
+
+    da =  b.create_data_array("2D set of temperatures", "nix.catergorical.series", data=np.vstack([temp_min, temp, temp_max]))
+    da.label = "temperature"
+    da.unit = "C"
+    d1 = da.append_set_dimension()
+    d1.labels = ylabels
+    d2 = da.append_set_dimension()
+    d2.labels = xlabels
+    da.sources.append(source
+)
 
 def create_m_tag(f,b):
     trace = b.data_arrays["eod"]
@@ -229,7 +248,8 @@ def create_test_file(filename):
 
     create_1d_sampled(nix_file, b)
     create_1d_range(nix_file, b)
-    create_1d_set(nix_file, b2)
+    src = create_1d_set(nix_file, b2)
+    create_2d_set(nix_file, b2, src)
     create_m_tag(nix_file, b)
     create_epoch_tag(nix_file, b)
     create_point_tag(nix_file, b)
