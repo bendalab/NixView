@@ -29,10 +29,7 @@ public slots:
 
 private:
     Ui::TagView *ui;
-    nix::DataArray array;
     nix::Tag tag;
-    QModelIndex item_qml;
-    NixModelItem* item;
 
     EntityDescriptor basic_description(const std::string &name, const std::string &type, const std::string &description,
                                        const std::string &id, const std::string &created, const std::string &updated);

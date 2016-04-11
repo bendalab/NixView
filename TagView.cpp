@@ -21,10 +21,9 @@ TagView::~TagView()
 }
 
 void TagView::setEntity(QModelIndex qml) {
-    this->item_qml = qml;
-    this->item = MainViewWidget::get_current_model()->get_item_from_qml(qml);
+    NixModelItem *item = MainViewWidget::get_current_model()->get_item_from_qml(qml);
     clear();
-    if (strcmp(this->item->get_nix_qvariant_type().c_str(), NIX_STRING_TAG) == 0) {
+    if (strcmp(item->get_nix_qvariant_type().c_str(), NIX_STRING_TAG) == 0) {
         this->tag = item->get_nix_entity<nix::Tag>();
         EntityDescriptor descr = basic_description(tag.name(), tag.type(), tag.definition() ? *tag.definition() : "", tag.id(),
         nix::util::timeToStr(tag.createdAt()), nix::util::timeToStr(tag.updatedAt()));
