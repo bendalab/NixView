@@ -293,6 +293,21 @@
     <string>open</string>
    </property>
   </action>
+  <action name="action_Table">
+   <property name="icon">
+    <iconset resource="resources.qrc">
+     <normaloff>:/images/images/nix_table.png</normaloff>:/images/images/nix_table.png</iconset>
+   </property>
+   <property name="text">
+    <string>@Table</string>
+   </property>
+   <property name="toolTip">
+    <string>display content in a table view</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+T</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>

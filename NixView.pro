@@ -90,7 +90,8 @@ FORMS    += MainWindow.ui \
     options/OptionsWidget.ui \
     options/TreeViewOptions.ui \
     TagView.ui \
-    views/datatable.ui
+    views/datatable.ui \
+    datatabledialog.ui
 
 #standard windows folder?
 #win32:CONFIG(release, debug|release): LIBS += /usr/local/lib/release/ -lnix
