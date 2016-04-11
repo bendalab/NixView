@@ -2,6 +2,7 @@
 #define COLORMAP_HPP
 
 #include <QColor>
+#include <vector>
 
 
 class ColorMap
