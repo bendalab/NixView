@@ -42,7 +42,8 @@ SOURCES += main.cpp\
     options/OptionsWidget.cpp \
     options/OptionsTabWidget.cpp \
     options/TreeViewOptions.cpp \
-    TagView.cpp
+    TagView.cpp \
+    plotter/colormap.cpp
 
 HEADERS  += MainWindow.hpp \
     MainViewWidget.hpp \
@@ -69,7 +70,8 @@ HEADERS  += MainWindow.hpp \
     options/OptionsTabWidget.hpp \
     options/TreeViewOptions.hpp\
     options/viewoptions/TreeViewOptions.hpp \
-    TagView.hpp
+    TagView.hpp \
+    plotter/colormap.hpp
 
 FORMS    += MainWindow.ui \
     MainViewWidget.ui \
