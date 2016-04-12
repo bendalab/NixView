@@ -3,6 +3,8 @@
 
 #include <QDialog>
 #include <QModelIndex>
+#include <QAbstractButton>
+
 
 namespace Ui {
 class TableDialog;
@@ -18,6 +20,9 @@ public:
 
     void set_entity(const QModelIndex qml);
 
+public slots:
+    void button_clicked(QAbstractButton *button);
+    void accept();
 private:
     Ui::TableDialog *ui;
 
