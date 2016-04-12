@@ -187,6 +187,7 @@
    <addaction name="actionOpenFile"/>
    <addaction name="actionCloseFile"/>
    <addaction name="actionPlot"/>
+   <addaction name="actionTable"/>
    <addaction name="actionQuit"/>
   </widget>
   <action name="action_Open_File">
@@ -214,6 +215,9 @@
    </property>
    <property name="text">
     <string>&amp;Quit</string>
+   </property>
+   <property name="toolTip">
+    <string>quit nix-view</string>
    </property>
    <property name="shortcut">
     <string>Alt+Q</string>
@@ -274,6 +278,9 @@
    <property name="text">
     <string>About</string>
    </property>
+   <property name="toolTip">
+    <string>show about dialog</string>
+   </property>
    <property name="shortcut">
     <string>F1</string>
    </property>
@@ -293,13 +300,13 @@
     <string>open</string>
    </property>
   </action>
-  <action name="action_Table">
+  <action name="actionTable">
    <property name="icon">
     <iconset resource="resources.qrc">
      <normaloff>:/images/images/nix_table.png</normaloff>:/images/images/nix_table.png</iconset>
    </property>
    <property name="text">
-    <string>@Table</string>
+    <string>&amp;Table</string>
    </property>
    <property name="toolTip">
     <string>display content in a table view</string>
