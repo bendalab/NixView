@@ -24,6 +24,7 @@ private:
 
     void accept();
     void export_cvs();
+    void get_header(QStringList &vheader, QStringList &hheader);
 };
 
 #endif // CVSEXPORTDIALOG_H
