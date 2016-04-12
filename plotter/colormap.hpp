@@ -4,7 +4,6 @@
 #include <QColor>
 #include <vector>
 
-
 class ColorMap
 {
 public:
