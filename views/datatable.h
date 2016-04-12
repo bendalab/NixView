@@ -6,6 +6,7 @@
 #include <nix.hpp>
 #include "model/NixModelItem.hpp"
 #include <QStandardItemModel>
+#include <QStringList>
 
 namespace Ui {
 class DataTable;
@@ -19,8 +20,8 @@ public:
     explicit DataTable(QWidget *parent = 0);
     ~DataTable();
 
-    void set_entity(QModelIndex qml);
-    bool can_draw(QModelIndex qml) const;
+    void set_entity(const QModelIndex qml);
+    bool can_draw(const QModelIndex qml) const;
 
 private:
     Ui::DataTable *ui;
@@ -28,6 +29,7 @@ private:
     QStandardItemModel *model;
 
     void build_model();
+    QStringList axis_labels(const nix::DataArray &array, size_t dim) const;
 
 };
 
