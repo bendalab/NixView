@@ -44,7 +44,8 @@ SOURCES += main.cpp\
     options/TreeViewOptions.cpp \
     TagView.cpp \
     plotter/colormap.cpp \
-    views/datatable.cpp
+    views/datatable.cpp \
+    tabledialog.cpp
 
 HEADERS  += MainWindow.hpp \
     MainViewWidget.hpp \
@@ -72,7 +73,8 @@ HEADERS  += MainWindow.hpp \
     options/TreeViewOptions.hpp\
     TagView.hpp \
     plotter/colormap.hpp \
-    views/datatable.h
+    views/datatable.h \
+    tabledialog.hpp
 
 FORMS    += MainWindow.ui \
     MainViewWidget.ui \
@@ -91,7 +93,7 @@ FORMS    += MainWindow.ui \
     options/TreeViewOptions.ui \
     TagView.ui \
     views/datatable.ui \
-    datatabledialog.ui
+    tabledialog.ui
 
 #standard windows folder?
 #win32:CONFIG(release, debug|release): LIBS += /usr/local/lib/release/ -lnix
