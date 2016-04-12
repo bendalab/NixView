@@ -2,6 +2,8 @@
 #include "ui_cvsexportdialog.h"
 #include <iostream>
 #include <Qt>
+#include <QFileDialog>
+#include <QTextStream>
 
 CVSExportDialog::CVSExportDialog(QWidget *parent) :
     QDialog(parent),
@@ -35,6 +37,16 @@ void CVSExportDialog::get_header(QStringList &vheader, QStringList &hheader) {
 
 
 void CVSExportDialog::export_cvs() {
+    QFileDialog fd(this);
+    fd.setAcceptMode(QFileDialog::AcceptSave);
+    fd.setNameFilter(tr("CVS File (*.cvs)"));
+    fd.setViewMode(QFileDialog::Detail);
+    QStringList fileNames;
+    if (fd.exec())
+        fileNames = fd.selectedFiles();
+    if (fileNames.size() == 0)
+        return;
+    //QString filename = QFileDialog::getSaveFileName(this, tr("save cvs file"), QString(), tr("CVS files (*.cvs)"));
     QItemSelectionModel* temp = table->selectionModel();
     if (!ui->export_selection->isChecked() || temp->selection().count() == 0) {
         table->selectAll();
@@ -43,8 +55,6 @@ void CVSExportDialog::export_cvs() {
     QModelIndexList indexes = table->selectionModel()->selection().indexes();
     int min_col = indexes[0].column();
     int max_col = indexes.back().column();
-    int min_row = indexes[0].row();
-    int max_row = indexes.back().row();
 
     QStringList vheader, hheader;
     if (ui->export_header->isChecked()) {
@@ -52,15 +62,23 @@ void CVSExportDialog::export_cvs() {
     }
 
     QString sep = ui->separator_edit->text();
-    std::cerr << min_col << "\t"<< max_col  << std::endl;
-    std::cerr << min_row << "\t"<< max_row  << std::endl;
+
+    QFile outfile(fileNames[0]);
+    outfile.open(QIODevice::WriteOnly);
+
+    if(!outfile.isOpen()){
+        std::cerr << "- Error, unable to open" << "outputFilename" << "for output";
+    }
+    QTextStream outStream(&outfile);
+
     if (ui->export_header->isChecked()) {
-        std::cerr << " " << sep.toStdString() << " ";
+        outStream << " " << sep << " ";
         for (int i = 0; i < hheader.size(); i++) {
-            if (i >= min_col && i <= max_col)
-                std::cerr << hheader[i].toStdString() << sep.toStdString() << " ";
+            if (i >= min_col && i <= max_col) {
+                outStream << hheader[i] << sep << " ";
+            }
         }
-        std::cerr << std::endl;
+        outStream << "\n";
     }
     for (QModelIndex i: indexes) {
         QVariant var = table->model()->data(i);
@@ -68,18 +86,19 @@ void CVSExportDialog::export_cvs() {
             continue;
         if (ui->export_header->isChecked()) {
             if (i.column() == min_col) {
-                std::cerr << vheader[i.row()].toStdString() << sep.toStdString() << " ";
+                outStream << vheader[i.row()] << sep << " ";
             }
         }
-        if (i.column() < max_col)
-            std::cerr << var.value<double>() << sep.toStdString() << " ";
-        else
-            std::cerr << var.value<double>() << std::endl;
+        if (i.column() < max_col) {
+            outStream << var.value<double>() << sep << " ";
+        }
+        else {
+            outStream << var.value<double>() << "\n";
+        }
     }
 
     if (!ui->export_selection->isChecked())
         table->clearSelection();
-    if (temp->selection().count() > 0)
-        table->setSelectionModel(temp);
-
+    outfile.close();
+    this->close();
 }
