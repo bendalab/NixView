@@ -55,47 +55,25 @@ void MainWindow::on_actionProperties_triggered()
     ow->show();
 }
 
+
 void MainWindow::nix_model_update(NixDataModel *model) {
     ui->info_view->setDataModel(model);
 }
 
-void MainWindow::activate_plot(QModelIndex qml) {
-    QAction* plot_action;
-    bool found_action = false;
-    QList<QMenu*> list = this->menuBar()->findChildren<QMenu*>(QString("menuPlot"));
-    if (list.size() == 1) {
-        QMenu* plot_menu = list.at(0);
-        QList<QAction*> actions = plot_menu->actions();
-        QString name;
-        foreach(QAction* a, actions) {
-            name = a->objectName();
-            if (name.compare("actionPlot") == 0) {
-                plot_action = a;
-                found_action = true;
-            }
-        }
-    }
 
+void MainWindow::item_selected(QModelIndex qml) {
     selected_qml = qml;
+    ui->actionPlot->setEnabled(false);
+    ui->actionTable->setEnabled(false);
 
-    if(!qml.isValid())
-    {
-        plot_action->setEnabled(false);
-        return;
-    }
+    NixModelItem *item = mvw->get_current_model()->get_item_from_qml(qml);
 
-    NixModelItem *item = ui->main_view->get_current_model()->get_item_from_qml(qml);
-    if((strcmp(item->get_nix_qvariant_type().c_str(), NIX_STRING_DATAARRAY) == 0) |
-            (strcmp(item->get_nix_qvariant_type().c_str(), NIX_STRING_TAG) == 0) |
-            (strcmp(item->get_nix_qvariant_type().c_str(), NIX_STRING_MULTITAG) == 0)){
-        if (found_action) {
-            plot_action->setEnabled(true);
-        }
-    }
-    else {
-        if (found_action) {
-            plot_action->setEnabled(false);
-        }
+    if(strcmp(item->get_nix_qvariant_type().c_str(), NIX_STRING_DATAARRAY) == 0) {
+        ui->actionTable->setEnabled(true);
+        ui->actionPlot->setEnabled(true);
+    } else if ((strcmp(item->get_nix_qvariant_type().c_str(), NIX_STRING_TAG) == 0) |
+                (strcmp(item->get_nix_qvariant_type().c_str(), NIX_STRING_MULTITAG) == 0)) {
+        ui->actionPlot->setEnabled(true);
     }
 }
 
@@ -112,6 +90,10 @@ void MainWindow::show_plot() {
     d.exec();
 }
 
+
+void MainWindow::show_table() {
+
+}
 
 void MainWindow::file_scan_progress()
 {

@@ -30,10 +30,11 @@ public slots:
     void on_actionColumn_triggered();
     void on_actionProperties_triggered();
     void nix_model_update(NixDataModel *model);
-    void activate_plot(QModelIndex qml);
+    void item_selected(QModelIndex qml);
     void open_file();
     void show_about();
     void show_plot();
+    void show_table();
     void file_scan_progress();
     void invalid_file_error();
 
