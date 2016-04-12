@@ -8,7 +8,7 @@
 #include <QStandardItemModel>
 #include <QStringList>
 #include "entitydescriptor.h"
-
+#include <QTableView>
 
 namespace Ui {
 class DataTable;
@@ -24,6 +24,7 @@ public:
 
     void set_entity(const QModelIndex qml);
     bool can_draw(const QModelIndex qml) const;
+    QTableView* get_table();
 
 private:
     Ui::DataTable *ui;

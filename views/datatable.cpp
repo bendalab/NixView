@@ -127,3 +127,8 @@ void DataTable::build_model() {
         std::cerr << "sorry, not that elaborate, yet!" << std::endl;
     }
 }
+
+
+QTableView* DataTable::get_table() {
+    return ui->table;
+}
