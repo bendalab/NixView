@@ -49,6 +49,7 @@ include_directories(AFTER ${Boost_INCLUDE_DIR})
 include_directories(${CMAKE_BINARY_DIR})
 
 file(GLOB NIXVIEW_SOURCES *.cpp 
+  dialogs/*.cpp
   infowidget/*.cpp 
   plotter/*.cpp 
   model/*.cpp 
@@ -58,6 +59,7 @@ file(GLOB NIXVIEW_SOURCES *.cpp
 
 file(GLOB NIXVIEW_INCLUDES *.hpp 
   *.h
+  dialogs/*.hpp
   infowidget/*.hpp 
   plotter/*.h 
   model/*.hpp 
@@ -65,7 +67,8 @@ file(GLOB NIXVIEW_INCLUDES *.hpp
   filter/*.hpp 
   options/*.hpp)
 
-file(GLOB NIXVIEW_UI *.ui 
+file(GLOB NIXVIEW_UI *.ui
+  dialogs/*.ui
   infowidget/*.ui 
   plotter/*.ui 
   views/*.ui 
