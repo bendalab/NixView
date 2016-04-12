@@ -3,12 +3,15 @@
 #include "common/Common.hpp"
 #include <ostream>
 
-MetaDataPanel::MetaDataPanel(NixDataModel *_nix_model, QWidget *parent) :
+MetaDataPanel::MetaDataPanel(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::MetaDataPanel)
 {
     ui->setupUi(this);
+}
 
+
+void MetaDataPanel::setDataModel(NixDataModel *_nix_model) {
     proxy_model = new NixProxyModel(this);
     proxy_model->setSourceModel(_nix_model);
     ui->treeView->setModel(proxy_model);
@@ -17,6 +20,7 @@ MetaDataPanel::MetaDataPanel(NixDataModel *_nix_model, QWidget *parent) :
         ui->treeView->setColumnHidden(c, true);
     set_proxy_model();
 }
+
 
 void MetaDataPanel::set_proxy_model()
 {

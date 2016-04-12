@@ -1,7 +1,8 @@
-import nix
+import nixio as nix
 import lif
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib.mlab as mlab
 from PIL import Image as img
 from IPython import embed
 
@@ -59,11 +60,24 @@ def create_2d(f, b, trials=10):
     d = da.append_sampled_dimension(time[1]-time[0])
     d.label = "time"
     d.unit = "s"
+    da.label = "voltage"
+    da.unit = "mV"
     da.append_set_dimension()
 
+    average_v = b.create_data_array("average response", "nix.regular_sampled", dtype=nix.DataType.Double, data=np.mean(voltages, axis=1))
+    average_v.label = "voltage"
+    average_v.unit = "mV"
+    dim = average_v.append_sampled_dimension(time[1] - time[0])
+    dim.unit = "s"
+    dim.label = "time"
+
+    tag = b.create_tag("average response", "nix.epoch", [0.0])
+    tag.extent = [time[-1]]
+    tag.definition = "Average repsonse of the model neuron. The original responses are referenced and the average response is linked as a feature of these."
+    tag.references.append(da)
+    tag.create_feature(average_v, nix.LinkType.Untagged)
+
     
-
-
 def create_3d(f, b):
     # taken from nix tutorial
     image = img.open('lena.bmp')
@@ -96,6 +110,7 @@ def create_1d_range(f, b):
 def create_1d_set(f, b):
     temp = [13.7, 16.3, 14.6, 11.6, 8.6, 5.7, 4., 2.6, 3., 4., 8.5, 13.1]
     labels = ["Sep", "Aug", "Jul", "Jun", "Mai", "April", "Mar", "Feb", "Jan","Dec","Nov","Okt"]
+    
     da =  b.create_data_array("average temperature", "nix.catergorical", data=temp)
     da.definition = "1-D categorical data can also be stored in a DAtaArray entity. The dimension descriptor is in this case a SetDimension. The labels stored in this dimension are used to label the ticks of the x-axis."
     da.label = "temperature"
@@ -111,7 +126,25 @@ def create_1d_set(f, b):
     s["period"] = "201509 - 201410"
     s["url"] = "http://www.dwd.de/DE/leistungen/klimadatendeutschland/klimadatendeutschland.html"
     src.metadata = s
+    return src
 
+
+def create_2d_set(f, b, source):
+    temp = [13.7, 16.3, 14.6, 11.6, 8.6, 5.7, 4., 2.6, 3., 4., 8.5, 13.1]
+    temp_min = [12.3, 13.8, 12.1, 9.9, 6.6, 1.4, 1.5, -0.2, -1.5, -1.4, 0.5, 9.4]
+    temp_max = [18.7, 23.6, 25.9, 20., 16.6, 11.7, 9.5, 7.2, 9.8, 10.5, 15.8, 18.8]
+    xlabels = ["Sep", "Aug", "Jul", "Jun", "Mai", "April", "Mar", "Feb", "Jan","Dec","Nov","Okt"]
+    ylabels = ["Min", "Avg", "Max"]
+
+    da =  b.create_data_array("2D set of temperatures", "nix.catergorical.series", data=np.vstack([temp_min, temp, temp_max]))
+    da.label = "temperature"
+    da.unit = "C"
+    d1 = da.append_set_dimension()
+    d1.labels = ylabels
+    d2 = da.append_set_dimension()
+    d2.labels = xlabels
+    da.sources.append(source
+)
 
 def create_m_tag(f,b):
     trace = b.data_arrays["eod"]
@@ -178,18 +211,29 @@ def create_m_tag_3d(f, b):
 
 def create_epoch_tag(f, b):
     trace = b.data_arrays["eod"]
-    xings = b.data_arrays["zero crossings"]
+    sampling_rate = 1./trace.dimensions[0].sampling_interval
+    p,f = mlab.psd(trace[:], Fs=1./trace.dimensions[0].sampling_interval, NFFT=4096,
+                       noverlap=2048, sides="twosided")
+    power = b.create_data_array("power spectrum", "nix.sampled.spectrum.psd", data=p)
+    power.label = "power"
+    power.unit = "mV^2/cm^2*Hz^-1"
+    dim = power.append_sampled_dimension(np.mean(np.diff(f)))
+    dim.offset = f[0]
+    dim.label = "frequency"
+    dim.unit = "Hz"
+    
     tag = b.create_tag("interesting epoch", "nix.epoch", [0.1])
     tag.extent = [0.3]
+    tag.definition = "This tag tags a region in the referenced DataArray (EOD). One feature of the referenced epoch, or region, is the power spectrum of the EOD signal in that region."
     tag.references.append(trace)
-    tag.references.append(xings)
+    tag.create_feature(power, nix.LinkType.Untagged)
 
 
 def create_point_tag(f, b):
-    trace = b.data_arrays["eod"]
+    trace = b.data_arrays["eod"]                                  
     tag = b.create_tag("interesting point", "nix.point", [0.05])
     tag.references.append(trace)
-
+    
 
 def create_test_file(filename):
     nix_file = nix.File.open(filename, nix.FileMode.Overwrite)
@@ -204,7 +248,8 @@ def create_test_file(filename):
 
     create_1d_sampled(nix_file, b)
     create_1d_range(nix_file, b)
-    create_1d_set(nix_file, b2)
+    src = create_1d_set(nix_file, b2)
+    create_2d_set(nix_file, b2, src)
     create_m_tag(nix_file, b)
     create_epoch_tag(nix_file, b)
     create_point_tag(nix_file, b)

@@ -41,6 +41,7 @@ public slots:
     void scan_progress();
 
 signals:
+    void emit_model_update(NixDataModel*);
     void scan_progress_update();
     void emit_current_qml(QModelIndex);
 

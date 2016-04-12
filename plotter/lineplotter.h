@@ -3,6 +3,8 @@
 
 #include <QWidget>
 #include "plotter.h"
+#include <nix.hpp>
+#include "colormap.hpp"
 
 namespace Ui {
     class LinePlotter;
@@ -14,6 +16,16 @@ class LinePlotter : public QWidget, public Plotter {
 public:
     explicit LinePlotter(QWidget *parent = 0);
     ~LinePlotter();
+
+    void draw(const nix::DataArray &array);
+
+    void draw_1d(const nix::DataArray &array);
+
+    void draw_2d(const nix::DataArray &array);
+
+    bool check_dimensions(const nix::DataArray &array) const;
+
+    int guess_best_xdim(const nix::DataArray &array) const; //tries to find the best x-dimension needs to be optional at some point...
 
     void set_label(const std::string &label);
 
@@ -33,6 +45,8 @@ public:
 
 private:
     Ui::LinePlotter *ui;
+    ColorMap cmap;
+
     QCustomPlot* get_plot();
 
 public slots:

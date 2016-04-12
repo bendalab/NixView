@@ -3,7 +3,7 @@
 #include <QMenu>
 
 LinePlotter::LinePlotter(QWidget *parent) :
-    QWidget(parent), ui(new Ui::LinePlotter) {
+    QWidget(parent), ui(new Ui::LinePlotter), cmap() {
     ui->setupUi(this);
     // connect slot that ties some axis selections together (especially opposite axes):
     connect(ui->plot, SIGNAL(selectionChangedByUser()), this, SLOT(selection_changed()));
@@ -32,7 +32,7 @@ PlotterType LinePlotter::plotter_type() const {
 
 
 void LinePlotter::set_label(const std::string &label) {
-    ui->label->setText(QString::fromStdString(label));
+    //ui->label->setText(QString::fromStdString(label));
 }
 
 void LinePlotter::set_xlabel(const std::string &label) {
@@ -53,9 +53,111 @@ void LinePlotter::set_ylabel(const QString &label){
     ui->plot->replot();
 }
 
+void LinePlotter::draw(const nix::DataArray &array) {
+    if (array.dimensionCount() > 2) {
+        std::cerr << "LinePlotter::draw cannot draw 3D!" << std::endl;
+        return;
+    }
+    if (!Plotter::check_plottable_dtype(array)) {
+        std::cerr << "LinePlotter::draw cannot handle data type " << array.dataType() << std::endl;
+        return;
+    }
+    if (!check_dimensions(array)) {
+        std::cerr << "LinePlotter::draw cannot handle dimensionality of the data" << std::endl;
+        return;
+    }
+    if (array.dimensionCount() == 1) {
+        draw_1d(array);
+    } else {
+        draw_2d(array);
+    }
+}
+
+void LinePlotter::draw_1d(const nix::DataArray &array) {
+    nix::Dimension d = array.getDimension(1);
+    QVector<double> x_axis, y_axis;
+    QVector<QString> x_tick_labels;
+    data_array_to_qvector(array, x_axis, y_axis, x_tick_labels, 1);
+
+    QString y_label;
+    QVector<QString> ax_labels;
+    data_array_ax_labels(array, y_label, ax_labels);
+
+    if (d.dimensionType() == nix::DimensionType::Range) {
+        this->add_events(x_axis, y_axis, QString::fromStdString(array.name()), true);
+        this->set_ylabel(y_label);
+        this->set_xlabel(ax_labels[0]);
+        this->set_label(array.name());
+    } else {
+        this->add_line_plot(x_axis, y_axis, QString::fromStdString(array.name()));
+        this->set_ylabel(y_label);
+        this->set_xlabel(ax_labels[0]);
+        this->set_label(array.name());
+    }
+}
+
+
+void LinePlotter::draw_2d(const nix::DataArray &array) {
+    int best_dim = guess_best_xdim(array);
+    QVector<double> x_axis, y_axis;
+    QVector<QString> labels;
+    get_data_array_axis(array, x_axis, labels, best_dim);
+    get_data_array_axis(array, y_axis, labels, 3-best_dim);
+    for (int i = 0; i < y_axis.size(); i++) {
+        QVector<double> data = get_data_line(array, i, best_dim);
+        add_line_plot(x_axis, data, labels[i]);
+    }
+    QString y_label;
+    QVector<QString> ax_labels;
+    data_array_ax_labels(array, y_label, ax_labels);
+    this->set_ylabel(y_label);
+    this->set_xlabel(ax_labels[best_dim-1]);
+}
+
+
+int LinePlotter::guess_best_xdim(const nix::DataArray &array) const {
+    if (array.dimensionCount() > 1){
+        if (array.getDimension(1).dimensionType() == nix::DimensionType::Sample ||
+                array.getDimension(1).dimensionType() == nix::DimensionType::Range) {
+            return 1;
+        } else {
+            nix::DimensionType dt_2 = array.getDimension(2).dimensionType();
+            if (dt_2 != nix::DimensionType::Set)
+                return 2;
+        }
+    }
+    return 1;
+}
+
+
+bool LinePlotter::check_dimensions(const nix::DataArray &array) const {
+    if (array.dimensionCount() == 0) {
+        return false;
+    }
+    if (array.dimensionCount() == 1) {
+        return true;
+    }
+    nix::DimensionType dt_1 = array.getDimension(1).dimensionType();
+    nix::DimensionType dt_2 = array.getDimension(2).dimensionType();
+    if ((dt_1 == nix::DimensionType::Sample || dt_1 == nix::DimensionType::Range) && dt_2 == nix::DimensionType::Set) {
+        return true;
+    }
+    if (dt_1 == nix::DimensionType::Set && (dt_2 == nix::DimensionType::Range || dt_2 == nix::DimensionType::Range)) {
+        return true;
+    }
+    if (dt_1 == nix::DimensionType::Set && dt_2 == nix::DimensionType::Set) {
+        std::cerr << "LinePlotter should draw 2D Set data? You serious?" << std::endl;
+        return true;
+    }
+    return false;
+}
+
 
 void LinePlotter::add_line_plot(const QVector<double> &x_data, const QVector<double> &y_data, const QString &name) {
     ui->plot->addGraph();
+    QPen pen;
+    pen.setColor(cmap.next());
+    ui->plot->graph()->setPen(pen);
     ui->plot->graph()->addData(x_data, y_data);
     ui->plot->xAxis->setRange(x_data[0], x_data.last());
     double y_min = *std::min_element(std::begin(y_data), std::end(y_data));

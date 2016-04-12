@@ -16,19 +16,11 @@ RawTreeView::RawTreeView(QWidget *parent) :
 {
     ui->setupUi(this);
     filter_mode = 0;
-
     nix_proxy_model = nullptr;
-
     current_depth = 0;
-
     settings = new QSettings();
 }
 
-RawTreeView::RawTreeView(NixProxyModel* _nix_proxy_model, QWidget *parent) :
-    RawTreeView(parent)
-{
-    set_proxy_model(_nix_proxy_model);
-}
 
 void RawTreeView::set_proxy_model(NixProxyModel *proxy_model)
 {

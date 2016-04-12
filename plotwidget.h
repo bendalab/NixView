@@ -29,12 +29,11 @@ private:
     Ui::PlotWidget *ui;
     QModelIndex item_qml;
     NixModelItem* item;
-    std::vector<Plotter *> plots;
 
     bool check_plottable_dtype(nix::DataType dtype) const;
     void delete_widgets_from_layout();
     void process_item();
-    void process(const nix::DataArray &array);
+    Plotter* process(const nix::DataArray &array);
     void process(const nix::MultiTag &mtag);
     void process(const nix::Tag &tag);
 

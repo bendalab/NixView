@@ -10,6 +10,7 @@
 #include "DescriptionPanel.hpp"
 #include "MetaDataPanel.hpp"
 #include "TagPanel.hpp"
+#include "TagView.hpp"
 #include "model/NixDataModel.hpp"
 
 namespace Ui {
@@ -21,8 +22,10 @@ class InfoWidget : public QWidget
     Q_OBJECT
 
 public:
-    explicit InfoWidget(NixDataModel *_nix_model, QWidget *parent = 0);
+    explicit InfoWidget(QWidget *parent =0);
     ~InfoWidget();
+
+    void setDataModel(NixDataModel *_nix_model);
 
 public slots:
     void update_info_widget(QModelIndex qml);
@@ -33,6 +36,7 @@ private:
     DescriptionPanel* dp;
     MetaDataPanel* mp;
     TagPanel* tp;
+    TagView* tv;
 
     void update_meta_info(nix::Section);
     void add_children_to_item(QTreeWidgetItem*, nix::Section);

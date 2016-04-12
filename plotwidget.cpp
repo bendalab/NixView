@@ -47,139 +47,48 @@ void PlotWidget::process_item() {
 }
 
 
-void PlotWidget::process(const nix::DataArray &array) {
-    size_t dim_count = array.dimensionCount();
-    switch (dim_count) {
-    case 1:
-        if (array.getDimension(1).dimensionType() == nix::DimensionType::Sample ||
-                array.getDimension(1).dimensionType() == nix::DimensionType::Range) {
-            // delete_widgets_from_layout();
-            LinePlotter *lp = new LinePlotter();
-            ui->scrollAreaWidgetContents->layout()->addWidget(lp);
-            this->plots.push_back(static_cast<Plotter*>(lp));
-            draw_1d(array);
-        } else if (array.getDimension(1).dimensionType() == nix::DimensionType::Set) {
-            CategoryPlotter *cp = new CategoryPlotter();
-            ui->scrollAreaWidgetContents->layout()->addWidget(cp);
-            this->plots.push_back(static_cast<Plotter*>(cp));
-            draw_1d(array);
+void PlotWidget::delete_widgets_from_layout() {
+    if (!ui->scrollAreaWidgetContents->layout()->isEmpty()) {
+        QLayoutItem *item = ui->scrollAreaWidgetContents->layout()->itemAt(0);
+        if (item->widget()) {
+            ui->scrollAreaWidgetContents->layout()->removeItem(item);
+            delete item;
         }
-        break;
-    case 2:
-        if (array.getDimension(1).dimensionType() == nix::DimensionType::Sample ||
-                array.getDimension(1).dimensionType() == nix::DimensionType::Range) {
-            ui->multiPlotCheckBox->setEnabled(true);
-            if (array.getDimension(2).dimensionType() == nix::DimensionType::Set) {
-                draw_multi_line(array);
-            } else {
-                // handle 2D image/heatmap plotting not supported, yet TODO
-            }
-        } else {
-            // handle 2 D set plotting  TODO
-        }
-        break;
-    default:
-        std::cerr << "Sorry, cannot plot data with more than 2d!" << std::endl;
-        break;
     }
 }
 
 
-void PlotWidget::draw_multi_line(const nix::DataArray &array) {
-    if (ui->multiPlotCheckBox->isChecked()) {
-        // TODO
-    } else {
+Plotter* PlotWidget::process(const nix::DataArray &array) {
+    if (Plotter::suggested_plotter(array) == PlotterType::Line) {
+        delete_widgets_from_layout();
         LinePlotter *lp = new LinePlotter();
         ui->scrollAreaWidgetContents->layout()->addWidget(lp);
-        this->plots.push_back(static_cast<Plotter*>(lp));
-
-        QVector<double> x_axis, y_axis;
-        QVector<QString> y_tick_labels;
-        std::vector<std::string> labels;
-        nix::Dimension d = array.getDimension(2);
-        if (d.dimensionType() != nix::DimensionType::Set) {
-            return;
-        }
-        nix::SetDimension sd = d.asSetDimension();
-        sd.labels(labels);
-        lp->get_data_array_axis(array, x_axis, y_tick_labels, 1);
-        y_tick_labels.resize(0);
-        for (std::string s : labels)
-            y_tick_labels.push_back(QString::fromStdString(s));
-        for (nix::ndsize_t i = 0; i < array.dataExtent()[1]; i++) {
-            std::vector<double> data;
-            data.resize(array.dataExtent()[0]);
-            nix::NDSize count(array.dataExtent()[0], 1);
-            nix::NDSize offset(0, i);
-            array.getData(nix::DataType::Double, data.data(), count, offset);
-            y_axis = QVector<double>::fromStdVector(data);
-            lp->add_line_plot(x_axis, y_axis, y_tick_labels[i]);
-        }
-
+        lp->draw(array);
+        return lp;
+    } else if (Plotter::suggested_plotter(array) == PlotterType::Category) {
+        delete_widgets_from_layout();
+        CategoryPlotter *cp = new CategoryPlotter();
+        ui->scrollAreaWidgetContents->layout()->addWidget(cp);
+        cp->draw(array);
+        return cp;
     }
+    return nullptr;
 }
 
-
-void PlotWidget::draw_1d(const nix::DataArray &array) {
-    if (check_plottable_dtype(array.dataType())) {
-        nix::Dimension d = array.getDimension(1);
-        QVector<double> x_axis, y_axis;
-        QVector<QString> x_tick_labels;
-        Plotter::data_array_to_qvector(array, x_axis, y_axis, x_tick_labels, 1);
-
-        QString y_label;
-        QVector<QString> ax_labels;
-        Plotter::data_array_ax_labels(array, y_label, ax_labels);
-
-        if (d.dimensionType() == nix::DimensionType::Sample) {
-            if (this->plots[this->plots.size() - 1]->plotter_type() != PlotterType::Line) {
-              return;
-            }
-            LinePlotter *plotter = static_cast<LinePlotter*>(this->plots[this->plots.size() - 1]);
-
-            plotter->add_line_plot(x_axis, y_axis, QString::fromStdString(array.name()));
-            plotter->set_ylabel(y_label);
-            plotter->set_xlabel(ax_labels[0]);
-            plotter->set_label(array.name());
-        } else if (d.dimensionType() == nix::DimensionType::Range) {
-            if (this->plots[this->plots.size() - 1]->plotter_type() != PlotterType::Line) {
-              return;
-            }
-
-            LinePlotter *plotter = static_cast<LinePlotter*>(this->plots[this->plots.size() - 1]);
-            plotter->add_events(x_axis, y_axis, QString::fromStdString(array.name()), true);
-            plotter->set_ylabel(y_label);
-            plotter->set_xlabel(ax_labels[0]);
-            plotter->set_label(array.name());
-        } else if (d.dimensionType() == nix::DimensionType::Set) {
-            if (this->plots[this->plots.size() - 1]->plotter_type() != PlotterType::Category) {
-              return;
-            }
-            CategoryPlotter *plotter = static_cast<CategoryPlotter*>(this->plots[this->plots.size() - 1]);
-            plotter->add_bar_plot(x_tick_labels, y_axis, QString::fromStdString(array.name()));
-            plotter->set_label(array.name());
-            plotter->set_ylabel(array.label() ? *array.label() : "");
-        } else {
-            std::cerr << "unsupported dimension type" << std::endl;
-        }
-    }
-}
 
 void PlotWidget::process(const nix::Tag &tag) {
     for (nix::ndsize_t i = 0; i < tag.referenceCount(); i++) {
-        process(tag.getReference(i));
-        Plotter *currplot = this->plots[i];
+        Plotter *currplot = process(tag.getReference(i));
         QVector<double> positions, extents;
         positions.push_back(tag.position()[0]);
         if (tag.extent().size() > 0)
             extents.push_back(tag.extent()[0]);
-
-        if (currplot->plotter_type() == PlotterType::Category) {
-            CategoryPlotter* plt = static_cast<CategoryPlotter*>(this->plots[i]);
+        if (currplot != nullptr && currplot->plotter_type() == PlotterType::Category) {
+            CategoryPlotter* plt = static_cast<CategoryPlotter*>(currplot);
             plt->setFixedHeight(200);
             plt->add_segments(positions, extents, QString::fromStdString(tag.name()));
-        } else if (currplot->plotter_type() == PlotterType::Line) {
-            LinePlotter *plt = static_cast<LinePlotter*>(this->plots[i]);
+        } else if (currplot != nullptr && currplot->plotter_type() == PlotterType::Line) {
+            LinePlotter *plt = static_cast<LinePlotter*>(currplot);
             plt->setFixedHeight(200);
             plt->add_segments(positions, extents, QString::fromStdString(tag.name()));
         }
@@ -201,15 +110,13 @@ void PlotWidget::process(const nix::MultiTag &mtag) {
     QString name = QString::fromStdString(mtag.name());
 
     for (nix::ndsize_t i = 0; i < mtag.referenceCount(); i++){
-        process(mtag.getReference(i));
-        Plotter *currplot = this->plots[i];
-
-        if (currplot->plotter_type() == PlotterType::Category) {
-            CategoryPlotter* plt = static_cast<CategoryPlotter*>(this->plots[i]);
+        Plotter *currplot = process(mtag.getReference(i));
+        if (currplot != nullptr && currplot->plotter_type() == PlotterType::Category) {
+            CategoryPlotter* plt = static_cast<CategoryPlotter*>(currplot);
             plt->setFixedHeight(200);
             plt->add_segments(positions, extents, name);
-        } else if (currplot->plotter_type() == PlotterType::Line) {
-            LinePlotter *plt = static_cast<LinePlotter*>(this->plots[i]);
+        } else if (currplot != nullptr && currplot->plotter_type() == PlotterType::Line) {
+            LinePlotter *plt = static_cast<LinePlotter*>(currplot);
             plt->setFixedHeight(200);
             plt->add_segments(positions, extents, name);
         }
