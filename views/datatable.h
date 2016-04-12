@@ -7,6 +7,8 @@
 #include "model/NixModelItem.hpp"
 #include <QStandardItemModel>
 #include <QStringList>
+#include "entitydescriptor.h"
+
 
 namespace Ui {
 class DataTable;
@@ -30,7 +32,9 @@ private:
 
     void build_model();
     QStringList axis_labels(const nix::DataArray &array, size_t dim) const;
-
+    void describe();
+    EntityDescriptor basic_description(const std::string &name, const std::string &type, const std::string &description,
+                                       const std::string &id, const std::string &created, const std::string &updated);
 };
 
 #endif // DATATABLE_H
