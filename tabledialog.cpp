@@ -12,3 +12,8 @@ TableDialog::~TableDialog()
 {
     delete ui;
 }
+
+
+void TableDialog::set_entity(const QModelIndex qml) {
+    ui->data_table->set_entity(qml);
+}

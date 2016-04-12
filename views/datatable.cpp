@@ -1,11 +1,5 @@
 #include "datatable.h"
 #include "ui_datatable.h"
-<<<<<<< HEAD
-
-DataTable::DataTable(QWidget *parent) :
-    QWidget(parent),
-    ui(new Ui::DataTable)
-=======
 #include "common/Common.hpp"
 #include "MainViewWidget.hpp"
 
@@ -14,7 +8,6 @@ DataTable::DataTable(QWidget *parent) :
 DataTable::DataTable(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::DataTable), model()
->>>>>>> new data table class
 {
     ui->setupUi(this);
 }
@@ -23,8 +16,6 @@ DataTable::~DataTable()
 {
     delete ui;
 }
-<<<<<<< HEAD
-=======
 
 
 bool DataTable::can_draw(QModelIndex qml) const {
@@ -63,4 +54,3 @@ void DataTable::build_model() {
 
     }
 }
->>>>>>> new data table class

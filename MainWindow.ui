@@ -122,9 +122,10 @@
    </widget>
    <widget class="QMenu" name="menuPlot">
     <property name="title">
-     <string>Plot</string>
+     <string>Entity</string>
     </property>
     <addaction name="actionPlot"/>
+    <addaction name="actionTable"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
@@ -232,7 +233,7 @@
      <normaloff>:/images/images/nix_plot.png</normaloff>:/images/images/nix_plot.png</iconset>
    </property>
    <property name="text">
-    <string>plot</string>
+    <string>&amp;Plot</string>
    </property>
    <property name="toolTip">
     <string>plot data</string>
@@ -301,6 +302,9 @@
    </property>
   </action>
   <action name="actionTable">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="icon">
     <iconset resource="resources.qrc">
      <normaloff>:/images/images/nix_table.png</normaloff>:/images/images/nix_table.png</iconset>
@@ -399,10 +403,27 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>actionTable</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>show_table()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>699</x>
+     <y>393</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>open_file()</slot>
   <slot>show_about()</slot>
   <slot>show_plot()</slot>
+  <slot>show_table()</slot>
  </slots>
 </ui>

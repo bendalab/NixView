@@ -7,6 +7,8 @@
 #include "common/Common.hpp"
 #include "model/NixDataModel.hpp"
 #include "model/NixModelItem.hpp"
+#include "tabledialog.hpp"
+
 
 MainWindow::MainWindow(QWidget *parent, QApplication *app) : QMainWindow(parent),
     ui(new Ui::MainWindow) {
@@ -28,7 +30,7 @@ MainWindow::MainWindow(QWidget *parent, QApplication *app) : QMainWindow(parent)
 
 void MainWindow::connect_widgets() {
     QObject::connect(this, SIGNAL(emit_view_change(int)), ui->main_view, SLOT(set_view(int)));
-    QObject::connect(ui->main_view, SIGNAL(emit_current_qml(QModelIndex)), this, SLOT(activate_plot(QModelIndex)));
+    QObject::connect(ui->main_view, SIGNAL(emit_current_qml(QModelIndex)), this, SLOT(item_selected(QModelIndex)));
     QObject::connect(ui->main_view, SIGNAL(emit_model_update(NixDataModel*)), this, SLOT(nix_model_update(NixDataModel*)));
     QObject::connect(ui->main_view, SIGNAL(emit_current_qml(QModelIndex)), ui->info_view, SLOT(update_info_widget(QModelIndex)));
     QObject::connect(ow->tree_view_options, SIGNAL(emit_rtv_column_display_changed()), ui->main_view->get_rtv(), SLOT(hide_columns()));
@@ -66,7 +68,7 @@ void MainWindow::item_selected(QModelIndex qml) {
     ui->actionPlot->setEnabled(false);
     ui->actionTable->setEnabled(false);
 
-    NixModelItem *item = mvw->get_current_model()->get_item_from_qml(qml);
+    NixModelItem *item = ui->main_view->get_current_model()->get_item_from_qml(qml);
 
     if(strcmp(item->get_nix_qvariant_type().c_str(), NIX_STRING_DATAARRAY) == 0) {
         ui->actionTable->setEnabled(true);
@@ -92,7 +94,9 @@ void MainWindow::show_plot() {
 
 
 void MainWindow::show_table() {
-
+    TableDialog d(this);
+    d.set_entity(selected_qml);
+    d.exec();
 }
 
 void MainWindow::file_scan_progress()
