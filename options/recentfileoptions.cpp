@@ -1,5 +1,6 @@
 #include "recentfileoptions.hpp"
 #include "ui_recentfileoptions.h"
+#include "common/Common.hpp"
 #include <iostream>
 #include <nix.hpp>
 
@@ -20,7 +21,7 @@ RecentFileOptions::~RecentFileOptions()
 
 
 void RecentFileOptions::load_settings() {
-    settings->beginGroup("Recent_Files");
+    settings->beginGroup(RECENT_FILES_GROUP);
 
     QStringList recent_files;
     QStringList keys = settings->childKeys();
@@ -33,13 +34,13 @@ void RecentFileOptions::load_settings() {
 
 
 void RecentFileOptions::set_file(QString filename) {
-    settings->beginGroup("Recent_Files");
+    settings->beginGroup(RECENT_FILES_GROUP);
     QStringList recent_files;
     QStringList keys = settings->childKeys();
     for (QString k : keys) {
         recent_files.push_back(settings->value(k).toString());
     }
-    if (recent_files.size() > 5) {
+    if (recent_files.size() > RECENT_FILES_MAX_COUNT) {
         recent_files.pop_back();
     }
     recent_files.insert(0, filename);
