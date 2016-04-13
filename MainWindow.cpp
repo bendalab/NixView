@@ -8,6 +8,7 @@
 #include "model/NixDataModel.hpp"
 #include "model/NixModelItem.hpp"
 #include "tabledialog.hpp"
+#include <QSettings>
 
 
 MainWindow::MainWindow(QWidget *parent, QApplication *app) : QMainWindow(parent),
@@ -28,7 +29,9 @@ MainWindow::MainWindow(QWidget *parent, QApplication *app) : QMainWindow(parent)
     QObject::connect(app, SIGNAL(invalid_file_error()), this, SLOT(invalid_file_error()));
     ow = new OptionsWidget();
     connect_widgets();
+    get_recent_files();
 }
+
 
 void MainWindow::connect_widgets() {
     QObject::connect(this, SIGNAL(emit_view_change(int)), ui->main_view, SLOT(set_view(int)));
@@ -40,6 +43,19 @@ void MainWindow::connect_widgets() {
     QObject::connect(this, SIGNAL(emit_file_opened(QString)), this->ow, SLOT(file_opened(QString)));
     QObject::connect(ui->main_view, SIGNAL(scan_progress_update()), this, SLOT(file_scan_progress()));
 }
+
+
+void MainWindow::get_recent_files() {
+    QSettings *settings = new QSettings();
+    settings->beginGroup(RECENT_FILES_GROUP);
+    QStringList keys = settings->childKeys();
+    recent_files.clear();
+    for (QString k: keys) {
+        recent_files.push_back(settings->value(k).toString());
+    }
+    populate_recent_file_menu();
+}
+
 
 MainWindow::~MainWindow() {
     delete ui;

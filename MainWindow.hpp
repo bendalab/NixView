@@ -53,6 +53,7 @@ private:
     QMenu *recent_file_menu;
     QStringList recent_files;
 
+    void get_recent_files();
     void populate_recent_file_menu();
 };
 
