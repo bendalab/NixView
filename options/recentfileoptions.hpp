@@ -2,6 +2,7 @@
 #define RECENTFILEOPTIONS_HPP
 
 #include <QWidget>
+#include <QSettings>
 
 namespace Ui {
 class RecentFileOptions;
@@ -15,8 +16,16 @@ public:
     explicit RecentFileOptions(QWidget *parent = 0);
     ~RecentFileOptions();
 
+    void set_file(QString filename);
+
+signals:
+    void recent_files_update(QStringList);
+
 private:
     Ui::RecentFileOptions *ui;
+    QSettings *settings;
+
+    void load_settings();
 };
 
 #endif // RECENTFILEOPTIONS_HPP
