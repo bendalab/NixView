@@ -146,6 +146,25 @@ def create_2d_set(f, b, source):
     da.sources.append(source
 )
 
+
+def create_2d_sample(f, b):
+    # stolen fom matplolib examples http://matplotlib.org/examples/pylab_examples/image_demo.html
+    delta = 0.025
+    x = y = np.arange(-3.0, 3.0, delta)
+    X, Y = np.meshgrid(x, y)
+    Z1 = mlab.bivariate_normal(X, Y, 1.0, 1.0, 0.0, 0.0)
+    Z2 = mlab.bivariate_normal(X, Y, 1.5, 0.5, 1, 1)
+    Z = Z2 - Z1  # difference of Gaussians
+    
+    da = b.create_data_array("difference of Gaussians", "nix.2d.heatmap", data=Z)
+    d1 = da.append_sampled_dimension(delta)
+    d1.label = "x"
+    d1.offset = -3.
+    d2 = da.append_sampled_dimension(delta)
+    d2.label = "y"
+    d2.offset = -3.
+    
+
 def create_m_tag(f,b):
     trace = b.data_arrays["eod"]
     event_times = b.data_arrays["zero crossings"]
@@ -262,7 +281,7 @@ def create_test_file(filename):
     b2 = nix_file.create_block("2D data", "nix.recording_session")
     b2.metadata = s2
     create_2d(nix_file, b2)
-    
+    create_2d_sample(nix_file, b2)
     b3 = nix_file.create_block("3D data", "nix.image_data")
     b3.metadata  = s
     create_3d(nix_file, b3)
