@@ -48,6 +48,10 @@ private:
     QModelIndex selected_qml;
     QLabel* file_label;
     QProgressBar* file_progress;
+    QMenu *recent_file_menu;
+    QStringList recent_files;
+
+    void populate_recent_file_menu();
 };
 
 #endif // MAINWINDOW_HPP

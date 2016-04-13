@@ -23,6 +23,8 @@ MainWindow::MainWindow(QWidget *parent, QApplication *app) : QMainWindow(parent)
     ui->statusBar->addPermanentWidget(file_label, 1);
     ui->statusBar->addPermanentWidget(file_progress, 10);
     file_progress->setVisible(false);
+    recent_file_menu = new QMenu("open recent");
+    ui->menuFile->addMenu(recent_file_menu);
     QObject::connect(app, SIGNAL(invalid_file_error()), this, SLOT(invalid_file_error()));
     ow = new OptionsWidget();
     connect_widgets();
@@ -131,4 +133,14 @@ void MainWindow::open_file() {
 
     ui->main_view->set_nix_file(file_path);
     file_progress->setVisible(false);
+void MainWindow::populate_recent_file_menu() {
+    QList<QAction*> actions = recent_file_menu->actions();
+    for (QAction* a : actions) {
+        recent_file_menu->removeAction(a);
+        delete a;
+    }
+    for (QString s : recent_files) {
+        recent_file_menu->addAction(s);
+    }
+}
 }
