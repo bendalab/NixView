@@ -38,15 +38,7 @@ static DimInfo get_dim_info(const nix::DataArray &array, nix::ndsize_t dim_index
         info.valid = true;
         info.label = dim.label().get_value_or("").c_str();
         info.unit = dim.unit().get_value_or("").c_str();
-        double si = dim.samplingInterval();
-        //todo: safe cast?
-        info.ticks.resize(static_cast<int>(shape[dim_index-1]));
-
-        double offset = dim.offset().get_value_or(0);
-        const int size = info.ticks.size();
-        for (int i = 0; i < size; i++) {
-            info.ticks[i] = offset + i * si;
-        }
+        info.ticks = QVector<double>::fromStdVector(dim.axis(shape[dim_index-1]));
 
     } else if (d.dimensionType() == nix::DimensionType::Range) {
         nix::RangeDimension dim = d.asRangeDimension();
