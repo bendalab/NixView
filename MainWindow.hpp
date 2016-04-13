@@ -37,9 +37,11 @@ public slots:
     void show_table();
     void file_scan_progress();
     void invalid_file_error();
+    void recent_file_update(QStringList files);
 
 signals:
     void emit_view_change(int);
+    void emit_file_opened(QString filename);
 
 private:
     Ui::MainWindow *ui;
