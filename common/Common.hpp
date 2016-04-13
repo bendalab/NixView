@@ -65,3 +65,5 @@ Q_DECLARE_METATYPE(nix::Source)
 #define S_RAWTREEVIEW "rawtreeview"
 #define S_COLUMNSHIDDEN "columnshidden"
 
+#define RECENT_FILES_GROUP "recent_files"
+#define RECENT_FILES_MAX_COUNT 5
