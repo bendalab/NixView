@@ -46,7 +46,8 @@ SOURCES += main.cpp\
     plotter/colormap.cpp \
     views/datatable.cpp \
     tabledialog.cpp \
-    dialogs/cvsexportdialog.cpp
+    dialogs/cvsexportdialog.cpp \
+    options/recentfileoptions.cpp
 
 HEADERS  += MainWindow.hpp \
     MainViewWidget.hpp \
@@ -76,7 +77,8 @@ HEADERS  += MainWindow.hpp \
     plotter/colormap.hpp \
     views/datatable.h \
     tabledialog.hpp \
-    dialogs/cvsexportdialog.h
+    dialogs/cvsexportdialog.h \
+    options/recentfileoptions.hpp
 
 FORMS    += MainWindow.ui \
     MainViewWidget.ui \
@@ -96,7 +98,8 @@ FORMS    += MainWindow.ui \
     TagView.ui \
     views/datatable.ui \
     tabledialog.ui \
-    dialogs/cvsexportdialog.ui
+    dialogs/cvsexportdialog.ui \
+    options/recentfileoptions.ui
 
 #standard windows folder?
 #win32:CONFIG(release, debug|release): LIBS += /usr/local/lib/release/ -lnix

@@ -5,6 +5,8 @@
 #include <QTabWidget>
 #include "options/OptionsTabWidget.hpp"
 #include "options/TreeViewOptions.hpp"
+#include "options/recentfileoptions.hpp"
+
 
 namespace Ui {
 class OptionsWidget;
@@ -22,6 +24,7 @@ private:
     Ui::OptionsWidget *ui;
     OptionsTabWidget *tw;
     TreeViewOptions *tree_view_options;
+    RecentFileOptions *file_options;
 
 friend class MainWindow;
 };

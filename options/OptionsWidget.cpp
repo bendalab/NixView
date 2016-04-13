@@ -33,22 +33,22 @@ public:
 
 
 OptionsWidget::OptionsWidget(QWidget *parent) :
-    QWidget(parent),
-    ui(new Ui::OptionsWidget)
-{
+    QWidget(parent), ui(new Ui::OptionsWidget) {
     ui->setupUi(this);
     setWindowTitle("Properties");
-
     tw = new OptionsTabWidget();
     tw->tabBar()->setStyle(new HorizontalTabBarStyle);
 
-    // view options
     QTabWidget *view_tab_widget = new QTabWidget();
-    tree_view_options = new TreeViewOptions();
-    view_tab_widget->addTab(tree_view_options, "TreeView");
+    QTabWidget *files_view_tab = new QTabWidget();
 
+    tree_view_options = new TreeViewOptions();
+    file_options = new RecentFileOptions();
+    view_tab_widget->addTab(tree_view_options, "TreeView");
+    files_view_tab->addTab(file_options, "Recent files");
     tw->addTab(view_tab_widget, "Views");
-//    tw->addTab(new DescriptionPanel(), "Other Stuff");
+    tw->addTab(files_view_tab, "Files");
+    //tw->addTab(new DescriptionPanel(), "Other Stuff");
 
     ui->verticalLayout->addWidget(tw);
 }
