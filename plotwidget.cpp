@@ -2,6 +2,7 @@
 #include "ui_plotwidget.h"
 #include "plotter/lineplotter.h"
 #include "plotter/categoryplotter.h"
+#include "plotter/imageplotter.h"
 #include "common/Common.hpp"
 
 PlotWidget::PlotWidget(QWidget *parent) :
@@ -59,19 +60,28 @@ void PlotWidget::delete_widgets_from_layout() {
 
 
 Plotter* PlotWidget::process(const nix::DataArray &array) {
-    if (Plotter::suggested_plotter(array) == PlotterType::Line) {
+    PlotterType suggestion = Plotter::suggested_plotter(array);
+
+    if (suggestion == PlotterType::Line) {
         delete_widgets_from_layout();
         LinePlotter *lp = new LinePlotter();
         ui->scrollAreaWidgetContents->layout()->addWidget(lp);
         lp->draw(array);
         return lp;
-    } else if (Plotter::suggested_plotter(array) == PlotterType::Category) {
+    } else if (suggestion == PlotterType::Category) {
         delete_widgets_from_layout();
         CategoryPlotter *cp = new CategoryPlotter();
         ui->scrollAreaWidgetContents->layout()->addWidget(cp);
         cp->draw(array);
         return cp;
+    } else if (suggestion == PlotterType::Image) {
+        delete_widgets_from_layout();
+        ImagePlotter *ip = new ImagePlotter();
+        ui->scrollAreaWidgetContents->layout()->addWidget(ip);
+        ip->draw(array);
+        return ip;
     }
+
     return nullptr;
 }
 

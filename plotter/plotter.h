@@ -234,8 +234,7 @@ public:
                 if (array.getDimension(2).dimensionType() == nix::DimensionType::Set) {
                     return PlotterType::Line;
                 } else {
-                    // handle 2D image/heatmap plotting not supported, yet TODO
-                    return PlotterType::Unsupported;
+                    return PlotterType::Image;
                 }
             } else {
                 if (array.getDimension(2).dimensionType() == nix::DimensionType::Sample ||
