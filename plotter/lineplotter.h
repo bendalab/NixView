@@ -43,6 +43,8 @@ public:
 
     PlotterType plotter_type() const;
 
+    void save(QString filename) {}
+
 private:
     Ui::LinePlotter *ui;
     ColorMap cmap;

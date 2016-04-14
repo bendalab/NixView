@@ -25,10 +25,13 @@ public:
 
     void setEntity(QModelIndex qml);
 
+    void savePlot();
+
 private:
     Ui::PlotWidget *ui;
     QModelIndex item_qml;
     NixModelItem* item;
+    Plotter *plot;
 
     bool check_plottable_dtype(nix::DataType dtype) const;
     void delete_widgets_from_layout();
