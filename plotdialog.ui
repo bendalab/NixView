@@ -59,7 +59,7 @@
       <enum>Qt::Horizontal</enum>
      </property>
      <property name="standardButtons">
-      <set>QDialogButtonBox::Close</set>
+      <set>QDialogButtonBox::NoButton</set>
      </property>
     </widget>
    </item>
@@ -76,24 +76,7 @@
  <resources>
   <include location="resources.qrc"/>
  </resources>
- <connections>
-  <connection>
-   <sender>buttonBox</sender>
-   <signal>clicked(QAbstractButton*)</signal>
-   <receiver>PlotDialog</receiver>
-   <slot>accept()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>545</x>
-     <y>303</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>640</x>
-     <y>300</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
  <slots>
   <slot>show_context_menu()</slot>
   <slot>vertical_zoom_clicked()</slot>
