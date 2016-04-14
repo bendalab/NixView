@@ -41,9 +41,30 @@ void RecentFileOptions::load_settings() {
 
 
 void RecentFileOptions::fill_list() {
+    remove_duplicates();
     ui->file_list->clear();
     for (QString s : recent_files) {
         ui->file_list->addItem(s);
+    }
+}
+
+
+void RecentFileOptions::remove_duplicates() {
+    std::vector<QString> vec;
+    for (QString s : recent_files) {
+        vec.push_back(s);
+    }
+
+    std::sort(vec.begin(), vec.end());
+    vec.erase(std::unique( vec.begin(), vec.end() ), vec.end());
+    for (int i = recent_files.size() -1; i > 0; i--){
+        std::vector<QString>::iterator it = std::find(vec.begin(), vec.end(), recent_files[i]);
+        if (it != vec.end()) {
+            vec.erase(it);
+            continue;
+        } else {
+            recent_files.removeAt(i);
+        }
     }
 }
 
@@ -56,14 +77,11 @@ void RecentFileOptions::set_file(QString filename) {
         recent_files.push_back(settings->value(k).toString());
     }
     if (recent_files.size() > RECENT_FILES_MAX_COUNT) {
+        std::cerr << "ping" << std::endl;
         recent_files.pop_back();
     }
     recent_files.insert(0, filename);
-    for (int i = recent_files.size() - 1; i > 0; i--) {
-        if (recent_files[i].compare(filename) == 0){
-            recent_files.removeAt(i);
-        }
-    }
+
     settings->remove("");
     for (int i = 0; i < recent_files.size(); i ++) {
         QString key = QString::fromStdString(nix::util::numToStr(i));

@@ -35,6 +35,7 @@ private:
 
     void load_settings();
     void fill_list();
+    void remove_duplicates();
 
 };
 
