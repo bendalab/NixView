@@ -3,6 +3,7 @@
 #include "common/Common.hpp"
 #include <iostream>
 #include <nix.hpp>
+#include <QListWidgetItem>
 
 RecentFileOptions::RecentFileOptions(QWidget *parent) :
     QWidget(parent),
@@ -10,6 +11,11 @@ RecentFileOptions::RecentFileOptions(QWidget *parent) :
 {
     ui->setupUi(this);
     settings = new QSettings();
+    QObject::connect(ui->file_list, SIGNAL(currentItemChanged(QListWidgetItem*,QListWidgetItem*)),
+                     this, SLOT(item_selected(QListWidgetItem*, QListWidgetItem*)));
+    QObject::connect(ui->down_button, SIGNAL(clicked()), this, SLOT(move_item_down()));
+    QObject::connect(ui->up_button, SIGNAL(clicked()), this, SLOT(move_item_up()));
+    QObject::connect(ui->delete_button, SIGNAL(clicked()), this, SLOT(delete_item()));
     load_settings();
 }
 
@@ -65,6 +71,51 @@ void RecentFileOptions::set_file(QString filename) {
     }
     settings->endGroup();
     settings->sync();
+    fill_list();
+    emit recent_files_update(recent_files);
+}
+
+
+void RecentFileOptions::item_selected(QListWidgetItem *current, QListWidgetItem *past) {
+    if (current != nullptr) {
+        ui->delete_button->setEnabled(true);
+        ui->up_button->setEnabled(ui->file_list->currentRow() > 0);
+        ui->down_button->setEnabled(ui->file_list->currentRow() < (ui->file_list->count() - 1));
+    } else {
+        ui->delete_button->setEnabled(false);
+        ui->up_button->setEnabled(false);
+        ui->down_button->setEnabled(false);
+    }
+}
+
+
+void RecentFileOptions::move_item_up() {
+    int index = ui->file_list->currentRow();
+    if (index > 0) {
+        QString s = recent_files[index];
+        recent_files.removeAt(index);
+        recent_files.insert(index -1, s);
+    }
+    fill_list();
+    emit recent_files_update(recent_files);
+}
+
+
+void RecentFileOptions::move_item_down() {
+    int index = ui->file_list->currentRow();
+    if (index < (recent_files.size() -1)) {
+        QString s = recent_files[index];
+        recent_files.removeAt(index);
+        recent_files.insert(index + 1, s);
+    }
+    fill_list();
+    emit recent_files_update(recent_files);
+}
+
+
+void RecentFileOptions::delete_item() {
+    int index = ui->file_list->currentRow();
+    recent_files.removeAt(index);
     fill_list();
     emit recent_files_update(recent_files);
 }
