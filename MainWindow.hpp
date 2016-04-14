@@ -55,6 +55,7 @@ private:
 
     void get_recent_files();
     void populate_recent_file_menu();
+    void read_nix_file(QString filename);
 };
 
 #endif // MAINWINDOW_HPP

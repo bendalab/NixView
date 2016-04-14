@@ -144,14 +144,18 @@ void MainWindow::open_file() {
         fileNames = fd.selectedFiles();
     if (fileNames.size() == 0)
         return;
+    read_nix_file(fileNames.front());
+}
 
-    std::string file_path = fileNames.front().toStdString();
+
+void MainWindow::read_nix_file(QString filename) {
+    std::string file_path = filename.toStdString();
     file_label->setText(file_path.c_str());
     file_progress->setVisible(true);
 
     ui->main_view->set_nix_file(file_path);
     file_progress->setVisible(false);
-    emit this->emit_file_opened(fileNames[0]);
+    emit this->emit_file_opened(filename);
 }
 
 
