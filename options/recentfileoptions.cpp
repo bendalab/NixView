@@ -6,7 +6,7 @@
 
 RecentFileOptions::RecentFileOptions(QWidget *parent) :
     QWidget(parent),
-    ui(new Ui::RecentFileOptions)
+    ui(new Ui::RecentFileOptions), recent_files()
 {
     ui->setupUi(this);
     settings = new QSettings();
@@ -22,8 +22,8 @@ RecentFileOptions::~RecentFileOptions()
 
 void RecentFileOptions::load_settings() {
     settings->beginGroup(RECENT_FILES_GROUP);
-
-    QStringList recent_files;
+    ui->file_list->clear();
+    recent_files.clear();
     QStringList keys = settings->childKeys();
     for (QString s : keys) {
         recent_files.push_back(settings->value(s).toString());
@@ -35,7 +35,7 @@ void RecentFileOptions::load_settings() {
 
 void RecentFileOptions::set_file(QString filename) {
     settings->beginGroup(RECENT_FILES_GROUP);
-    QStringList recent_files;
+    recent_files.clear();
     QStringList keys = settings->childKeys();
     for (QString k : keys) {
         recent_files.push_back(settings->value(k).toString());

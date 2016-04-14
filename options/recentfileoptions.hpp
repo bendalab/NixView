@@ -24,6 +24,7 @@ signals:
 private:
     Ui::RecentFileOptions *ui;
     QSettings *settings;
+    QStringList recent_files;
 
     void load_settings();
 };
