@@ -96,14 +96,20 @@
      <x>0</x>
      <y>0</y>
      <width>1400</width>
-     <height>22</height>
+     <height>27</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
     <property name="title">
      <string>&amp;File</string>
     </property>
+    <widget class="QMenu" name="menu_open_recent">
+     <property name="title">
+      <string>open recent ...</string>
+     </property>
+    </widget>
     <addaction name="actionOpenFile"/>
+    <addaction name="menu_open_recent"/>
     <addaction name="actionCloseFile"/>
     <addaction name="actionQuit"/>
    </widget>
@@ -322,6 +328,11 @@
   <action name="actionOpen_recent">
    <property name="text">
     <string>open recent</string>
+   </property>
+  </action>
+  <action name="actionSdf">
+   <property name="text">
+    <string>sdf</string>
    </property>
   </action>
  </widget>

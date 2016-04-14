@@ -24,8 +24,6 @@ MainWindow::MainWindow(QWidget *parent, QApplication *app) : QMainWindow(parent)
     ui->statusBar->addPermanentWidget(file_label, 1);
     ui->statusBar->addPermanentWidget(file_progress, 10);
     file_progress->setVisible(false);
-    recent_file_menu = new QMenu("open recent");
-    ui->menuFile->addMenu(recent_file_menu);
     QObject::connect(app, SIGNAL(invalid_file_error()), this, SLOT(invalid_file_error()));
     ow = new OptionsWidget();
     connect_widgets();
@@ -42,6 +40,7 @@ void MainWindow::connect_widgets() {
     QObject::connect(ow, SIGNAL(recent_file_update_signal(QStringList)), this, SLOT(recent_file_update(QStringList)));
     QObject::connect(this, SIGNAL(emit_file_opened(QString)), this->ow, SLOT(file_opened(QString)));
     QObject::connect(ui->main_view, SIGNAL(scan_progress_update()), this, SLOT(file_scan_progress()));
+    QObject::connect(ui->menu_open_recent, SIGNAL(triggered(QAction*)), this, SLOT(open_recent_file(QAction*)));
 }
 
 
@@ -160,18 +159,24 @@ void MainWindow::read_nix_file(QString filename) {
 
 
 void MainWindow::populate_recent_file_menu() {
-    QList<QAction*> actions = recent_file_menu->actions();
+    QList<QAction*> actions = ui->menu_open_recent->actions();
     for (QAction* a : actions) {
-        recent_file_menu->removeAction(a);
+        ui->menu_open_recent->removeAction(a);
         delete a;
     }
     for (QString s : recent_files) {
-        recent_file_menu->addAction(s);
+        ui->menu_open_recent->addAction(s);
     }
+    ui->menu_open_recent->setEnabled(ui->menu_open_recent->actions().count() != 0);
 }
 
 
 void MainWindow::recent_file_update(QStringList files) {
     this->recent_files = files;
     populate_recent_file_menu();
+}
+
+
+void MainWindow::open_recent_file(QAction *a) {
+    read_nix_file(a->text());
 }

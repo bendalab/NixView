@@ -38,6 +38,7 @@ public slots:
     void file_scan_progress();
     void invalid_file_error();
     void recent_file_update(QStringList files);
+    void open_recent_file(QAction* a);
 
 signals:
     void emit_view_change(int);
@@ -50,7 +51,6 @@ private:
     QModelIndex selected_qml;
     QLabel* file_label;
     QProgressBar* file_progress;
-    QMenu *recent_file_menu;
     QStringList recent_files;
 
     void get_recent_files();
