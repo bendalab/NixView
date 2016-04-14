@@ -24,6 +24,7 @@ public:
     virtual void add_segments(const QVector<double> &positions, const QVector<double> &extents, const QString &name) = 0;
     virtual void set_label(const std::string &label) = 0;
     virtual PlotterType plotter_type() const = 0;
+    virtual QCustomPlot *get_plot() = 0;
     static bool get_data_array_axis(const nix::DataArray &array, QVector<double> &axis_data, QVector<QString> &axis_labels, nix::ndsize_t dim) {
         if (dim == 0 || dim > array.dimensionCount())
             return false;
