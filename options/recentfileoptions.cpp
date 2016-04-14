@@ -28,8 +28,17 @@ void RecentFileOptions::load_settings() {
     for (QString s : keys) {
         recent_files.push_back(settings->value(s).toString());
     }
+    fill_list();
     emit recent_files_update(recent_files);
     settings->endGroup();
+}
+
+
+void RecentFileOptions::fill_list() {
+    ui->file_list->clear();
+    for (QString s : recent_files) {
+        ui->file_list->addItem(s);
+    }
 }
 
 
@@ -56,5 +65,6 @@ void RecentFileOptions::set_file(QString filename) {
     }
     settings->endGroup();
     settings->sync();
+    fill_list();
     emit recent_files_update(recent_files);
 }
