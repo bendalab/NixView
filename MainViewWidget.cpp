@@ -46,6 +46,8 @@ MainViewWidget::MainViewWidget(const std::string &nix_file_path, QWidget *parent
 
 void MainViewWidget::set_nix_file(const std::string &nix_file_path)
 {
+    if (rtv == nullptr)
+        populate_data_stacked_widget();
     nix_file = nix::File::open(nix_file_path, nix::FileMode::ReadOnly);
     nix_model = new NixDataModel();
     connect(nix_model, SIGNAL(file_scan_progress()), this, SLOT(scan_progress()));
@@ -67,6 +69,17 @@ void MainViewWidget::set_nix_file(const std::string &nix_file_path)
     QObject::connect(ui->line_edit_filter, SIGNAL(textChanged(QString)), nix_proxy_model, SLOT(set_fine_filter(QString)));
     QObject::connect(ui->cbx_filter, SIGNAL(toggled(bool)), nix_proxy_model, SLOT(set_case_sensitivity(bool)));
 }
+
+
+void MainViewWidget::clear() {
+    nix_model = nullptr;
+    //emit emit_model_update(nix_model);
+    delete rtv;
+    rtv = nullptr;
+    delete cv;
+    cv = nullptr;
+}
+
 
 void MainViewWidget::populate_data_stacked_widget()
 {

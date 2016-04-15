@@ -33,6 +33,7 @@ public:
     ColumnView *get_cv();
     static NixDataModel* get_current_model() {return CURRENT_MODEL; }
     int get_scan_progress();
+    void clear();
 
 public slots:
     void set_view(int);
