@@ -27,6 +27,7 @@ MainWindow::MainWindow(QWidget *parent, QApplication *app) : QMainWindow(parent)
     file_progress->setVisible(false);
     QObject::connect(app, SIGNAL(invalid_file_error()), this, SLOT(invalid_file_error()));
     ow = new OptionsWidget();
+    ui->recent_file_list->setAttribute(Qt::WA_MacShowFocusRect, false);
     connect_widgets();
     get_recent_files();
 }
