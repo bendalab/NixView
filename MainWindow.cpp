@@ -157,11 +157,13 @@ void MainWindow::read_nix_file(QString filename) {
 
     ui->main_view->set_nix_file(file_path);
     file_progress->setVisible(false);
+    ui->stackedWidget->setCurrentIndex(0);
     emit this->emit_file_opened(filename);
 }
 
 
 void MainWindow::populate_recent_file_menu() {
+    ui->recent_file_list->clear();
     QList<QAction*> actions = ui->menu_open_recent->actions();
     for (QAction* a : actions) {
         ui->menu_open_recent->removeAction(a);
@@ -169,8 +171,11 @@ void MainWindow::populate_recent_file_menu() {
     }
     for (QString s : recent_files) {
         ui->menu_open_recent->addAction(s);
+        QListWidgetItem *item = new QListWidgetItem(s);
+        item->setToolTip(s);
+        ui->recent_file_list->addItem(item);
     }
-    ui->menu_open_recent->setEnabled(ui->menu_open_recent->actions().count() != 0);
+    ui->menu_open_recent->setEnabled(ui->menu_open_recent->actions().count() != 0);    
 }
 
 
@@ -182,4 +187,8 @@ void MainWindow::recent_file_update(QStringList files) {
 
 void MainWindow::open_recent_file(QAction *a) {
     read_nix_file(a->text());
+}
+
+void MainWindow::recent_file_selected(QListWidgetItem *item) {
+    read_nix_file(item->text());
 }

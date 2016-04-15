@@ -44,6 +44,9 @@ signals:
     void emit_view_change(int);
     void emit_file_opened(QString filename);
 
+private slots:
+    void recent_file_selected(QListWidgetItem*);
+
 private:
     Ui::MainWindow *ui;
     OptionsWidget *ow;
