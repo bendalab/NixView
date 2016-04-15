@@ -67,22 +67,22 @@ Plotter* PlotWidget::process(const nix::DataArray &array) {
         LinePlotter *lp = new LinePlotter();
         ui->scrollAreaWidgetContents->layout()->addWidget(lp);
         lp->draw(array);
-        return lp;
+        plot = lp;
     } else if (suggestion == PlotterType::Category) {
         delete_widgets_from_layout();
         CategoryPlotter *cp = new CategoryPlotter();
         ui->scrollAreaWidgetContents->layout()->addWidget(cp);
         cp->draw(array);
-        return cp;
+        plot = cp;
     } else if (suggestion == PlotterType::Image) {
         delete_widgets_from_layout();
         ImagePlotter *ip = new ImagePlotter();
         ui->scrollAreaWidgetContents->layout()->addWidget(ip);
         ip->draw(array);
-        return ip;
+        plot = ip;
     }
 
-    return nullptr;
+    return plot;
 }
 
 
@@ -176,6 +176,17 @@ void PlotWidget::setEntity(QModelIndex qml) {
     if (can_draw()) {
         process_item();
     }
+}
+
+void PlotWidget::savePlot() {
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Save plot"), "untitled.pdf", tr("Images (*.pdf)"));
+
+    if (fileName.isEmpty()) {
+        return;
+    }
+
+    QCustomPlot *qcp = plot->get_plot();
+    qcp->savePdf(fileName);
 }
 
 bool PlotWidget::check_plottable_dtype(nix::DataType dtype) const {
