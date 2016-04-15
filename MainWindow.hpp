@@ -32,6 +32,7 @@ public slots:
     void nix_model_update(NixDataModel *model);
     void item_selected(QModelIndex qml);
     void open_file();
+    void close_file();
     void show_about();
     void show_plot();
     void show_table();

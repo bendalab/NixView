@@ -33,6 +33,7 @@ MainWindow::MainWindow(QWidget *parent, QApplication *app) : QMainWindow(parent)
 
 
 void MainWindow::connect_widgets() {
+    QObject::connect(ui->actionCloseFile, SIGNAL(triggered()), this, SLOT(close_file()));
     QObject::connect(this, SIGNAL(emit_view_change(int)), ui->main_view, SLOT(set_view(int)));
     QObject::connect(ui->main_view, SIGNAL(emit_current_qml(QModelIndex)), this, SLOT(item_selected(QModelIndex)));
     QObject::connect(ui->main_view, SIGNAL(emit_model_update(NixDataModel*)), this, SLOT(nix_model_update(NixDataModel*)));
@@ -150,6 +151,14 @@ void MainWindow::open_file() {
 }
 
 
+void MainWindow::close_file() {
+    ui->stackedWidget->setCurrentIndex(1);
+    ui->main_view->clear();
+    ui->actionCloseFile->setEnabled(false);
+    ui->actionPlot->setEnabled(false);
+    ui->actionTable->setEnabled(false);
+}
+
 void MainWindow::read_nix_file(QString filename) {
     std::string file_path = filename.toStdString();
     file_label->setText(file_path.c_str());
@@ -158,6 +167,7 @@ void MainWindow::read_nix_file(QString filename) {
     ui->main_view->set_nix_file(file_path);
     file_progress->setVisible(false);
     ui->stackedWidget->setCurrentIndex(0);
+    ui->actionCloseFile->setEnabled(true);
     emit this->emit_file_opened(filename);
 }
 
