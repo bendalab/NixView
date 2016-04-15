@@ -22,15 +22,15 @@ macx {
 SOURCES += main.cpp\
     MainWindow.cpp \
     MainViewWidget.cpp \
-    aboutdialog.cpp \
-    plotdialog.cpp \
     qcustomplot.cpp \
     nixview.cpp \
     plotwidget.cpp \
     TagView.cpp \
-    tabledialog.cpp \
     entitydescriptor.cpp \
+    dialogs/aboutdialog.cpp \
     dialogs/cvsexportdialog.cpp \
+    dialogs/plotdialog.cpp \
+    dialogs/tabledialog.cpp \
     filter/NixProxyModel.cpp \
     infowidget/InfoWidget.cpp \
     infowidget/DescriptionPanel.cpp \
@@ -53,16 +53,15 @@ SOURCES += main.cpp\
 
 HEADERS  += MainWindow.hpp \
     MainViewWidget.hpp \
-    tabledialog.hpp \
-    aboutdialog.h \
-    plotdialog.h \
     qcustomplot.h \
     nixview.h \
     plotwidget.h \
     TagView.hpp \
     common/Common.hpp \
+    dialogs/aboutdialog.h \
     dialogs/cvsexportdialog.h \
-    views/ColumnView.hpp \
+    dialogs/plotdialog.h \
+    dialogs/tabledialog.hpp \
     filter/NixProxyModel.hpp \
     infowidget/InfoWidget.hpp \
     infowidget/DescriptionPanel.hpp \
@@ -82,16 +81,17 @@ HEADERS  += MainWindow.hpp \
     plotter/plotter.h \
     views/datatable.h \
     views/RawTreeView.hpp \
+    views/ColumnView.hpp \
     utils/utils.hpp
 
 FORMS    += MainWindow.ui \
     MainViewWidget.ui \
-    aboutdialog.ui \
-    plotdialog.ui \
     plotwidget.ui \
     TagView.ui \
-    tabledialog.ui \
+    dialogs/aboutdialog.ui \
     dialogs/cvsexportdialog.ui \
+    dialogs/plotdialog.ui \
+    dialogs/tabledialog.ui \
     infowidget/InfoWidget.ui \
     infowidget/DescriptionPanel.ui \
     infowidget/MetaDataPanel.ui \
