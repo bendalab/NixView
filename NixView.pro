@@ -20,88 +20,91 @@ macx {
 }
 
 SOURCES += main.cpp\
-        MainWindow.cpp \
+    MainWindow.cpp \
     MainViewWidget.cpp \
-    views/RawTreeView.cpp \
-    infowidget/InfoWidget.cpp \
-    infowidget/DescriptionPanel.cpp \
-    infowidget/MetaDataPanel.cpp \
-    infowidget/TagPanel.cpp \
     aboutdialog.cpp \
     plotdialog.cpp \
     qcustomplot.cpp \
     nixview.cpp \
     plotwidget.cpp \
-    plotter/lineplotter.cpp \
-    plotter/categoryplotter.cpp\
-    model/NixDataModel.cpp \
-    views/ColumnView.cpp \
-    filter/NixProxyModel.cpp \
-    model/NixModelItem.cpp \
+    TagView.cpp \
+    tabledialog.cpp \
     entitydescriptor.cpp \
+    dialogs/cvsexportdialog.cpp \
+    filter/NixProxyModel.cpp \
+    infowidget/InfoWidget.cpp \
+    infowidget/DescriptionPanel.cpp \
+    infowidget/MetaDataPanel.cpp \
+    infowidget/TagPanel.cpp \
+    model/NixDataModel.cpp \
+    model/NixModelItem.cpp \
     options/OptionsWidget.cpp \
     options/OptionsTabWidget.cpp \
     options/TreeViewOptions.cpp \
-    TagView.cpp \
-    plotter/colormap.cpp \
-    views/datatable.cpp \
-    tabledialog.cpp \
-    dialogs/cvsexportdialog.cpp \
     options/recentfileoptions.cpp\
+    plotter/lineplotter.cpp \
+    plotter/categoryplotter.cpp\
+    plotter/colormap.cpp \
+    plotter/imageplotter.cpp \
+    views/ColumnView.cpp \
+    views/datatable.cpp \
+    views/RawTreeView.cpp \
     utils/utils.cpp
 
 HEADERS  += MainWindow.hpp \
     MainViewWidget.hpp \
-    views/RawTreeView.hpp \
+    tabledialog.hpp \
+    aboutdialog.h \
+    plotdialog.h \
+    qcustomplot.h \
+    nixview.h \
+    plotwidget.h \
+    TagView.hpp \
+    common/Common.hpp \
+    dialogs/cvsexportdialog.h \
+    views/ColumnView.hpp \
+    filter/NixProxyModel.hpp \
     infowidget/InfoWidget.hpp \
     infowidget/DescriptionPanel.hpp \
     infowidget/MetaDataPanel.hpp \
     infowidget/TagPanel.hpp \
-    common/Common.hpp \
-    aboutdialog.h \
-    plotdialog.h \
-    qcustomplot.h \
-    plotter/plotter.h \
-    nixview.h \
-    plotter/lineplotter.h \
-    plotwidget.h \
-    plotter/categoryplotter.h\
     model/NixDataModel.hpp \
-    views/ColumnView.hpp \
-    filter/NixProxyModel.hpp \
     model/NixModelItem.hpp \
     entitydescriptor.h \
     options/OptionsWidget.hpp \
     options/OptionsTabWidget.hpp \
     options/TreeViewOptions.hpp\
-    TagView.hpp \
-    plotter/colormap.hpp \
-    views/datatable.h \
-    tabledialog.hpp \
-    dialogs/cvsexportdialog.h \
     options/recentfileoptions.hpp \
+    plotter/categoryplotter.h\
+    plotter/colormap.hpp \
+    plotter/imageplotter.h \
+    plotter/lineplotter.h \
+    plotter/plotter.h \
+    views/datatable.h \
+    views/RawTreeView.hpp \
     utils/utils.hpp
 
 FORMS    += MainWindow.ui \
     MainViewWidget.ui \
-    views/RawTreeView.ui \
+    aboutdialog.ui \
+    plotdialog.ui \
+    plotwidget.ui \
+    TagView.ui \
+    tabledialog.ui \
+    dialogs/cvsexportdialog.ui \
     infowidget/InfoWidget.ui \
     infowidget/DescriptionPanel.ui \
     infowidget/MetaDataPanel.ui \
     infowidget/TagPanel.ui \
-    aboutdialog.ui \
-    plotdialog.ui \
     plotter/lineplotter.ui \
-    plotwidget.ui \
     plotter/categoryplotter.ui \
-    views/ColumnView.ui \
+    plotter/imageplotter.ui \
     options/OptionsWidget.ui \
+    options/recentfileoptions.ui \
     options/TreeViewOptions.ui \
-    TagView.ui \
+    views/ColumnView.ui \
     views/datatable.ui \
-    tabledialog.ui \
-    dialogs/cvsexportdialog.ui \
-    options/recentfileoptions.ui
+    views/RawTreeView.ui
 
 #standard windows folder?
 #win32:CONFIG(release, debug|release): LIBS += /usr/local/lib/release/ -lnix
