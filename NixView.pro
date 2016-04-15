@@ -22,9 +22,7 @@ macx {
 SOURCES += main.cpp\
     MainWindow.cpp \
     MainViewWidget.cpp \
-    qcustomplot.cpp \
     nixview.cpp \
-    plotwidget.cpp \
     TagView.cpp \
     entitydescriptor.cpp \
     dialogs/aboutdialog.cpp \
@@ -46,6 +44,8 @@ SOURCES += main.cpp\
     plotter/categoryplotter.cpp\
     plotter/colormap.cpp \
     plotter/imageplotter.cpp \
+    plotter/plotwidget.cpp \
+    plotter/qcustomplot.cpp \
     views/ColumnView.cpp \
     views/datatable.cpp \
     views/RawTreeView.cpp \
@@ -53,9 +53,7 @@ SOURCES += main.cpp\
 
 HEADERS  += MainWindow.hpp \
     MainViewWidget.hpp \
-    qcustomplot.h \
     nixview.h \
-    plotwidget.h \
     TagView.hpp \
     common/Common.hpp \
     dialogs/aboutdialog.h \
@@ -79,6 +77,8 @@ HEADERS  += MainWindow.hpp \
     plotter/imageplotter.h \
     plotter/lineplotter.h \
     plotter/plotter.h \
+    plotter/plotwidget.h \
+    plotter/qcustomplot.h \
     views/datatable.h \
     views/RawTreeView.hpp \
     views/ColumnView.hpp \
@@ -86,7 +86,6 @@ HEADERS  += MainWindow.hpp \
 
 FORMS    += MainWindow.ui \
     MainViewWidget.ui \
-    plotwidget.ui \
     TagView.ui \
     dialogs/aboutdialog.ui \
     dialogs/cvsexportdialog.ui \
@@ -99,6 +98,7 @@ FORMS    += MainWindow.ui \
     plotter/lineplotter.ui \
     plotter/categoryplotter.ui \
     plotter/imageplotter.ui \
+    plotter/plotwidget.ui \
     options/OptionsWidget.ui \
     options/recentfileoptions.ui \
     options/TreeViewOptions.ui \

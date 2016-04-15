@@ -1,8 +1,8 @@
 #include "plotwidget.h"
 #include "ui_plotwidget.h"
-#include "plotter/lineplotter.h"
-#include "plotter/categoryplotter.h"
-#include "plotter/imageplotter.h"
+#include "lineplotter.h"
+#include "categoryplotter.h"
+#include "imageplotter.h"
 #include "common/Common.hpp"
 
 PlotWidget::PlotWidget(QWidget *parent) :

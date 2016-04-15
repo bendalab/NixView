@@ -4,7 +4,7 @@
 #include <QDialog>
 #include <QVariant>
 #include <QSignalMapper>
-#include <qcustomplot.h>
+#include "../plotter/qcustomplot.h"
 #include <nix.hpp>
 #include <QModelIndex>
 

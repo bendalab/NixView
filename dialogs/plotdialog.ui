@@ -20,7 +20,7 @@
    <string>Plotter</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="resources.qrc">
+   <iconset resource="../resources.qrc">
     <normaloff>:/images/images/nix_plot.png</normaloff>:/images/images/nix_plot.png</iconset>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
@@ -69,12 +69,12 @@
   <customwidget>
    <class>PlotWidget</class>
    <extends>QWidget</extends>
-   <header>plotwidget.h</header>
+   <header>plotter/plotwidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="resources.qrc"/>
+  <include location="../resources.qrc"/>
  </resources>
  <connections/>
  <slots>
