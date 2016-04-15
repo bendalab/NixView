@@ -54,14 +54,12 @@ void RecentFileOptions::remove_duplicates() {
     for (QString s : recent_files) {
         vec.push_back(s);
     }
-
     std::sort(vec.begin(), vec.end());
     vec.erase(std::unique( vec.begin(), vec.end() ), vec.end());
-    for (int i = recent_files.size() -1; i > 0; i--){
+    for (int i = recent_files.size() -1; i >= 0; i--){
         std::vector<QString>::iterator it = std::find(vec.begin(), vec.end(), recent_files[i]);
         if (it != vec.end()) {
             vec.erase(it);
-            continue;
         } else {
             recent_files.removeAt(i);
         }
