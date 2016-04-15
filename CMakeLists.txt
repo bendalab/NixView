@@ -55,7 +55,8 @@ file(GLOB NIXVIEW_SOURCES *.cpp
   model/*.cpp 
   views/*.cpp 
   filter/*.cpp 
-  options/*.cpp)
+  options/*.cpp
+  utils/*.cpp)
 
 file(GLOB NIXVIEW_INCLUDES *.hpp 
   *.h

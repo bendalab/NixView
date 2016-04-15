@@ -5,6 +5,7 @@
 #include <QSettings>
 #include <QListWidgetItem>
 
+
 namespace Ui {
 class RecentFileOptions;
 }
@@ -30,13 +31,10 @@ public slots:
 
 private:
     Ui::RecentFileOptions *ui;
-    QSettings *settings;
     QStringList recent_files;
 
     void load_settings();
     void fill_list();
-    void remove_duplicates();
-
 };
 
 #endif // RECENTFILEOPTIONS_HPP

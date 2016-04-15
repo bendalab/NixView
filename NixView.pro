@@ -47,7 +47,8 @@ SOURCES += main.cpp\
     views/datatable.cpp \
     tabledialog.cpp \
     dialogs/cvsexportdialog.cpp \
-    options/recentfileoptions.cpp
+    options/recentfileoptions.cpp\
+    utils/utils.cpp
 
 HEADERS  += MainWindow.hpp \
     MainViewWidget.hpp \
@@ -78,7 +79,8 @@ HEADERS  += MainWindow.hpp \
     views/datatable.h \
     tabledialog.hpp \
     dialogs/cvsexportdialog.h \
-    options/recentfileoptions.hpp
+    options/recentfileoptions.hpp \
+    utils/utils.hpp
 
 FORMS    += MainWindow.ui \
     MainViewWidget.ui \

@@ -9,6 +9,7 @@
 #include "model/NixModelItem.hpp"
 #include "tabledialog.hpp"
 #include <QSettings>
+#include "utils/utils.hpp"
 
 
 MainWindow::MainWindow(QWidget *parent, QApplication *app) : QMainWindow(parent),
@@ -52,26 +53,11 @@ void MainWindow::get_recent_files() {
     for (QString k: keys) {
         recent_files.push_back(settings->value(k).toString());
     }
-    remove_duplicates();
+    nixview::util::remove_duplicates(recent_files);
     populate_recent_file_menu();
+    settings->endGroup();
 }
 
-void MainWindow::remove_duplicates() {
-    std::vector<QString> vec;
-    for (QString s : recent_files) {
-        vec.push_back(s);
-    }
-    std::sort(vec.begin(), vec.end());
-    vec.erase(std::unique( vec.begin(), vec.end() ), vec.end());
-    for (int i = recent_files.size() -1; i >= 0; i--){
-        std::vector<QString>::iterator it = std::find(vec.begin(), vec.end(), recent_files[i]);
-        if (it != vec.end()) {
-            vec.erase(it);
-        } else {
-            recent_files.removeAt(i);
-        }
-    }
-}
 
 MainWindow::~MainWindow() {
     delete ui;
