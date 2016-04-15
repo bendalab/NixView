@@ -6,7 +6,7 @@
 #include <QModelIndex>
 #include <QListWidget>
 #include "model/NixModelItem.hpp"
-#include "entitydescriptor.h"
+#include "utils/entitydescriptor.h"
 
 namespace Ui {
 class TagView;

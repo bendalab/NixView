@@ -1,9 +1,9 @@
 #include "TagPanel.hpp"
 #include "ui_TagPanel.h"
 #include "common/Common.hpp"
-#include <model/NixDataModel.hpp>
+#include "model/NixDataModel.hpp"
 #include "model/NixModelItem.hpp"
-#include "MainViewWidget.hpp"
+#include "views/MainViewWidget.hpp"
 
 #include <iostream>
 #include <sstream>

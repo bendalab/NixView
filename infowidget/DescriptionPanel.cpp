@@ -3,7 +3,7 @@
 #include <common/Common.hpp>
 #include <time.h>
 #include <boost/algorithm/string.hpp>
-#include "MainViewWidget.hpp"
+#include "views/MainViewWidget.hpp"
 
 DescriptionPanel::DescriptionPanel(QWidget *parent) :
     QWidget(parent),

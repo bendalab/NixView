@@ -7,7 +7,7 @@
 #include "model/NixModelItem.hpp"
 #include <QStandardItemModel>
 #include <QStringList>
-#include "entitydescriptor.h"
+#include "utils/entitydescriptor.h"
 #include <QTableView>
 
 namespace Ui {

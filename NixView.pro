@@ -21,10 +21,7 @@ macx {
 
 SOURCES += main.cpp\
     MainWindow.cpp \
-    MainViewWidget.cpp \
     nixview.cpp \
-    TagView.cpp \
-    entitydescriptor.cpp \
     dialogs/aboutdialog.cpp \
     dialogs/cvsexportdialog.cpp \
     dialogs/plotdialog.cpp \
@@ -48,13 +45,14 @@ SOURCES += main.cpp\
     plotter/qcustomplot.cpp \
     views/ColumnView.cpp \
     views/datatable.cpp \
+    views/MainViewWidget.cpp \
     views/RawTreeView.cpp \
+    views/TagView.cpp \
+    utils/entitydescriptor.cpp \
     utils/utils.cpp
 
 HEADERS  += MainWindow.hpp \
-    MainViewWidget.hpp \
     nixview.h \
-    TagView.hpp \
     common/Common.hpp \
     dialogs/aboutdialog.h \
     dialogs/cvsexportdialog.h \
@@ -79,14 +77,15 @@ HEADERS  += MainWindow.hpp \
     plotter/plotter.h \
     plotter/plotwidget.h \
     plotter/qcustomplot.h \
-    views/datatable.h \
-    views/RawTreeView.hpp \
     views/ColumnView.hpp \
+    views/datatable.h \
+    views/MainViewWidget.hpp \
+    views/RawTreeView.hpp \
+    views/TagView.hpp \
+    utils/entitydescriptor.h \
     utils/utils.hpp
 
 FORMS    += MainWindow.ui \
-    MainViewWidget.ui \
-    TagView.ui \
     dialogs/aboutdialog.ui \
     dialogs/cvsexportdialog.ui \
     dialogs/plotdialog.ui \
@@ -104,7 +103,9 @@ FORMS    += MainWindow.ui \
     options/TreeViewOptions.ui \
     views/ColumnView.ui \
     views/datatable.ui \
-    views/RawTreeView.ui
+    views/MainViewWidget.ui \
+    views/RawTreeView.ui \
+    views/TagView.ui
 
 #standard windows folder?
 #win32:CONFIG(release, debug|release): LIBS += /usr/local/lib/release/ -lnix
