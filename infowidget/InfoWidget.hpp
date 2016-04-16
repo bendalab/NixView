@@ -10,7 +10,7 @@
 #include "DescriptionPanel.hpp"
 #include "MetaDataPanel.hpp"
 #include "TagPanel.hpp"
-#include "TagView.hpp"
+#include "views/TagView.hpp"
 #include "model/NixDataModel.hpp"
 
 namespace Ui {

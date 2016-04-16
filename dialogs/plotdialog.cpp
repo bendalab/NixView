@@ -12,13 +12,13 @@ PlotDialog::PlotDialog(QWidget *parent) :
     ui->setupUi(this);
 
     QPushButton *btnSave = new QPushButton(tr("&Save Plot"));
-    connect(btnSave, &QPushButton::clicked, this, &PlotDialog::save_plot);
+    QObject::connect(btnSave, SIGNAL(clicked()), this, SLOT(save_plot()));
     ui->buttonBox->addButton(btnSave, QDialogButtonBox::ActionRole);
 
     QPushButton *btnClose = new QPushButton(tr("&Close"));
     ui->buttonBox->addButton(btnClose, QDialogButtonBox::AcceptRole);
 
-    connect(ui->buttonBox, &QDialogButtonBox::accepted, this, &PlotDialog::accept);
+    QObject::connect(ui->buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
 }
 
 void PlotDialog::set_entity(QModelIndex qml) {

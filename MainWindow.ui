@@ -522,7 +522,7 @@
   <customwidget>
    <class>MainViewWidget</class>
    <extends>QWidget</extends>
-   <header>MainViewWidget.hpp</header>
+   <header>views/MainViewWidget.hpp</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

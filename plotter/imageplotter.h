@@ -2,7 +2,7 @@
 #define IMAGEPLOTTER_H
 
 #include <QWidget>
-#include "plotter.h"
+#include "plotter/categoryplotter.h"
 #include <nix.hpp>
 #include "colormap.hpp"
 

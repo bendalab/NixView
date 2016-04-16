@@ -4,10 +4,10 @@
 #include <QWidget>
 #include <nix.hpp>
 #include <QVariant>
-#include <plotter/plotter.h>
 #include <QModelIndex>
-#include "MainViewWidget.hpp"
-#include <entitydescriptor.h>
+#include "plotter/plotter.h"
+#include "views/MainViewWidget.hpp"
+#include "utils/entitydescriptor.h"
 
 namespace Ui {
 class PlotWidget;

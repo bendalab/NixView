@@ -1,6 +1,6 @@
 #include "TagView.hpp"
 #include "ui_TagView.h"
-#include "plotwidget.h"
+#include "plotter/plotwidget.h"
 #include "common/Common.hpp"
 #include <QListWidgetItem>
 #include "plotter/plotter.h"

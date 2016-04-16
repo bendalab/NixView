@@ -2,7 +2,7 @@
 #include "ui_InfoWidget.h"
 #include <sstream>
 #include "common/Common.hpp"
-#include "MainViewWidget.hpp"
+#include "views/MainViewWidget.hpp"
 #include <QDebug>
 
 InfoWidget::InfoWidget(QWidget *parent) :

@@ -1,4 +1,4 @@
-#include "MainViewWidget.hpp"
+#include "views/MainViewWidget.hpp"
 #include "ui_MainViewWidget.h"
 #include "common/Common.hpp"
 
