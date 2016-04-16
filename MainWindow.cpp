@@ -1,13 +1,13 @@
 #include "MainWindow.hpp"
 #include "ui_MainWindow.h"
-#include "aboutdialog.h"
-#include "plotdialog.h"
+#include "dialogs/aboutdialog.h"
+#include "dialogs/plotdialog.h"
 #include "views/RawTreeView.hpp"
 #include "nix.hpp"
 #include "common/Common.hpp"
 #include "model/NixDataModel.hpp"
 #include "model/NixModelItem.hpp"
-#include "tabledialog.hpp"
+#include "dialogs/tabledialog.hpp"
 #include <QSettings>
 #include "utils/utils.hpp"
 

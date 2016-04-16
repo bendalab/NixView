@@ -3,7 +3,7 @@
 
 #include <QVariant>
 #include <QSignalMapper>
-#include <qcustomplot.h>
+#include "plotter/qcustomplot.h"
 #include <QWidget>
 #include <nix.hpp>
 

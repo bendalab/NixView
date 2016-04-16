@@ -7,7 +7,7 @@
 #include <QLabel>
 #include <QProgressBar>
 #include <nix.hpp>
-#include "MainViewWidget.hpp"
+#include "views/MainViewWidget.hpp"
 #include "options/OptionsWidget.hpp"
 
 class QVariant;
