@@ -119,19 +119,9 @@
            </property>
            <item row="0" column="0">
             <layout class="QGridLayout" name="gridLayout_2">
-             <item row="1" column="0">
-              <spacer name="horizontalSpacer">
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>40</width>
-                 <height>20</height>
-                </size>
-               </property>
-              </spacer>
-             </item>
+             <property name="topMargin">
+              <number>0</number>
+             </property>
              <item row="0" column="1">
               <spacer name="verticalSpacer">
                <property name="orientation">
@@ -141,6 +131,19 @@
                 <size>
                  <width>20</width>
                  <height>40</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item row="1" column="0">
+              <spacer name="horizontalSpacer">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
                 </size>
                </property>
               </spacer>
@@ -158,7 +161,40 @@
                </property>
               </spacer>
              </item>
-             <item row="2" column="1">
+             <item row="4" column="1">
+              <widget class="QLabel" name="label_2">
+               <property name="font">
+                <font>
+                 <pointsize>10</pointsize>
+                 <weight>75</weight>
+                 <bold>true</bold>
+                </font>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">color: rgb(115, 115, 115);</string>
+               </property>
+               <property name="text">
+                <string>recently opened files:</string>
+               </property>
+               <property name="textFormat">
+                <enum>Qt::PlainText</enum>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="1">
+              <widget class="QLabel" name="label">
+               <property name="text">
+                <string/>
+               </property>
+               <property name="pixmap">
+                <pixmap resource="resources.qrc">:/images/images/nixview256.png</pixmap>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignCenter</set>
+               </property>
+              </widget>
+             </item>
+             <item row="5" column="1">
               <widget class="QFrame" name="button_frame">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Maximum" vsizetype="Minimum">
@@ -212,16 +248,17 @@
                   </property>
                   <property name="styleSheet">
                    <string notr="true">background-color: white;
-border-color: rgb(255, 255, 255);</string>
+border-color: rgb(235, 235, 235);
+color: rgb(150,150, 150);</string>
                   </property>
                   <property name="frameShape">
-                   <enum>QFrame::NoFrame</enum>
+                   <enum>QFrame::Box</enum>
                   </property>
                   <property name="frameShadow">
-                   <enum>QFrame::Plain</enum>
+                   <enum>QFrame::Sunken</enum>
                   </property>
                   <property name="lineWidth">
-                   <number>0</number>
+                   <number>1</number>
                   </property>
                   <property name="horizontalScrollBarPolicy">
                    <enum>Qt::ScrollBarAlwaysOff</enum>
@@ -237,18 +274,18 @@ border-color: rgb(255, 255, 255);</string>
                </layout>
               </widget>
              </item>
-             <item row="1" column="1">
-              <widget class="QLabel" name="label">
-               <property name="text">
-                <string/>
+             <item row="2" column="1">
+              <spacer name="verticalSpacer_2">
+               <property name="orientation">
+                <enum>Qt::Vertical</enum>
                </property>
-               <property name="pixmap">
-                <pixmap resource="resources.qrc">:/images/images/nixview256.png</pixmap>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>20</width>
+                 <height>40</height>
+                </size>
                </property>
-               <property name="alignment">
-                <set>Qt::AlignCenter</set>
-               </property>
-              </widget>
+              </spacer>
              </item>
             </layout>
            </item>
