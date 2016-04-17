@@ -84,9 +84,15 @@ QStringList DataTable::axis_labels(const nix::DataArray &array, size_t dim) cons
 void DataTable::build_model() {
     if (this->model != nullptr)
         delete model;
-    nix::NDSize shape = this->array.dataExtent();
-    model = new QStandardItemModel(shape[0], shape.size() > 1 ? shape[1] : 1, this);
-    ui->table->setModel(model);ui->table->setSelectionMode(QAbstractItemView::ContiguousSelection);
+
+    model = new NixArrayTableModel(this);
+    model->set_source(array);
+
+
+    //model = new QStandardItemModel(shape[0], shape.size() > 1 ? shape[1] : 1, this);
+    ui->table->setModel(model);
+    ui->table->setSelectionMode(QAbstractItemView::ContiguousSelection);
+    /*
     if (shape.size() == 1) {
         std::vector<double> data;
         data.resize(shape[0], 0.0);
@@ -126,6 +132,7 @@ void DataTable::build_model() {
     } else if (shape.size() == 3) {
         std::cerr << "sorry, not that elaborate, yet!" << std::endl;
     }
+    */
 }
 
 
