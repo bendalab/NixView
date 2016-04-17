@@ -49,7 +49,8 @@ SOURCES += main.cpp\
     views/RawTreeView.cpp \
     views/TagView.cpp \
     utils/entitydescriptor.cpp \
-    utils/utils.cpp
+    utils/utils.cpp \
+    model/nixarraytablemodel.cpp
 
 HEADERS  += MainWindow.hpp \
     nixview.h \
@@ -83,7 +84,8 @@ HEADERS  += MainWindow.hpp \
     views/RawTreeView.hpp \
     views/TagView.hpp \
     utils/entitydescriptor.h \
-    utils/utils.hpp
+    utils/utils.hpp \
+    model/nixarraytablemodel.h
 
 FORMS    += MainWindow.ui \
     dialogs/aboutdialog.ui \
