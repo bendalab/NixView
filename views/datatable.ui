@@ -41,7 +41,7 @@
       <property name="minimumSize">
        <size>
         <width>0</width>
-        <height>200</height>
+        <height>150</height>
        </size>
       </property>
       <property name="acceptDrops">
@@ -52,6 +52,12 @@
       </property>
      </widget>
      <widget class="QTableView" name="table">
+      <property name="minimumSize">
+       <size>
+        <width>0</width>
+        <height>300</height>
+       </size>
+      </property>
       <property name="editTriggers">
        <set>QAbstractItemView::NoEditTriggers</set>
       </property>
@@ -59,7 +65,7 @@
     </widget>
    </item>
   </layout>
-  </widget>
-<resources/>
-<connections/>
+ </widget>
+ <resources/>
+ <connections/>
 </ui>
