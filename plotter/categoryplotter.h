@@ -26,7 +26,7 @@ public:
 
     int guess_best_xdim(const nix::DataArray &array) const;
 
-    void set_label(const std::string &label);
+    void set_label(const std::string &label) override;
 
     void set_ylabel(const QString &label);
 
@@ -38,17 +38,17 @@ public:
 
     void add_bar_plot(QVector<QString> categories, QVector<double> y_data, const QString &name);
 
-    void add_events(const QVector<double> &x_data, const QVector<double> &y_data, const QString &name, bool y_scale);
+    void add_events(const QVector<double> &x_data, const QVector<double> &y_data, const QString &name, bool y_scale) override;
 
-    void add_segments(const QVector<double> &positions, const QVector<double> &extents, const QString &name);
+    void add_segments(const QVector<double> &positions, const QVector<double> &extents, const QString &name) override;
 
-    PlotterType plotter_type() const;
+    PlotterType plotter_type() const override;
 
 private:
     Ui::CategoryPlotter *ui;
     ColorMap cmap;
 
-    QCustomPlot* get_plot();
+    QCustomPlot* get_plot() override;
 
 };
 
