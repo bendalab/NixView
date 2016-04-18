@@ -13,6 +13,14 @@ void NixArrayTableModel::set_source(const nix::DataArray &array) {
     rows = shape[0];
     this->insertColumns(0, cols);
     this->insertRows(0, rows);
+    if (array.getDimension(1).dimensionType() == nix::DimensionType::Set) {
+        v_labels = array.getDimension(1).asSetDimension().labels();
+    }
+    if (shape.size() > 1) {
+        if (array.getDimension(2).dimensionType() == nix::DimensionType::Set) {
+            h_labels = array.getDimension(2).asSetDimension().labels();
+        }
+    }
 }
 
 
@@ -21,34 +29,33 @@ QVariant NixArrayTableModel::headerData(int section, Qt::Orientation orientation
     if (role != Qt::DisplayRole) {
         return QVariant();
     }
-    //orientation == Qt::Orientation::Horizontal
     if (orientation == Qt::Orientation::Horizontal) {
         if (shape.size() == 1) {
             return QString::fromStdString((array.label() ? *array.label() : "") +
                                           (array.unit() ? " [" + *array.unit() + "]" : ""));
         } else {
-            if (array.getDimension(2).dimensionType() == nix::DimensionType::Set) {
-                nix::SetDimension dim = array.getDimension(2).asSetDimension();
-                std::vector<std::string> labels = dim.labels();
-                if (section > labels.size()) {
-                    return QString::fromStdString(nix::util::numToStr(section));
-;               }
-                return QString::fromStdString(labels[section]);
-            } else if (array.getDimension(2).dimensionType() == nix::DimensionType::Range) {
-                nix::RangeDimension dim = array.getDimension(2).asRangeDimension();
-                return QString::fromStdString(nix::util::numToStr(dim[section]));
-            } else if (array.getDimension(2).dimensionType() == nix::DimensionType::Sample) {
-                nix::SampledDimension dim = array.getDimension(2).asSampledDimension();
-                return dim[section];
+            nix::Dimension dim = array.getDimension(2);
+            if (dim.dimensionType() == nix::DimensionType::Set) {
+                return (size_t)section < h_labels.size() ? QString::fromStdString(h_labels[section]) :
+                                                           QString::fromStdString(nix::util::numToStr(section));
+            } else if (dim.dimensionType() == nix::DimensionType::Range) {
+                return QString::fromStdString(nix::util::numToStr(dim.asRangeDimension()[section]));
+            } else if (dim.dimensionType() == nix::DimensionType::Sample) {
+                return dim.asSampledDimension()[section];
             }
         }
     } else if (orientation == Qt::Orientation::Vertical) {
+        nix::Dimension dim = array.getDimension(1);
+        if (dim.dimensionType() == nix::DimensionType::Set) {
+            return (size_t)section < v_labels.size() ? QString::fromStdString(v_labels[section]) :
+                                                       QString::fromStdString(nix::util::numToStr(section));
+        } else if (dim.dimensionType() == nix::DimensionType::Sample) {
+            return dim.asSampledDimension()[section];
+        } else if (dim.dimensionType() == nix::DimensionType::Range) {
+            return dim.asRangeDimension()[section];
+        }
         return "1";
-
     }
-
-
-    std::cerr << "ping3" << std::endl;
     return "1";
 }
 
@@ -63,7 +70,7 @@ int NixArrayTableModel::columnCount(const QModelIndex &parent) const
 }
 
 QVariant NixArrayTableModel::data(const QModelIndex &index, int role) const {
-    if (!index.isValid()) {
+    if (!index.isValid() || role != Qt::DisplayRole) {
         return QVariant();
     }
     double d = 0.0;

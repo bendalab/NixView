@@ -25,6 +25,7 @@ private:
     nix::NDSize shape;
     nix::ndsize_t rows, cols;
     nix::DataArray array;
+    std::vector<std::string> h_labels, v_labels;
 };
 
 #endif // NIXARRAYTABLEMODEL_H
