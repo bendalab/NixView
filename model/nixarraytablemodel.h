@@ -26,6 +26,8 @@ private:
     nix::ndsize_t rows, cols;
     nix::DataArray array;
     std::vector<std::string> h_labels, v_labels;
+
+    QVariant get_dimension_label(int section, int role, const nix::Dimension &dim) const;
 };
 
 #endif // NIXARRAYTABLEMODEL_H
