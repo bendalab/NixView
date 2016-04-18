@@ -23,7 +23,7 @@ private:
     int rows, cols;
     nix::DataArray array;
 
-    QVariant get_dimension_label(int section, int role, const nix::Dimension &dim) const;
+    QVariant get_dimension_label(int section, int role, Qt::Orientation orientation, const nix::Dimension &dim) const;
 };
 
 #endif // NIXARRAYTABLEMODEL_H

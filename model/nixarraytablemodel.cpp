@@ -34,21 +34,25 @@ QVariant NixArrayTableModel::headerData(int section, Qt::Orientation orientation
                                           (array.unit() ? " [" + *array.unit() + "]" : ""));
         } else {
             nix::Dimension dim = array.getDimension(2);
-            return get_dimension_label(section, role, dim);
+            return get_dimension_label(section, role, orientation, dim);
         }
     } else if (orientation == Qt::Orientation::Vertical) {
         nix::Dimension dim = array.getDimension(1);
-        return get_dimension_label(section, role, dim);
+        return get_dimension_label(section, role, orientation, dim);
         return "1";
     }
     return "1";
 }
 
 
-QVariant NixArrayTableModel::get_dimension_label(int section, int role, const nix::Dimension &dim) const {
+QVariant NixArrayTableModel::get_dimension_label(int section, int role, Qt::Orientation orientation, const nix::Dimension &dim) const {
     if (dim.dimensionType() == nix::DimensionType::Set) {
-        return (size_t)section < v_labels.size() ? QString::fromStdString(v_labels[section]) :
-                                                   QString::fromStdString(nix::util::numToStr(section));
+        if (orientation == Qt::Orientation::Vertical)
+            return (size_t)section < v_labels.size() ? QString::fromStdString(v_labels[section]) :
+                                                       QString::fromStdString(nix::util::numToStr(section));
+        else
+            return (size_t)section < h_labels.size() ? QString::fromStdString(h_labels[section]) :
+                                                       QString::fromStdString(nix::util::numToStr(section));
     } else if (dim.dimensionType() == nix::DimensionType::Sample) {
         if (role == Qt::DisplayRole)
             return dim.asSampledDimension()[section];
