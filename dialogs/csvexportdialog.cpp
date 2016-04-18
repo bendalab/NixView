@@ -1,34 +1,34 @@
-#include "cvsexportdialog.h"
-#include "ui_cvsexportdialog.h"
+#include "csvexportdialog.h"
+#include "ui_csvexportdialog.h"
 #include <iostream>
 #include <Qt>
 #include <QFileDialog>
 #include <QTextStream>
 
-CVSExportDialog::CVSExportDialog(QWidget *parent) :
+CSVExportDialog::CSVExportDialog(QWidget *parent) :
     QDialog(parent),
-    ui(new Ui::CVSExportDialog)
+    ui(new Ui::CSVExportDialog)
 {
     ui->setupUi(this);
 }
 
-CVSExportDialog::~CVSExportDialog()
+CSVExportDialog::~CSVExportDialog()
 {
     delete ui;
 }
 
 
-void CVSExportDialog::set_table(QTableView *table) {
+void CSVExportDialog::set_table(QTableView *table) {
     this->table = table;
 }
 
 
-void CVSExportDialog::accept() {
-    export_cvs();
+void CSVExportDialog::accept() {
+    export_csv();
 }
 
 
-void CVSExportDialog::get_header(QStringList &vheader, QStringList &hheader) {
+void CSVExportDialog::get_header(QStringList &vheader, QStringList &hheader) {
     for (int i = 0; i < table->model()->columnCount(); i++)
       hheader.push_back(table->model()->headerData(i, Qt::Horizontal).toString());
     for (int i = 0; i < table->model()->rowCount(); i++)
@@ -36,17 +36,16 @@ void CVSExportDialog::get_header(QStringList &vheader, QStringList &hheader) {
 }
 
 
-void CVSExportDialog::export_cvs() {
+void CSVExportDialog::export_csv() {
     QFileDialog fd(this);
     fd.setAcceptMode(QFileDialog::AcceptSave);
-    fd.setNameFilter(tr("CVS File (*.cvs)"));
+    fd.setNameFilter(tr("CSV File (*.csv)"));
     fd.setViewMode(QFileDialog::Detail);
     QStringList fileNames;
     if (fd.exec())
         fileNames = fd.selectedFiles();
     if (fileNames.size() == 0)
         return;
-    //QString filename = QFileDialog::getSaveFileName(this, tr("save cvs file"), QString(), tr("CVS files (*.cvs)"));
     QItemSelectionModel* temp = table->selectionModel();
     if (!ui->export_selection->isChecked() || temp->selection().count() == 0) {
         table->selectAll();
