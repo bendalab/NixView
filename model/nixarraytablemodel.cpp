@@ -1,8 +1,7 @@
 #include "nixarraytablemodel.h"
 
 NixArrayTableModel::NixArrayTableModel(QObject *parent)
-    : QAbstractTableModel(parent)
-{
+    : QAbstractTableModel(parent), h_labels(), v_labels() {
 
 }
 
@@ -67,29 +66,40 @@ QVariant NixArrayTableModel::get_dimension_label(int section, int role, const ni
 }
 
 
-int NixArrayTableModel::rowCount(const QModelIndex &parent) const
-{
+int NixArrayTableModel::rowCount(const QModelIndex &parent) const {
     return rows;
 }
 
-int NixArrayTableModel::columnCount(const QModelIndex &parent) const
-{
+
+int NixArrayTableModel::columnCount(const QModelIndex &parent) const {
     return cols;
 }
 
+
 QVariant NixArrayTableModel::data(const QModelIndex &index, int role) const {
-    if (!index.isValid() || role != Qt::DisplayRole) {
+    if (!index.isValid() || (role != Qt::DisplayRole && role != Qt::ToolTipRole)) {
         return QVariant();
     }
-    double d = 0.0;
-    nix::NDSize count(shape.size(), 1);
-    if ((index.row() < rows) && (index.column() < cols)) {
-        nix::NDSize offset(shape.size(), index.row());
-        if (shape.size() > 1) {
-            offset[1] = index.column();
+    if (role == Qt::DisplayRole) {
+        double d = 0.0;
+        nix::NDSize count(shape.size(), 1);
+        if ((index.row() < rows) && (index.column() < cols)) {
+            nix::NDSize offset(shape.size(), index.row());
+            if (shape.size() > 1) {
+                offset[1] = index.column();
+            }
+            array.getData(nix::DataType::Double, &d, count, offset);
+            return QVariant(d);
         }
-        array.getData(nix::DataType::Double, &d, count, offset);
-        return QVariant(d);
+    } else if (role == Qt::ToolTipRole) {
+        std::string label = (array.label() ? *array.label() : "") +
+                            (array.unit() ? " [" + *array.unit() + "]" : "") + " @ \n";
+        label = label + headerData(index.row(), Qt::Vertical, Qt::ToolTipRole).toString().toStdString() + ": " +
+                headerData(index.row(), Qt::Vertical, Qt::DisplayRole).toString().toStdString() + "\n";
+        label = label + headerData(index.column(), Qt::Horizontal, Qt::ToolTipRole).toString().toStdString() + ": " +
+                headerData(index.column(), Qt::Horizontal, Qt::DisplayRole).toString().toStdString() + "\n";
+        return QString::fromStdString(label);
     }
+
     return QVariant();
 }
