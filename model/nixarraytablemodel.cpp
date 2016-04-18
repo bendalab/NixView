@@ -8,8 +8,8 @@ NixArrayTableModel::NixArrayTableModel(QObject *parent)
 void NixArrayTableModel::set_source(const nix::DataArray &array) {
     this->array = array;
     shape = this->array.dataExtent();
-    cols = shape.size() > 1 ?  shape[1] : 1;
-    rows = shape[0];
+    cols = (int)(shape.size() > 1 ?  shape[1] : 1);
+    rows = (int)shape[0];
     this->insertColumns(0, cols);
     this->insertRows(0, rows);
     if (array.getDimension(1).dimensionType() == nix::DimensionType::Set) {

@@ -31,10 +31,8 @@ private:
     Ui::DataTable *ui;
     nix::DataArray array;
     NixArrayTableModel *model;
-    //QStandardItemModel *model;
 
     void build_model();
-    QStringList axis_labels(const nix::DataArray &array, size_t dim) const;
     void describe();
     EntityDescriptor basic_description(const std::string &name, const std::string &type, const std::string &description,
                                        const std::string &id, const std::string &created, const std::string &updated);
