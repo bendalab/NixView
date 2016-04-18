@@ -4,12 +4,16 @@
 #include <Qt>
 #include <QFileDialog>
 #include <QTextStream>
+#include <math.h>
+
 
 CSVExportDialog::CSVExportDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::CSVExportDialog)
 {
     ui->setupUi(this);
+    ui->progressBar->setValue(0);
+    ui->progressBar->setVisible(false);
 }
 
 CSVExportDialog::~CSVExportDialog()
@@ -37,6 +41,8 @@ void CSVExportDialog::get_header(QStringList &vheader, QStringList &hheader) {
 
 
 void CSVExportDialog::export_csv() {
+    ui->progressBar->setVisible(true);
+    ui->progressBar->setValue(0);
     QFileDialog fd(this);
     fd.setAcceptMode(QFileDialog::AcceptSave);
     fd.setNameFilter(tr("CSV File (*.csv)"));
@@ -79,6 +85,10 @@ void CSVExportDialog::export_csv() {
         }
         outStream << "\n";
     }
+    ui->progressBar->setValue(5);
+    QCoreApplication::processEvents();
+    double step = 95. / this->table->model()->rowCount();
+    int count = 0;
     for (QModelIndex i: indexes) {
         QVariant var = table->model()->data(i);
         if (!var.canConvert<double>())
@@ -94,6 +104,9 @@ void CSVExportDialog::export_csv() {
         else {
             outStream << var.value<double>() << "\n";
         }
+        ui->progressBar->setValue(5 + rint(count * step));
+        QCoreApplication::processEvents();
+        count++;
     }
 
     if (!ui->export_selection->isChecked())
