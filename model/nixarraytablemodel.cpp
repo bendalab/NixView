@@ -26,7 +26,7 @@ void NixArrayTableModel::set_source(const nix::DataArray &array) {
 
 QVariant NixArrayTableModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
-    if (role != Qt::DisplayRole) {
+    if (role != Qt::DisplayRole && role != Qt::ToolTipRole) {
         return QVariant();
     }
     if (orientation == Qt::Orientation::Horizontal) {
@@ -39,9 +39,17 @@ QVariant NixArrayTableModel::headerData(int section, Qt::Orientation orientation
                 return (size_t)section < h_labels.size() ? QString::fromStdString(h_labels[section]) :
                                                            QString::fromStdString(nix::util::numToStr(section));
             } else if (dim.dimensionType() == nix::DimensionType::Range) {
-                return QString::fromStdString(nix::util::numToStr(dim.asRangeDimension()[section]));
+                if (role == Qt::DisplayRole)
+                    return QString::fromStdString(nix::util::numToStr(dim.asRangeDimension()[section]));
+                nix::RangeDimension rd = dim.asRangeDimension();
+                std::string label = (rd.label() ? *rd.label() : "" ) + (rd.unit() ? " [" + *rd.unit() +"]" : "");
+                return QString::fromStdString(label);
             } else if (dim.dimensionType() == nix::DimensionType::Sample) {
-                return dim.asSampledDimension()[section];
+                if (role == Qt::DisplayRole)
+                    return dim.asSampledDimension()[section];
+                nix::SampledDimension sd = dim.asSampledDimension();
+                std::string label = (sd.label() ? *sd.label() : "" ) + (sd.unit() ? " [" + *sd.unit() +"]" : "");
+                return QString::fromStdString(label);
             }
         }
     } else if (orientation == Qt::Orientation::Vertical) {
@@ -50,9 +58,17 @@ QVariant NixArrayTableModel::headerData(int section, Qt::Orientation orientation
             return (size_t)section < v_labels.size() ? QString::fromStdString(v_labels[section]) :
                                                        QString::fromStdString(nix::util::numToStr(section));
         } else if (dim.dimensionType() == nix::DimensionType::Sample) {
-            return dim.asSampledDimension()[section];
+            if (role == Qt::DisplayRole)
+                return dim.asSampledDimension()[section];
+            nix::SampledDimension sd = dim.asSampledDimension();
+            std::string label = (sd.label() ? *sd.label() : "" ) + (sd.unit() ? " [" + *sd.unit() +"]" : "");
+            return QString::fromStdString(label);
         } else if (dim.dimensionType() == nix::DimensionType::Range) {
-            return dim.asRangeDimension()[section];
+            if (role == Qt::DisplayRole)
+                return dim.asRangeDimension()[section];
+            nix::RangeDimension rd = dim.asRangeDimension();
+            std::string label = (rd.label() ? *rd.label() : "" ) + (rd.unit() ? " [" + *rd.unit() +"]" : "");
+            return QString::fromStdString(label);
         }
         return "1";
     }
