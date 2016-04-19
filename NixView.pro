@@ -50,7 +50,7 @@ SOURCES += main.cpp\
     views/RawTreeView.cpp \
     views/TagView.cpp \
     utils/entitydescriptor.cpp \
-    utils/utils.cpp \
+    utils/utils.cpp
 
 
 HEADERS  += MainWindow.hpp \

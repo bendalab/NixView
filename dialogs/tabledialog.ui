@@ -14,7 +14,7 @@
    <string>Table view</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="resources.qrc">
+   <iconset resource="../resources.qrc">
     <normaloff>:/images/images/nix_table.png</normaloff>:/images/images/nix_table.png</iconset>
   </property>
   <layout class="QGridLayout" name="gridLayout">
@@ -54,7 +54,7 @@
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="resources.qrc"/>
+  <include location="../resources.qrc"/>
  </resources>
  <connections>
   <connection>
