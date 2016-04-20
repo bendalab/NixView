@@ -23,7 +23,7 @@ SOURCES += main.cpp\
     MainWindow.cpp \
     nixview.cpp \
     dialogs/aboutdialog.cpp \
-    dialogs/cvsexportdialog.cpp \
+    dialogs/csvexportdialog.cpp \
     dialogs/plotdialog.cpp \
     dialogs/tabledialog.cpp \
     filter/NixProxyModel.cpp \
@@ -31,6 +31,7 @@ SOURCES += main.cpp\
     infowidget/DescriptionPanel.cpp \
     infowidget/MetaDataPanel.cpp \
     infowidget/TagPanel.cpp \
+    model/nixarraytablemodel.cpp \
     model/NixDataModel.cpp \
     model/NixModelItem.cpp \
     options/OptionsWidget.cpp \
@@ -49,13 +50,14 @@ SOURCES += main.cpp\
     views/RawTreeView.cpp \
     views/TagView.cpp \
     utils/entitydescriptor.cpp \
-    utils/utils.cpp
+    utils/utils.cpp \
+
 
 HEADERS  += MainWindow.hpp \
     nixview.h \
     common/Common.hpp \
     dialogs/aboutdialog.h \
-    dialogs/cvsexportdialog.h \
+    dialogs/csvexportdialog.h \
     dialogs/plotdialog.h \
     dialogs/tabledialog.hpp \
     filter/NixProxyModel.hpp \
@@ -63,6 +65,7 @@ HEADERS  += MainWindow.hpp \
     infowidget/DescriptionPanel.hpp \
     infowidget/MetaDataPanel.hpp \
     infowidget/TagPanel.hpp \
+    model/nixarraytablemodel.h \
     model/NixDataModel.hpp \
     model/NixModelItem.hpp \
     entitydescriptor.h \
@@ -85,9 +88,10 @@ HEADERS  += MainWindow.hpp \
     utils/entitydescriptor.h \
     utils/utils.hpp
 
+
 FORMS    += MainWindow.ui \
     dialogs/aboutdialog.ui \
-    dialogs/cvsexportdialog.ui \
+    dialogs/csvexportdialog.ui \
     dialogs/plotdialog.ui \
     dialogs/tabledialog.ui \
     infowidget/InfoWidget.ui \

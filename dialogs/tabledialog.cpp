@@ -1,6 +1,6 @@
 #include "tabledialog.hpp"
 #include "ui_tabledialog.h"
-#include "dialogs/cvsexportdialog.h"
+#include "dialogs/csvexportdialog.h"
 
 TableDialog::TableDialog(QWidget *parent) :
     QDialog(parent),
@@ -28,7 +28,7 @@ void TableDialog::button_clicked(QAbstractButton *button) {
 
 
 void TableDialog::accept() {
-    CVSExportDialog d(this);
+    CSVExportDialog d(this);
     d.set_table(ui->data_table->get_table());
     d.exec();
 }

@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>CVSExportDialog</class>
- <widget class="QDialog" name="CVSExportDialog">
+ <class>CSVExportDialog</class>
+ <widget class="QDialog" name="CSVExportDialog">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
     <width>219</width>
-    <height>131</height>
+    <height>136</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -79,6 +79,13 @@
      </property>
     </widget>
    </item>
+   <item>
+    <widget class="QProgressBar" name="progressBar">
+     <property name="value">
+      <number>24</number>
+     </property>
+    </widget>
+   </item>
   </layout>
  </widget>
  <resources/>
@@ -86,7 +93,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>accepted()</signal>
-   <receiver>CVSExportDialog</receiver>
+   <receiver>CSVExportDialog</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -102,7 +109,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>rejected()</signal>
-   <receiver>CVSExportDialog</receiver>
+   <receiver>CSVExportDialog</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">

@@ -27,7 +27,7 @@ public:
 
     int guess_best_xdim(const nix::DataArray &array) const; //tries to find the best x-dimension needs to be optional at some point...
 
-    void set_label(const std::string &label);
+    void set_label(const std::string &label) override;
 
     void add_line_plot(const QVector<double> &x_data, const QVector<double> &y_data, const QString &name);
 
@@ -37,11 +37,11 @@ public:
     void set_xlabel(const QString &label);
     void set_xlabel(const std::string &label);
 
-    void add_events(const QVector<double> &x_data, const QVector<double> &y_data, const QString &name, bool y_scale);
+    void add_events(const QVector<double> &x_data, const QVector<double> &y_data, const QString &name, bool y_scale) override;
 
-    void add_segments(const QVector<double> &positions, const QVector<double> &extents, const QString &name);
+    void add_segments(const QVector<double> &positions, const QVector<double> &extents, const QString &name) override;
 
-    PlotterType plotter_type() const;
+    PlotterType plotter_type() const override;
 
     void save(QString filename) {}
 
@@ -49,7 +49,7 @@ private:
     Ui::LinePlotter *ui;
     ColorMap cmap;
 
-    QCustomPlot* get_plot();
+    QCustomPlot* get_plot() override;
 
 public slots:
     void selection_changed();

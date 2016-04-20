@@ -35,7 +35,7 @@ private:
     Ui::ImagePlotter *ui;
     ColorMap cmap;
 
-    QCustomPlot* get_plot();
+    QCustomPlot* get_plot() override;
 };
 
 #endif //IMAGEPLOTTER_H
