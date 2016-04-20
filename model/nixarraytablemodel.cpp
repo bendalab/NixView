@@ -88,7 +88,8 @@ QVariant NixArrayTableModel::data(const QModelIndex &index, int role) const {
         double d = 0.0;
         nix::NDSize count(shape.size(), 1);
         if ((index.row() < rows) && (index.column() < cols)) {
-            nix::NDSize offset(shape.size(), index.row());
+            nix::NDSize offset(shape.size(), 0);
+            offset[0] = index.row();
             if (shape.size() > 1) {
                 offset[1] = index.column();
             }
