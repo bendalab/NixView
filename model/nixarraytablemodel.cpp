@@ -5,8 +5,9 @@ NixArrayTableModel::NixArrayTableModel(QObject *parent)
 
 }
 
-void NixArrayTableModel::set_source(const nix::DataArray &array) {
+void NixArrayTableModel::set_source(const nix::DataArray &array, int page) {
     this->array = array;
+    this->page = page;
     shape = this->array.dataExtent();
     cols = (int)(shape.size() > 1 ?  shape[1] : 1);
     rows = (int)shape[0];
@@ -23,8 +24,7 @@ void NixArrayTableModel::set_source(const nix::DataArray &array) {
 }
 
 
-QVariant NixArrayTableModel::headerData(int section, Qt::Orientation orientation, int role) const
-{
+QVariant NixArrayTableModel::headerData(int section, Qt::Orientation orientation, int role) const {
     if (role != Qt::DisplayRole && role != Qt::ToolTipRole) {
         return QVariant();
     }
@@ -92,6 +92,9 @@ QVariant NixArrayTableModel::data(const QModelIndex &index, int role) const {
             offset[0] = index.row();
             if (shape.size() > 1) {
                 offset[1] = index.column();
+            }
+            if (shape.size() > 2) {
+                offset[2] = page;
             }
             array.getData(nix::DataType::Double, &d, count, offset);
             return QVariant(d);

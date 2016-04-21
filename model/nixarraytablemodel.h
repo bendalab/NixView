@@ -11,7 +11,7 @@ class NixArrayTableModel : public QAbstractTableModel
 public:
     explicit NixArrayTableModel(QObject *parent = 0);
 
-    void set_source(const nix::DataArray &array);
+    void set_source(const nix::DataArray &array, int page = 0);
     QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const override;
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     int columnCount(const QModelIndex &parent = QModelIndex()) const override;
@@ -20,7 +20,7 @@ public:
 private:
     nix::NDSize shape;
     std::vector<std::string> h_labels, v_labels;
-    int rows, cols;
+    int rows, cols, page;
     nix::DataArray array;
 
     QVariant get_dimension_label(int section, int role, Qt::Orientation orientation, const nix::Dimension &dim) const;
