@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>640</width>
-    <height>480</height>
+    <height>504</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -24,7 +24,7 @@
     <number>2</number>
    </property>
    <property name="bottomMargin">
-    <number>2</number>
+    <number>0</number>
    </property>
    <item>
     <widget class="QSplitter" name="splitter">
@@ -127,10 +127,13 @@
          </size>
         </property>
         <property name="text">
-         <string>123456789</string>
+         <string>1234</string>
         </property>
         <property name="maxLength">
          <number>9</number>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
         </property>
        </widget>
       </item>
@@ -149,9 +152,9 @@
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="forward_btn">
+       <widget class="QPushButton" name="next_btn">
         <property name="text">
-         <string>fwd</string>
+         <string>next</string>
         </property>
        </widget>
       </item>
@@ -174,5 +177,59 @@
   </layout>
  </widget>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>current_page</sender>
+   <signal>editingFinished()</signal>
+   <receiver>DataTable</receiver>
+   <slot>select_page()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>323</x>
+     <y>483</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>319</x>
+     <y>251</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>back_btn</sender>
+   <signal>clicked()</signal>
+   <receiver>DataTable</receiver>
+   <slot>previous_page()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>202</x>
+     <y>484</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>319</x>
+     <y>251</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>next_btn</sender>
+   <signal>clicked()</signal>
+   <receiver>DataTable</receiver>
+   <slot>next_page()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>440</x>
+     <y>484</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>319</x>
+     <y>251</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>select_page()</slot>
+  <slot>next_page()</slot>
+  <slot>previous_page()</slot>
+ </slots>
 </ui>
