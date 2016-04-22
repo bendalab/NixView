@@ -50,7 +50,8 @@ SOURCES += main.cpp\
     views/RawTreeView.cpp \
     views/TagView.cpp \
     utils/entitydescriptor.cpp \
-    utils/utils.cpp
+    utils/utils.cpp \
+    model/nixtreemodelitem.cpp
 
 
 HEADERS  += MainWindow.hpp \
@@ -86,7 +87,8 @@ HEADERS  += MainWindow.hpp \
     views/RawTreeView.hpp \
     views/TagView.hpp \
     utils/entitydescriptor.h \
-    utils/utils.hpp
+    utils/utils.hpp \
+    model/nixtreemodelitem.h
 
 
 FORMS    += MainWindow.ui \
