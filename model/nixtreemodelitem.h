@@ -2,7 +2,7 @@
 #define NIXTREEMODELITEM_H
 #include <QVariant>
 #include <QList>
-#include "common/Common.hpp"
+#include <QVector>
 
 class NixTreeModelItem {
 
@@ -18,11 +18,13 @@ public:
     QVariant data(int column) const;
     int row() const;
     NixTreeModelItem *parentItem();
+    QString getHeader(int column);
 
 private:
     QList<NixTreeModelItem*> children;
     QVariant item_data;
     NixTreeModelItem *parent_item;
+    static const QVector<QString> columns;
 };
-// http://doc.qt.io/qt-5/qtwidgets-itemviews-simpletreemodel-example.html
+
 #endif // NIXTREEMODELITEM_H
