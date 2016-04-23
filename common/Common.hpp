@@ -10,6 +10,7 @@ Q_DECLARE_METATYPE(nix::Tag)
 Q_DECLARE_METATYPE(nix::MultiTag)
 Q_DECLARE_METATYPE(nix::Feature)
 Q_DECLARE_METATYPE(nix::Source)
+Q_DECLARE_METATYPE(nix::Dimension)
 
 // define model headers
 #define MODEL_HEADER_NAME "Name"
