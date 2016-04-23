@@ -8,6 +8,8 @@ const QVector<QString> NixTreeModelItem::columns = {MODEL_HEADER_NAME, MODEL_HEA
                                                     MODEL_HEADER_UNCERTAINTY, MODEL_HEADER_ROOTCHILDLINK};
 
 NixTreeModelItem::NixTreeModelItem(const QVariant &data, NixTreeModelItem *parent) {
+    std::cerr << data.canConvert<nix::Block>() << std::endl;
+    checkDataType(data);
     this->parent_item = parent;
     this->item_data = data;
 }
@@ -15,6 +17,31 @@ NixTreeModelItem::NixTreeModelItem(const QVariant &data, NixTreeModelItem *paren
 
 NixTreeModelItem::~NixTreeModelItem() {
     qDeleteAll(children);
+}
+
+
+void NixTreeModelItem::checkDataType(const QVariant &data) {
+    if (data.canConvert<nix::DataArray>()) {
+        this->nix_type = NixType::NIX_DATA_ARRAY;
+    } else if (data.canConvert<nix::Section>()) {
+        this->nix_type = NixType::NIX_SECTION;
+    } else if (data.canConvert<nix::Property>()) {
+        this->nix_type = NixType::NIX_PROPERTY;
+    } else if (data.canConvert<nix::Tag>()) {
+        this->nix_type = NixType::NIX_TAG;
+    } else if (data.canConvert<nix::MultiTag>()) {
+        this->nix_type = NixType::NIX_MTAG;
+    } else if (data.canConvert<nix::Block>()) {
+        this->nix_type = NixType::NIX_BLOCK;
+    } else if (data.canConvert<nix::Group>()) {
+        this->nix_type = NixType::NIX_GROUP;
+    } else if (data.canConvert<nix::Source>()) {
+            this->nix_type = NixType::NIX_SOURCE;
+    } else if (data.canConvert<nix::Dimension>()) {
+        this->nix_type = NixType::NIX_DIMENSION;
+    } else {
+        this->nix_type = NixType::NIX_UNKNOWN;
+    }
 }
 
 
@@ -43,7 +70,24 @@ int NixTreeModelItem::columnCount() const {
 
 
 QVariant NixTreeModelItem::data(int column) const {
-    return item_data;
+    if (column < this->columns.count()) {
+        switch (column) {
+            case 0:
+
+                return QVariant("Name");
+            case 1:
+                return QVariant("Type");
+            case 2:
+        default:
+            return QVariant();
+        }
+    }
+    return QVariant();
+}
+
+
+QString NixTreeModelItem::getHeader(int column) {
+    return this->columns[column];
 }
 
 

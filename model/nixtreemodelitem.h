@@ -4,6 +4,22 @@
 #include <QList>
 #include <QVector>
 
+
+enum class NixType {
+    NIX_BLOCK,
+    NIX_DATA_ARRAY,
+    NIX_TAG,
+    NIX_MTAG,
+    NIX_GROUP,
+    NIX_FEAT,
+    NIX_SOURCE,
+    NIX_SECTION,
+    NIX_PROPERTY,
+    NIX_DIMENSION,
+    NIX_UNKNOWN
+};
+
+
 class NixTreeModelItem {
 
 public:
@@ -24,7 +40,10 @@ private:
     QList<NixTreeModelItem*> children;
     QVariant item_data;
     NixTreeModelItem *parent_item;
+    NixType nix_type;
     static const QVector<QString> columns;
+
+    void checkDataType(const QVariant &data);
 };
 
 #endif // NIXTREEMODELITEM_H
