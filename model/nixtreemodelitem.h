@@ -36,6 +36,7 @@ public:
     NixTreeModelItem *parentItem();
     QString getHeader(int column);
     NixType nixType() const;
+    QVariant& itemData();
 
 private:
     QList<NixTreeModelItem*> children;

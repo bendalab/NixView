@@ -11,6 +11,7 @@ NixTreeModelItem::NixTreeModelItem(const QVariant &data, NixTreeModelItem *paren
     checkDataType(data);
     this->parent_item = parent;
     this->item_data = data;
+    getDates();
 }
 
 
@@ -87,6 +88,15 @@ QVariant NixTreeModelItem::data(int column) const {
 
 QString NixTreeModelItem::getHeader(int column) {
     return this->columns[column];
+}
+
+
+NixType NixTreeModelItem::nixType() const {
+    return this->nix_type;
+}
+
+QVariant &NixTreeModelItem::itemData() {
+    return this->item_data;
 }
 
 
