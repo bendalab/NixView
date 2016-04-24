@@ -35,15 +35,23 @@ public:
     int row() const;
     NixTreeModelItem *parentItem();
     QString getHeader(int column);
+    NixType nixType() const;
 
 private:
     QList<NixTreeModelItem*> children;
     QVariant item_data;
     NixTreeModelItem *parent_item;
     NixType nix_type;
+    QVariant created_at, updated_at;
     static const QVector<QString> columns;
 
     void checkDataType(const QVariant &data);
+    QVariant getName() const;
+    QVariant getType() const;
+    QVariant getId() const;
+    QVariant getStoreType() const;
+    QVariant getDtype() const;
+    void getDates();
 };
 
 #endif // NIXTREEMODELITEM_H
