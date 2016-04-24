@@ -63,6 +63,9 @@
       </layout>
      </item>
      <item>
+      <widget class="QTreeView" name="treeView"/>
+     </item>
+     <item>
       <widget class="QStackedWidget" name="data_stacked_Widget">
        <property name="currentIndex">
         <number>-1</number>

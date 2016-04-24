@@ -1,6 +1,7 @@
 #include "views/MainViewWidget.hpp"
 #include "ui_MainViewWidget.h"
 #include "common/Common.hpp"
+#include "model/nixtreemodel.h"
 
 NixDataModel *MainViewWidget::CURRENT_MODEL = nullptr;
 
@@ -46,6 +47,7 @@ MainViewWidget::MainViewWidget(const std::string &nix_file_path, QWidget *parent
 
 void MainViewWidget::set_nix_file(const std::string &nix_file_path)
 {
+
     if (rtv == nullptr)
         populate_data_stacked_widget();
     nix_file = nix::File::open(nix_file_path, nix::FileMode::ReadOnly);
@@ -61,6 +63,10 @@ void MainViewWidget::set_nix_file(const std::string &nix_file_path)
     emit emit_model_update(nix_model);
     rtv->set_proxy_model(nix_proxy_model);
     cv->set_proxy_model(nix_proxy_model);
+
+    NixTreeModel *model = new NixTreeModel();
+    model->set_entity(nix_file);
+    ui->treeView->setModel(model);
 
     // update model connections
     QObject::connect(rtv->get_tree_view()->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)), this, SLOT(emit_current_qml_worker_slot(QModelIndex,QModelIndex)));
