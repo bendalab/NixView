@@ -36,7 +36,9 @@ void NixTreeModelItem::checkDataType(const QVariant &data) {
     } else if (data.canConvert<nix::Group>()) {
         this->nix_type = NixType::NIX_GROUP;
     } else if (data.canConvert<nix::Source>()) {
-            this->nix_type = NixType::NIX_SOURCE;
+        this->nix_type = NixType::NIX_SOURCE;
+    } else if (data.canConvert<nix::Feature>()) {
+      this->nix_type = NixType::NIX_FEAT;
     } else if (data.canConvert<nix::Dimension>()) {
         this->nix_type = NixType::NIX_DIMENSION;
     } else {
@@ -73,13 +75,21 @@ QVariant NixTreeModelItem::data(int column) const {
     if (column < this->columns.count()) {
         switch (column) {
             case 0:
-
-                return QVariant("Name");
+                return getName();
             case 1:
-                return QVariant("Type");
+                return getType();
             case 2:
-        default:
-            return QVariant();
+                return getStoreType();
+            case 3:
+                return getDtype();
+            case 4:
+                return getId();
+            case 5:
+                return created_at;
+            case 6:
+                return updated_at;
+            default:
+                return QVariant();
         }
     }
     return QVariant();
