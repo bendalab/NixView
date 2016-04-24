@@ -3,9 +3,8 @@
 
 
 const QVector<QString> NixTreeModelItem::columns = {MODEL_HEADER_NAME, MODEL_HEADER_NIXTYPE, MODEL_HEADER_STORAGETYPE,
-                                                    MODEL_HEADER_DATATYPE, MODEL_HEADER_SHAPE, MODEL_HEADER_ID,
-                                                    MODEL_HEADER_CREATEDAT, MODEL_HEADER_UPDATEDAT, MODEL_HEADER_VALUE,
-                                                    MODEL_HEADER_UNCERTAINTY, MODEL_HEADER_ROOTCHILDLINK};
+                                                    MODEL_HEADER_DATATYPE, MODEL_HEADER_ID,
+                                                    MODEL_HEADER_CREATEDAT, MODEL_HEADER_UPDATEDAT};
 
 NixTreeModelItem::NixTreeModelItem(const QVariant &data, NixTreeModelItem *parent) {
     std::cerr << data.canConvert<nix::Block>() << std::endl;
@@ -63,9 +62,9 @@ int NixTreeModelItem::childCount() const {
 }
 
 
+
 int NixTreeModelItem::columnCount() const {
-    return 2;
-    //return this->columns.size();
+    return this->columns.size();
 }
 
 
