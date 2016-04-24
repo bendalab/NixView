@@ -51,7 +51,8 @@ SOURCES += main.cpp\
     views/TagView.cpp \
     utils/entitydescriptor.cpp \
     utils/utils.cpp \
-    model/nixtreemodelitem.cpp
+    model/nixtreemodelitem.cpp \
+    model/nixtreemodel.cpp
 
 
 HEADERS  += MainWindow.hpp \
@@ -88,7 +89,8 @@ HEADERS  += MainWindow.hpp \
     views/TagView.hpp \
     utils/entitydescriptor.h \
     utils/utils.hpp \
-    model/nixtreemodelitem.h
+    model/nixtreemodelitem.h \
+    model/nixtreemodel.h
 
 
 FORMS    += MainWindow.ui \
