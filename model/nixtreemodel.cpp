@@ -9,9 +9,10 @@ NixTreeModel::NixTreeModel(QObject *parent)
 
 NixTreeModel::~NixTreeModel() {
     if (root_item != nullptr) {
+        delete data_node;
+        delete metadata_node;
         delete root_item;
     }
-
 }
 
 
@@ -30,10 +31,54 @@ void NixTreeModel::set_entity(const nix::File &file) {
 }
 
 
-void NixTreeModel::setup_model(const nix::File &file) {
+void NixTreeModel::setup_data_model(const nix::File &file) {
     for (nix::Block b: file.blocks()) {
-        root_item->appendChild(new NixTreeModelItem(QVariant(QString::fromStdString(b.name()))));
+        NixTreeModelItem *itm = new NixTreeModelItem(QVariant::fromValue(b), data_node);
+        data_node->appendChild(itm);
+        append_groups(b, itm);
+        append_data_arrays(b.dataArrays(), itm);
+        append_tags(b.tags(), itm);
+        append_multi_tags(b.multiTags(), itm);
     }
+}
+
+
+void NixTreeModel::append_groups(const nix::Block &b, NixTreeModelItem *parent) {
+    for (nix::Group g : b.groups()) {
+        NixTreeModelItem *itm = new NixTreeModelItem(QVariant::fromValue(g), parent);
+        parent->appendChild(itm);
+        append_data_arrays(g.dataArrays(), itm);
+        append_tags(g.tags(), itm);
+    }
+}
+
+
+void NixTreeModel::append_data_arrays(const std::vector<nix::DataArray> &arrays, NixTreeModelItem *parent) {
+    for (nix::DataArray d : arrays) {
+        NixTreeModelItem *itm = new NixTreeModelItem(QVariant::fromValue(d), parent);
+        parent->appendChild(itm);
+    }
+}
+
+
+void NixTreeModel::append_tags(const std::vector<nix::Tag> &tags, NixTreeModelItem *parent) {
+    for (nix::Tag t : tags) {
+        NixTreeModelItem *itm = new NixTreeModelItem(QVariant::fromValue(t), parent);
+        parent->appendChild(itm);
+    }
+}
+
+
+void NixTreeModel::append_multi_tags(const std::vector<nix::MultiTag> &tags, NixTreeModelItem *parent) {
+    for (nix::MultiTag t : tags) {
+        NixTreeModelItem *itm = new NixTreeModelItem(QVariant::fromValue(t), parent);
+        parent->appendChild(itm);
+    }
+}
+
+
+void NixTreeModel::setup_metadata_model(const nix::File &file) {
+
 }
 
 
@@ -187,4 +232,9 @@ void NixTreeModel::fetchMore(const QModelIndex &parent) {
         fetch_block(itm->itemData().value<nix::Block>(), itm);
     }
     }
+}
+
+
+void NixTreeModel::fetch_block(const nix::Block &b, NixTreeModelItem *parent) {
+
 }

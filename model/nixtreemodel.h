@@ -34,6 +34,18 @@ public:
     void fetchMore(const QModelIndex &parent) override;
 
 private:
+    nix::File file;
+    NixTreeModelItem *root_item;
+    NixTreeModelItem *data_node;
+    NixTreeModelItem *metadata_node;
+
+    void setup_data_model(const nix::File &file);
+    void setup_metadata_model(const nix::File &file);
+    void append_groups(const nix::Block &b, NixTreeModelItem *parent);
+    void append_tags(const std::vector<nix::Tag> &tags, NixTreeModelItem *parent);
+    void append_multi_tags(const std::vector<nix::MultiTag> &tags, NixTreeModelItem *parent);
+    void append_data_arrays(const std::vector<nix::DataArray> &tags, NixTreeModelItem *parent);
+    void fetch_block(const nix::Block &b, NixTreeModelItem *parent);
 };
 
 #endif // NIXTREEMODEL_H
