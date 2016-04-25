@@ -43,6 +43,7 @@ private:
     void fetchL1Sections(const nix::File &file);
     bool checkForKids(NixTreeModelItem *item) const;
     void append_groups(const nix::Block &b, NixTreeModelItem *parent);
+    int checkForKids(NixTreeModelItem *item) const;
     void append_tags(const std::vector<nix::Tag> &tags, NixTreeModelItem *parent);
     void append_multi_tags(const std::vector<nix::MultiTag> &tags, NixTreeModelItem *parent);
     void append_data_arrays(const std::vector<nix::DataArray> &tags, NixTreeModelItem *parent);

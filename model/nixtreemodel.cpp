@@ -169,54 +169,15 @@ bool NixTreeModel::hasChildren(const QModelIndex &parent) const {
             return file.sectionCount() > 0;
         }
     }
-    return checkForKids(item);
-    /*
-    if (nix_type == NixType::NIX_DIMENSION || nix_type == NixType::NIX_PROPERTY || nix_type == NixType::NIX_FEAT)
-        return false;
-    switch (nix_type) {
-        case NixType::NIX_BLOCK: {
-            nix::Block b = item->itemData().value<nix::Block>();
-            return ((b.dataArrayCount() + b.groupCount()  + b.tagCount() + b.multiTagCount() + b.sourceCount()) > 0);
-        }
-        case NixType::NIX_DATA_ARRAY: {
-            return true;
-        }
-        case NixType::NIX_GROUP: {
-            nix::Group g = item->itemData().value<nix::Group>();
-            return (g.dataArrayCount() + g.tagCount() + g.multiTagCount()) > 0;
-        }
-        case NixType::NIX_TAG: {
-            nix::Tag t = item->itemData().value<nix::Tag>();
-            return (t.referenceCount() + t.featureCount()) > 0;
-        }
-        case NixType::NIX_MTAG: {
-            nix::MultiTag mt = item->itemData().value<nix::MultiTag>();
-            return (mt.referenceCount() + mt.featureCount()) > 0;
-        }
-        case NixType::NIX_SECTION: {
-            nix::Section s = item->itemData().value<nix::Section>();
-            return s.propertyCount() > 0;
-        }
-        case NixType::NIX_SOURCE: {
-            nix::Source src = item->itemData().value<nix::Source>();
-            return src.sourceCount() > 0;
-        }
-        default:
-            return false;
-    }
-    */
-    //return false;
+    return checkForKids(item) > 0;
 }
 
 
 bool NixTreeModel::canFetchMore(const QModelIndex &parent) const {
     if (!parent.isValid())
         return false;
-    std::cerr << "can fetch more?" << std::endl;
     NixTreeModelItem *itm = static_cast<NixTreeModelItem*>(parent.internalPointer());
-    QString store_type = itm->data(2).toString();
-
-    return checkForKids(itm);
+    return checkForKids(itm) != rowCount(parent);
 }
 
 
