@@ -275,6 +275,7 @@ void NixTreeModel::fetch_block(const nix::Block &b, NixTreeModelItem *parent) {
     append_groups(b.groups(), parent);
     append_tags(b.tags(), parent);
     append_multi_tags(b.multiTags(), parent);
+    append_sources(b.sources(), parent);
 }
 
 
@@ -316,5 +317,17 @@ void NixTreeModel::fetch_group(const nix::Group &g, NixTreeModelItem *parent) {
 void NixTreeModel::fetch_section(const nix::Section &s, NixTreeModelItem *parent) {
     append_properties(s.properties(), parent);
     append_sections(s.sections(), parent);
+}
 
+
+void NixTreeModel::fetch_source(const nix::Source &s, NixTreeModelItem *parent) {
+    append_sources(s.sources(), parent);
+}
+
+
+void NixTreeModel::append_sources(const std::vector<nix::Source> &sources, NixTreeModelItem *parent) {
+    for (nix::Source s : sources) {
+        NixTreeModelItem *itm = new NixTreeModelItem(QVariant::fromValue(s), parent);
+        parent->appendChild(itm);
+    }
 }
