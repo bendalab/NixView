@@ -26,19 +26,23 @@ void NixTreeModel::set_entity(const nix::File &file) {
     metadata_node = new NixTreeModelItem("Metadata", root_item);
     root_item->appendChild(data_node);
     root_item->appendChild(metadata_node);
-    //setup_data_model(file);
-    //setup_metadata_model(file);
+    fetchL1Blocks(file);
+    fetchL1Sections(file);
 }
 
 
-void NixTreeModel::setup_data_model(const nix::File &file) {
+void NixTreeModel::fetchL1Blocks(const nix::File &file) {
     for (nix::Block b: file.blocks()) {
         NixTreeModelItem *itm = new NixTreeModelItem(QVariant::fromValue(b), data_node);
         data_node->appendChild(itm);
-        append_groups(b, itm);
-        append_data_arrays(b.dataArrays(), itm);
-        append_tags(b.tags(), itm);
-        append_multi_tags(b.multiTags(), itm);
+    }
+}
+
+
+void NixTreeModel::fetchL1Sections(const nix::File &file) {
+    for (nix::Section s: file.sections()) {
+        NixTreeModelItem *itm = new NixTreeModelItem(QVariant::fromValue(s), metadata_node);
+        metadata_node->appendChild(itm);
     }
 }
 
@@ -74,11 +78,6 @@ void NixTreeModel::append_multi_tags(const std::vector<nix::MultiTag> &tags, Nix
         NixTreeModelItem *itm = new NixTreeModelItem(QVariant::fromValue(t), parent);
         parent->appendChild(itm);
     }
-}
-
-
-void NixTreeModel::setup_metadata_model(const nix::File &file) {
-
 }
 
 

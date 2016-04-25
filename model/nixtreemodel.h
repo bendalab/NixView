@@ -39,8 +39,8 @@ private:
     NixTreeModelItem *data_node;
     NixTreeModelItem *metadata_node;
 
-    void setup_data_model(const nix::File &file);
-    void setup_metadata_model(const nix::File &file);
+    void fetchL1Blocks(const nix::File &file);
+    void fetchL1Sections(const nix::File &file);
     bool checkForKids(NixTreeModelItem *item) const;
     void append_groups(const nix::Block &b, NixTreeModelItem *parent);
     void append_tags(const std::vector<nix::Tag> &tags, NixTreeModelItem *parent);
