@@ -47,11 +47,14 @@ private:
     void append_multi_tags(const std::vector<nix::MultiTag> &tags, NixTreeModelItem *parent);
     void append_data_arrays(const std::vector<nix::DataArray> &tags, NixTreeModelItem *parent);
     void append_features(const std::vector<nix::Feature> &feats, NixTreeModelItem *parent);
+    void append_sections(const std::vector<nix::Section> &ssections, NixTreeModelItem *parent);
+    void append_properties(const std::vector<nix::Property> &properties, NixTreeModelItem *parent);
     void fetch_block(const nix::Block &b, NixTreeModelItem *parent);
     void fetch_data_array(const nix::DataArray &da, NixTreeModelItem *parent);
     void fetch_tag(const nix::Tag &t, NixTreeModelItem *parent);
     void fetch_multi_tag(const nix::MultiTag &mt, NixTreeModelItem *parent);
     void fetch_group(const nix::Group &g, NixTreeModelItem *parent);
+    void fetch_section(const nix::Section &s, NixTreeModelItem *parent);
 };
 
 #endif // NIXTREEMODEL_H

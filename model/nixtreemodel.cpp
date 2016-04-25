@@ -79,6 +79,22 @@ void NixTreeModel::append_multi_tags(const std::vector<nix::MultiTag> &tags, Nix
 }
 
 
+void NixTreeModel::append_sections(const std::vector<nix::Section> &sections, NixTreeModelItem *parent) {
+    for (nix::Section s : sections) {
+        NixTreeModelItem *itm = new NixTreeModelItem(QVariant::fromValue(s), parent);
+        parent->appendChild(itm);
+    }
+}
+
+
+void NixTreeModel::append_properties(const std::vector<nix::Property> &props, NixTreeModelItem *parent) {
+    for (nix::Property p : props) {
+        NixTreeModelItem *itm = new NixTreeModelItem(QVariant::fromValue(p), parent);
+        parent->appendChild(itm);
+    }
+}
+
+
 QVariant NixTreeModel::headerData(int section, Qt::Orientation orientation, int role) const {
     if (role != Qt::DisplayRole)
         return QVariant();
@@ -206,6 +222,9 @@ void NixTreeModel::fetchMore(const QModelIndex &parent) {
             fetch_group(itm->itemData().value<nix::Group>(), itm);
             break;
         }
+        case NixType::NIX_SECTION: {
+            fetch_section(itm->itemData().value<nix::Section>(), itm);
+        }
         default:
             break;
     }
@@ -291,4 +310,11 @@ void NixTreeModel::fetch_group(const nix::Group &g, NixTreeModelItem *parent) {
     append_data_arrays(g.dataArrays(), parent);
     append_tags(g.tags(), parent);
     append_multi_tags(g.multiTags(), parent);
+}
+
+
+void NixTreeModel::fetch_section(const nix::Section &s, NixTreeModelItem *parent) {
+    append_properties(s.properties(), parent);
+    append_sections(s.sections(), parent);
+
 }
