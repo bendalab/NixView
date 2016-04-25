@@ -11,4 +11,7 @@
         <file>images/nixview256.png</file>
         <file>images/nix_table.png</file>
     </qresource>
+    <qresource prefix="/">
+        <file>images/find.png</file>
+    </qresource>
 </RCC>
