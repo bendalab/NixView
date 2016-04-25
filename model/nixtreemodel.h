@@ -42,10 +42,16 @@ private:
     void fetchL1Blocks(const nix::File &file);
     void fetchL1Sections(const nix::File &file);
     int checkForKids(NixTreeModelItem *item) const;
+    void append_groups(const std::vector<nix::Group> &groups, NixTreeModelItem *parent);
     void append_tags(const std::vector<nix::Tag> &tags, NixTreeModelItem *parent);
     void append_multi_tags(const std::vector<nix::MultiTag> &tags, NixTreeModelItem *parent);
     void append_data_arrays(const std::vector<nix::DataArray> &tags, NixTreeModelItem *parent);
+    void append_features(const std::vector<nix::Feature> &feats, NixTreeModelItem *parent);
     void fetch_block(const nix::Block &b, NixTreeModelItem *parent);
+    void fetch_data_array(const nix::DataArray &da, NixTreeModelItem *parent);
+    void fetch_tag(const nix::Tag &t, NixTreeModelItem *parent);
+    void fetch_multi_tag(const nix::MultiTag &mt, NixTreeModelItem *parent);
+    void fetch_group(const nix::Group &g, NixTreeModelItem *parent);
 };
 
 #endif // NIXTREEMODEL_H

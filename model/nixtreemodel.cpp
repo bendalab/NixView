@@ -186,9 +186,28 @@ void NixTreeModel::fetchMore(const QModelIndex &parent) {
     NixTreeModelItem *itm = static_cast<NixTreeModelItem*>(parent.internalPointer());
     std::cerr << "fetch more!" << std::endl;
     switch (itm->nixType()) {
-    case NixType::NIX_BLOCK: {
-        fetch_block(itm->itemData().value<nix::Block>(), itm);
-    }
+        case NixType::NIX_BLOCK: {
+            fetch_block(itm->itemData().value<nix::Block>(), itm);
+            break;
+        }
+        case NixType::NIX_DATA_ARRAY: {
+            fetch_data_array(itm->itemData().value<nix::DataArray>(), itm);
+            break;
+        }
+        case NixType::NIX_TAG: {
+            fetch_tag(itm->itemData().value<nix::Tag>(), itm);
+            break;
+        }
+        case NixType::NIX_MTAG: {
+            fetch_multi_tag(itm->itemData().value<nix::MultiTag>(), itm);
+            break;
+        }
+        case NixType::NIX_GROUP: {
+            fetch_group(itm->itemData().value<nix::Group>(), itm);
+            break;
+        }
+        default:
+            break;
     }
 }
 
@@ -233,5 +252,43 @@ int NixTreeModel::checkForKids(NixTreeModelItem *item) const {
 
 
 void NixTreeModel::fetch_block(const nix::Block &b, NixTreeModelItem *parent) {
-    std::cerr << "fetch more!" << std::endl;
+    append_data_arrays(b.dataArrays(), parent);
+    append_groups(b.groups(), parent);
+    append_tags(b.tags(), parent);
+    append_multi_tags(b.multiTags(), parent);
+}
+
+
+void NixTreeModel::fetch_data_array(const nix::DataArray &da, NixTreeModelItem *parent) {
+    for (nix::Dimension d : da.dimensions()) {
+        NixTreeModelItem *itm = new NixTreeModelItem(QVariant::fromValue(d), parent);
+        parent->appendChild(itm);
+    }
+}
+
+
+void NixTreeModel::fetch_tag(const nix::Tag &t, NixTreeModelItem *parent) {
+    append_data_arrays(t.references(), parent);
+    append_features(t.features(), parent);
+}
+
+
+void NixTreeModel::fetch_multi_tag(const nix::MultiTag &t, NixTreeModelItem *parent) {
+    append_data_arrays(t.references(), parent);
+    append_features(t.features(), parent);
+}
+
+
+void NixTreeModel::append_features(const std::vector<nix::Feature> &feats, NixTreeModelItem *parent) {
+    for (nix::Feature f : feats) {
+        NixTreeModelItem *itm = new NixTreeModelItem(QVariant::fromValue(f), parent);
+        parent->appendChild(itm);
+    }
+}
+
+
+void NixTreeModel::fetch_group(const nix::Group &g, NixTreeModelItem *parent) {
+    append_data_arrays(g.dataArrays(), parent);
+    append_tags(g.tags(), parent);
+    append_multi_tags(g.multiTags(), parent);
 }
