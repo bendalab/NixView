@@ -47,12 +47,10 @@ void NixTreeModel::fetchL1Sections(const nix::File &file) {
 }
 
 
-void NixTreeModel::append_groups(const nix::Block &b, NixTreeModelItem *parent) {
-    for (nix::Group g : b.groups()) {
+void NixTreeModel::append_groups(const std::vector<nix::Group> &groups, NixTreeModelItem *parent) {
+    for (nix::Group g : groups) {
         NixTreeModelItem *itm = new NixTreeModelItem(QVariant::fromValue(g), parent);
         parent->appendChild(itm);
-        append_data_arrays(g.dataArrays(), itm);
-        append_tags(g.tags(), itm);
     }
 }
 
