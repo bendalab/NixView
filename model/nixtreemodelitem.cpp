@@ -226,6 +226,8 @@ QVariant NixTreeModelItem::getStoreType() const {
             return QVariant(NIX_STRING_SECTION);
         case NixType::NIX_PROPERTY:
             return QVariant(NIX_STRING_PROPERTY);
+        case NixType::NIX_DIMENSION:
+            return QVariant(NIX_STRING_DIMENSION);
         default:
             return QVariant();
     }

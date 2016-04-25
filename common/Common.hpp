@@ -36,6 +36,7 @@ Q_DECLARE_METATYPE(nix::Dimension)
 #define NIX_STRING_FEATURE "Feature"
 #define NIX_STRING_SOURCE "Source"
 #define NIX_STRING_PROPERTY "Property"
+#define NIX_STRING_DIMENSION "Dimension"
 
 #define NIX_STRING_TYPE_STRING "String"
 #define NIX_STRING_TYPE_BOOL "Bool"
