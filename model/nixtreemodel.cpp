@@ -193,42 +193,44 @@ void NixTreeModel::fetchMore(const QModelIndex &parent) {
 }
 
 
-bool NixTreeModel::checkForKids(NixTreeModelItem *item) const {
+int NixTreeModel::checkForKids(NixTreeModelItem *item) const {
     NixType nix_type = item->nixType();
     if (nix_type == NixType::NIX_DIMENSION || nix_type == NixType::NIX_PROPERTY || nix_type == NixType::NIX_FEAT)
-        return false;
+        return 0;
     switch (nix_type) {
         case NixType::NIX_BLOCK: {
             nix::Block b = item->itemData().value<nix::Block>();
-            return ((b.dataArrayCount() + b.groupCount()  + b.tagCount() + b.multiTagCount() + b.sourceCount()) > 0);
+            return b.dataArrayCount() + b.groupCount()  + b.tagCount() + b.multiTagCount() + b.sourceCount();
         }
         case NixType::NIX_DATA_ARRAY: {
-            return true;
+            nix::DataArray a = item->itemData().value<nix::DataArray>();
+            return a.dimensionCount();
         }
         case NixType::NIX_GROUP: {
             nix::Group g = item->itemData().value<nix::Group>();
-            return (g.dataArrayCount() + g.tagCount() + g.multiTagCount()) > 0;
+            return g.dataArrayCount() + g.tagCount() + g.multiTagCount();
         }
         case NixType::NIX_TAG: {
             nix::Tag t = item->itemData().value<nix::Tag>();
-            return (t.referenceCount() + t.featureCount()) > 0;
+            return t.referenceCount() + t.featureCount();
         }
         case NixType::NIX_MTAG: {
             nix::MultiTag mt = item->itemData().value<nix::MultiTag>();
-            return (mt.referenceCount() + mt.featureCount()) > 0;
+            return mt.referenceCount() + mt.featureCount();
         }
         case NixType::NIX_SECTION: {
             nix::Section s = item->itemData().value<nix::Section>();
-            return s.propertyCount() > 0;
+            return s.propertyCount();
         }
         case NixType::NIX_SOURCE: {
             nix::Source src = item->itemData().value<nix::Source>();
-            return src.sourceCount() > 0;
+            return src.sourceCount();
         }
         default:
-            return false;
+            return 0;
     }
 }
+
 
 void NixTreeModel::fetch_block(const nix::Block &b, NixTreeModelItem *parent) {
     std::cerr << "fetch more!" << std::endl;
