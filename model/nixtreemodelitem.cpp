@@ -137,6 +137,8 @@ QVariant NixTreeModelItem::getName() const {
             return QVariant(QString::fromStdString(item_data.value<nix::Feature>().data().name()));
         case NixType::NIX_GROUP:
             return QVariant(QString::fromStdString(item_data.value<nix::Group>().name()));
+        case NixType::NIX_SOURCE:
+            return QVariant(QString::fromStdString(item_data.value<nix::Source>().name()));
         case NixType::NIX_SECTION:
             return QVariant(QString::fromStdString(item_data.value<nix::Section>().name()));
         case NixType::NIX_PROPERTY:
@@ -172,6 +174,8 @@ QVariant NixTreeModelItem::getType() const {
             return QVariant(QString::fromStdString(item_data.value<nix::Feature>().data().type()));
         case NixType::NIX_GROUP:
             return QVariant(QString::fromStdString(item_data.value<nix::Group>().type()));
+        case NixType::NIX_SOURCE:
+            return QVariant(QString::fromStdString(item_data.value<nix::Source>().type()));
         case NixType::NIX_SECTION:
             return QVariant(QString::fromStdString(item_data.value<nix::Section>().type()));
         case NixType::NIX_DIMENSION: {
@@ -202,6 +206,8 @@ QVariant NixTreeModelItem::getId() const {
             return QVariant(QString::fromStdString(item_data.value<nix::Section>().id()));
         case NixType::NIX_PROPERTY:
             return QVariant(QString::fromStdString(item_data.value<nix::Property>().id()));
+        case NixType::NIX_SOURCE:
+            return QVariant(QString::fromStdString(item_data.value<nix::Source>().id()));
         default:
             return QVariant();
     }
@@ -228,6 +234,8 @@ QVariant NixTreeModelItem::getStoreType() const {
             return QVariant(NIX_STRING_PROPERTY);
         case NixType::NIX_DIMENSION:
             return QVariant(NIX_STRING_DIMENSION);
+        case NixType::NIX_SOURCE:
+            return QVariant(NIX_STRING_SOURCE);
         default:
             return QVariant();
     }
