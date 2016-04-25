@@ -141,6 +141,18 @@ QVariant NixTreeModelItem::getName() const {
             return QVariant(QString::fromStdString(item_data.value<nix::Section>().name()));
         case NixType::NIX_PROPERTY:
             return QVariant(QString::fromStdString(item_data.value<nix::Property>().name()));
+        case NixType::NIX_DIMENSION: {
+            nix::Dimension dim = item_data.value<nix::Dimension>();
+            if (dim.dimensionType() == nix::DimensionType::Sample) {
+                std::string s = dim.asSampledDimension().label() ? *dim.asSampledDimension().label() : nix::util::numToStr(dim.index());
+                return QVariant(QString::fromStdString(s));
+            } else if (dim.dimensionType() == nix::DimensionType::Range) {
+                std::string s = dim.asRangeDimension().label() ? *dim.asRangeDimension().label() : nix::util::numToStr(dim.index());
+                return QVariant(QString::fromStdString(s));
+            } else {
+                return QVariant(dim.index());
+            }
+        }
         default:
             return item_data;
     }
@@ -162,6 +174,10 @@ QVariant NixTreeModelItem::getType() const {
             return QVariant(QString::fromStdString(item_data.value<nix::Group>().type()));
         case NixType::NIX_SECTION:
             return QVariant(QString::fromStdString(item_data.value<nix::Section>().type()));
+        case NixType::NIX_DIMENSION: {
+            std::string dt = nix::util::dimTypeToStr(item_data.value<nix::Dimension>().dimensionType());
+            return QVariant(QString::fromStdString(dt));
+        }
         default:
             return QVariant();
     }
