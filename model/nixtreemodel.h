@@ -41,6 +41,7 @@ private:
 
     void setup_data_model(const nix::File &file);
     void setup_metadata_model(const nix::File &file);
+    bool checkForKids(NixTreeModelItem *item) const;
     void append_groups(const nix::Block &b, NixTreeModelItem *parent);
     void append_tags(const std::vector<nix::Tag> &tags, NixTreeModelItem *parent);
     void append_multi_tags(const std::vector<nix::MultiTag> &tags, NixTreeModelItem *parent);
