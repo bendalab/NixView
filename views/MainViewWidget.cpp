@@ -64,7 +64,7 @@ void MainViewWidget::set_nix_file(const std::string &nix_file_path)
     rtv->set_proxy_model(nix_proxy_model);
     cv->set_proxy_model(nix_proxy_model);
 
-    NixTreeModel *model = new NixTreeModel();
+    NixTreeModel *model = new NixTreeModel(this);
     model->set_entity(nix_file);
     ui->treeView->setModel(model);
 

@@ -9,8 +9,6 @@ NixTreeModel::NixTreeModel(QObject *parent)
 
 NixTreeModel::~NixTreeModel() {
     if (root_item != nullptr) {
-        delete data_node;
-        delete metadata_node;
         delete root_item;
     }
 }
