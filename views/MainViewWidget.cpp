@@ -66,7 +66,10 @@ void MainViewWidget::set_nix_file(const std::string &nix_file_path)
 
     NixTreeModel *model = new NixTreeModel(this);
     model->set_entity(nix_file);
-    ui->treeView->setModel(model);
+    QSortFilterProxyModel *proxy = new QSortFilterProxyModel(this);
+    proxy->setSourceModel(model);
+    ui->treeView->setModel(proxy);
+    ui->treeView->setSortingEnabled(true);
 
     // update model connections
     QObject::connect(rtv->get_tree_view()->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)), this, SLOT(emit_current_qml_worker_slot(QModelIndex,QModelIndex)));
