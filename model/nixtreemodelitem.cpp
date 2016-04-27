@@ -96,6 +96,48 @@ QVariant NixTreeModelItem::data(int column) const {
 }
 
 
+QVariant NixTreeModelItem::toolTip() const {
+    switch (nix_type) {
+        case NixType::NIX_BLOCK: {
+            nix::Block b = item_data.value<nix::Block>();
+            std::string tip = "<!doctype html> <body><h4>" + b.name() + " [" + b.type() + "] </h4><hr></body>";
+            tip = tip + "";
+            return QVariant(QString::fromStdString(tip));
+        }
+        case NixType::NIX_DATA_ARRAY:
+            return QVariant(QString::fromStdString(item_data.value<nix::DataArray>().name()));
+        case NixType::NIX_TAG:
+            return QVariant(QString::fromStdString(item_data.value<nix::Tag>().name()));
+        case NixType::NIX_MTAG:
+            return QVariant(QString::fromStdString(item_data.value<nix::MultiTag>().name()));
+        case NixType::NIX_FEAT:
+            return QVariant(QString::fromStdString(item_data.value<nix::Feature>().data().name()));
+        case NixType::NIX_GROUP:
+            return QVariant(QString::fromStdString(item_data.value<nix::Group>().name()));
+        case NixType::NIX_SOURCE:
+            return QVariant(QString::fromStdString(item_data.value<nix::Source>().name()));
+        case NixType::NIX_SECTION:
+            return QVariant(QString::fromStdString(item_data.value<nix::Section>().name()));
+        case NixType::NIX_PROPERTY:
+            return QVariant(QString::fromStdString(item_data.value<nix::Property>().name()));
+        case NixType::NIX_DIMENSION: {
+            nix::Dimension dim = item_data.value<nix::Dimension>();
+            if (dim.dimensionType() == nix::DimensionType::Sample) {
+                std::string s = dim.asSampledDimension().label() ? *dim.asSampledDimension().label() : nix::util::numToStr(dim.index());
+                return QVariant(QString::fromStdString(s));
+            } else if (dim.dimensionType() == nix::DimensionType::Range) {
+                std::string s = dim.asRangeDimension().label() ? *dim.asRangeDimension().label() : nix::util::numToStr(dim.index());
+                return QVariant(QString::fromStdString(s));
+            } else {
+                return QVariant(dim.index());
+            }
+        }
+        default:
+            return item_data;
+    }
+}
+
+
 QString NixTreeModelItem::getHeader(int column) {
     return this->columns[column];
 }

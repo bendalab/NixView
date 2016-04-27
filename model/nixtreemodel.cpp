@@ -45,8 +45,6 @@ void NixTreeModel::fetchL1Sections(const nix::File &file) {
 }
 
 
-
-
 QVariant NixTreeModel::headerData(int section, Qt::Orientation orientation, int role) const {
     if (role != Qt::DisplayRole)
         return QVariant();
@@ -112,12 +110,14 @@ int NixTreeModel::columnCount(const QModelIndex &parent) const {
 
 
 QVariant NixTreeModel::data(const QModelIndex &index, int role) const {
-    if (!index.isValid() || role != Qt::DisplayRole) {
+    if (!index.isValid() || (role != Qt::DisplayRole && role != Qt::ToolTipRole)) {
         return QVariant();
     }
     NixTreeModelItem *item = static_cast<NixTreeModelItem*>(index.internalPointer());
-
-    return item->data(index.column());
+    if (role == Qt::DisplayRole) {
+        return item->data(index.column());
+    }
+    return item->toolTip();
 }
 
 
