@@ -100,12 +100,42 @@ QVariant NixTreeModelItem::toolTip() const {
     switch (nix_type) {
         case NixType::NIX_BLOCK: {
             nix::Block b = item_data.value<nix::Block>();
-            std::string tip = "<!doctype html> <body><h4>" + b.name() + " [" + b.type() + "] </h4><hr></body>";
-            tip = tip + "";
+            std::string tip = "<!doctype html> <body><h4>" + b.name() + " [" + b.type() + "] </h4>";
+            tip = tip + "<p><b>id:</b> " + b.id() + "</p><hr>";
+            tip = tip + "<p><b>Definition:</b> " + (b.definition() ? *b.definition() : "none") + "</p> ";
+            tip = tip + "<ul><li>DataArrays: " + nix::util::numToStr(b.dataArrayCount()) + "</li>";
+            tip = tip + "<li>Groups: " + nix::util::numToStr(b.groupCount()) + "</li>";
+            tip = tip + "<li>Tags: " + nix::util::numToStr(b.tagCount()) + "</li>";
+            tip = tip + "<li>MultiTags: " + nix::util::numToStr(b.multiTagCount()) + "</li>";
+            tip = tip + "<li>Sources: " + nix::util::numToStr(b.sourceCount()) + "</li></ul><hr>";
+            tip = tip + "<p><b>created at:</b> " + nix::util::timeToStr(b.createdAt()) + "<br />";
+            tip = tip + "<b>updated at:</b> " + nix::util::timeToStr(b.updatedAt()) + "</p>";
+            tip = tip + "</body>";
             return QVariant(QString::fromStdString(tip));
         }
-        case NixType::NIX_DATA_ARRAY:
-            return QVariant(QString::fromStdString(item_data.value<nix::DataArray>().name()));
+        case NixType::NIX_DATA_ARRAY: {
+            nix::DataArray da = item_data.value<nix::DataArray>();
+            std::string tip = "<!doctype html> <body><h4>" + da.name() + " [" + da.type() + "] </h4>";
+            tip = tip + "<p><b>id:</b> " + da.id() + "</p><hr>";
+            tip = tip + "<p><b>Definition:</b> " + (da.definition() ? *da.definition() : "none") + "<br /> ";
+            tip = tip + "<b>Dimensions:</b><ol>";
+            for (nix::Dimension d : da.dimensions()) {
+                tip = tip + "<li>" + nix::util::dimTypeToStr(d.dimensionType()) + "</li>" ;
+            }
+            std::string s = " [";
+            for (size_t i = 0; i < da.dataExtent().size(); i++) {
+                s = s + nix::util::numToStr(da.dataExtent()[i]);
+                if (i < da.dataExtent().size() - 1)
+                    s = s + ", ";
+            }
+            s = s + "]";
+            tip = tip + "</ol><br/><b>Shape:</b>" + s + "<br /><b>Data type: </b>" +
+                  nix::data_type_to_string(da.dataType()) + "</p>";
+            tip = tip + "<hr><p><b>created at:</b> " + nix::util::timeToStr(da.createdAt()) + "<br />";
+            tip = tip + "<b>updated at:</b> " + nix::util::timeToStr(da.updatedAt()) + "</p>";
+            tip = tip + "</body>";
+            return QVariant(QString::fromStdString(tip));
+        }
         case NixType::NIX_TAG:
             return QVariant(QString::fromStdString(item_data.value<nix::Tag>().name()));
         case NixType::NIX_MTAG:
