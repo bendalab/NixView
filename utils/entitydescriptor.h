@@ -18,6 +18,8 @@ public:
     void addSection(const std::string &name);
     void addItem(const std::string &item);
     void addInfo(const std::string &name, const std::string &value);
+    void addEnumeration(const std::string &title, const std::vector<std::string> &entries);
+    void addItemize(const std::string &title, const std::vector<std::string> &entries);
 
     void clear();
 

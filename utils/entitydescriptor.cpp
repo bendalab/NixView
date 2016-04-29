@@ -32,6 +32,26 @@ void EntityDescriptor::addInfo(const std::string &name, const std::string &value
 }
 
 
+void EntityDescriptor::addEnumeration(const std::string &title, const std::vector<std::string> &entries) {
+    std::string enumerate = "<p><b>" + title + "</b><ol>";
+    for (std::string s : entries) {
+        enumerate = enumerate + "<li>" + s + "</li>";
+    }
+    enumerate = enumerate + "</ol></p>";
+    body.push_back(enumerate);
+}
+
+
+void EntityDescriptor::addItemize(const std::string &title, const std::vector<std::string> &entries) {
+    std::string itemize = "<p><b>" + title + "</b><ul>";
+    for (std::string s : entries) {
+        itemize = itemize + "<li>" + s + "</li>";
+    }
+    itemize = itemize + "</ul></p>";
+    body.push_back(itemize);
+}
+
+
 void EntityDescriptor::addFooter(const std::string &id, const std::string &created, const std::string &updated) {
     footer.push_back("<hr>");
     footer.push_back("<small><p><b>id: </b>" + id + "</p></small>");
