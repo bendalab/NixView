@@ -24,16 +24,19 @@ DataTable::~DataTable()
 
 
 bool DataTable::can_draw(const QModelIndex qml) const {
+    /*
     NixModelItem *item = MainViewWidget::get_current_model()->get_item_from_qml(qml);
     if (strcmp(item->get_nix_qvariant_type().c_str(), NIX_STRING_DATAARRAY) == 0){
         nix::DataArray array = item->get_nix_entity<nix::DataArray>();
         return nix::data_type_is_numeric(array.dataType()) && array.dimensionCount() < 3;
     } else
         return false;
+    */
 }
 
 
 void DataTable::set_entity(const QModelIndex qml) {
+    /*
     NixModelItem *item = MainViewWidget::get_current_model()->get_item_from_qml(qml);
     if (strcmp(item->get_nix_qvariant_type().c_str(), NIX_STRING_DATAARRAY) == 0) {
         this->array = item->get_nix_entity<nix::DataArray>();
@@ -47,6 +50,7 @@ void DataTable::set_entity(const QModelIndex qml) {
         build_model();
         describe();
     }
+    */
 }
 
 

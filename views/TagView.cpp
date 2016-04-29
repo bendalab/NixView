@@ -21,6 +21,7 @@ TagView::~TagView()
 }
 
 void TagView::setEntity(QModelIndex qml) {
+    /*
     NixModelItem *item = MainViewWidget::get_current_model()->get_item_from_qml(qml);
     clear();
     if (strcmp(item->get_nix_qvariant_type().c_str(), NIX_STRING_TAG) == 0) {
@@ -31,6 +32,7 @@ void TagView::setEntity(QModelIndex qml) {
         fill_references();
         fill_features();
     }
+    */
 }
 
 

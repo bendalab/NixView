@@ -29,7 +29,7 @@ InfoWidget::InfoWidget(QWidget *parent) :
 }
 
 
-void InfoWidget::setDataModel(NixDataModel *_nix_model) {
+void InfoWidget::setDataModel(NixTreeModel *_nix_model) {
     mp->setDataModel(_nix_model);
 }
 

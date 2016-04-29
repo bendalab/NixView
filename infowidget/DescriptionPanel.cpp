@@ -19,7 +19,7 @@ void DescriptionPanel::update_description_panel(QModelIndex qml)
         clear_description_panel();
         return;
     }
-
+    /*
     NixModelItem* item = MainViewWidget::get_current_model()->get_item_from_qml(qml);
 
     if(strcmp(item->get_nix_qvariant_type().c_str(), NIX_STRING_BLOCK) == 0)
@@ -38,6 +38,7 @@ void DescriptionPanel::update_description_panel(QModelIndex qml)
             update_typeless(item->get_nix_entity<nix::Property>());
     else
         clear_description_panel();
+    */
 }
 
 template<typename T>

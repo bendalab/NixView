@@ -28,6 +28,7 @@ TagPanel::TagPanel(QWidget *parent) :
 
 void TagPanel::update_tag_panel(QModelIndex qml)
 {
+    /*
     NixDataModel *current_model = MainViewWidget::get_current_model();
     NixModelItem *model_item = static_cast<NixModelItem*>(current_model->itemFromIndex(qml));
 
@@ -49,6 +50,7 @@ void TagPanel::update_tag_panel(QModelIndex qml)
     }
     ui->tableWidget->resizeColumnsToContents();
     ui->tableWidget->horizontalHeader()->setStretchLastSection(true);
+    */
 }
 
 std::string TagPanel::extract_tag_info(nix::Tag tag)

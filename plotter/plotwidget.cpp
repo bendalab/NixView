@@ -172,7 +172,7 @@ void PlotWidget::describe(const nix::MultiTag &mtag) {
 
 void PlotWidget::setEntity(QModelIndex qml) {
     this->item_qml = qml;
-    this->item = MainViewWidget::get_current_model()->get_item_from_qml(qml);
+    //this->item = MainViewWidget::get_current_model()->get_item_from_qml(qml);
     if (can_draw()) {
         process_item();
     }
