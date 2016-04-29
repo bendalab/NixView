@@ -11,7 +11,7 @@
 #include "MetaDataPanel.hpp"
 #include "TagPanel.hpp"
 #include "views/TagView.hpp"
-#include "model/NixDataModel.hpp"
+#include "model/nixtreemodel.h"
 
 namespace Ui {
 class InfoWidget;
@@ -25,7 +25,7 @@ public:
     explicit InfoWidget(QWidget *parent =0);
     ~InfoWidget();
 
-    void setDataModel(NixDataModel *_nix_model);
+    void setDataModel(NixTreeModel *_nix_model);
 
 public slots:
     void update_info_widget(QModelIndex qml);

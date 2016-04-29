@@ -29,7 +29,7 @@ public slots:
     void on_actionTree_triggered();
     void on_actionColumn_triggered();
     void on_actionProperties_triggered();
-    void nix_model_update(NixDataModel *model);
+    void nix_model_update(NixTreeModel *model);
     void item_selected(QModelIndex qml);
     void open_file();
     void close_file();

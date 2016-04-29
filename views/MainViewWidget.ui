@@ -69,19 +69,6 @@
       </widget>
      </item>
      <item>
-      <widget class="QTreeView" name="treeView">
-       <property name="editTriggers">
-        <set>QAbstractItemView::NoEditTriggers</set>
-       </property>
-       <attribute name="headerCascadingSectionResizes">
-        <bool>false</bool>
-       </attribute>
-       <attribute name="headerShowSortIndicator" stdset="0">
-        <bool>true</bool>
-       </attribute>
-      </widget>
-     </item>
-     <item>
       <widget class="QStackedWidget" name="data_stacked_Widget">
        <property name="currentIndex">
         <number>-1</number>

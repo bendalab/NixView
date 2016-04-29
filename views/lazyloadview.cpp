@@ -12,3 +12,8 @@ LazyLoadView::~LazyLoadView()
 {
     delete ui;
 }
+
+
+QTreeView* LazyLoadView::getTreeView() {
+    return ui->treeView;
+}
