@@ -44,6 +44,7 @@ void MainWindow::connect_widgets() {
     QObject::connect(this, SIGNAL(emit_file_opened(QString)), this->ow, SLOT(file_opened(QString)));
     QObject::connect(ui->main_view, SIGNAL(scan_progress_update()), this, SLOT(file_scan_progress()));
     QObject::connect(ui->menu_open_recent, SIGNAL(triggered(QAction*)), this, SLOT(open_recent_file(QAction*)));
+    QObject::connect(ui->actionFind, SIGNAL(triggered()), ui->main_view, SLOT(toggle_find()));
 }
 
 

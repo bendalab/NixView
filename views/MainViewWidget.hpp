@@ -40,6 +40,7 @@ public slots:
     void activate_info_widget();
     void emit_current_qml_worker_slot(QModelIndex qml, QModelIndex);
     void scan_progress();
+    void toggle_find();
 
 signals:
     void emit_model_update(NixDataModel*);

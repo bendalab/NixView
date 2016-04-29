@@ -28,7 +28,7 @@ MainViewWidget::MainViewWidget(QWidget *parent) :
                                       FILTER_EXP_NAME_CONTAINS,
                                       FILTER_EXP_NIXTYPE_CONTAINS};
     ui->cmbx_filter->addItems(filter_expressions);
-
+    ui->find_widget->setVisible(false);
     shortcut_filter = new QShortcut(QKeySequence("Ctrl+f"), this);
     populate_data_stacked_widget();
     connect_widgets();
@@ -133,6 +133,10 @@ void MainViewWidget::scan_progress()
 int MainViewWidget::get_scan_progress()
 {
     return nix_model->progress();
+}
+
+void MainViewWidget::toggle_find() {
+    ui->find_widget->setVisible(!ui->find_widget->isVisible());
 }
 
 // widget connection
