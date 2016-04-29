@@ -3,6 +3,7 @@
 
 #include <string>
 #include <vector>
+#include <nix.hpp>
 
 class EntityDescriptor
 {
@@ -24,6 +25,19 @@ public:
     void clear();
 
     std::string toHtml();
+
+    static std::string describe(const nix::DataArray &da);
+    static std::string describe(const nix::Block &b);
+    static std::string describe(const nix::Tag &t);
+    static std::string describe(const nix::MultiTag &t);
+    static std::string describe(const nix::Group &g);
+    static std::string describe(const nix::Feature &f);
+    static std::string describe(const nix::Dimension &g);
+    static std::string describe(const nix::Source &s);
+    static std::string describe(const nix::Section &s);
+    static std::string describe(const nix::Property &p);
+
+
 
 private:
     std::string entity_name;

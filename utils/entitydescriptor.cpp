@@ -94,3 +94,170 @@ std::string EntityDescriptor::toHtml() {
     html = html + "</html>";
     return html;
 }
+
+
+std::string EntityDescriptor::describe(const nix::DataArray &da){
+    EntityDescriptor desc(da.name(), da.type(), (da.definition() ? *da.definition() : "none"), da.id(),
+                          nix::util::timeToStr(da.createdAt()), nix::util::timeToStr(da.updatedAt()));
+    std::vector<std::string> dims;
+    for (nix::Dimension d : da.dimensions()) {
+        dims.push_back(nix::util::dimTypeToStr(d.dimensionType()));
+    }
+    desc.addEnumeration("Dimensions", dims);
+    std::string s = " [";
+    for (size_t i = 0; i < da.dataExtent().size(); i++) {
+        s = s + nix::util::numToStr(da.dataExtent()[i]);
+        if (i < da.dataExtent().size() - 1)
+            s = s + ", ";
+    }
+    s = s + "]";
+    desc.addInfo("Shape", s);
+    desc.addInfo("Metadata", (da.metadata() ? da.metadata().name() : "none"));
+    std::vector<std::string> sources;
+    for (nix::Source src : da.sources()) {
+        sources.push_back(src.name());
+    }
+    desc.addItemize("Sources", sources);
+    return desc.toHtml();
+}
+
+
+std::string EntityDescriptor::describe(const nix::Block &b){
+    EntityDescriptor desc(b.name(), b.type(), (b.definition() ? *b.definition() : "none"), b.id(),
+                          nix::util::timeToStr(b.createdAt()), nix::util::timeToStr(b.updatedAt()));
+    desc.addInfo("Metadata", (b.metadata() ? b.metadata().name() : "none"));
+    desc.addInfo("DataArrays", nix::util::numToStr(b.dataArrayCount()));
+    desc.addInfo("Groups", nix::util::numToStr(b.groupCount()));
+    desc.addInfo("Sources", nix::util::numToStr(b.sourceCount()));
+    desc.addInfo("Tags", nix::util::numToStr(b.tagCount()));
+    desc.addInfo("MultiTags", nix::util::numToStr(b.multiTagCount()));
+    return desc.toHtml();
+}
+
+
+std::string EntityDescriptor::describe(const nix::Tag &t) {
+    EntityDescriptor desc(t.name(), t.type(), (t.definition() ? *t.definition() : "none"), t.id(),
+                          nix::util::timeToStr(t.createdAt()), nix::util::timeToStr(t.updatedAt()));
+    desc.addInfo("Metadata", (t.metadata() ? t.metadata().name() : "none"));
+    std::vector<std::string> refs;
+    for (nix::DataArray da : t.references()) {
+        refs.push_back(da.name() + "[" + da.type() + "]");
+    }
+    std::vector<std::string> feats;
+    for (nix::Feature f : t.features()) {
+        refs.push_back(f.data().name() + "[" + f.data().type() + "]");
+    }
+    std::vector<std::string> sources;
+    for (nix::Source src : t.sources()) {
+        sources.push_back(src.name());
+    }
+    desc.addItemize("References", refs);
+    desc.addItemize("Features", feats);
+    desc.addItemize("Sources", sources);
+    return desc.toHtml();
+}
+
+
+std::string EntityDescriptor::describe(const nix::MultiTag &t) {
+    EntityDescriptor desc(t.name(), t.type(), (t.definition() ? *t.definition() : "none"), t.id(),
+                          nix::util::timeToStr(t.createdAt()), nix::util::timeToStr(t.updatedAt()));
+    desc.addInfo("Metadata", (t.metadata() ? t.metadata().name() : "none"));
+    std::vector<std::string> refs;
+    for (nix::DataArray da : t.references()) {
+        refs.push_back(da.name() + "[" + da.type() + "]");
+    }
+    std::vector<std::string> feats;
+    for (nix::Feature f : t.features()) {
+        refs.push_back(f.data().name() + "[" + f.data().type() + "]");
+    }
+    std::vector<std::string> sources;
+    for (nix::Source src : t.sources()) {
+        sources.push_back(src.name());
+    }
+    desc.addItemize("References", refs);
+    desc.addItemize("Features", feats);
+    desc.addItemize("Sources", sources);
+    return desc.toHtml();
+}
+
+
+std::string EntityDescriptor::describe(const nix::Group &g) {
+    EntityDescriptor desc(g.name(), g.type(), (g.definition() ? *g.definition() : "none"), g.id(),
+                          nix::util::timeToStr(g.createdAt()), nix::util::timeToStr(g.updatedAt()));
+    desc.addInfo("Metadata", (g.metadata() ? g.metadata().name() : "none"));
+    desc.addInfo("DataArrays", nix::util::numToStr(g.dataArrayCount()));
+    desc.addInfo("Tags", nix::util::numToStr(g.tagCount()));
+    desc.addInfo("MultiTags", nix::util::numToStr(g.multiTagCount()));
+    desc.addInfo("Sources", nix::util::numToStr(g.sourceCount()));
+    return desc.toHtml();
+}
+
+
+std::string EntityDescriptor::describe(const nix::Feature &f) {
+    return EntityDescriptor::describe(f.data());
+}
+
+
+std::string EntityDescriptor::describe(const nix::Dimension &d) {
+    EntityDescriptor desc;
+    desc.name("Dimension descriptor");
+    desc.addInfo("Index", nix::util::numToStr(d.index()));
+    desc.addInfo("Type", nix::util::dimTypeToStr(d.dimensionType()));
+    if (d.dimensionType() == nix::DimensionType::Sample) {
+        nix::SampledDimension sam = d.asSampledDimension();
+        desc.addInfo("Label", (sam.label() ? *sam.label() : ""));
+        desc.addInfo("Sampling interval", nix::util::numToStr(d.asSampledDimension().samplingInterval()));
+        desc.addInfo("Offset", (sam.offset() ? nix::util::numToStr(*sam.offset()) : "0.0"));
+        desc.addInfo("Unit", (sam.unit() ? *sam.unit() : ""));
+    } else if (d.dimensionType() == nix::DimensionType::Range) {
+        nix::RangeDimension rdim = d.asRangeDimension();
+        std::vector<double> ticks = rdim.ticks();
+        desc.addInfo("Label", (rdim.label() ? *rdim.label() : ""));
+        desc.addInfo("Ticks", nix::util::numToStr(ticks.size()) + "("+ nix::util::numToStr(ticks[0]) +
+                     " ... " + nix::util::numToStr(ticks.back()) + ")");
+        desc.addInfo("Unit", (rdim.unit() ? *rdim.unit() : ""));
+    }
+    return desc.toHtml();
+}
+
+
+std::string EntityDescriptor::describe(const nix::Source &s) {
+    EntityDescriptor desc(s.name(), s.type(), (s.definition() ? *s.definition() : "none"), s.id(),
+                          nix::util::timeToStr(s.createdAt()), nix::util::timeToStr(s.updatedAt()));
+    desc.addInfo("Metadata", (s.metadata() ? s.metadata().name() : "none"));
+    std::vector<std::string> children;
+    for (nix::Source src : s.sources()) {
+        children.push_back(src.name());
+    }
+    desc.addItemize("Children", children);
+    return desc.toHtml();
+}
+
+
+std::string EntityDescriptor::describe(const nix::Section &s) {
+    EntityDescriptor desc(s.name(), s.type(), (s.definition() ? *s.definition() : "none"), s.id(),
+                          nix::util::timeToStr(s.createdAt()), nix::util::timeToStr(s.updatedAt()));
+    desc.addInfo("Properties", nix::util::numToStr(s.propertyCount()));
+    return desc.toHtml();
+}
+
+
+std::string EntityDescriptor::describe(const nix::Property &p) {
+    EntityDescriptor desc(p.name(), "", (p.definition() ? *p.definition() : "none"), p.id(),
+                          nix::util::timeToStr(p.createdAt()), nix::util::timeToStr(p.updatedAt()));
+    desc.addInfo("Unit", (p.unit() ? *p.unit() : ""));
+    std::vector<std::string> values;
+    for (nix::Value v : p.values()) {
+        if(nix::data_type_is_numeric(p.dataType())) {
+            double d;
+            v.get(d);
+            values.push_back(nix::util::numToStr(d));
+        } else if (p.dataType() == nix::DataType::String) {
+            std::string s;
+            v.get(s);
+            values.push_back(s);
+        }
+    }
+    desc.addItemize("Values", values);
+    return desc.toHtml();
+}
