@@ -21,18 +21,14 @@ TagView::~TagView()
 }
 
 void TagView::setEntity(QModelIndex qml) {
-    /*
-    NixModelItem *item = MainViewWidget::get_current_model()->get_item_from_qml(qml);
+    NixTreeModelItem *item = static_cast<NixTreeModelItem*>(qml.internalPointer());
     clear();
-    if (strcmp(item->get_nix_qvariant_type().c_str(), NIX_STRING_TAG) == 0) {
-        this->tag = item->get_nix_entity<nix::Tag>();
-        EntityDescriptor descr = basic_description(tag.name(), tag.type(), tag.definition() ? *tag.definition() : "", tag.id(),
-        nix::util::timeToStr(tag.createdAt()), nix::util::timeToStr(tag.updatedAt()));
-        ui->entity_description->setText(QString::fromStdString(descr.toHtml()));
+    if (item->nixType() == NixType::NIX_TAG) {
+        this->tag = item->itemData().value<nix::Tag>();
+        ui->entity_description->setText(QString::fromStdString(EntityDescriptor::describe(tag)));
         fill_references();
         fill_features();
     }
-    */
 }
 
 
@@ -55,13 +51,6 @@ void TagView::clear_plot_widget(QWidget *plot_widget) { //TODO this does not see
             plot_widget->repaint();
         }
     }
-}
-
-
-EntityDescriptor TagView::basic_description(const std::string &name, const std::string &type, const std::string &description,
-                                   const std::string &id, const std::string &created, const std::string &updated ) {
-    EntityDescriptor descr(name, type, description, id, created, updated);
-    return descr;
 }
 
 
@@ -105,17 +94,16 @@ void TagView::feature_selected() {
 
 
 void TagView::plot_data(QWidget *plot_widget, const nix::DataArray &array) {
-        clear_plot_widget(plot_widget);
-        if (Plotter::check_plottable_dtype(array)) {
-            PlotterType type = Plotter::suggested_plotter(array);
-            if (type == PlotterType::Unsupported || type == PlotterType::Image) {
-                std::cerr << "unsupported plotter" << std::endl;
-                // TODO show error message
-            } else if (type == PlotterType::Line){
-                LinePlotter *lp = new LinePlotter(this);
-                lp->draw(array);
-                plot_widget->layout()->addWidget(lp);
-            }
+    clear_plot_widget(plot_widget);
+    if (Plotter::check_plottable_dtype(array)) {
+        PlotterType type = Plotter::suggested_plotter(array);
+        if (type == PlotterType::Unsupported || type == PlotterType::Image) {
+            std::cerr << "unsupported plotter" << std::endl;
+            // TODO show error message
+        } else if (type == PlotterType::Line){
+            LinePlotter *lp = new LinePlotter(this);
+            lp->draw(array);
+            plot_widget->layout()->addWidget(lp);
         }
-
+    }
 }
