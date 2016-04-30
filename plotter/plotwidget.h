@@ -30,7 +30,7 @@ public:
 private:
     Ui::PlotWidget *ui;
     QModelIndex item_qml;
-    NixModelItem* item;
+    NixTreeModelItem* item;
     Plotter *plot;
 
     bool check_plottable_dtype(nix::DataType dtype) const;

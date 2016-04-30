@@ -20,28 +20,24 @@ PlotWidget::~PlotWidget()
 
 
 bool PlotWidget::can_draw() const {
-    return (strcmp(this->item->get_nix_qvariant_type().c_str(), NIX_STRING_DATAARRAY) == 0) |
-           (strcmp(this->item->get_nix_qvariant_type().c_str(), NIX_STRING_MULTITAG) == 0) |
-           (strcmp(this->item->get_nix_qvariant_type().c_str(), NIX_STRING_TAG) == 0);
+    NixType type = item->nixType();
+    return (type == NixType::NIX_DATA_ARRAY) | (type == NixType::NIX_MTAG | type == NixType::NIX_TAG);
 }
 
 
 void PlotWidget::process_item() {
-    if (strcmp(this->item->get_nix_qvariant_type().c_str(), NIX_STRING_DATAARRAY) == 0)
-    {
-        nix::DataArray array = item->get_nix_entity<nix::DataArray>();
+    if (this->item->nixType() == NixType::NIX_DATA_ARRAY) {
+        nix::DataArray array = item->itemData().value<nix::DataArray>();
         process(array);
         describe(array);
     }
-    else if (strcmp(this->item->get_nix_qvariant_type().c_str(), NIX_STRING_TAG) == 0)
-    {
-        nix::Tag tag = item->get_nix_entity<nix::Tag>();
+    else if (item->nixType() == NixType::NIX_TAG) {
+        nix::Tag tag = item->itemData().value<nix::Tag>();
         process(tag);
         describe(tag);
     }
-    else if (strcmp(this->item->get_nix_qvariant_type().c_str(), NIX_STRING_MULTITAG) == 0)
-    {
-        nix::MultiTag mtag = item->get_nix_entity<nix::MultiTag>();
+    else if (item->nixType() == NixType::NIX_MTAG) {
+        nix::MultiTag mtag = item->itemData().value<nix::MultiTag>();
         process(mtag);
         describe(mtag);
     }
@@ -172,7 +168,7 @@ void PlotWidget::describe(const nix::MultiTag &mtag) {
 
 void PlotWidget::setEntity(QModelIndex qml) {
     this->item_qml = qml;
-    //this->item = MainViewWidget::get_current_model()->get_item_from_qml(qml);
+    this->item = static_cast<NixTreeModelItem*>(qml.internalPointer());
     if (can_draw()) {
         process_item();
     }
