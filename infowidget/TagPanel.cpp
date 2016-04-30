@@ -26,35 +26,28 @@ TagPanel::TagPanel(QWidget *parent) :
 
 // TODO set all labels to "-" if empty item is emitted
 
-void TagPanel::update_tag_panel(QModelIndex qml)
-{
-    /*
-    NixDataModel *current_model = MainViewWidget::get_current_model();
-    NixModelItem *model_item = static_cast<NixModelItem*>(current_model->itemFromIndex(qml));
-
+void TagPanel::update_tag_panel(QModelIndex qml) {
+    NixTreeModelItem *item = static_cast<NixTreeModelItem*>(qml.internalPointer());
     clear_tag_panel();
-    if(qml.isValid())
-    {
-        if(strcmp(model_item->get_nix_qvariant_type().c_str(), NIX_STRING_TAG) == 0)
-        {
-            nix::Tag tag = model_item->get_nix_entity<nix::Tag>();
-            extract_tag_info(tag);
-            current_qml = qml;
-        }
-        else if(strcmp(model_item->get_nix_qvariant_type().c_str(), NIX_STRING_MULTITAG) == 0)
-        {
-            nix::MultiTag mtag = model_item->get_nix_entity<nix::MultiTag>();
-            extract_multitag_info(mtag);
-            current_qml = qml;
-        }
+    if (!qml.isValid()) {
+        return;
+    }
+    if(item->nixType() == NixType::NIX_TAG) {
+        nix::Tag tag = item->itemData().value<nix::Tag>();
+        extract_tag_info(tag);
+        current_qml = qml;
+    }
+    else if(item->nixType() == NixType::NIX_MTAG) {
+        nix::MultiTag mtag = item->itemData().value<nix::MultiTag>();
+        extract_multitag_info(mtag);
+        current_qml = qml;
     }
     ui->tableWidget->resizeColumnsToContents();
     ui->tableWidget->horizontalHeader()->setStretchLastSection(true);
-    */
 }
 
-std::string TagPanel::extract_tag_info(nix::Tag tag)
-{
+
+std::string TagPanel::extract_tag_info(nix::Tag tag) {
     std::stringstream ss;
 
     std::vector<double> pos = tag.position();
