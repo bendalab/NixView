@@ -96,7 +96,7 @@ std::string EntityDescriptor::toHtml() {
 }
 
 
-std::string EntityDescriptor::describe(const nix::DataArray &da){
+std::string EntityDescriptor::describe(const nix::DataArray &da) {
     EntityDescriptor desc(da.name(), da.type(), (da.definition() ? *da.definition() : "none"), da.id(),
                           nix::util::timeToStr(da.createdAt()), nix::util::timeToStr(da.updatedAt()));
     std::vector<std::string> dims;
