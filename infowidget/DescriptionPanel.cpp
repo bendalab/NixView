@@ -12,64 +12,47 @@ DescriptionPanel::DescriptionPanel(QWidget *parent) :
     ui->setupUi(this);
 }
 
-void DescriptionPanel::update_description_panel(QModelIndex qml)
-{
-    if(!qml.isValid())
-    {
+void DescriptionPanel::update_description_panel(QModelIndex qml) {
+    if(!qml.isValid()) {
         clear_description_panel();
         return;
     }
-    /*
-    NixModelItem* item = MainViewWidget::get_current_model()->get_item_from_qml(qml);
+    NixTreeModelItem *item = static_cast<NixTreeModelItem*>(qml.internalPointer());
+    NixType type = item->nixType();
 
-    if(strcmp(item->get_nix_qvariant_type().c_str(), NIX_STRING_BLOCK) == 0)
-        update(item->get_nix_entity<nix::Block>());
-    else if(strcmp(item->get_nix_qvariant_type().c_str(), NIX_STRING_DATAARRAY) == 0)
-            update(item->get_nix_entity<nix::DataArray>());
-    else if(strcmp(item->get_nix_qvariant_type().c_str(), NIX_STRING_MULTITAG) == 0)
-            update(item->get_nix_entity<nix::MultiTag>());
-    else if(strcmp(item->get_nix_qvariant_type().c_str(), NIX_STRING_TAG) == 0)
-            update(item->get_nix_entity<nix::Tag>());
-    else if(strcmp(item->get_nix_qvariant_type().c_str(), NIX_STRING_SECTION) == 0)
-            update(item->get_nix_entity<nix::Section>());
-    else if(strcmp(item->get_nix_qvariant_type().c_str(), NIX_STRING_SOURCE) == 0)
-            update(item->get_nix_entity<nix::Source>());
-    else if(strcmp(item->get_nix_qvariant_type().c_str(), NIX_STRING_PROPERTY) == 0)
-            update_typeless(item->get_nix_entity<nix::Property>());
-    else
-        clear_description_panel();
-    */
+    switch (type) {
+        case (NixType::NIX_BLOCK):
+            update(item->itemData().value<nix::Block>());
+            break;
+        case (NixType::NIX_DATA_ARRAY):
+            update(item->itemData().value<nix::DataArray>());
+            break;
+        case (NixType::NIX_MTAG):
+            update(item->itemData().value<nix::MultiTag>());
+            break;
+        case (NixType::NIX_TAG):
+            update(item->itemData().value<nix::Tag>());
+            break;
+        case (NixType::NIX_SOURCE):
+            update(item->itemData().value<nix::Source>());
+            break;
+        case (NixType::NIX_PROPERTY):
+            update(item->itemData().value<nix::Property>());
+            break;
+        default:
+            clear_description_panel();
+    }
 }
 
+
 template<typename T>
-void DescriptionPanel::update(T arg)
-{
-    time_t rawtime_cr = arg.createdAt();
-    struct tm *info_cr;
-    info_cr = localtime( &rawtime_cr );
-
-    time_t rawtime_up = arg.updatedAt();
-    struct tm *info_up;
-    info_up = localtime( &rawtime_up );
-
-    std::stringstream ss;
-    ss << "id: " << arg.id() << "\n"
-       << "type: " << arg.type() << "\n"
-       << "name: " << arg.name() << "\n"
-       << "created at: " << boost::algorithm::trim_right_copy(std::string(asctime(info_cr))) << "\n"
-       << "updated at: " << boost::algorithm::trim_right_copy(std::string(asctime(info_up))) << "\n"
-       << "description: ";
-    if (arg.definition().is_initialized())
-        ss << arg.definition().get();
-    else
-        ss << "-";
-    QString info_string = QString::fromStdString(ss.str());
-    ui->info_text_edit->setText(info_string);
+void DescriptionPanel::update(T arg) {
+    ui->info_text_edit->setText(QString::fromStdString(EntityDescriptor::describe(arg)));
 }
 
+
 template<typename T>
-void DescriptionPanel::update_typeless(T arg)
-{
+void DescriptionPanel::update_typeless(T arg) {
     time_t rawtime_cr = arg.createdAt();
     struct tm *info_cr;
     info_cr = localtime( &rawtime_cr );
@@ -92,13 +75,11 @@ void DescriptionPanel::update_typeless(T arg)
     ui->info_text_edit->setText(info_string);
 }
 
-void DescriptionPanel::clear_description_panel()
-{
+void DescriptionPanel::clear_description_panel() {
     ui->info_text_edit->setText("");
 }
 
 
-DescriptionPanel::~DescriptionPanel()
-{
+DescriptionPanel::~DescriptionPanel() {
     delete ui;
 }
