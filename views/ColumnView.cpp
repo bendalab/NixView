@@ -11,13 +11,13 @@ ColumnView::ColumnView(QWidget *parent) :
     ui->verticalLayout->addWidget(qcv);
 }
 
-ColumnView::ColumnView(NixProxyModel *_nix_proxy_model, QWidget *parent) :
+ColumnView::ColumnView(QSortFilterProxyModel *_nix_proxy_model, QWidget *parent) :
     ColumnView(parent)
 {
     set_proxy_model(_nix_proxy_model);
 }
 
-void ColumnView::set_proxy_model(NixProxyModel *proxy_model)
+void ColumnView::set_proxy_model(QSortFilterProxyModel *proxy_model)
 {
     nix_proxy_model  = proxy_model;
     qcv->setModel(nix_proxy_model);

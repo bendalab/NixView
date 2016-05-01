@@ -2,7 +2,7 @@
 #define NIXPROXYMODEL_H
 
 #include <QSortFilterProxyModel>
-#include <model/NixDataModel.hpp>
+#include <model/nixtreemodel.h>
 
 class NixProxyModel : public QSortFilterProxyModel
 {
@@ -18,7 +18,7 @@ public:
     bool metadata_only_mode = false;
     bool block_mode = false;
 
-    NixModelItem* get_item_from_qml(QModelIndex qml);
+    NixTreeModelItem* get_item_from_qml(QModelIndex qml);
 
     // setter
     /**
@@ -43,7 +43,7 @@ private:
     bool check_if_in_data_branch(int source_row, const QModelIndex &source_parent) const;
     bool qml_contains_fine_filter(QModelIndex qml) const;
     bool qml_contains_expression(QModelIndex qml, QString str) const;
-    bool entitiy_check(int source_row, const QModelIndex &source_parent, const char* entity_type) const;
+    bool entitiy_check(int source_row, const QModelIndex &source_parent, const NixType &type) const;
 
 public slots:
     void set_rough_filter(QString exp);

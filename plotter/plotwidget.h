@@ -30,7 +30,7 @@ public:
 private:
     Ui::PlotWidget *ui;
     QModelIndex item_qml;
-    NixModelItem* item;
+    NixTreeModelItem* item;
     Plotter *plot;
 
     bool check_plottable_dtype(nix::DataType dtype) const;
@@ -39,12 +39,6 @@ private:
     Plotter* process(const nix::DataArray &array);
     void process(const nix::MultiTag &mtag);
     void process(const nix::Tag &tag);
-
-    EntityDescriptor basic_description(const std::string &name, const std::string &type, const std::string &description,
-                              const std::string &id, const std::string &created, const std::string &updated);
-    void describe(const nix::DataArray &array);
-    void describe(const nix::MultiTag &mtag);
-    void describe(const nix::Tag &tag);
 
     void draw_1d(const nix::DataArray &array);
     void draw_2d(const nix::DataArray &array);

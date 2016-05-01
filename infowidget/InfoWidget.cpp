@@ -23,13 +23,13 @@ InfoWidget::InfoWidget(QWidget *parent) :
     dp = new DescriptionPanel(this);
     ui->verticalLayout_page_info->addWidget(dp);
 
-    ui->tabWidget->setCurrentIndex(0);
+    ui->tabWidget->setCurrentIndex(2);
 
     connect_widgets();
 }
 
 
-void InfoWidget::setDataModel(NixDataModel *_nix_model) {
+void InfoWidget::setDataModel(NixTreeModel *_nix_model) {
     mp->setDataModel(_nix_model);
 }
 

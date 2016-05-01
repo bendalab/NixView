@@ -401,6 +401,7 @@ color: rgb(150,150, 150);</string>
    <addaction name="separator"/>
    <addaction name="actionOpenFile"/>
    <addaction name="actionCloseFile"/>
+   <addaction name="actionFind"/>
    <addaction name="actionPlot"/>
    <addaction name="actionTable"/>
    <addaction name="actionQuit"/>
@@ -464,7 +465,7 @@ color: rgb(150,150, 150);</string>
     <string>plot data</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+P</string>
+    <string>Space</string>
    </property>
   </action>
   <action name="actionOpenFile">
@@ -552,6 +553,21 @@ color: rgb(150,150, 150);</string>
   <action name="actionSdf">
    <property name="text">
     <string>sdf</string>
+   </property>
+  </action>
+  <action name="actionFind">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="resources.qrc">
+     <normaloff>:/images/find.png</normaloff>:/images/find.png</iconset>
+   </property>
+   <property name="text">
+    <string>find</string>
+   </property>
+   <property name="toolTip">
+    <string>find in file</string>
    </property>
   </action>
  </widget>

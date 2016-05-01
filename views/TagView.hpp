@@ -31,8 +31,6 @@ private:
     Ui::TagView *ui;
     nix::Tag tag;
 
-    EntityDescriptor basic_description(const std::string &name, const std::string &type, const std::string &description,
-                                       const std::string &id, const std::string &created, const std::string &updated);
     void fill_references();
     void fill_features();
     void clear_plot_widget(QWidget *plot_widget);

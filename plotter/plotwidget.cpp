@@ -20,30 +20,27 @@ PlotWidget::~PlotWidget()
 
 
 bool PlotWidget::can_draw() const {
-    return (strcmp(this->item->get_nix_qvariant_type().c_str(), NIX_STRING_DATAARRAY) == 0) |
-           (strcmp(this->item->get_nix_qvariant_type().c_str(), NIX_STRING_MULTITAG) == 0) |
-           (strcmp(this->item->get_nix_qvariant_type().c_str(), NIX_STRING_TAG) == 0);
+    NixType type = item->nixType();
+    return (type == NixType::NIX_DATA_ARRAY) | (type == NixType::NIX_MTAG | type == NixType::NIX_TAG);
 }
 
 
 void PlotWidget::process_item() {
-    if (strcmp(this->item->get_nix_qvariant_type().c_str(), NIX_STRING_DATAARRAY) == 0)
-    {
-        nix::DataArray array = item->get_nix_entity<nix::DataArray>();
+    if (this->item->nixType() == NixType::NIX_DATA_ARRAY) {
+        nix::DataArray array = item->itemData().value<nix::DataArray>();
         process(array);
-        describe(array);
+        ui->entityDescription->setText(QString::fromStdString(EntityDescriptor::describe(array)));
     }
-    else if (strcmp(this->item->get_nix_qvariant_type().c_str(), NIX_STRING_TAG) == 0)
-    {
-        nix::Tag tag = item->get_nix_entity<nix::Tag>();
+    else if (item->nixType() == NixType::NIX_TAG) {
+        nix::Tag tag = item->itemData().value<nix::Tag>();
         process(tag);
-        describe(tag);
+        ui->entityDescription->setText(QString::fromStdString(EntityDescriptor::describe(tag)));
+
     }
-    else if (strcmp(this->item->get_nix_qvariant_type().c_str(), NIX_STRING_MULTITAG) == 0)
-    {
-        nix::MultiTag mtag = item->get_nix_entity<nix::MultiTag>();
+    else if (item->nixType() == NixType::NIX_MTAG) {
+        nix::MultiTag mtag = item->itemData().value<nix::MultiTag>();
         process(mtag);
-        describe(mtag);
+        ui->entityDescription->setText(QString::fromStdString(EntityDescriptor::describe(mtag)));
     }
 }
 
@@ -133,46 +130,10 @@ void PlotWidget::process(const nix::MultiTag &mtag) {
     }
 }
 
-EntityDescriptor PlotWidget::basic_description(const std::string &name, const std::string &type, const std::string &description,
-                                   const std::string &id, const std::string &created, const std::string &updated ) {
-    EntityDescriptor descr(name, type, description, id, created, updated);
-    return descr;
-}
-
-void PlotWidget::describe(const nix::DataArray &array) {
-    ui->entityDescription->clear();
-    EntityDescriptor descr = basic_description(array.name(), array.type(), array.definition() ? *array.definition() : "", array.id(),
-                                               nix::util::timeToStr(array.createdAt()), nix::util::timeToStr(array.updatedAt()));
-    ui->entityDescription->setText(QString::fromStdString(descr.toHtml()));
-}
-
-void PlotWidget::describe(const nix::Tag &tag) {
-    ui->entityDescription->clear();
-    EntityDescriptor descr = basic_description(tag.name(), tag.type(), tag.definition() ? *tag.definition() : "", tag.id(),
-                                               nix::util::timeToStr(tag.createdAt()), nix::util::timeToStr(tag.updatedAt()));
-    descr.addSection("References");
-    std::vector<nix::DataArray> refs = tag.references();
-    for (nix::DataArray a : refs) {
-        descr.addItem(a.name());
-    }
-    ui->entityDescription->setText(QString::fromStdString(descr.toHtml()));
-}
-
-void PlotWidget::describe(const nix::MultiTag &mtag) {
-    ui->entityDescription->clear();
-    EntityDescriptor descr = basic_description(mtag.name(), mtag.type(), mtag.definition() ? *mtag.definition() : "", mtag.id(),
-                                               nix::util::timeToStr(mtag.createdAt()), nix::util::timeToStr(mtag.updatedAt()));
-    descr.addSection("References");
-    std::vector<nix::DataArray> refs = mtag.references();
-    for (nix::DataArray a : refs) {
-        descr.addItem(a.name());
-    }
-    ui->entityDescription->setText(QString::fromStdString(descr.toHtml()));
-}
 
 void PlotWidget::setEntity(QModelIndex qml) {
     this->item_qml = qml;
-    this->item = MainViewWidget::get_current_model()->get_item_from_qml(qml);
+    this->item = static_cast<NixTreeModelItem*>(qml.internalPointer());
     if (can_draw()) {
         process_item();
     }

@@ -50,7 +50,10 @@ SOURCES += main.cpp\
     views/RawTreeView.cpp \
     views/TagView.cpp \
     utils/entitydescriptor.cpp \
-    utils/utils.cpp
+    utils/utils.cpp \
+    model/nixtreemodelitem.cpp \
+    model/nixtreemodel.cpp \
+    views/lazyloadview.cpp
 
 
 HEADERS  += MainWindow.hpp \
@@ -86,7 +89,10 @@ HEADERS  += MainWindow.hpp \
     views/RawTreeView.hpp \
     views/TagView.hpp \
     utils/entitydescriptor.h \
-    utils/utils.hpp
+    utils/utils.hpp \
+    model/nixtreemodelitem.h \
+    model/nixtreemodel.h \
+    views/lazyloadview.h
 
 
 FORMS    += MainWindow.ui \
@@ -109,7 +115,8 @@ FORMS    += MainWindow.ui \
     views/datatable.ui \
     views/MainViewWidget.ui \
     views/RawTreeView.ui \
-    views/TagView.ui
+    views/TagView.ui \
+    views/lazyloadview.ui
 
 #standard windows folder?
 #win32:CONFIG(release, debug|release): LIBS += /usr/local/lib/release/ -lnix

@@ -262,9 +262,11 @@ def create_test_file(filename):
     s['experimenter'] = 'John Doe'
     
     b = nix_file.create_block("1D data", "nix.recording_session")
+    b.definition = "This Block contains 1D datasets and links between them. These datasets show the use of regualrly sampled and irregularly sampled (range) dimensions."
     b.metadata  = s
     b2 = nix_file.create_block("Categorical data", "nix.analysis_session") 
-
+    b2.definition = "This Block contains categorical data demonstrating the use of SetDimensions."
+    
     create_1d_sampled(nix_file, b)
     create_1d_range(nix_file, b)
     src = create_1d_set(nix_file, b2)
@@ -280,10 +282,12 @@ def create_test_file(filename):
    
     b2 = nix_file.create_block("2D data", "nix.recording_session")
     b2.metadata = s2
+    b2.definition = "2-dimensional datasets e.g. for storing multiple time-series or image data."
     create_2d(nix_file, b2)
     create_2d_sample(nix_file, b2)
     b3 = nix_file.create_block("3D data", "nix.image_data")
     b3.metadata  = s
+    b3.definition = "3-D datasets like RGB image data and links into such datasets."
     create_3d(nix_file, b3)
     create_m_tag_3d(nix_file, b3)
     nix_file.close()

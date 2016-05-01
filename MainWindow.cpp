@@ -5,8 +5,8 @@
 #include "views/RawTreeView.hpp"
 #include "nix.hpp"
 #include "common/Common.hpp"
-#include "model/NixDataModel.hpp"
-#include "model/NixModelItem.hpp"
+#include "model/nixtreemodel.h"
+#include "model/nixtreemodelitem.h"
 #include "dialogs/tabledialog.hpp"
 #include <QSettings>
 #include "utils/utils.hpp"
@@ -37,13 +37,14 @@ void MainWindow::connect_widgets() {
     QObject::connect(ui->actionCloseFile, SIGNAL(triggered()), this, SLOT(close_file()));
     QObject::connect(this, SIGNAL(emit_view_change(int)), ui->main_view, SLOT(set_view(int)));
     QObject::connect(ui->main_view, SIGNAL(emit_current_qml(QModelIndex)), this, SLOT(item_selected(QModelIndex)));
-    QObject::connect(ui->main_view, SIGNAL(emit_model_update(NixDataModel*)), this, SLOT(nix_model_update(NixDataModel*)));
+    QObject::connect(ui->main_view, SIGNAL(emit_model_update(NixTreeModel*)), this, SLOT(nix_model_update(NixTreeModel*)));
     QObject::connect(ui->main_view, SIGNAL(emit_current_qml(QModelIndex)), ui->info_view, SLOT(update_info_widget(QModelIndex)));
-    QObject::connect(ow->tree_view_options, SIGNAL(emit_rtv_column_display_changed()), ui->main_view->get_rtv(), SLOT(hide_columns()));
+    //QObject::connect(ow->tree_view_options, SIGNAL(emit_rtv_column_display_changed()), ui->main_view->get_rtv(), SLOT(hide_columns()));
     QObject::connect(ow, SIGNAL(recent_file_update_signal(QStringList)), this, SLOT(recent_file_update(QStringList)));
     QObject::connect(this, SIGNAL(emit_file_opened(QString)), this->ow, SLOT(file_opened(QString)));
     QObject::connect(ui->main_view, SIGNAL(scan_progress_update()), this, SLOT(file_scan_progress()));
     QObject::connect(ui->menu_open_recent, SIGNAL(triggered(QAction*)), this, SLOT(open_recent_file(QAction*)));
+    QObject::connect(ui->actionFind, SIGNAL(triggered()), ui->main_view, SLOT(toggle_find()));
 }
 
 
@@ -82,7 +83,7 @@ void MainWindow::on_actionProperties_triggered()
 }
 
 
-void MainWindow::nix_model_update(NixDataModel *model) {
+void MainWindow::nix_model_update(NixTreeModel *model) {
     ui->info_view->setDataModel(model);
 }
 
@@ -91,14 +92,12 @@ void MainWindow::item_selected(QModelIndex qml) {
     selected_qml = qml;
     ui->actionPlot->setEnabled(false);
     ui->actionTable->setEnabled(false);
-
-    NixModelItem *item = ui->main_view->get_current_model()->get_item_from_qml(qml);
-
-    if(strcmp(item->get_nix_qvariant_type().c_str(), NIX_STRING_DATAARRAY) == 0) {
+    NixTreeModelItem *item = static_cast<NixTreeModelItem*>(qml.internalPointer());
+    if(item->nixType() == NixType::NIX_DATA_ARRAY) {
         ui->actionTable->setEnabled(true);
         ui->actionPlot->setEnabled(true);
-    } else if ((strcmp(item->get_nix_qvariant_type().c_str(), NIX_STRING_TAG) == 0) |
-                (strcmp(item->get_nix_qvariant_type().c_str(), NIX_STRING_MULTITAG) == 0)) {
+    } else if ((item->nixType() == NixType::NIX_TAG)  |
+               (item->nixType() == NixType::NIX_MTAG)) {
         ui->actionPlot->setEnabled(true);
     }
 }
