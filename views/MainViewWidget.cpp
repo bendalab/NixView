@@ -54,7 +54,7 @@ void MainViewWidget::set_nix_file(const std::string &nix_file_path) {
     nix_model = new NixTreeModel(this);
     nix_model->set_entity(nix_file);
     MainViewWidget::CURRENT_MODEL = nix_model;
-    nix_proxy_model = new QSortFilterProxyModel(this);
+    nix_proxy_model = new NixProxyModel(this);
     nix_proxy_model->setSourceModel(nix_model);
     tv->getTreeView()->setModel(nix_proxy_model);
     tv->getTreeView()->setSortingEnabled(true);
@@ -62,9 +62,9 @@ void MainViewWidget::set_nix_file(const std::string &nix_file_path) {
     emit emit_model_update(nix_model);
     QObject::connect(tv->getTreeView(), SIGNAL(clicked(QModelIndex)), this, SLOT(emit_current_qml_worker_slot(QModelIndex)));
     QObject::connect(cv->get_column_view(), SIGNAL(clicked(QModelIndex)), this, SLOT(emit_current_qml_worker_slot(QModelIndex)));
-    //QObject::connect(ui->cmbx_filter, SIGNAL(currentIndexChanged(QString)), nix_proxy_model, SLOT(set_rough_filter(QString)));
-    //QObject::connect(ui->line_edit_filter, SIGNAL(textChanged(QString)), nix_proxy_model, SLOT(set_fine_filter(QString)));
-    //QObject::connect(ui->cbx_filter, SIGNAL(toggled(bool)), nix_proxy_model, SLOT(set_case_sensitivity(bool)));
+    QObject::connect(ui->cmbx_filter, SIGNAL(currentIndexChanged(QString)), nix_proxy_model, SLOT(set_rough_filter(QString)));
+    QObject::connect(ui->line_edit_filter, SIGNAL(textChanged(QString)), nix_proxy_model, SLOT(set_fine_filter(QString)));
+    QObject::connect(ui->cbx_filter, SIGNAL(toggled(bool)), nix_proxy_model, SLOT(set_case_sensitivity(bool)));
 }
 
 
@@ -89,6 +89,8 @@ void MainViewWidget::populate_data_stacked_widget() {
     ui->data_stacked_Widget->addWidget(cv);
     ui->data_stacked_Widget->setCurrentIndex(0);
 }
+
+
 /*
 RawTreeView* MainViewWidget::get_rtv() {
     return rtv;
@@ -146,6 +148,7 @@ void MainViewWidget::connect_widgets() {
     //QObject::connect(ui->cbx_filter, SIGNAL(toggled(bool)), rtv, SLOT(expand_collapse(bool)));
     QObject::connect(shortcut_filter, SIGNAL(activated()), ui->line_edit_filter, SLOT(setFocus()));
 }
+
 
 MainViewWidget::~MainViewWidget() {
     if (nix_file.isOpen()) {

@@ -53,9 +53,9 @@ private:
     Ui::MainViewWidget *ui;
     nix::File nix_file;
     NixTreeModel *nix_model;
-    QSortFilterProxyModel *nix_proxy_model;
+    //QSortFilterProxyModel *nix_proxy_model;
     //NixDataModel *nix_model;
-    //NixProxyModel *nix_proxy_model;
+    NixProxyModel *nix_proxy_model;
 
     //RawTreeView *rtv;
     ColumnView *cv;
