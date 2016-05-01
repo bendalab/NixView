@@ -8,7 +8,6 @@ const QVector<QString> NixTreeModelItem::columns = {MODEL_HEADER_NAME, MODEL_HEA
                                                     MODEL_HEADER_CREATEDAT, MODEL_HEADER_UPDATEDAT};
 
 NixTreeModelItem::NixTreeModelItem(const QVariant &data, NixTreeModelItem *parent) {
-    std::cerr << data.canConvert<nix::Block>() << std::endl;
     checkDataType(data);
     this->parent_item = parent;
     this->item_data = data;

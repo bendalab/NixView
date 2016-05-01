@@ -152,7 +152,6 @@ void NixTreeModel::fetchMore(const QModelIndex &parent) {
         return;
     }
     NixTreeModelItem *itm = static_cast<NixTreeModelItem*>(parent.internalPointer());
-    std::cerr << "fetch more!" << std::endl;
     switch (itm->nixType()) {
         case NixType::NIX_BLOCK: {
             fetch_block(itm->itemData().value<nix::Block>(), itm);

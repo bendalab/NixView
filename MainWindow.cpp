@@ -93,17 +93,12 @@ void MainWindow::item_selected(QModelIndex qml) {
     ui->actionPlot->setEnabled(false);
     ui->actionTable->setEnabled(false);
     NixTreeModelItem *item = static_cast<NixTreeModelItem*>(qml.internalPointer());
-    std::cerr << "ping" << std::endl;
     if(item->nixType() == NixType::NIX_DATA_ARRAY) {
-        std::cerr << "DataArray" << std::endl;
         ui->actionTable->setEnabled(true);
         ui->actionPlot->setEnabled(true);
     } else if ((item->nixType() == NixType::NIX_TAG)  |
                (item->nixType() == NixType::NIX_MTAG)) {
-        std::cerr << "Tag like" << std::endl;
         ui->actionPlot->setEnabled(true);
-    } else{
-        std::cerr << "varelse" << std::endl;
     }
 }
 
