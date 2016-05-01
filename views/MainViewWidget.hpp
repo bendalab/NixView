@@ -31,8 +31,7 @@ public:
     ~MainViewWidget();
 
     void set_nix_file(const std::string &nix_file_path);
-    //RawTreeView *get_rtv();
-    //ColumnView *get_cv();
+    ColumnView *get_cv();
     LazyLoadView* getTreeView();
     static NixTreeModel* get_current_model() {return CURRENT_MODEL; }
     int get_scan_progress();
@@ -59,7 +58,7 @@ private:
     //NixProxyModel *nix_proxy_model;
 
     //RawTreeView *rtv;
-    //ColumnView *cv;
+    ColumnView *cv;
     LazyLoadView *tv;
     InfoWidget *iw;
 

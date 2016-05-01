@@ -3,8 +3,7 @@
 
 #include <QWidget>
 #include <QColumnView>
-#include "model/NixDataModel.hpp"
-#include "filter/NixProxyModel.hpp"
+#include <QSortFilterProxyModel>
 
 namespace Ui {
 class ColumnView;
@@ -16,14 +15,14 @@ class ColumnView : public QWidget
 
 public:
     explicit ColumnView(QWidget *parent=0);
-    explicit ColumnView(NixProxyModel*, QWidget *parent = 0);
+    explicit ColumnView(QSortFilterProxyModel*, QWidget *parent = 0);
     ~ColumnView();
 
     QColumnView* get_column_view();
-    void set_proxy_model(NixProxyModel *proxy_model);
+    void set_proxy_model(QSortFilterProxyModel *proxy_model);
 
 private:
-    NixProxyModel* nix_proxy_model;
+    QSortFilterProxyModel* nix_proxy_model;
     QColumnView* qcv;
     Ui::ColumnView *ui;
 };
