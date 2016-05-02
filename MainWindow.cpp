@@ -93,11 +93,11 @@ void MainWindow::item_selected(QModelIndex qml) {
     ui->actionPlot->setEnabled(false);
     ui->actionTable->setEnabled(false);
     NixTreeModelItem *item = static_cast<NixTreeModelItem*>(qml.internalPointer());
-    if(item->nixType() == NixType::NIX_DATA_ARRAY) {
+    NixType type = item->nixType();
+    if(type == NixType::NIX_DATA_ARRAY | type == NixType::NIX_FEAT) {
         ui->actionTable->setEnabled(true);
         ui->actionPlot->setEnabled(true);
-    } else if ((item->nixType() == NixType::NIX_TAG)  |
-               (item->nixType() == NixType::NIX_MTAG)) {
+    } else if (type == NixType::NIX_TAG | type == NixType::NIX_MTAG) {
         ui->actionPlot->setEnabled(true);
     }
 }
