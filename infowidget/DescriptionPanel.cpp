@@ -41,6 +41,8 @@ void DescriptionPanel::update_description_panel(QModelIndex qml) {
             break;
         case (NixType::NIX_SECTION):
             update(item->itemData().value<nix::Section>());
+        case (NixType::NIX_FEAT):
+            update(item->itemData().value<nix::Feature>());
             break;
         default:
             clear_description_panel();
