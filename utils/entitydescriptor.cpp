@@ -177,7 +177,7 @@ std::string EntityDescriptor::describe(const nix::Tag &t) {
     }
     std::vector<std::string> feats;
     for (nix::Feature f : t.features()) {
-        refs.push_back(f.data().name() + "[" + f.data().type() + "]");
+        feats.push_back(f.data().name() + "[" + f.data().type() + "]");
     }
     std::vector<std::string> sources;
     for (nix::Source src : t.sources()) {
@@ -200,7 +200,7 @@ std::string EntityDescriptor::describe(const nix::MultiTag &t) {
     }
     std::vector<std::string> feats;
     for (nix::Feature f : t.features()) {
-        refs.push_back(f.data().name() + "[" + f.data().type() + "]");
+        feats.push_back(f.data().name() + "[" + f.data().type() + "]");
     }
     std::vector<std::string> sources;
     for (nix::Source src : t.sources()) {
