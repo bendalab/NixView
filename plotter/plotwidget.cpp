@@ -21,7 +21,8 @@ PlotWidget::~PlotWidget()
 
 bool PlotWidget::can_draw() const {
     NixType type = item->nixType();
-    return (type == NixType::NIX_DATA_ARRAY) | (type == NixType::NIX_MTAG | type == NixType::NIX_TAG);
+    return type == NixType::NIX_DATA_ARRAY | type == NixType::NIX_MTAG
+            | type == NixType::NIX_TAG | type == NixType::NIX_FEAT;
 }
 
 
@@ -30,17 +31,19 @@ void PlotWidget::process_item() {
         nix::DataArray array = item->itemData().value<nix::DataArray>();
         process(array);
         ui->entityDescription->setText(QString::fromStdString(EntityDescriptor::describe(array)));
-    }
-    else if (item->nixType() == NixType::NIX_TAG) {
+    } else if (item->nixType() == NixType::NIX_TAG) {
         nix::Tag tag = item->itemData().value<nix::Tag>();
         process(tag);
         ui->entityDescription->setText(QString::fromStdString(EntityDescriptor::describe(tag)));
 
-    }
-    else if (item->nixType() == NixType::NIX_MTAG) {
+    } else if (item->nixType() == NixType::NIX_MTAG) {
         nix::MultiTag mtag = item->itemData().value<nix::MultiTag>();
         process(mtag);
         ui->entityDescription->setText(QString::fromStdString(EntityDescriptor::describe(mtag)));
+    } else if (item->nixType() == NixType::NIX_FEAT) {
+        nix::Feature feat = item->itemData().value<nix::Feature>();
+        process(feat.data());
+        ui->entityDescription->setText(QString::fromStdString(EntityDescriptor::describe(feat)));
     }
 }
 
