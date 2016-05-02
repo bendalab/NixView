@@ -28,6 +28,9 @@ bool DataTable::can_draw(const QModelIndex qml) const {
     if (item->nixType() == NixType::NIX_DATA_ARRAY) {
         nix::DataArray da = item->itemData().value<nix::DataArray>();
         return nix::data_type_is_numeric(da.dataType()) && da.dimensionCount() < 3;
+    } else if (item->nixType() == NixType::NIX_FEAT) {
+        nix::DataArray da = item->itemData().value<nix::Feature>().data();
+        return nix::data_type_is_numeric(da.dataType()) && da.dimensionCount() < 3;
     } else {
         return false;
     }
@@ -39,16 +42,21 @@ void DataTable::set_entity(const QModelIndex qml) {
 
     if (item->nixType() == NixType::NIX_DATA_ARRAY) {
         this->array = item->itemData().value<nix::DataArray>();
-        if (array.dataExtent().size() > 2) {
+    } else if (item->nixType() == NixType::NIX_FEAT){
+        this->array = item->itemData().value<nix::Feature>().data();
+    } else {
+        return;
+    }
+
+    if (array.dataExtent().size() > 2) {
             ui->navigation_widget->setVisible(true);
             ui->total_count_label->setText(QString::fromStdString(nix::util::numToStr(array.dataExtent()[2])));
             ui->current_page->setText(QVariant(1).toString());
             ui->current_page->setValidator(new QIntValidator(0, (int)array.dataExtent()[2]));
             ui->next_btn->setEnabled(true);
-        }
-        build_model();
-        ui->description->setText(QString::fromStdString(EntityDescriptor::describe(array)));
     }
+    build_model();
+    ui->description->setText(QString::fromStdString(EntityDescriptor::describe(array)));
 }
 
 
