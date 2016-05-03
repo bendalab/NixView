@@ -209,7 +209,7 @@ int NixTreeModel::checkForKids(NixTreeModelItem *item) const {
         }
         case NixType::NIX_SECTION: {
             nix::Section s = item->itemData().value<nix::Section>();
-            return s.propertyCount();
+            return s.propertyCount() + s.sectionCount();
         }
         case NixType::NIX_SOURCE: {
             nix::Source src = item->itemData().value<nix::Source>();
