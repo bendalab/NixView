@@ -39,6 +39,9 @@ void DescriptionPanel::update_description_panel(QModelIndex qml) {
         case (NixType::NIX_PROPERTY):
             update(item->itemData().value<nix::Property>());
             break;
+        case (NixType::NIX_SECTION):
+            update(item->itemData().value<nix::Section>());
+            break;
         default:
             clear_description_panel();
     }
