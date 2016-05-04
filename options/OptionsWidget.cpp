@@ -36,23 +36,14 @@ OptionsWidget::OptionsWidget(QWidget *parent) :
     QWidget(parent), ui(new Ui::OptionsWidget) {
     ui->setupUi(this);
     setWindowTitle("Properties");
-    tw = new OptionsTabWidget();
-    tw->tabBar()->setStyle(new HorizontalTabBarStyle);
-
     QTabWidget *view_tab_widget = new QTabWidget();
-    QTabWidget *files_view_tab = new QTabWidget();
 
     tree_view_options = new TreeViewOptions();
     file_options = new RecentFileOptions();
     QObject::connect(file_options, SIGNAL(recent_files_update(QStringList)), this, SLOT(recent_file_update(QStringList)));
     view_tab_widget->addTab(tree_view_options, "TreeView");
-    //files_view_tab->addTab(file_options, "Recent files");
     view_tab_widget->addTab(file_options, "Recent files");
-    tw->addTab(view_tab_widget, "Views");
-    //tw->addTab(files_view_tab, "Files");
-    //tw->addTab(new DescriptionPanel(), "Other Stuff");
-
-    ui->verticalLayout->addWidget(tw);
+    ui->verticalLayout->addWidget(view_tab_widget);
 }
 
 

@@ -31,7 +31,6 @@ signals:
 private:
     Ui::OptionsWidget *ui;
     QSettings *settings;
-    OptionsTabWidget *tw;
     TreeViewOptions *tree_view_options;
     RecentFileOptions *file_options;
 
