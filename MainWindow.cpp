@@ -39,7 +39,7 @@ void MainWindow::connect_widgets() {
     QObject::connect(ui->main_view, SIGNAL(emit_current_qml(QModelIndex)), this, SLOT(item_selected(QModelIndex)));
     QObject::connect(ui->main_view, SIGNAL(emit_model_update(NixTreeModel*)), this, SLOT(nix_model_update(NixTreeModel*)));
     QObject::connect(ui->main_view, SIGNAL(emit_current_qml(QModelIndex)), ui->info_view, SLOT(update_info_widget(QModelIndex)));
-    //QObject::connect(ow->tree_view_options, SIGNAL(emit_rtv_column_display_changed()), ui->main_view->get_rtv(), SLOT(hide_columns()));
+    QObject::connect(ow->tree_view_options, SIGNAL(emit_rtv_column_display_changed()), ui->main_view->getTreeView(), SLOT(hide_columns()));
     QObject::connect(ow, SIGNAL(recent_file_update_signal(QStringList)), this, SLOT(recent_file_update(QStringList)));
     QObject::connect(this, SIGNAL(emit_file_opened(QString)), this->ow, SLOT(file_opened(QString)));
     QObject::connect(ui->main_view, SIGNAL(scan_progress_update()), this, SLOT(file_scan_progress()));

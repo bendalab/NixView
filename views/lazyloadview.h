@@ -4,6 +4,7 @@
 #include <QWidget>
 #include <QTreeView>
 
+
 namespace Ui {
 class LazyLoadView;
 }
@@ -17,6 +18,9 @@ public:
     ~LazyLoadView();
 
     QTreeView* getTreeView();
+
+public slots:
+    void hide_columns();
 
 private:
     Ui::LazyLoadView *ui;

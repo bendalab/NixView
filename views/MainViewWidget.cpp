@@ -102,6 +102,10 @@ ColumnView* MainViewWidget::get_cv() {
     return cv;
 }
 
+LazyLoadView *MainViewWidget::getTreeView() {
+    return tv;
+}
+
 
 // slots
 void MainViewWidget::set_view(int index) {
