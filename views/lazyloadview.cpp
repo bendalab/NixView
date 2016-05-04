@@ -28,6 +28,9 @@ void LazyLoadView::hide_columns() {
     settings->beginGroup(S_RAWTREEVIEW);
     settings->beginGroup(S_COLUMNSHIDDEN);
     NixTreeModel *model = static_cast<NixTreeModel*>(ui->treeView->model());
+    if (model == nullptr) {
+        return;
+    }
     QVector<QString> headers;
     for (int i = 0; i < model->columnCount(); i++) {
         headers.push_back(model->headerData(i, Qt::Horizontal).toString());
@@ -40,4 +43,7 @@ void LazyLoadView::hide_columns() {
     settings->endGroup();
     settings->endGroup();
     delete settings;
+    for (int i = 0; i < model->columnCount(); i++) {
+        ui->treeView->resizeColumnToContents(i);
+    }
 }
