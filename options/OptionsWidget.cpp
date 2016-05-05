@@ -37,10 +37,10 @@ OptionsWidget::OptionsWidget(QWidget *parent) :
     ui->setupUi(this);
     setWindowTitle("Properties");
     QTabWidget *view_tab_widget = new QTabWidget();
-
     tree_view_options = new TreeViewOptions();
     file_options = new RecentFileOptions();
-    QObject::connect(file_options, SIGNAL(recent_files_update(QStringList)), this, SLOT(recent_file_update(QStringList)));
+    QObject::connect(file_options, SIGNAL(recent_files_update(QStringList)), this, SIGNAL(recent_file_update(QStringList)));
+    QObject::connect(tree_view_options, SIGNAL(column_change(QString,bool)), this, SIGNAL(column_state_changed(QString,bool)));
     view_tab_widget->addTab(tree_view_options, "TreeView");
     view_tab_widget->addTab(file_options, "Recent files");
     ui->verticalLayout->addWidget(view_tab_widget);
@@ -51,11 +51,17 @@ void OptionsWidget::file_opened(QString filename) {
     file_options->set_file(filename);
 }
 
-
+/*
 void OptionsWidget::recent_file_update(QStringList files) {
     emit recent_file_update_signal(files);
 }
+*/
 
+/*
+void OptionsWidget::column_state_changed(QString col, bool state) {
+    emit column_state_changed_signal(col, state);
+}
+*/
 
 OptionsWidget::~OptionsWidget()
 {

@@ -23,10 +23,10 @@ public:
 
 public slots:
     void file_opened(QString filename);
-    void recent_file_update(QStringList files);
 
 signals:
-    void recent_file_update_signal(QStringList files);
+    void recent_file_update(QStringList files);
+    void column_state_changed(QString column, bool state);
 
 private:
     Ui::OptionsWidget *ui;
