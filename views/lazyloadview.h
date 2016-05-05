@@ -18,6 +18,7 @@ public:
     ~LazyLoadView();
 
     QTreeView* getTreeView();
+    void set_columns();
 
 public slots:
     void set_column_state(QString column, bool visible);

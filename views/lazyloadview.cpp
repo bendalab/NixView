@@ -23,6 +23,17 @@ QTreeView* LazyLoadView::getTreeView() {
 }
 
 
+void LazyLoadView::set_columns() {
+    QSettings *settings = new QSettings;
+    settings->beginGroup("TreeColumns");
+    for (QString s : NixTreeModelItem::columns) {
+        set_column_state(s, settings->value(s, QVariant(true)).toBool());
+    }
+    settings->endGroup();
+    delete settings;
+}
+
+
 void LazyLoadView::set_column_state(QString column, bool visible) {
     NixTreeModel *model = static_cast<NixTreeModel*>(ui->treeView->model());
     if (model == nullptr)
