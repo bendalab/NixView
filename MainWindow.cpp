@@ -26,7 +26,6 @@ MainWindow::MainWindow(QWidget *parent, QApplication *app) : QMainWindow(parent)
     ui->statusBar->addPermanentWidget(file_progress, 10);
     file_progress->setVisible(false);
     QObject::connect(app, SIGNAL(invalid_file_error()), this, SLOT(invalid_file_error()));
-    ow = new OptionsWidget();
     ui->recent_file_list->setAttribute(Qt::WA_MacShowFocusRect, false);
     connect_widgets();
     get_recent_files();
@@ -39,9 +38,6 @@ void MainWindow::connect_widgets() {
     QObject::connect(ui->main_view, SIGNAL(emit_current_qml(QModelIndex)), this, SLOT(item_selected(QModelIndex)));
     QObject::connect(ui->main_view, SIGNAL(emit_model_update(NixTreeModel*)), this, SLOT(nix_model_update(NixTreeModel*)));
     QObject::connect(ui->main_view, SIGNAL(emit_current_qml(QModelIndex)), ui->info_view, SLOT(update_info_widget(QModelIndex)));
-    QObject::connect(ow->tree_view_options, SIGNAL(emit_rtv_column_display_changed()), ui->main_view->getTreeView(), SLOT(hide_columns()));
-    QObject::connect(ow, SIGNAL(recent_file_update_signal(QStringList)), this, SLOT(recent_file_update(QStringList)));
-    QObject::connect(this, SIGNAL(emit_file_opened(QString)), this->ow, SLOT(file_opened(QString)));
     QObject::connect(ui->main_view, SIGNAL(scan_progress_update()), this, SLOT(file_scan_progress()));
     QObject::connect(ui->menu_open_recent, SIGNAL(triggered(QAction*)), this, SLOT(open_recent_file(QAction*)));
     QObject::connect(ui->actionFind, SIGNAL(triggered()), ui->main_view, SLOT(toggle_find()));
@@ -75,11 +71,6 @@ void MainWindow::on_actionTree_triggered()
 void MainWindow::on_actionColumn_triggered()
 {
     emit emit_view_change(VIEW_COLUMN);
-}
-
-void MainWindow::on_actionProperties_triggered()
-{
-    ow->show();
 }
 
 
@@ -168,7 +159,6 @@ void MainWindow::read_nix_file(QString filename) {
     file_progress->setVisible(false);
     ui->stackedWidget->setCurrentIndex(0);
     ui->actionCloseFile->setEnabled(true);
-    emit this->emit_file_opened(filename);
 }
 
 
