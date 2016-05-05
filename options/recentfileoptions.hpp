@@ -18,8 +18,6 @@ public:
     explicit RecentFileOptions(QWidget *parent = 0);
     ~RecentFileOptions();
 
-    void set_file(QString filename);
-
 signals:
     void recent_files_update(QStringList);
 

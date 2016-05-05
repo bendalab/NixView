@@ -51,30 +51,6 @@ void RecentFileOptions::fill_list() {
 }
 
 
-void RecentFileOptions::set_file(QString filename) {
-    QSettings *settings = new QSettings();
-    settings->beginGroup(RECENT_FILES_GROUP);
-    recent_files.clear();
-    QStringList keys = settings->childKeys();
-    for (QString k : keys) {
-        recent_files.push_back(settings->value(k).toString());
-    }
-    if (recent_files.size() > RECENT_FILES_MAX_COUNT) {
-        recent_files.pop_back();
-    }
-    recent_files.insert(0, filename);
-    fill_list();
-    settings->remove("");
-    for (int i = 0; i < recent_files.size(); i ++) {
-        QString key = QString::fromStdString(nix::util::numToStr(i));
-        settings->setValue(key, recent_files[i]);
-    }
-    settings->endGroup();
-    settings->sync();
-    emit recent_files_update(recent_files);
-}
-
-
 void RecentFileOptions::item_selected(QListWidgetItem *current, QListWidgetItem *past) {
     if (current != nullptr) {
         ui->delete_button->setEnabled(true);
