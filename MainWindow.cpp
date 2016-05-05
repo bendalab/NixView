@@ -8,6 +8,7 @@
 #include "model/nixtreemodel.h"
 #include "model/nixtreemodelitem.h"
 #include "dialogs/tabledialog.hpp"
+#include "dialogs/optionsdialog.h"
 #include <QSettings>
 #include "utils/utils.hpp"
 
@@ -55,6 +56,7 @@ void MainWindow::get_recent_files() {
     nixview::util::remove_duplicates(recent_files);
     populate_recent_file_menu();
     settings->endGroup();
+    delete settings;
 }
 
 
@@ -113,8 +115,16 @@ void MainWindow::show_table() {
     d.exec();
 }
 
-void MainWindow::file_scan_progress()
-{
+
+void MainWindow::show_options() {
+    OptionsDialog d(this);
+    QObject::connect(&d, SIGNAL(recent_file_changed(QStringList)), this, SLOT(recent_file_update(QStringList)));
+    QObject::connect(&d, SIGNAL(column_visibility_changed(QString,bool)), this, SLOT(visible_columns_update(QString,bool)));
+    d.exec();
+}
+
+
+void MainWindow::file_scan_progress() {
     file_progress->setValue(ui->main_view->get_scan_progress());
     QCoreApplication::processEvents();
 }
@@ -150,6 +160,7 @@ void MainWindow::close_file() {
     ui->actionTable->setEnabled(false);
 }
 
+
 void MainWindow::read_nix_file(QString filename) {
     std::string file_path = filename.toStdString();
     file_label->setText(file_path.c_str());
@@ -159,6 +170,31 @@ void MainWindow::read_nix_file(QString filename) {
     file_progress->setVisible(false);
     ui->stackedWidget->setCurrentIndex(0);
     ui->actionCloseFile->setEnabled(true);
+    update_file_list(filename);
+}
+
+
+void MainWindow::update_file_list(QString filename) {
+    QSettings *settings = new QSettings();
+    settings->beginGroup(RECENT_FILES_GROUP);
+    QStringList files;
+    QStringList keys = settings->childKeys();
+    for (QString k : keys) {
+        files.push_back(settings->value(k).toString());
+    }
+    if (files.size() > RECENT_FILES_MAX_COUNT) {
+        files.pop_back();
+    }
+    files.insert(0, filename);
+    nixview::util::remove_duplicates(files);
+    settings->remove("");
+    for (int i = 0; i < files.size(); i ++) {
+        QString key = QString::fromStdString(nix::util::numToStr(i));
+        settings->setValue(key, files[i]);
+    }
+    settings->endGroup();
+    settings->sync();
+    recent_file_update(files);
 }
 
 
@@ -182,6 +218,11 @@ void MainWindow::populate_recent_file_menu() {
 void MainWindow::recent_file_update(QStringList files) {
     this->recent_files = files;
     populate_recent_file_menu();
+}
+
+
+void MainWindow::visible_columns_update(QString column, bool state) {
+    ui->main_view->getTreeView()->set_column_state(column, state);
 }
 
 

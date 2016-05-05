@@ -34,6 +34,8 @@ public slots:
     void show_about();
     void show_plot();
     void show_table();
+    void show_options();
+    void visible_columns_update(QString column, bool state);
     void file_scan_progress();
     void invalid_file_error();
     void recent_file_update(QStringList files);
@@ -56,6 +58,7 @@ private:
     void get_recent_files();
     void populate_recent_file_menu();
     void read_nix_file(QString filename);
+    void update_file_list(QString filename);
 };
 
 #endif // MAINWINDOW_HPP
