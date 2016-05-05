@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include <QSettings>
+#include <QCheckBox>
 
 namespace Ui {
 class TreeViewOptions;
@@ -17,25 +18,19 @@ public:
     ~TreeViewOptions();
 
 public slots:
-    void set_name_column_hidden(bool b);
-    void set_nixtype_column_hidden(bool b);
-    void set_storagetype_column_hidden(bool b);
-    void set_datatype_column_hidden(bool b);
-    void set_shape_column_hidden(bool b);
-    void set_id_column_hidden(bool b);
-    void set_createdat_column_hidden(bool b);
-    void set_updatedat_column_hidden(bool b);
-    void set_value_column_hidden(bool b);
-    void set_uncertainty_column_hidden(bool b);
+    void column_state_changed();
 
 signals:
+    void column_change(QString column, bool state);
     void emit_rtv_column_display_changed();
 
 private:
     Ui::TreeViewOptions *ui;
     QSettings *settings;
+    QMap<QCheckBox*, bool> boxes;
     void load_settings();
     void connect_widgets();
+    void create_checkboxes();
 };
 
 #endif // VIEWOPTIONS_HPP
