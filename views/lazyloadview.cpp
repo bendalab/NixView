@@ -23,26 +23,15 @@ QTreeView* LazyLoadView::getTreeView() {
 }
 
 
-void LazyLoadView::hide_columns() {
-    QSettings *settings = new QSettings();
-    settings->beginGroup(S_RAWTREEVIEW);
-    settings->beginGroup(S_COLUMNSHIDDEN);
+void LazyLoadView::set_column_state(QString column, bool visible) {
     NixTreeModel *model = static_cast<NixTreeModel*>(ui->treeView->model());
-    if (model == nullptr) {
+    if (model == nullptr)
         return;
-    }
-    QVector<QString> headers;
     for (int i = 0; i < model->columnCount(); i++) {
-        headers.push_back(model->headerData(i, Qt::Horizontal).toString());
+        if (model->headerData(i, Qt::Horizontal).toString() == column) {
+            ui->treeView->setColumnHidden(i, !visible);
+        }
     }
-
-    for (int i = 0; i < headers.size(); ++i) {
-        bool hidden = settings->value(headers[i]).toBool();
-        ui->treeView->setColumnHidden(i, hidden);
-    }
-    settings->endGroup();
-    settings->endGroup();
-    delete settings;
     for (int i = 0; i < model->columnCount(); i++) {
         ui->treeView->resizeColumnToContents(i);
     }

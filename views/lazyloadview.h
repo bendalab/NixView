@@ -20,7 +20,7 @@ public:
     QTreeView* getTreeView();
 
 public slots:
-    void hide_columns();
+    void set_column_state(QString column, bool visible);
 
 private:
     Ui::LazyLoadView *ui;
