@@ -21,9 +21,6 @@ public:
     explicit OptionsWidget(QWidget *parent = 0);
     ~OptionsWidget();
 
-public slots:
-    void file_opened(QString filename);
-
 signals:
     void recent_file_update(QStringList files);
     void column_state_changed(QString column, bool state);

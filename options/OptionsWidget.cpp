@@ -47,22 +47,6 @@ OptionsWidget::OptionsWidget(QWidget *parent) :
 }
 
 
-void OptionsWidget::file_opened(QString filename) {
-    file_options->set_file(filename);
-}
-
-/*
-void OptionsWidget::recent_file_update(QStringList files) {
-    emit recent_file_update_signal(files);
-}
-*/
-
-/*
-void OptionsWidget::column_state_changed(QString col, bool state) {
-    emit column_state_changed_signal(col, state);
-}
-*/
-
 OptionsWidget::~OptionsWidget()
 {
     delete ui;
