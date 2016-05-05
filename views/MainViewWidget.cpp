@@ -58,6 +58,7 @@ void MainViewWidget::set_nix_file(const std::string &nix_file_path) {
     nix_proxy_model->setSourceModel(nix_model);
     tv->getTreeView()->setModel(nix_proxy_model);
     tv->getTreeView()->setSortingEnabled(true);
+    tv->set_columns();
     cv->set_proxy_model(nix_proxy_model);
     emit emit_model_update(nix_model);
     QObject::connect(tv->getTreeView(), SIGNAL(clicked(QModelIndex)), this, SLOT(emit_current_qml_worker_slot(QModelIndex)));
