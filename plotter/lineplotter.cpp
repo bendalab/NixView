@@ -35,23 +35,28 @@ void LinePlotter::set_label(const std::string &label) {
     //ui->label->setText(QString::fromStdString(label));
 }
 
+
 void LinePlotter::set_xlabel(const std::string &label) {
     set_xlabel(QString::fromStdString(label));
 }
+
 
 void LinePlotter::set_xlabel(const QString &label){
     ui->plot->xAxis->setLabel(label);
     ui->plot->replot();
 }
 
+
 void LinePlotter::set_ylabel(const std::string &label) {
     set_ylabel(QString::fromStdString(label));
 }
+
 
 void LinePlotter::set_ylabel(const QString &label){
     ui->plot->yAxis->setLabel(label);
     ui->plot->replot();
 }
+
 
 void LinePlotter::draw(const nix::DataArray &array) {
     if (array.dimensionCount() > 2) {
@@ -72,6 +77,7 @@ void LinePlotter::draw(const nix::DataArray &array) {
         draw_2d(array);
     }
 }
+
 
 void LinePlotter::draw_1d(const nix::DataArray &array) {
     nix::Dimension d = array.getDimension(1);
@@ -142,7 +148,7 @@ bool LinePlotter::check_dimensions(const nix::DataArray &array) const {
     if ((dt_1 == nix::DimensionType::Sample || dt_1 == nix::DimensionType::Range) && dt_2 == nix::DimensionType::Set) {
         return true;
     }
-    if (dt_1 == nix::DimensionType::Set && (dt_2 == nix::DimensionType::Range || dt_2 == nix::DimensionType::Range)) {
+    if (dt_1 == nix::DimensionType::Set && (dt_2 == nix::DimensionType::Range || dt_2 == nix::DimensionType::Sample)) {
         return true;
     }
     if (dt_1 == nix::DimensionType::Set && dt_2 == nix::DimensionType::Set) {
