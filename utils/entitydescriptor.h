@@ -43,6 +43,7 @@ private:
     std::string entity_name;
     std::vector<std::string> body;
     std::vector<std::string> footer;
+    static std::string value_to_str(const nix::Value &v, const nix::DataType &dtype);
 };
 
 #endif // ENTITYDESCRIPTOR_H

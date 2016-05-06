@@ -96,6 +96,38 @@ std::string EntityDescriptor::toHtml() {
 }
 
 
+std::string EntityDescriptor::value_to_str(const nix::Value &v, const nix::DataType &dtype) {
+    std::string val;
+    if(nix::data_type_is_numeric(dtype)) {
+        switch (dtype) {
+            case (nix::DataType::Double): {
+                double d = v.get<double>();
+                val = nix::util::numToStr(d);
+                break;
+            }
+            case (nix::DataType::Int64): {
+                int64_t i = v.get<int64_t>();
+                val = nix::util::numToStr(i);
+                break;
+            }
+            case (nix::DataType::Bool): {
+                bool b = v.get<bool>();
+                val = (b ? "True" : "False");
+            }
+            case (nix::DataType::UInt32): {
+                uint32_t i = v.get<uint32_t>();
+                val = nix::util::numToStr(i);
+            }
+            default:
+                val = "";
+        }
+    } else if (dtype == nix::DataType::String) {
+        v.get(val);
+    }
+    return val;
+}
+
+
 std::string EntityDescriptor::describe(const nix::DataArray &da) {
     EntityDescriptor desc(da.name(), da.type(), (da.definition() ? *da.definition() : "none"), da.id(),
                           nix::util::timeToStr(da.createdAt()), nix::util::timeToStr(da.updatedAt()));
@@ -237,7 +269,16 @@ std::string EntityDescriptor::describe(const nix::Source &s) {
 std::string EntityDescriptor::describe(const nix::Section &s) {
     EntityDescriptor desc(s.name(), s.type(), (s.definition() ? *s.definition() : "none"), s.id(),
                           nix::util::timeToStr(s.createdAt()), nix::util::timeToStr(s.updatedAt()));
-    desc.addInfo("Properties", nix::util::numToStr(s.propertyCount()));
+    std::vector<std::string> props;
+    for (nix::Property p : s.properties()) {
+        std::string val;
+        if (p.valueCount() > 0) {
+            nix::Value v  = p.values()[0];
+            val = value_to_str(v, p.dataType());
+            props.push_back(p.name() + ": " + (val.size() < 20 ? val : val.substr(20)));
+        }
+    }
+    desc.addItemize("Properties", props);
     return desc.toHtml();
 }
 
@@ -248,15 +289,7 @@ std::string EntityDescriptor::describe(const nix::Property &p) {
     desc.addInfo("Unit", (p.unit() ? *p.unit() : ""));
     std::vector<std::string> values;
     for (nix::Value v : p.values()) {
-        if(nix::data_type_is_numeric(p.dataType())) {
-            double d;
-            v.get(d);
-            values.push_back(nix::util::numToStr(d));
-        } else if (p.dataType() == nix::DataType::String) {
-            std::string s;
-            v.get(s);
-            values.push_back(s);
-        }
+        values.push_back(value_to_str(v, p.dataType()));
     }
     desc.addItemize("Values", values);
     return desc.toHtml();
