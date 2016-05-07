@@ -26,8 +26,9 @@ public:
     explicit NixTreeModelItem(const QVariant &data, NixTreeModelItem *parentItem = 0);
     ~NixTreeModelItem();
 
-    void appendChild(NixTreeModelItem *child);
+    static const QVector<QString> columns;
 
+    void appendChild(NixTreeModelItem *child);
     NixTreeModelItem *child(int row);
     int childCount() const;
     int columnCount() const;
@@ -45,7 +46,6 @@ private:
     NixTreeModelItem *parent_item;
     NixType nix_type;
     QVariant created_at, updated_at;
-    static const QVector<QString> columns;
 
     void checkDataType(const QVariant &data);
     QVariant getName() const;

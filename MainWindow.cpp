@@ -8,6 +8,7 @@
 #include "model/nixtreemodel.h"
 #include "model/nixtreemodelitem.h"
 #include "dialogs/tabledialog.hpp"
+#include "dialogs/optionsdialog.h"
 #include <QSettings>
 #include "utils/utils.hpp"
 
@@ -26,7 +27,6 @@ MainWindow::MainWindow(QWidget *parent, QApplication *app) : QMainWindow(parent)
     ui->statusBar->addPermanentWidget(file_progress, 10);
     file_progress->setVisible(false);
     QObject::connect(app, SIGNAL(invalid_file_error()), this, SLOT(invalid_file_error()));
-    ow = new OptionsWidget();
     ui->recent_file_list->setAttribute(Qt::WA_MacShowFocusRect, false);
     connect_widgets();
     get_recent_files();
@@ -39,9 +39,6 @@ void MainWindow::connect_widgets() {
     QObject::connect(ui->main_view, SIGNAL(emit_current_qml(QModelIndex)), this, SLOT(item_selected(QModelIndex)));
     QObject::connect(ui->main_view, SIGNAL(emit_model_update(NixTreeModel*)), this, SLOT(nix_model_update(NixTreeModel*)));
     QObject::connect(ui->main_view, SIGNAL(emit_current_qml(QModelIndex)), ui->info_view, SLOT(update_info_widget(QModelIndex)));
-    //QObject::connect(ow->tree_view_options, SIGNAL(emit_rtv_column_display_changed()), ui->main_view->get_rtv(), SLOT(hide_columns()));
-    QObject::connect(ow, SIGNAL(recent_file_update_signal(QStringList)), this, SLOT(recent_file_update(QStringList)));
-    QObject::connect(this, SIGNAL(emit_file_opened(QString)), this->ow, SLOT(file_opened(QString)));
     QObject::connect(ui->main_view, SIGNAL(scan_progress_update()), this, SLOT(file_scan_progress()));
     QObject::connect(ui->menu_open_recent, SIGNAL(triggered(QAction*)), this, SLOT(open_recent_file(QAction*)));
     QObject::connect(ui->actionFind, SIGNAL(triggered()), ui->main_view, SLOT(toggle_find()));
@@ -59,6 +56,7 @@ void MainWindow::get_recent_files() {
     nixview::util::remove_duplicates(recent_files);
     populate_recent_file_menu();
     settings->endGroup();
+    delete settings;
 }
 
 
@@ -75,11 +73,6 @@ void MainWindow::on_actionTree_triggered()
 void MainWindow::on_actionColumn_triggered()
 {
     emit emit_view_change(VIEW_COLUMN);
-}
-
-void MainWindow::on_actionProperties_triggered()
-{
-    ow->show();
 }
 
 
@@ -122,8 +115,16 @@ void MainWindow::show_table() {
     d.exec();
 }
 
-void MainWindow::file_scan_progress()
-{
+
+void MainWindow::show_options() {
+    OptionsDialog d(this);
+    QObject::connect(&d, SIGNAL(recent_file_changed(QStringList)), this, SLOT(recent_file_update(QStringList)));
+    QObject::connect(&d, SIGNAL(column_visibility_changed(QString,bool)), this, SLOT(visible_columns_update(QString,bool)));
+    d.exec();
+}
+
+
+void MainWindow::file_scan_progress() {
     file_progress->setValue(ui->main_view->get_scan_progress());
     QCoreApplication::processEvents();
 }
@@ -159,6 +160,7 @@ void MainWindow::close_file() {
     ui->actionTable->setEnabled(false);
 }
 
+
 void MainWindow::read_nix_file(QString filename) {
     std::string file_path = filename.toStdString();
     file_label->setText(file_path.c_str());
@@ -168,7 +170,31 @@ void MainWindow::read_nix_file(QString filename) {
     file_progress->setVisible(false);
     ui->stackedWidget->setCurrentIndex(0);
     ui->actionCloseFile->setEnabled(true);
-    emit this->emit_file_opened(filename);
+    update_file_list(filename);
+}
+
+
+void MainWindow::update_file_list(QString filename) {
+    QSettings *settings = new QSettings();
+    settings->beginGroup(RECENT_FILES_GROUP);
+    QStringList files;
+    QStringList keys = settings->childKeys();
+    for (QString k : keys) {
+        files.push_back(settings->value(k).toString());
+    }
+    if (files.size() > RECENT_FILES_MAX_COUNT) {
+        files.pop_back();
+    }
+    files.insert(0, filename);
+    nixview::util::remove_duplicates(files);
+    settings->remove("");
+    for (int i = 0; i < files.size(); i ++) {
+        QString key = QString::fromStdString(nix::util::numToStr(i));
+        settings->setValue(key, files[i]);
+    }
+    settings->endGroup();
+    settings->sync();
+    recent_file_update(files);
 }
 
 
@@ -192,6 +218,11 @@ void MainWindow::populate_recent_file_menu() {
 void MainWindow::recent_file_update(QStringList files) {
     this->recent_files = files;
     populate_recent_file_menu();
+}
+
+
+void MainWindow::visible_columns_update(QString column, bool state) {
+    ui->main_view->getTreeView()->set_column_state(column, state);
 }
 
 

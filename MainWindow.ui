@@ -686,6 +686,22 @@ color: rgb(150,150, 150);</string>
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>actionProperties</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>show_options()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>699</x>
+     <y>393</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>open_file()</slot>
@@ -693,5 +709,6 @@ color: rgb(150,150, 150);</string>
   <slot>show_plot()</slot>
   <slot>show_table()</slot>
   <slot>recent_file_selected(QListWidgetItem*)</slot>
+  <slot>show_options()</slot>
  </slots>
 </ui>

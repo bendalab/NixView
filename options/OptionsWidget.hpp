@@ -21,17 +21,13 @@ public:
     explicit OptionsWidget(QWidget *parent = 0);
     ~OptionsWidget();
 
-public slots:
-    void file_opened(QString filename);
-    void recent_file_update(QStringList files);
-
 signals:
-    void recent_file_update_signal(QStringList files);
+    void recent_file_update(QStringList files);
+    void column_state_changed(QString column, bool state);
 
 private:
     Ui::OptionsWidget *ui;
     QSettings *settings;
-    OptionsTabWidget *tw;
     TreeViewOptions *tree_view_options;
     RecentFileOptions *file_options;
 

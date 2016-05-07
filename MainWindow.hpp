@@ -8,7 +8,6 @@
 #include <QProgressBar>
 #include <nix.hpp>
 #include "views/MainViewWidget.hpp"
-#include "options/OptionsWidget.hpp"
 
 class QVariant;
 
@@ -28,7 +27,6 @@ public:
 public slots:
     void on_actionTree_triggered();
     void on_actionColumn_triggered();
-    void on_actionProperties_triggered();
     void nix_model_update(NixTreeModel *model);
     void item_selected(QModelIndex qml);
     void open_file();
@@ -36,6 +34,8 @@ public slots:
     void show_about();
     void show_plot();
     void show_table();
+    void show_options();
+    void visible_columns_update(QString column, bool state);
     void file_scan_progress();
     void invalid_file_error();
     void recent_file_update(QStringList files);
@@ -43,14 +43,12 @@ public slots:
 
 signals:
     void emit_view_change(int);
-    void emit_file_opened(QString filename);
 
 private slots:
     void recent_file_selected(QListWidgetItem*);
 
 private:
     Ui::MainWindow *ui;
-    OptionsWidget *ow;
     void connect_widgets();
     QModelIndex selected_qml;
     QLabel* file_label;
@@ -60,6 +58,7 @@ private:
     void get_recent_files();
     void populate_recent_file_menu();
     void read_nix_file(QString filename);
+    void update_file_list(QString filename);
 };
 
 #endif // MAINWINDOW_HPP

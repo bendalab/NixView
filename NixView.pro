@@ -53,7 +53,8 @@ SOURCES += main.cpp\
     utils/utils.cpp \
     model/nixtreemodelitem.cpp \
     model/nixtreemodel.cpp \
-    views/lazyloadview.cpp
+    views/lazyloadview.cpp \
+    dialogs/optionsdialog.cpp
 
 
 HEADERS  += MainWindow.hpp \
@@ -71,7 +72,7 @@ HEADERS  += MainWindow.hpp \
     model/nixarraytablemodel.h \
     model/NixDataModel.hpp \
     model/NixModelItem.hpp \
-    entitydescriptor.h \
+    utils/entitydescriptor.h \
     options/OptionsWidget.hpp \
     options/OptionsTabWidget.hpp \
     options/TreeViewOptions.hpp\
@@ -92,7 +93,8 @@ HEADERS  += MainWindow.hpp \
     utils/utils.hpp \
     model/nixtreemodelitem.h \
     model/nixtreemodel.h \
-    views/lazyloadview.h
+    views/lazyloadview.h \
+    dialogs/optionsdialog.h
 
 
 FORMS    += MainWindow.ui \
@@ -116,7 +118,8 @@ FORMS    += MainWindow.ui \
     views/MainViewWidget.ui \
     views/RawTreeView.ui \
     views/TagView.ui \
-    views/lazyloadview.ui
+    views/lazyloadview.ui \
+    dialogs/optionsdialog.ui
 
 #standard windows folder?
 #win32:CONFIG(release, debug|release): LIBS += /usr/local/lib/release/ -lnix
