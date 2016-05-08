@@ -31,6 +31,7 @@ public:
     ~MainViewWidget();
 
     void set_nix_file(const std::string &nix_file_path);
+    nix::File get_nix_file() const;
     ColumnView *get_cv();
     LazyLoadView* getTreeView();
     static NixTreeModel* get_current_model() {return CURRENT_MODEL; }
