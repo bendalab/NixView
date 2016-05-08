@@ -9,6 +9,7 @@
 #include "model/nixtreemodelitem.h"
 #include "dialogs/tabledialog.hpp"
 #include "dialogs/optionsdialog.h"
+#include "dialogs/filepropertiesdialog.hpp"
 #include <QSettings>
 #include "utils/utils.hpp"
 
@@ -26,6 +27,7 @@ MainWindow::MainWindow(QWidget *parent, QApplication *app) : QMainWindow(parent)
     ui->statusBar->addPermanentWidget(file_label, 1);
     ui->statusBar->addPermanentWidget(file_progress, 10);
     file_progress->setVisible(false);
+    ui->actionFile_properties->setEnabled(false);
     QObject::connect(app, SIGNAL(invalid_file_error()), this, SLOT(invalid_file_error()));
     ui->recent_file_list->setAttribute(Qt::WA_MacShowFocusRect, false);
     connect_widgets();
@@ -124,6 +126,14 @@ void MainWindow::show_options() {
 }
 
 
+void MainWindow::show_file_properties() {
+    FilePropertiesDialog d(this);
+    boost::filesystem::path p(file_label->text().toStdString());
+    d.set_file(ui->main_view->get_nix_file(), p);
+    d.exec();
+}
+
+
 void MainWindow::file_scan_progress() {
     file_progress->setValue(ui->main_view->get_scan_progress());
     QCoreApplication::processEvents();
@@ -158,6 +168,7 @@ void MainWindow::close_file() {
     ui->actionCloseFile->setEnabled(false);
     ui->actionPlot->setEnabled(false);
     ui->actionTable->setEnabled(false);
+    ui->actionFile_properties->setEnabled(false);
 }
 
 
@@ -170,6 +181,7 @@ void MainWindow::read_nix_file(QString filename) {
     file_progress->setVisible(false);
     ui->stackedWidget->setCurrentIndex(0);
     ui->actionCloseFile->setEnabled(true);
+    ui->actionFile_properties->setEnabled(true);
     update_file_list(filename);
 }
 

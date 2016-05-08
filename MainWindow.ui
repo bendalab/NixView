@@ -319,6 +319,9 @@ color: rgb(150,150, 150);</string>
     <addaction name="actionOpenFile"/>
     <addaction name="menu_open_recent"/>
     <addaction name="actionCloseFile"/>
+    <addaction name="separator"/>
+    <addaction name="actionFile_properties"/>
+    <addaction name="separator"/>
     <addaction name="actionQuit"/>
    </widget>
    <widget class="QMenu" name="menuOptions">
@@ -335,8 +338,11 @@ color: rgb(150,150, 150);</string>
     <addaction name="actionColumn"/>
    </widget>
    <widget class="QMenu" name="menuPlot">
+    <property name="toolTip">
+     <string>display data in different ways</string>
+    </property>
     <property name="title">
-     <string>Entity</string>
+     <string>Display</string>
     </property>
     <addaction name="actionPlot"/>
     <addaction name="actionTable"/>
@@ -427,7 +433,7 @@ color: rgb(150,150, 150);</string>
   </action>
   <action name="actionTree">
    <property name="text">
-    <string>&amp;Tree</string>
+    <string>&amp;tree</string>
    </property>
   </action>
   <action name="action_another_tree">
@@ -441,7 +447,7 @@ color: rgb(150,150, 150);</string>
      <normaloff>:/images/images/quit.png</normaloff>:/images/images/quit.png</iconset>
    </property>
    <property name="text">
-    <string>&amp;Quit</string>
+    <string>&amp;quit</string>
    </property>
    <property name="toolTip">
     <string>quit nix-view</string>
@@ -459,7 +465,7 @@ color: rgb(150,150, 150);</string>
      <normaloff>:/images/images/nix_plot.png</normaloff>:/images/images/nix_plot.png</iconset>
    </property>
    <property name="text">
-    <string>&amp;Plot</string>
+    <string>&amp;plot</string>
    </property>
    <property name="toolTip">
     <string>plot data</string>
@@ -474,7 +480,7 @@ color: rgb(150,150, 150);</string>
      <normaloff>:/images/images/nix_open.png</normaloff>:/images/images/nix_open.png</iconset>
    </property>
    <property name="text">
-    <string>openFile</string>
+    <string>open file</string>
    </property>
    <property name="toolTip">
     <string>open nix file</string>
@@ -492,7 +498,7 @@ color: rgb(150,150, 150);</string>
      <normaloff>:/images/images/nix_close.png</normaloff>:/images/images/nix_close.png</iconset>
    </property>
    <property name="text">
-    <string>closeFile</string>
+    <string>close file</string>
    </property>
    <property name="toolTip">
     <string>close nix file</string>
@@ -503,7 +509,7 @@ color: rgb(150,150, 150);</string>
   </action>
   <action name="actionAbout">
    <property name="text">
-    <string>About</string>
+    <string>about</string>
    </property>
    <property name="toolTip">
     <string>show about dialog</string>
@@ -514,12 +520,12 @@ color: rgb(150,150, 150);</string>
   </action>
   <action name="actionColumn">
    <property name="text">
-    <string>&amp;Column</string>
+    <string>&amp;column</string>
    </property>
   </action>
   <action name="actionProperties">
    <property name="text">
-    <string>&amp;Properties</string>
+    <string>&amp;properties</string>
    </property>
   </action>
   <action name="actionOpen">
@@ -536,7 +542,7 @@ color: rgb(150,150, 150);</string>
      <normaloff>:/images/images/nix_table.png</normaloff>:/images/images/nix_table.png</iconset>
    </property>
    <property name="text">
-    <string>&amp;Table</string>
+    <string>&amp;table</string>
    </property>
    <property name="toolTip">
     <string>display content in a table view</string>
@@ -568,6 +574,14 @@ color: rgb(150,150, 150);</string>
    </property>
    <property name="toolTip">
     <string>find in file</string>
+   </property>
+  </action>
+  <action name="actionFile_properties">
+   <property name="text">
+    <string>file properties</string>
+   </property>
+   <property name="toolTip">
+    <string>show file properties</string>
    </property>
   </action>
  </widget>
@@ -702,6 +716,22 @@ color: rgb(150,150, 150);</string>
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>actionFile_properties</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>show_file_properties()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>699</x>
+     <y>393</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>open_file()</slot>
@@ -710,5 +740,6 @@ color: rgb(150,150, 150);</string>
   <slot>show_table()</slot>
   <slot>recent_file_selected(QListWidgetItem*)</slot>
   <slot>show_options()</slot>
+  <slot>show_file_properties()</slot>
  </slots>
 </ui>
