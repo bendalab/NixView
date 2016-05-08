@@ -54,7 +54,8 @@ SOURCES += main.cpp\
     model/nixtreemodelitem.cpp \
     model/nixtreemodel.cpp \
     views/lazyloadview.cpp \
-    dialogs/optionsdialog.cpp
+    dialogs/optionsdialog.cpp \
+    dialogs/filepropertiesdialog.cpp
 
 
 HEADERS  += MainWindow.hpp \
@@ -94,7 +95,8 @@ HEADERS  += MainWindow.hpp \
     model/nixtreemodelitem.h \
     model/nixtreemodel.h \
     views/lazyloadview.h \
-    dialogs/optionsdialog.h
+    dialogs/optionsdialog.h \
+    dialogs/filepropertiesdialog.hpp
 
 
 FORMS    += MainWindow.ui \
@@ -119,7 +121,8 @@ FORMS    += MainWindow.ui \
     views/RawTreeView.ui \
     views/TagView.ui \
     views/lazyloadview.ui \
-    dialogs/optionsdialog.ui
+    dialogs/optionsdialog.ui \
+    dialogs/filepropertiesdialog.ui
 
 #standard windows folder?
 #win32:CONFIG(release, debug|release): LIBS += /usr/local/lib/release/ -lnix

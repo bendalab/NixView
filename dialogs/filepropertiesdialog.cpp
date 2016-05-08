@@ -12,3 +12,8 @@ FilePropertiesDialog::~FilePropertiesDialog()
 {
     delete ui;
 }
+
+
+void FilePropertiesDialog::set_file(const nix::File &file, const boost::filesystem::path &file_path) {
+
+}
