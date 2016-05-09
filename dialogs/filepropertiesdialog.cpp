@@ -1,6 +1,5 @@
 #include "filepropertiesdialog.hpp"
 #include "ui_filepropertiesdialog.h"
-#include <bitset>
 
 namespace bfs = boost::filesystem;
 
@@ -52,6 +51,7 @@ void FilePropertiesDialog::set_file(const nix::File &file, const bfs::path &file
     ui->section_count->setText(QVariant(section_count).toString());
 
     ui->file_path->setText(QString(file_path.c_str()));
+    ui->file_path->setToolTip(QString(file_path.c_str()));
     ui->file_size->setText(QString::fromStdString(nix::util::numToStr(boost::filesystem::file_size(file_path) / 1000000.) + " MB"));
 
     bfs::file_status status = boost::filesystem::status(file_path);
