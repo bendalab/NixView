@@ -107,6 +107,9 @@ LazyLoadView *MainViewWidget::getTreeView() {
     return tv;
 }
 
+nix::File MainViewWidget::get_nix_file() const {
+    return this->nix_file;
+}
 
 // slots
 void MainViewWidget::set_view(int index) {

@@ -35,6 +35,7 @@ public slots:
     void show_plot();
     void show_table();
     void show_options();
+    void show_file_properties();
     void visible_columns_update(QString column, bool state);
     void file_scan_progress();
     void invalid_file_error();
