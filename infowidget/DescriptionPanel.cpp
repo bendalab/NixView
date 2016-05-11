@@ -19,7 +19,6 @@ void DescriptionPanel::update_description_panel(QModelIndex qml) {
     }
     NixTreeModelItem *item = static_cast<NixTreeModelItem*>(qml.internalPointer());
     NixType type = item->nixType();
-
     switch (type) {
         case (NixType::NIX_BLOCK):
             update(item->itemData().value<nix::Block>());
@@ -41,6 +40,7 @@ void DescriptionPanel::update_description_panel(QModelIndex qml) {
             break;
         case (NixType::NIX_SECTION):
             update(item->itemData().value<nix::Section>());
+            break;
         case (NixType::NIX_FEAT):
             update(item->itemData().value<nix::Feature>());
             break;
