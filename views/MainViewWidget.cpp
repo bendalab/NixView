@@ -92,20 +92,15 @@ void MainViewWidget::populate_data_stacked_widget() {
 }
 
 
-/*
-RawTreeView* MainViewWidget::get_rtv() {
-    return rtv;
-}
-*/
-
-
 ColumnView* MainViewWidget::get_cv() {
     return cv;
 }
 
+
 LazyLoadView *MainViewWidget::getTreeView() {
     return tv;
 }
+
 
 nix::File MainViewWidget::get_nix_file() const {
     return this->nix_file;
