@@ -87,6 +87,20 @@
        </property>
       </spacer>
      </item>
+     <item>
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>max. files</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QSpinBox" name="spinBox">
+       <property name="value">
+        <number>5</number>
+       </property>
+      </widget>
+     </item>
     </layout>
    </item>
    <item row="0" column="0">
@@ -96,4 +110,7 @@
  </widget>
  <resources/>
  <connections/>
+ <slots>
+  <slot>file_count_update()</slot>
+ </slots>
 </ui>

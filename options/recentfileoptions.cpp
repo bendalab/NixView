@@ -17,6 +17,9 @@ RecentFileOptions::RecentFileOptions(QWidget *parent) :
     QObject::connect(ui->down_button, SIGNAL(clicked()), this, SLOT(move_item_down()));
     QObject::connect(ui->up_button, SIGNAL(clicked()), this, SLOT(move_item_up()));
     QObject::connect(ui->delete_button, SIGNAL(clicked()), this, SLOT(delete_item()));
+    QObject::connect(ui->spinBox, SIGNAL(editingFinished()), this, SLOT(file_count_update()));
+    QObject::connect(ui->spinBox, SIGNAL(valueChanged(int)), this, SLOT(file_count_update()));
+
     load_settings();
 }
 
@@ -30,6 +33,9 @@ RecentFileOptions::~RecentFileOptions()
 void RecentFileOptions::load_settings() {
     QSettings *settings = new QSettings();
     settings->beginGroup(RECENT_FILES_GROUP);
+    int count = settings->value(RECENT_FILES_COUNT, 5).toInt();
+    ui->spinBox->setValue(count);
+    settings->beginGroup(RECENT_FILES_LIST);
     ui->file_list->clear();
     recent_files.clear();
     QStringList keys = settings->childKeys();
@@ -39,6 +45,8 @@ void RecentFileOptions::load_settings() {
     fill_list();
     emit recent_files_update(recent_files);
     settings->endGroup();
+    settings->endGroup();
+    delete settings;
 }
 
 
@@ -92,5 +100,20 @@ void RecentFileOptions::delete_item() {
     int index = ui->file_list->currentRow();
     recent_files.removeAt(index);
     fill_list();
+    emit recent_files_update(recent_files);
+}
+
+
+void RecentFileOptions::file_count_update() {
+    while(ui->spinBox->value() < recent_files.size()) {
+        recent_files.removeLast();
+    }
+    fill_list();
+    QSettings *settings = new QSettings();
+    settings->beginGroup(RECENT_FILES_GROUP);
+    settings->setValue(RECENT_FILES_COUNT, ui->spinBox->value());
+    settings->endGroup();
+    settings->sync();
+    delete settings;
     emit recent_files_update(recent_files);
 }

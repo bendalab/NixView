@@ -26,6 +26,7 @@ public slots:
     void move_item_up();
     void move_item_down();
     void delete_item();
+    void file_count_update();
 
 private:
     Ui::RecentFileOptions *ui;
