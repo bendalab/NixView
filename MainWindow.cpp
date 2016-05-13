@@ -50,6 +50,7 @@ void MainWindow::connect_widgets() {
 void MainWindow::get_recent_files() {
     QSettings *settings = new QSettings();
     settings->beginGroup(RECENT_FILES_GROUP);
+    settings->beginGroup(RECENT_FILES_LIST);
     QStringList keys = settings->childKeys();
     recent_files.clear();
     for (QString k: keys) {
@@ -57,6 +58,7 @@ void MainWindow::get_recent_files() {
     }
     nixview::util::remove_duplicates(recent_files);
     populate_recent_file_menu();
+    settings->endGroup();
     settings->endGroup();
     delete settings;
 }
@@ -189,24 +191,40 @@ void MainWindow::read_nix_file(QString filename) {
 void MainWindow::update_file_list(QString filename) {
     QSettings *settings = new QSettings();
     settings->beginGroup(RECENT_FILES_GROUP);
+    settings->beginGroup(RECENT_FILES_LIST);
     QStringList files;
     QStringList keys = settings->childKeys();
     for (QString k : keys) {
         files.push_back(settings->value(k).toString());
     }
-    if (files.size() > RECENT_FILES_MAX_COUNT) {
-        files.pop_back();
-    }
     files.insert(0, filename);
+    settings->endGroup();
+    settings->endGroup();
+    delete settings;
+    recent_file_update(files);
+}
+
+
+void MainWindow::save_recent_files(QStringList &files) {
     nixview::util::remove_duplicates(files);
+    QSettings *settings = new QSettings;
+    settings->beginGroup(RECENT_FILES_GROUP);
+    int max_count = settings->value(RECENT_FILES_COUNT, 5).toInt();
+    settings->beginGroup(RECENT_FILES_LIST);
     settings->remove("");
     for (int i = 0; i < files.size(); i ++) {
+        if (i >= max_count) {
+            break;
+        }
         QString key = QString::fromStdString(nix::util::numToStr(i));
         settings->setValue(key, files[i]);
     }
+    while(files.size() > max_count) {
+        files.removeLast();
+    }
     settings->endGroup();
-    settings->sync();
-    recent_file_update(files);
+    settings->endGroup();
+    delete settings;
 }
 
 
@@ -228,6 +246,7 @@ void MainWindow::populate_recent_file_menu() {
 
 
 void MainWindow::recent_file_update(QStringList files) {
+    save_recent_files(files);
     this->recent_files = files;
     populate_recent_file_menu();
 }
