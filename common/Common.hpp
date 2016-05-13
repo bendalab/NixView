@@ -68,4 +68,5 @@ Q_DECLARE_METATYPE(nix::Dimension)
 #define S_COLUMNSHIDDEN "columnshidden"
 
 #define RECENT_FILES_GROUP "recent_files"
-#define RECENT_FILES_MAX_COUNT 5
+#define RECENT_FILES_LIST "recent_files_list"
+#define RECENT_FILES_COUNT "recent_files_count"
