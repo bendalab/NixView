@@ -25,8 +25,6 @@ public:
     explicit InfoWidget(QWidget *parent =0);
     ~InfoWidget();
 
-    void setDataModel(NixTreeModel *_nix_model);
-
 public slots:
     void update_info_widget(QModelIndex qml);
 
