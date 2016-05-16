@@ -41,10 +41,36 @@ void MetaDataPanel::update_metadata_panel(QModelIndex qml) {
                 model->setEntity(metadata);
             }
             ui->treeView->setModel(model);
+            set_columns();
         }
     }
     else
         clear_metadata_panel();
+}
+
+void MetaDataPanel::set_columns() {
+    QSettings *settings = new QSettings;
+    settings->beginGroup(METADATA_TREE_VIEW);
+    for (QString s : NixTreeModelItem::columns) {
+        set_column_state(s, settings->value(s, QVariant(true)).toBool());
+    }
+    settings->endGroup();
+    delete settings;
+}
+
+
+void MetaDataPanel::set_column_state(QString column, bool visible) {
+    NixMetadataTreeModel * model = static_cast<NixMetadataTreeModel*>(ui->treeView->model());
+    if (model == nullptr)
+        return;
+    for (int i = 0; i < model->columnCount(); i++) {
+        if (model->headerData(i, Qt::Horizontal).toString() == column) {
+           ui->treeView->setColumnHidden(i, !visible);
+        }
+    }
+    for (int i = 0; i < model->columnCount(); i++) {
+        ui->treeView->resizeColumnToContents(i);
+    }
 }
 
 
@@ -60,7 +86,7 @@ void MetaDataPanel::resize_to_content(QModelIndex) {
 }
 
 //getter
-const QTreeView* MetaDataPanel::get_tree_view() {
+QTreeView* MetaDataPanel::get_tree_view() {
     return ui->treeView;
 }
 
