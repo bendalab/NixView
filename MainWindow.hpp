@@ -34,7 +34,7 @@ public slots:
     void show_table();
     void show_options();
     void show_file_properties();
-    void visible_columns_update(QString column, bool state);
+    void visible_columns_update(QString who, QString column, bool state);
     void file_scan_progress();
     void invalid_file_error();
     void recent_file_update(QStringList files);

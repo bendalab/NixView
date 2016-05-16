@@ -115,7 +115,7 @@ void MainWindow::show_table() {
 void MainWindow::show_options() {
     OptionsDialog d(this);
     QObject::connect(&d, SIGNAL(recent_file_changed(QStringList)), this, SLOT(recent_file_update(QStringList)));
-    QObject::connect(&d, SIGNAL(column_visibility_changed(QString,bool)), this, SLOT(visible_columns_update(QString,bool)));
+    QObject::connect(&d, SIGNAL(column_visibility_changed(QString, QString,bool)), this, SLOT(visible_columns_update(QString, QString,bool)));
     d.exec();
 }
 
@@ -244,8 +244,12 @@ void MainWindow::recent_file_update(QStringList files) {
 }
 
 
-void MainWindow::visible_columns_update(QString column, bool state) {
-    ui->main_view->getTreeView()->set_column_state(column, state);
+void MainWindow::visible_columns_update(QString who, QString column, bool state) {
+    if (who == MAIN_TREE_VIEW) {
+        ui->main_view->getTreeView()->set_column_state(column, state);
+    } else if (who == METADATA_TREE_VIEW) {
+        ui->info_view->metadata_column_state_change(column, state);
+    }
 }
 
 
