@@ -4,7 +4,7 @@
 
 
 const QVector<QString> NixTreeModelItem::columns = {MODEL_HEADER_NAME, MODEL_HEADER_NIXTYPE, MODEL_HEADER_STORAGETYPE,
-                                                    MODEL_HEADER_DATATYPE, MODEL_HEADER_ID,
+                                                    MODEL_HEADER_DATATYPE, MODEL_HEADER_ID, MODEL_HEADER_VALUE,
                                                     MODEL_HEADER_CREATEDAT, MODEL_HEADER_UPDATEDAT};
 
 NixTreeModelItem::NixTreeModelItem(const QVariant &data, NixTreeModelItem *parent) {
@@ -85,8 +85,10 @@ QVariant NixTreeModelItem::data(int column) const {
             case 4:
                 return getId();
             case 5:
-                return created_at;
+                return getValue();
             case 6:
+                return created_at;
+            case 7:
                 return updated_at;
             default:
                 return QVariant();
@@ -259,6 +261,30 @@ QVariant NixTreeModelItem::getId() const {
         default:
             return QVariant();
     }
+}
+
+
+QVariant NixTreeModelItem::getValue() const {
+    switch (nix_type) {
+        case NixType::NIX_PROPERTY: {
+            nix::Property p = item_data.value<nix::Property>();
+            std::string vals;
+            if (p.valueCount() > 1) {
+                vals = "[ ";
+            }
+            for (nix::Value v : p.values()) {
+                vals = vals + EntityDescriptor::value_to_str(v, p.dataType());
+            }
+            if (p.valueCount() > 1) {
+                vals = vals + "]";
+            }
+            return QVariant(vals.c_str());
+        }
+        default:
+            return QVariant();
+    }
+
+    return QVariant();
 }
 
 
