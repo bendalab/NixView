@@ -2,6 +2,7 @@
 #include "ui_OptionsWidget.h"
 #include <QProxyStyle>
 #include "infowidget/DescriptionPanel.hpp"
+#include "common/Common.hpp"
 
 class HorizontalTabBarStyle : public QProxyStyle
 {
@@ -35,13 +36,16 @@ public:
 OptionsWidget::OptionsWidget(QWidget *parent) :
     QWidget(parent), ui(new Ui::OptionsWidget) {
     ui->setupUi(this);
-    setWindowTitle("Properties");
+    setWindowTitle("Settings");
     QTabWidget *view_tab_widget = new QTabWidget();
-    tree_view_options = new TreeViewOptions();
+    tree_view_options = new TreeViewOptions(MAIN_TREE_VIEW);
+    metadata_view_options = new TreeViewOptions(METADATA_TREE_VIEW);
     file_options = new RecentFileOptions();
     QObject::connect(file_options, SIGNAL(recent_files_update(QStringList)), this, SIGNAL(recent_file_update(QStringList)));
-    QObject::connect(tree_view_options, SIGNAL(column_change(QString,bool)), this, SIGNAL(column_state_changed(QString,bool)));
+    QObject::connect(tree_view_options, SIGNAL(column_change(QString, QString, bool)), this, SIGNAL(column_state_changed(QString, QString, bool)));
+    QObject::connect(metadata_view_options, SIGNAL(column_change(QString, QString, bool)), this, SIGNAL(column_state_changed(QString, QString, bool)));
     view_tab_widget->addTab(tree_view_options, "TreeView");
+    view_tab_widget->addTab(metadata_view_options, "Metadata Tree");
     view_tab_widget->addTab(file_options, "Recent files");
     ui->verticalLayout->addWidget(view_tab_widget);
 }

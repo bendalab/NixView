@@ -23,12 +23,12 @@ public:
 
 signals:
     void recent_file_update(QStringList files);
-    void column_state_changed(QString column, bool state);
+    void column_state_changed(QString who, QString column, bool state);
 
 private:
     Ui::OptionsWidget *ui;
     QSettings *settings;
-    TreeViewOptions *tree_view_options;
+    TreeViewOptions *tree_view_options, *metadata_view_options;
     RecentFileOptions *file_options;
 
 friend class MainWindow;
