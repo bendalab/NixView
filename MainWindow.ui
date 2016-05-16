@@ -322,13 +322,9 @@ color: rgb(150,150, 150);</string>
     <addaction name="separator"/>
     <addaction name="actionFile_properties"/>
     <addaction name="separator"/>
+    <addaction name="actionPreferences"/>
+    <addaction name="separator"/>
     <addaction name="actionQuit"/>
-   </widget>
-   <widget class="QMenu" name="menuOptions">
-    <property name="title">
-     <string>&amp;Options</string>
-    </property>
-    <addaction name="actionProperties"/>
    </widget>
    <widget class="QMenu" name="menuView">
     <property name="title">
@@ -355,7 +351,6 @@ color: rgb(150,150, 150);</string>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuView"/>
-   <addaction name="menuOptions"/>
    <addaction name="menuPlot"/>
    <addaction name="menuHelp"/>
   </widget>
@@ -584,6 +579,11 @@ color: rgb(150,150, 150);</string>
     <string>show file properties</string>
    </property>
   </action>
+  <action name="actionPreferences">
+   <property name="text">
+    <string>preferences</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
@@ -701,10 +701,10 @@ color: rgb(150,150, 150);</string>
    </hints>
   </connection>
   <connection>
-   <sender>actionProperties</sender>
+   <sender>actionFile_properties</sender>
    <signal>triggered()</signal>
    <receiver>MainWindow</receiver>
-   <slot>show_options()</slot>
+   <slot>show_file_properties()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>-1</x>
@@ -717,10 +717,10 @@ color: rgb(150,150, 150);</string>
    </hints>
   </connection>
   <connection>
-   <sender>actionFile_properties</sender>
+   <sender>actionPreferences</sender>
    <signal>triggered()</signal>
    <receiver>MainWindow</receiver>
-   <slot>show_file_properties()</slot>
+   <slot>show_options()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>-1</x>
