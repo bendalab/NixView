@@ -27,6 +27,7 @@ public:
 
 public slots:
     void update_info_widget(QModelIndex qml);
+    void metadata_column_state_change(QString column, bool visible);
 
 private:
     Ui::InfoWidget *ui;

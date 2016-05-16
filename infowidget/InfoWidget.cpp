@@ -35,6 +35,11 @@ void InfoWidget::update_info_widget(QModelIndex qml) {
 }
 
 
+void InfoWidget::metadata_column_state_change(QString column, bool visible){
+    mp->set_column_state(column, visible);
+}
+
+
 void InfoWidget::connect_widgets() {
 //    QObject::connect(mp->get_tree_widget(), SIGNAL(expanded(QModelIndex)), mp, SLOT(resize_to_content(QModelIndex)));
 //    QObject::connect(mp->get_tree_widget(), SIGNAL(collapsed(QModelIndex)), mp, SLOT(resize_to_content(QModelIndex)));
