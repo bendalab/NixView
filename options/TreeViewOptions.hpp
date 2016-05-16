@@ -14,17 +14,17 @@ class TreeViewOptions : public QWidget
     Q_OBJECT
 
 public:
-    explicit TreeViewOptions(QWidget *parent = 0);
+    explicit TreeViewOptions(QString role, QWidget *parent = 0);
     ~TreeViewOptions();
 
 public slots:
     void column_state_changed();
 
 signals:
-    void column_change(QString column, bool state);
-    void emit_rtv_column_display_changed();
+    void column_change(QString role, QString column, bool state);
 
 private:
+    QString role;
     Ui::TreeViewOptions *ui;
     QSettings *settings;
     QMap<QCheckBox*, bool> boxes;
