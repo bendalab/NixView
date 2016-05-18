@@ -28,7 +28,7 @@ InfoWidget::InfoWidget(QWidget *parent) :
 
 
 void InfoWidget::update_info_widget(QModelIndex qml) {
-    mp->update_metadata_panel(qml);
+    mp->updateMetadataPanel(qml);
     tp->update_tag_panel(qml);
     dp->update_description_panel(qml);
     //tv->setEntity(qml);
@@ -36,7 +36,7 @@ void InfoWidget::update_info_widget(QModelIndex qml) {
 
 
 void InfoWidget::metadata_column_state_change(QString column, bool visible){
-    mp->set_column_state(column, visible);
+    mp->setColumnState(column, visible);
 }
 
 

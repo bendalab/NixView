@@ -12,7 +12,7 @@ LazyLoadView::LazyLoadView(QWidget *parent) :
     ui(new Ui::LazyLoadView)
 {
     ui->setupUi(this);
-    QObject::connect(ui->treeView, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(context_menu_requested(QPoint)));
+    QObject::connect(ui->treeView, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(contextMenuRequest(QPoint)));
 }
 
 LazyLoadView::~LazyLoadView() {
@@ -25,18 +25,18 @@ QTreeView* LazyLoadView::getTreeView() {
 }
 
 
-void LazyLoadView::set_columns() {
+void LazyLoadView::setColumns() {
     QSettings *settings = new QSettings;
     settings->beginGroup(MAIN_TREE_VIEW);
     for (QString s : NixTreeModelItem::columns) {
-        set_column_state(s, settings->value(s, QVariant(true)).toBool());
+        setColumnState(s, settings->value(s, QVariant(true)).toBool());
     }
     settings->endGroup();
     delete settings;
 }
 
 
-void LazyLoadView::set_column_state(QString column, bool visible) {
+void LazyLoadView::setColumnState(QString column, bool visible) {
     NixTreeModel *model = static_cast<NixTreeModel*>(ui->treeView->model());
     if (model == nullptr)
         return;
@@ -59,11 +59,9 @@ void LazyLoadView::expandAll() {
 }
 
 
-void LazyLoadView::context_menu_requested(QPoint pos) {
+void LazyLoadView::contextMenuRequest(QPoint pos) {
     QMenu *menu = new QMenu(this);
     menu->addAction("collapse all", ui->treeView, SLOT(collapseAll()));
     menu->addAction("expand all", this, SLOT(expandAll()));
-    //menu->addAction("collapse all", this);
-    //menu->addAction("expand all", this);
     menu->exec(ui->treeView->mapToGlobal(pos));
 }
