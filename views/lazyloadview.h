@@ -22,9 +22,12 @@ public:
 
 public slots:
     void set_column_state(QString column, bool visible);
+    void context_menu_requested(QPoint pos);
+    void expandAll();
 
 private:
     Ui::LazyLoadView *ui;
+
 };
 
 #endif // LAZYLOADVIEW_H

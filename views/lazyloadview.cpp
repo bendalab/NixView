@@ -4,6 +4,7 @@
 #include <QSettings>
 #include "common/Common.hpp"
 #include <iostream>
+#include <QMenu>
 
 
 LazyLoadView::LazyLoadView(QWidget *parent) :
@@ -11,6 +12,7 @@ LazyLoadView::LazyLoadView(QWidget *parent) :
     ui(new Ui::LazyLoadView)
 {
     ui->setupUi(this);
+    QObject::connect(ui->treeView, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(context_menu_requested(QPoint)));
 }
 
 LazyLoadView::~LazyLoadView() {
@@ -46,4 +48,22 @@ void LazyLoadView::set_column_state(QString column, bool visible) {
     for (int i = 0; i < model->columnCount(); i++) {
         ui->treeView->resizeColumnToContents(i);
     }
+}
+
+
+void LazyLoadView::expandAll() {
+    this->setCursor(Qt::WaitCursor);
+    QApplication::processEvents();
+    ui->treeView->expandAll();
+    this->setCursor(Qt::ArrowCursor);
+}
+
+
+void LazyLoadView::context_menu_requested(QPoint pos) {
+    QMenu *menu = new QMenu(this);
+    menu->addAction("collapse all", ui->treeView, SLOT(collapseAll()));
+    menu->addAction("expand all", this, SLOT(expandAll()));
+    //menu->addAction("collapse all", this);
+    //menu->addAction("expand all", this);
+    menu->exec(ui->treeView->mapToGlobal(pos));
 }
