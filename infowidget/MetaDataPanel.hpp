@@ -24,6 +24,7 @@ public:
 public slots:
     void resize_to_content(QModelIndex);
     void set_column_state(QString column, bool visible);
+    void contextMenuRequest(QPoint pos);
 
 public:
     QTreeView* get_tree_view();

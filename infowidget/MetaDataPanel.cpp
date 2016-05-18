@@ -4,12 +4,14 @@
 #include "model/nixtreemodelitem.h"
 #include "model/nixmetadatatreemodel.h"
 #include <ostream>
+#include <QMenu>
 
 MetaDataPanel::MetaDataPanel(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::MetaDataPanel)
 {
     ui->setupUi(this);
+    QObject::connect(ui->treeView, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(contextMenuRequest(QPoint)));
 }
 
 
@@ -71,6 +73,13 @@ void MetaDataPanel::set_column_state(QString column, bool visible) {
     for (int i = 0; i < model->columnCount(); i++) {
         ui->treeView->resizeColumnToContents(i);
     }
+}
+
+void MetaDataPanel::contextMenuRequest(QPoint pos) {
+    QMenu *menu = new QMenu(this);
+    menu->addAction("collapse all", ui->treeView, SLOT(collapseAll()));
+    menu->addAction("expand all", ui->treeView, SLOT(expandAll()));
+    menu->exec(ui->treeView->mapToGlobal(pos));
 }
 
 
