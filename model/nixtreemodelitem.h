@@ -49,14 +49,7 @@ private:
     QVariant created_at, updated_at, name, dtype, id, store_type, type, value;
 
     void setData(const QVariant &data);
-    void checkDataType(const QVariant &data);
-    QVariant getName() const;
-    QVariant getType() const;
-    QVariant getId() const;
     QVariant getValue(const nix::Property &p);
-    QVariant getStoreType() const;
-    QVariant getDtype() const;
-    void getDates();
 };
 
 #endif // NIXTREEMODELITEM_H
