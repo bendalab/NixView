@@ -51,6 +51,7 @@ private:
     QVariant getName() const;
     QVariant getType() const;
     QVariant getId() const;
+    QVariant getValue() const;
     QVariant getStoreType() const;
     QVariant getDtype() const;
     void getDates();

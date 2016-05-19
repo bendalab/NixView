@@ -36,14 +36,12 @@ public:
     static std::string describe(const nix::Source &s);
     static std::string describe(const nix::Section &s);
     static std::string describe(const nix::Property &p);
-
-
+    static std::string value_to_str(const nix::Value &v, const nix::DataType &dtype);
 
 private:
     std::string entity_name;
     std::vector<std::string> body;
     std::vector<std::string> footer;
-    static std::string value_to_str(const nix::Value &v, const nix::DataType &dtype);
 };
 
 #endif // ENTITYDESCRIPTOR_H

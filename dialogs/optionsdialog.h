@@ -19,7 +19,7 @@ public slots:
     void file_opened(QString filename);
 
 signals:
-    void column_visibility_changed(QString column, bool state);
+    void column_visibility_changed(QString who, QString column, bool state);
     void recent_file_changed(QStringList);
 
 private:

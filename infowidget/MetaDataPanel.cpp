@@ -2,6 +2,7 @@
 #include "ui_MetaDataPanel.h"
 #include "common/Common.hpp"
 #include "model/nixtreemodelitem.h"
+#include "model/nixmetadatatreemodel.h"
 #include <ostream>
 
 MetaDataPanel::MetaDataPanel(QWidget *parent) :
@@ -17,7 +18,7 @@ void MetaDataPanel::setDataModel(NixTreeModel *_nix_model) {
     proxy_model->setSourceModel(_nix_model);
     ui->treeView->setModel(proxy_model);
     std::vector<int> hidden_columns = {2,3,4,5,6,7,10};
-    for(int c : hidden_columns)
+    for (int c : hidden_columns)
         ui->treeView->setColumnHidden(c, true);
     set_proxy_model();
 }
@@ -31,20 +32,45 @@ void MetaDataPanel::set_proxy_model() {
 
 
 void MetaDataPanel::update_metadata_panel(QModelIndex qml) {
-    if(qml.isValid()) {
+    if (qml.isValid()) {
         NixTreeModelItem *item = static_cast<NixTreeModelItem*>(qml.internalPointer());
-        /*
-        nix::Section metadata = item->get_entity_metadata();
-        if(metadata) {
-            proxy_model->set_block_mode(false);
-            proxy_model->set_fine_filter(QString::fromStdString(metadata.id()));
-            ui->treeView->expandAll();
-        } else
-            clear_metadata_panel();
-        */
+        if (item->nixType() == NixType::NIX_SECTION) {
+            nix::Section metadata = item->itemData().value<nix::Section>();
+            NixMetadataTreeModel *model = new NixMetadataTreeModel();
+            if (metadata) {
+                model->setEntity(metadata);
+            }
+            ui->treeView->setModel(model);
+            set_columns();
+        }
     }
     else
         clear_metadata_panel();
+}
+
+void MetaDataPanel::set_columns() {
+    QSettings *settings = new QSettings;
+    settings->beginGroup(METADATA_TREE_VIEW);
+    for (QString s : NixTreeModelItem::columns) {
+        set_column_state(s, settings->value(s, QVariant(true)).toBool());
+    }
+    settings->endGroup();
+    delete settings;
+}
+
+
+void MetaDataPanel::set_column_state(QString column, bool visible) {
+    NixMetadataTreeModel * model = static_cast<NixMetadataTreeModel*>(ui->treeView->model());
+    if (model == nullptr)
+        return;
+    for (int i = 0; i < model->columnCount(); i++) {
+        if (model->headerData(i, Qt::Horizontal).toString() == column) {
+           ui->treeView->setColumnHidden(i, !visible);
+        }
+    }
+    for (int i = 0; i < model->columnCount(); i++) {
+        ui->treeView->resizeColumnToContents(i);
+    }
 }
 
 
@@ -60,7 +86,7 @@ void MetaDataPanel::resize_to_content(QModelIndex) {
 }
 
 //getter
-const QTreeView* MetaDataPanel::get_tree_view() {
+QTreeView* MetaDataPanel::get_tree_view() {
     return ui->treeView;
 }
 

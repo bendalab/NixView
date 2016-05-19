@@ -5,13 +5,14 @@
 #include "model/nixtreemodelitem.h"
 
 
-TreeViewOptions::TreeViewOptions(QWidget *parent) :
+TreeViewOptions::TreeViewOptions(QString role, QWidget *parent) :
     QWidget(parent),
     ui(new Ui::TreeViewOptions)
 {
+    this->role = role;
     ui->setupUi(this);
     this->settings = new QSettings;
-    settings->beginGroup("TreeColumns");
+    settings->beginGroup(this->role);
     create_checkboxes();
 }
 
@@ -35,7 +36,7 @@ void TreeViewOptions::column_state_changed() {
         if (b->isChecked() != boxes.value(b)) {
            boxes[b] = b->isChecked();
            settings->setValue(b->text(), QVariant(b->isChecked()));
-           emit column_change(b->text(), b->isChecked());
+           emit column_change(this->role, b->text(), b->isChecked());
         }
     }
 }

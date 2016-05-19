@@ -6,9 +6,7 @@
 #include <QDebug>
 
 InfoWidget::InfoWidget(QWidget *parent) :
-    QWidget(parent),
-    ui(new Ui::InfoWidget)
-{
+    QWidget(parent), ui(new Ui::InfoWidget) {
     ui->setupUi(this);
 
     mp = new MetaDataPanel(this);
@@ -29,20 +27,20 @@ InfoWidget::InfoWidget(QWidget *parent) :
 }
 
 
-void InfoWidget::setDataModel(NixTreeModel *_nix_model) {
-    mp->setDataModel(_nix_model);
-}
-
-void InfoWidget::update_info_widget(QModelIndex qml)
-{
+void InfoWidget::update_info_widget(QModelIndex qml) {
     mp->update_metadata_panel(qml);
     tp->update_tag_panel(qml);
     dp->update_description_panel(qml);
     //tv->setEntity(qml);
 }
 
-void InfoWidget::connect_widgets()
-{
+
+void InfoWidget::metadata_column_state_change(QString column, bool visible){
+    mp->set_column_state(column, visible);
+}
+
+
+void InfoWidget::connect_widgets() {
 //    QObject::connect(mp->get_tree_widget(), SIGNAL(expanded(QModelIndex)), mp, SLOT(resize_to_content(QModelIndex)));
 //    QObject::connect(mp->get_tree_widget(), SIGNAL(collapsed(QModelIndex)), mp, SLOT(resize_to_content(QModelIndex)));
     QObject::connect(tp->get_tag_table(), SIGNAL(currentCellChanged(int,int,int,int)), tp, SLOT(tag_item_requested(int, int, int, int)));
@@ -55,14 +53,13 @@ void InfoWidget::connect_widgets()
                      tp, SLOT(tag_item_requested(int,int,int,int)));
 }
 
-// getter
-const MetaDataPanel* InfoWidget::get_metadata_panel()
-{
+
+const MetaDataPanel* InfoWidget::get_metadata_panel() {
     return mp;
 }
 
-InfoWidget::~InfoWidget()
-{
+
+InfoWidget::~InfoWidget() {
     delete ui;
 }
 

@@ -6,8 +6,8 @@ OptionsDialog::OptionsDialog(QWidget *parent) :
     ui(new Ui::OptionsDialog)
 {
     ui->setupUi(this);
-    QObject::connect(ui->widget, SIGNAL(column_state_changed(QString,bool)),
-                     this, SIGNAL(column_visibility_changed(QString,bool)));
+    QObject::connect(ui->widget, SIGNAL(column_state_changed(QString, QString,bool)),
+                     this, SIGNAL(column_visibility_changed(QString, QString,bool)));
     QObject::connect(ui->widget, SIGNAL(recent_file_update(QStringList)),
                      this, SIGNAL(recent_file_changed(QStringList)));
 }

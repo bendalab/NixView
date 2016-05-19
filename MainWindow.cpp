@@ -39,7 +39,6 @@ void MainWindow::connect_widgets() {
     QObject::connect(ui->actionCloseFile, SIGNAL(triggered()), this, SLOT(close_file()));
     QObject::connect(this, SIGNAL(emit_view_change(int)), ui->main_view, SLOT(set_view(int)));
     QObject::connect(ui->main_view, SIGNAL(emit_current_qml(QModelIndex)), this, SLOT(item_selected(QModelIndex)));
-    QObject::connect(ui->main_view, SIGNAL(emit_model_update(NixTreeModel*)), this, SLOT(nix_model_update(NixTreeModel*)));
     QObject::connect(ui->main_view, SIGNAL(emit_current_qml(QModelIndex)), ui->info_view, SLOT(update_info_widget(QModelIndex)));
     QObject::connect(ui->main_view, SIGNAL(scan_progress_update()), this, SLOT(file_scan_progress()));
     QObject::connect(ui->menu_open_recent, SIGNAL(triggered(QAction*)), this, SLOT(open_recent_file(QAction*)));
@@ -69,19 +68,12 @@ MainWindow::~MainWindow() {
 }
 
 // slots
-void MainWindow::on_actionTree_triggered()
-{
+void MainWindow::on_actionTree_triggered() {
     emit emit_view_change(VIEW_TREE);
 }
 
-void MainWindow::on_actionColumn_triggered()
-{
+void MainWindow::on_actionColumn_triggered() {
     emit emit_view_change(VIEW_COLUMN);
-}
-
-
-void MainWindow::nix_model_update(NixTreeModel *model) {
-    ui->info_view->setDataModel(model);
 }
 
 
@@ -123,7 +115,7 @@ void MainWindow::show_table() {
 void MainWindow::show_options() {
     OptionsDialog d(this);
     QObject::connect(&d, SIGNAL(recent_file_changed(QStringList)), this, SLOT(recent_file_update(QStringList)));
-    QObject::connect(&d, SIGNAL(column_visibility_changed(QString,bool)), this, SLOT(visible_columns_update(QString,bool)));
+    QObject::connect(&d, SIGNAL(column_visibility_changed(QString, QString,bool)), this, SLOT(visible_columns_update(QString, QString,bool)));
     d.exec();
 }
 
@@ -219,7 +211,7 @@ void MainWindow::save_recent_files(QStringList &files) {
         QString key = QString::fromStdString(nix::util::numToStr(i));
         settings->setValue(key, files[i]);
     }
-    while(files.size() > max_count) {
+    while (files.size() > max_count) {
         files.removeLast();
     }
     settings->endGroup();
@@ -252,8 +244,12 @@ void MainWindow::recent_file_update(QStringList files) {
 }
 
 
-void MainWindow::visible_columns_update(QString column, bool state) {
-    ui->main_view->getTreeView()->set_column_state(column, state);
+void MainWindow::visible_columns_update(QString who, QString column, bool state) {
+    if (who == MAIN_TREE_VIEW) {
+        ui->main_view->getTreeView()->set_column_state(column, state);
+    } else if (who == METADATA_TREE_VIEW) {
+        ui->info_view->metadata_column_state_change(column, state);
+    }
 }
 
 

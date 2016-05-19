@@ -55,7 +55,8 @@ SOURCES += main.cpp\
     model/nixtreemodel.cpp \
     views/lazyloadview.cpp \
     dialogs/optionsdialog.cpp \
-    dialogs/filepropertiesdialog.cpp
+    dialogs/filepropertiesdialog.cpp \
+    model/nixmetadatatreemodel.cpp
 
 
 HEADERS  += MainWindow.hpp \
@@ -96,7 +97,8 @@ HEADERS  += MainWindow.hpp \
     model/nixtreemodel.h \
     views/lazyloadview.h \
     dialogs/optionsdialog.h \
-    dialogs/filepropertiesdialog.hpp
+    dialogs/filepropertiesdialog.hpp \
+    model/nixmetadatatreemodel.h
 
 
 FORMS    += MainWindow.ui \

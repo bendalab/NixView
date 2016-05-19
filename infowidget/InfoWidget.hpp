@@ -25,10 +25,9 @@ public:
     explicit InfoWidget(QWidget *parent =0);
     ~InfoWidget();
 
-    void setDataModel(NixTreeModel *_nix_model);
-
 public slots:
     void update_info_widget(QModelIndex qml);
+    void metadata_column_state_change(QString column, bool visible);
 
 private:
     Ui::InfoWidget *ui;

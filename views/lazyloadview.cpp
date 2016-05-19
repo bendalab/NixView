@@ -25,7 +25,7 @@ QTreeView* LazyLoadView::getTreeView() {
 
 void LazyLoadView::set_columns() {
     QSettings *settings = new QSettings;
-    settings->beginGroup("TreeColumns");
+    settings->beginGroup(MAIN_TREE_VIEW);
     for (QString s : NixTreeModelItem::columns) {
         set_column_state(s, settings->value(s, QVariant(true)).toBool());
     }
