@@ -246,7 +246,7 @@ void MainWindow::recent_file_update(QStringList files) {
 
 void MainWindow::visible_columns_update(QString who, QString column, bool state) {
     if (who == MAIN_TREE_VIEW) {
-        ui->main_view->getTreeView()->set_column_state(column, state);
+        ui->main_view->getTreeView()->setColumnState(column, state);
     } else if (who == METADATA_TREE_VIEW) {
         ui->info_view->metadata_column_state_change(column, state);
     }

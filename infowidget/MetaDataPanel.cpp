@@ -4,12 +4,14 @@
 #include "model/nixtreemodelitem.h"
 #include "model/nixmetadatatreemodel.h"
 #include <ostream>
+#include <QMenu>
 
 MetaDataPanel::MetaDataPanel(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::MetaDataPanel)
 {
     ui->setupUi(this);
+    QObject::connect(ui->treeView, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(contextMenuRequest(QPoint)));
 }
 
 
@@ -20,18 +22,18 @@ void MetaDataPanel::setDataModel(NixTreeModel *_nix_model) {
     std::vector<int> hidden_columns = {2,3,4,5,6,7,10};
     for (int c : hidden_columns)
         ui->treeView->setColumnHidden(c, true);
-    set_proxy_model();
+    setProxyModel();
 }
 
 
-void MetaDataPanel::set_proxy_model() {
-    clear_metadata_panel();
+void MetaDataPanel::setProxyModel() {
+    clearMetadataPanel();
     proxy_model->set_filter_mode(3);
     proxy_model->set_metadata_only_mode(true);
 }
 
 
-void MetaDataPanel::update_metadata_panel(QModelIndex qml) {
+void MetaDataPanel::updateMetadataPanel(QModelIndex qml) {
     if (qml.isValid()) {
         NixTreeModelItem *item = static_cast<NixTreeModelItem*>(qml.internalPointer());
         if (item->nixType() == NixType::NIX_SECTION) {
@@ -41,25 +43,25 @@ void MetaDataPanel::update_metadata_panel(QModelIndex qml) {
                 model->setEntity(metadata);
             }
             ui->treeView->setModel(model);
-            set_columns();
+            setColumns();
         }
     }
     else
-        clear_metadata_panel();
+        clearMetadataPanel();
 }
 
-void MetaDataPanel::set_columns() {
+void MetaDataPanel::setColumns() {
     QSettings *settings = new QSettings;
     settings->beginGroup(METADATA_TREE_VIEW);
     for (QString s : NixTreeModelItem::columns) {
-        set_column_state(s, settings->value(s, QVariant(true)).toBool());
+        setColumnState(s, settings->value(s, QVariant(true)).toBool());
     }
     settings->endGroup();
     delete settings;
 }
 
 
-void MetaDataPanel::set_column_state(QString column, bool visible) {
+void MetaDataPanel::setColumnState(QString column, bool visible) {
     NixMetadataTreeModel * model = static_cast<NixMetadataTreeModel*>(ui->treeView->model());
     if (model == nullptr)
         return;
@@ -73,20 +75,27 @@ void MetaDataPanel::set_column_state(QString column, bool visible) {
     }
 }
 
+void MetaDataPanel::contextMenuRequest(QPoint pos) {
+    QMenu *menu = new QMenu(this);
+    menu->addAction("collapse all", ui->treeView, SLOT(collapseAll()));
+    menu->addAction("expand all", ui->treeView, SLOT(expandAll()));
+    menu->exec(ui->treeView->mapToGlobal(pos));
+}
 
-void MetaDataPanel::clear_metadata_panel() {
+
+void MetaDataPanel::clearMetadataPanel() {
     proxy_model->set_block_mode(true);
     proxy_model->refresh();
 }
 
 
-void MetaDataPanel::resize_to_content(QModelIndex) {
+void MetaDataPanel::resizeToContent(QModelIndex) {
     for (int c = 0; c < ui->treeView->model()->columnCount();c++)
         ui->treeView->resizeColumnToContents(c);
 }
 
 //getter
-QTreeView* MetaDataPanel::get_tree_view() {
+QTreeView* MetaDataPanel::getTreeView() {
     return ui->treeView;
 }
 

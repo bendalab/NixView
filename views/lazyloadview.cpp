@@ -4,6 +4,7 @@
 #include <QSettings>
 #include "common/Common.hpp"
 #include <iostream>
+#include <QMenu>
 
 
 LazyLoadView::LazyLoadView(QWidget *parent) :
@@ -11,6 +12,7 @@ LazyLoadView::LazyLoadView(QWidget *parent) :
     ui(new Ui::LazyLoadView)
 {
     ui->setupUi(this);
+    QObject::connect(ui->treeView, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(contextMenuRequest(QPoint)));
 }
 
 LazyLoadView::~LazyLoadView() {
@@ -23,18 +25,18 @@ QTreeView* LazyLoadView::getTreeView() {
 }
 
 
-void LazyLoadView::set_columns() {
+void LazyLoadView::setColumns() {
     QSettings *settings = new QSettings;
     settings->beginGroup(MAIN_TREE_VIEW);
     for (QString s : NixTreeModelItem::columns) {
-        set_column_state(s, settings->value(s, QVariant(true)).toBool());
+        setColumnState(s, settings->value(s, QVariant(true)).toBool());
     }
     settings->endGroup();
     delete settings;
 }
 
 
-void LazyLoadView::set_column_state(QString column, bool visible) {
+void LazyLoadView::setColumnState(QString column, bool visible) {
     NixTreeModel *model = static_cast<NixTreeModel*>(ui->treeView->model());
     if (model == nullptr)
         return;
@@ -46,4 +48,20 @@ void LazyLoadView::set_column_state(QString column, bool visible) {
     for (int i = 0; i < model->columnCount(); i++) {
         ui->treeView->resizeColumnToContents(i);
     }
+}
+
+
+void LazyLoadView::expandAll() {
+    this->setCursor(Qt::WaitCursor);
+    QApplication::processEvents();
+    ui->treeView->expandAll();
+    this->setCursor(Qt::ArrowCursor);
+}
+
+
+void LazyLoadView::contextMenuRequest(QPoint pos) {
+    QMenu *menu = new QMenu(this);
+    menu->addAction("collapse all", ui->treeView, SLOT(collapseAll()));
+    menu->addAction("expand all", this, SLOT(expandAll()));
+    menu->exec(ui->treeView->mapToGlobal(pos));
 }

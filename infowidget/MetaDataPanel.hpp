@@ -22,21 +22,19 @@ public:
 
     void setDataModel(NixTreeModel *_nix_model);
 public slots:
-    void resize_to_content(QModelIndex);
-    void set_column_state(QString column, bool visible);
+    void resizeToContent(QModelIndex);
+    void setColumnState(QString column, bool visible);
+    void contextMenuRequest(QPoint pos);
 
 public:
-    QTreeView* get_tree_view();
-    void update_metadata_panel(QModelIndex qml);
-    void clear_metadata_panel();
+    QTreeView* getTreeView();
+    void updateMetadataPanel(QModelIndex qml);
+    void clearMetadataPanel();
 
 private:
     NixProxyModel* proxy_model;
-    void set_proxy_model();
-    void set_columns();
-    void add_children_to_item(QTreeWidgetItem*, nix::Section);
-    void add_properties_to_item(QTreeWidgetItem*, nix::Section);
-    void add_values_to_property(QTreeWidgetItem*, nix::Property);
+    void setProxyModel();
+    void setColumns();
 
     Ui::MetaDataPanel *ui;
 };

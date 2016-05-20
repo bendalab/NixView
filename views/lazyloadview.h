@@ -18,13 +18,16 @@ public:
     ~LazyLoadView();
 
     QTreeView* getTreeView();
-    void set_columns();
+    void setColumns();
 
 public slots:
-    void set_column_state(QString column, bool visible);
+    void setColumnState(QString column, bool visible);
+    void contextMenuRequest(QPoint pos);
+    void expandAll();
 
 private:
     Ui::LazyLoadView *ui;
+
 };
 
 #endif // LAZYLOADVIEW_H
