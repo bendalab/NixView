@@ -3,6 +3,7 @@
 
 #include <QSortFilterProxyModel>
 #include <model/nixtreemodel.h>
+#include <QStringList>
 
 class NixProxyModel : public QSortFilterProxyModel
 {
