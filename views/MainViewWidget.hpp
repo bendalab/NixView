@@ -42,6 +42,7 @@ public slots:
     void set_view(int);
     void activate_info_widget();
     void emit_current_qml_worker_slot(QModelIndex qml);
+    void emit_current_qml_worker_slot(QModelIndex qml, QModelIndex prev);
     void scan_progress();
     void toggle_find();
 
