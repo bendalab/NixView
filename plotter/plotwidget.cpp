@@ -21,8 +21,8 @@ PlotWidget::~PlotWidget()
 
 bool PlotWidget::can_draw() const {
     NixType type = item->nixType();
-    return type == NixType::NIX_DATA_ARRAY | type == NixType::NIX_MTAG
-            | type == NixType::NIX_TAG | type == NixType::NIX_FEAT;
+    return (type == NixType::NIX_DATA_ARRAY) | (type == NixType::NIX_MTAG)
+            | (type == NixType::NIX_TAG) | (type == NixType::NIX_FEAT);
 }
 
 
