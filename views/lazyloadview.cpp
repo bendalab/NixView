@@ -65,3 +65,10 @@ void LazyLoadView::contextMenuRequest(QPoint pos) {
     menu->addAction("expand all", this, SLOT(expandAll()));
     menu->exec(ui->treeView->mapToGlobal(pos));
 }
+
+
+void LazyLoadView::resizeRequest() {
+    NixTreeModel *model = static_cast<NixTreeModel*>(ui->treeView->model());
+    for (int c = 0; c<model->columnCount(); c++)
+        ui->treeView->resizeColumnToContents(c);
+}

@@ -23,6 +23,7 @@ public:
 public slots:
     void setColumnState(QString column, bool visible);
     void contextMenuRequest(QPoint pos);
+    void resizeRequest();
     void expandAll();
 
 private:

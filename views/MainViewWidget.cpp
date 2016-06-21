@@ -62,6 +62,7 @@ void MainViewWidget::set_nix_file(const std::string &nix_file_path) {
     cv->set_proxy_model(nix_proxy_model);
     emit emit_model_update(nix_model);
     QObject::connect(tv->getTreeView(), SIGNAL(clicked(QModelIndex)), this, SLOT(emit_current_qml_worker_slot(QModelIndex)));
+    QObject::connect(tv->getTreeView()->selectionModel(), SIGNAL(currentChanged(QModelIndex, QModelIndex)), this, SLOT(emit_current_qml_worker_slot(QModelIndex, QModelIndex)));
     QObject::connect(cv->get_column_view(), SIGNAL(clicked(QModelIndex)), this, SLOT(emit_current_qml_worker_slot(QModelIndex)));
     QObject::connect(ui->cmbx_filter, SIGNAL(currentIndexChanged(QString)), nix_proxy_model, SLOT(set_rough_filter(QString)));
     QObject::connect(ui->line_edit_filter, SIGNAL(textChanged(QString)), nix_proxy_model, SLOT(set_fine_filter(QString)));
@@ -119,8 +120,13 @@ void MainViewWidget::activate_info_widget() {
 
 void MainViewWidget::emit_current_qml_worker_slot(QModelIndex qml) {
     emit emit_current_qml(nix_proxy_model->mapToSource(qml));
+    tv->resizeRequest();
 }
 
+
+void MainViewWidget::emit_current_qml_worker_slot(QModelIndex qml, QModelIndex prev) {
+    emit_current_qml_worker_slot(qml);
+}
 
 void MainViewWidget::scan_progress() {
     emit scan_progress_update();
