@@ -131,8 +131,7 @@ void PlotWidget::process(const nix::MultiTag &mtag) {
             if (extents.size() > 0) {
                 plt->add_segments(positions, extents, name);
             } else {
-                QVector<double> y_data(positions.size(), 0.0);
-                plt->add_events(positions, y_data, name, false);
+                plt->add_events(positions, name, false);
             }
         }
     }

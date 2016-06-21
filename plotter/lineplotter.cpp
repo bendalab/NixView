@@ -195,6 +195,13 @@ void LinePlotter::add_events(const QVector<double> &x_data, const QVector<double
 }
 
 
+void LinePlotter::add_events(const QVector<double> &x_data, const QString &name, bool y_scale) {
+    double max = ui->plot->yAxis->range().upper * 0.9;
+    QVector<double> y_data(x_data.size(), max);
+    add_events(x_data, y_data, name, y_scale);
+}
+
+
 void LinePlotter::add_segments(const QVector<double> &positions, const QVector<double> &extents, const QString &name) {
     if (extents.size() > 0 && (positions.size() != extents.size())) {
         std::cerr << "Cannot draw segments, number of positions and extents does not match!" << std::endl;
