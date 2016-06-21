@@ -128,7 +128,12 @@ void PlotWidget::process(const nix::MultiTag &mtag) {
         } else if (currplot != nullptr && currplot->plotter_type() == PlotterType::Line) {
             LinePlotter *plt = static_cast<LinePlotter*>(currplot);
             plt->setFixedHeight(200);
-            plt->add_segments(positions, extents, name);
+            if (extents.size() > 0) {
+                plt->add_segments(positions, extents, name);
+            } else {
+                QVector<double> y_data(positions.size(), 0.0);
+                plt->add_events(positions, y_data, name, false);
+            }
         }
     }
 }
