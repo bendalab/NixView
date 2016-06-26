@@ -21,8 +21,8 @@ PlotWidget::~PlotWidget()
 
 bool PlotWidget::can_draw() const {
     NixType type = item->nixType();
-    return type == NixType::NIX_DATA_ARRAY | type == NixType::NIX_MTAG
-            | type == NixType::NIX_TAG | type == NixType::NIX_FEAT;
+    return (type == NixType::NIX_DATA_ARRAY) | (type == NixType::NIX_MTAG)
+            | (type == NixType::NIX_TAG) | (type == NixType::NIX_FEAT);
 }
 
 
@@ -128,7 +128,11 @@ void PlotWidget::process(const nix::MultiTag &mtag) {
         } else if (currplot != nullptr && currplot->plotter_type() == PlotterType::Line) {
             LinePlotter *plt = static_cast<LinePlotter*>(currplot);
             plt->setFixedHeight(200);
-            plt->add_segments(positions, extents, name);
+            if (extents.size() > 0) {
+                plt->add_segments(positions, extents, name);
+            } else {
+                plt->add_events(positions, name, false);
+            }
         }
     }
 }
