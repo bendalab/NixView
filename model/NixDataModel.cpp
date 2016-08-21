@@ -163,38 +163,35 @@ void NixDataModel::add_subsec_prop(QStandardItem* item, nix::Section section) {
 std::string NixDataModel::get_property_value(nix::Property p)
 {
     std::vector<nix::Value> values = p.values();
-    std::string v_type = nix::data_type_to_string(p.dataType());
     std::ostringstream oss;
-    for (int i = 0; i < (int)values.size(); ++i)
+    for (size_t i = 0; i < values.size(); ++i)
     {
-        if (v_type == NIX_STRING_TYPE_STRING) {
-            std::string value;
-            values[i].get(value);
-            oss << value;
-        } else if (v_type == NIX_STRING_TYPE_BOOL){
-            bool value;
-            values[i].get(value);
-            oss << value;
-        } else if (v_type == NIX_STRING_TYPE_INT32){
-            int32_t value;
-            values[i].get(value);
-            oss << value;
-        } else if (v_type == NIX_STRING_TYPE_INT64){
-            int64_t value;
-            values[i].get(value);
-            oss << value;
-        } else if (v_type == NIX_STRING_TYPE_UINT64){
-            uint64_t value;
-            values[i].get(value);
-            oss << value;
-        } else if (v_type == NIX_STRING_TYPE_DOUBLE){
-            double value;
-            values[i].get(value);
-            oss << value;
-        } else {
+        switch (p.dataType()) {
+        case nix::DataType::String:
+            oss << values[i].get<std::string>();
+            break;
+        case nix::DataType::Bool:
+            oss << values[i].get<bool>();
+            break;
+        case nix::DataType::Int32:
+            oss << values[i].get<int32_t>();
+            break;
+        case nix::DataType::UInt32:
+            oss << values[i].get<uint32_t>();
+            break;
+        case nix::DataType::Int64:
+            oss << values[i].get<int64_t>();
+            break;
+        case nix::DataType::UInt64:
+            oss << values[i].get<uint64_t>();
+            break;
+        case nix::DataType::Double:
+            oss << values[i].get<double>();
+            break;
+        default:
             oss << "NOT READABLE";
+            break;
         }
-
         if (i < (int)values.size()-1)
             oss << ", ";
     }
@@ -204,39 +201,11 @@ std::string NixDataModel::get_property_value(nix::Property p)
 std::string NixDataModel::get_property_uncertainty(nix::Property p)
 {
     std::vector<nix::Value> values = p.values();
-    std::string v_type = nix::data_type_to_string(p.dataType());
     std::ostringstream oss;
-    for (int i = 0; i < (int)values.size(); ++i)
+    for (size_t i = 0; i < values.size(); ++i)
     {
-        if (v_type == NIX_STRING_TYPE_STRING) {
-            std::string value;
-            values[i].get(value);
-            oss << values[i].uncertainty;
-        } else if (v_type == NIX_STRING_TYPE_BOOL){
-            bool value;
-            values[i].get(value);
-            oss << values[i].uncertainty;
-        } else if (v_type == NIX_STRING_TYPE_INT32){
-            int32_t value;
-            values[i].get(value);
-            oss << values[i].uncertainty;
-        } else if (v_type == NIX_STRING_TYPE_INT64){
-            int64_t value;
-            values[i].get(value);
-            oss << values[i].uncertainty;
-        } else if (v_type == NIX_STRING_TYPE_UINT64){
-            uint64_t value;
-            values[i].get(value);
-            oss << values[i].uncertainty;
-        } else if (v_type == NIX_STRING_TYPE_DOUBLE){
-            double value;
-            values[i].get(value);
-            oss << values[i].uncertainty;
-        } else {
-            oss << "NOT READABLE";
-        }
-
-        if (i < (int)values.size()-1)
+        oss << values[i].uncertainty;
+        if (i < values.size()-1)
             oss << ", ";
     }
     return oss.str();
