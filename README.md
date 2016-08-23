@@ -10,3 +10,9 @@ The nix data model is a generic model for storing scientific data with attached 
 
 For more information on nix see https://github.com/G-Node/nix
 
+
+## Dependencies
+ - Qt5
+ - Boost > 1.49
+ - cmake
+ - Nix libraries (build from source or install with --Head option when using homebrew)
