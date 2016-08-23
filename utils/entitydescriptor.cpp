@@ -300,8 +300,14 @@ std::string EntityDescriptor::describe(const nix::Property &p) {
                           nix::util::timeToStr(p.createdAt()), nix::util::timeToStr(p.updatedAt()));
     desc.addInfo("Unit", (p.unit() ? *p.unit() : ""));
     std::vector<std::string> values;
+    nix::ndsize_t count = 0;
+    nix::ndsize_t val_count = p.valueCount();
     for (nix::Value v : p.values()) {
-        values.push_back(value_to_str(v, p.dataType()));
+        if ((val_count > 1) && (count < val_count)) {
+            values.push_back(value_to_str(v, p.dataType()) + ", ");
+        } else {
+            values.push_back(value_to_str(v, p.dataType()));
+        }
     }
     desc.addItemize("Values", values);
     return desc.toHtml();
