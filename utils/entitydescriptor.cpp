@@ -110,13 +110,25 @@ std::string EntityDescriptor::value_to_str(const nix::Value &v, const nix::DataT
                 val = nix::util::numToStr(i);
                 break;
             }
-            case (nix::DataType::Bool): {
-                bool b = v.get<bool>();
-                val = (b ? "True" : "False");
+            case (nix::DataType::UInt64): {
+                uint64_t i = v.get<uint64_t>();
+                val = nix::util::numToStr(i);
+                break;
+            }
+            case (nix::DataType::Int32): {
+                int32_t i = v.get<int32_t>();
+                val = nix::util::numToStr(i);
+                break;
             }
             case (nix::DataType::UInt32): {
                 uint32_t i = v.get<uint32_t>();
                 val = nix::util::numToStr(i);
+                break;
+            }
+            case (nix::DataType::Bool): {
+                bool b = v.get<bool>();
+                val = (b ? "True" : "False");
+                break;
             }
             default:
                 val = "";
