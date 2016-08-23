@@ -287,7 +287,7 @@ std::string EntityDescriptor::describe(const nix::Section &s) {
         if (p.valueCount() > 0) {
             nix::Value v  = p.values()[0];
             val = value_to_str(v, p.dataType());
-            props.push_back(p.name() + ": " + (val.size() < 20 ? val : val.substr(20)));
+            props.push_back(p.name() + ": " + (val.size() < 20 ? val : (val.substr(0, 20) + "...")));
         }
     }
     desc.addItemize("Properties", props);
