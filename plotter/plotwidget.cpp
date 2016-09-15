@@ -30,26 +30,25 @@ void PlotWidget::process_item() {
     if (this->item->nixType() == NixType::NIX_DATA_ARRAY) {
         nix::DataArray array = item->itemData().value<nix::DataArray>();
         process(array);
-        ui->entityDescription->setText(QString::fromStdString(EntityDescriptor::describe(array)));
+        this->text = QString::fromStdString(EntityDescriptor::describe(array));
     } else if (item->nixType() == NixType::NIX_TAG) {
         nix::Tag tag = item->itemData().value<nix::Tag>();
         process(tag);
-        ui->entityDescription->setText(QString::fromStdString(EntityDescriptor::describe(tag)));
-
+        this->text = QString::fromStdString(EntityDescriptor::describe(tag));
     } else if (item->nixType() == NixType::NIX_MTAG) {
         nix::MultiTag mtag = item->itemData().value<nix::MultiTag>();
         process(mtag);
-        ui->entityDescription->setText(QString::fromStdString(EntityDescriptor::describe(mtag)));
+        this->text = QString::fromStdString(EntityDescriptor::describe(mtag));
     } else if (item->nixType() == NixType::NIX_FEAT) {
         nix::Feature feat = item->itemData().value<nix::Feature>();
         process(feat.data());
-        ui->entityDescription->setText(QString::fromStdString(EntityDescriptor::describe(feat)));
+        this->text = QString::fromStdString(EntityDescriptor::describe(feat));
     }
 }
 
 
 void PlotWidget::delete_widgets_from_layout() {
-    if (!ui->scrollAreaWidgetContents->layout()->isEmpty()) {
+    if ((ui->scrollAreaWidgetContents->layout() != NULL) && (!ui->scrollAreaWidgetContents->layout()->isEmpty())) {
         QLayoutItem *item = ui->scrollAreaWidgetContents->layout()->itemAt(0);
         if (item->widget()) {
             ui->scrollAreaWidgetContents->layout()->removeItem(item);
@@ -61,7 +60,6 @@ void PlotWidget::delete_widgets_from_layout() {
 
 Plotter* PlotWidget::process(const nix::DataArray &array) {
     PlotterType suggestion = Plotter::suggested_plotter(array);
-
     if (suggestion == PlotterType::Line) {
         delete_widgets_from_layout();
         LinePlotter *lp = new LinePlotter();
@@ -81,7 +79,6 @@ Plotter* PlotWidget::process(const nix::DataArray &array) {
         ip->draw(array);
         plot = ip;
     }
-
     return plot;
 }
 
@@ -157,6 +154,14 @@ void PlotWidget::savePlot() {
     qcp->savePdf(fileName);
 }
 
+
+void PlotWidget::clear() {
+    delete_widgets_from_layout();
+    this->text = "";
+    this->repaint();
+}
+
+
 bool PlotWidget::check_plottable_dtype(nix::DataType dtype) const {
     bool plottable = true;
     plottable = plottable && dtype != nix::DataType::Bool;
@@ -165,4 +170,12 @@ bool PlotWidget::check_plottable_dtype(nix::DataType dtype) const {
     plottable = plottable && dtype != nix::DataType::Opaque;
     plottable = plottable && dtype != nix::DataType::Nothing;
     return plottable;
+}
+
+
+void PlotWidget::show_more() {
+    QMessageBox msgBox;
+    msgBox.setStyleSheet("background-color: rgb(255, 238, 238)");
+    msgBox.setText(this->text);
+    msgBox.exec();
 }

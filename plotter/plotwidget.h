@@ -22,16 +22,19 @@ public:
     ~PlotWidget();
 
     bool can_draw() const;
-
     void setEntity(QModelIndex qml);
-
     void savePlot();
+    void clear();
+
+public slots:
+    void show_more();
 
 private:
     Ui::PlotWidget *ui;
     QModelIndex item_qml;
     NixTreeModelItem* item;
     Plotter *plot;
+    QString text;
 
     bool check_plottable_dtype(nix::DataType dtype) const;
     void delete_widgets_from_layout();
