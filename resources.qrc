@@ -13,5 +13,6 @@
     </qresource>
     <qresource prefix="/">
         <file>images/find.png</file>
+        <file>images/more.png</file>
     </qresource>
 </RCC>

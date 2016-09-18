@@ -15,6 +15,7 @@ PlotWidget::PlotWidget(QWidget *parent) :
 
 PlotWidget::~PlotWidget()
 {
+    std::cerr << "PlotWidget destructor!" << std::endl;
     delete ui;
 }
 
@@ -30,19 +31,15 @@ void PlotWidget::process_item() {
     if (this->item->nixType() == NixType::NIX_DATA_ARRAY) {
         nix::DataArray array = item->itemData().value<nix::DataArray>();
         process(array);
-        this->text = QString::fromStdString(EntityDescriptor::describe(array));
     } else if (item->nixType() == NixType::NIX_TAG) {
         nix::Tag tag = item->itemData().value<nix::Tag>();
         process(tag);
-        this->text = QString::fromStdString(EntityDescriptor::describe(tag));
     } else if (item->nixType() == NixType::NIX_MTAG) {
         nix::MultiTag mtag = item->itemData().value<nix::MultiTag>();
         process(mtag);
-        this->text = QString::fromStdString(EntityDescriptor::describe(mtag));
     } else if (item->nixType() == NixType::NIX_FEAT) {
         nix::Feature feat = item->itemData().value<nix::Feature>();
         process(feat.data());
-        this->text = QString::fromStdString(EntityDescriptor::describe(feat));
     }
 }
 
@@ -59,6 +56,7 @@ void PlotWidget::delete_widgets_from_layout() {
 
 
 Plotter* PlotWidget::process(const nix::DataArray &array) {
+    this->text = QString::fromStdString(EntityDescriptor::describe(array));
     PlotterType suggestion = Plotter::suggested_plotter(array);
     if (suggestion == PlotterType::Line) {
         delete_widgets_from_layout();
@@ -169,7 +167,7 @@ void PlotWidget::savePlot() {
 void PlotWidget::clear() {
     delete_widgets_from_layout();
     this->text = "";
-    this->repaint();
+    //this->repaint();
 }
 
 
