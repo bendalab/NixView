@@ -175,7 +175,11 @@ bool PlotWidget::check_plottable_dtype(nix::DataType dtype) const {
 
 void PlotWidget::show_more() {
     QMessageBox msgBox;
-    msgBox.setStyleSheet("background-color: rgb(255, 238, 238)");
-    msgBox.setText(this->text);
+    msgBox.setWindowFlags(Qt::FramelessWindowHint);
+    if (this->text.size() < 1) {
+        msgBox.setText("no description available!");
+    } else {
+        msgBox.setText(this->text);
+    }
     msgBox.exec();
 }
