@@ -26,6 +26,10 @@ public:
     void savePlot();
     void clear();
 
+    Plotter* process(const nix::DataArray &array);
+    void process(const nix::MultiTag &mtag, nix::ndsize_t ref=0);
+    void process(const nix::Tag &tag, nix::ndsize_t ref=0);
+
 public slots:
     void show_more();
 
@@ -39,9 +43,7 @@ private:
     bool check_plottable_dtype(nix::DataType dtype) const;
     void delete_widgets_from_layout();
     void process_item();
-    Plotter* process(const nix::DataArray &array);
-    void process(const nix::MultiTag &mtag);
-    void process(const nix::Tag &tag);
+
 
     void draw_1d(const nix::DataArray &array);
     void draw_2d(const nix::DataArray &array);

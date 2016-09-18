@@ -83,26 +83,37 @@ Plotter* PlotWidget::process(const nix::DataArray &array) {
 }
 
 
-void PlotWidget::process(const nix::Tag &tag) {
-    for (nix::ndsize_t i = 0; i < tag.referenceCount(); i++) {
-        Plotter *currplot = process(tag.getReference(i));
-        QVector<double> positions, extents;
-        positions.push_back(tag.position()[0]);
-        if (tag.extent().size() > 0)
-            extents.push_back(tag.extent()[0]);
-        if (currplot != nullptr && currplot->plotter_type() == PlotterType::Category) {
-            CategoryPlotter* plt = static_cast<CategoryPlotter*>(currplot);
-            plt->setFixedHeight(200);
-            plt->add_segments(positions, extents, QString::fromStdString(tag.name()));
-        } else if (currplot != nullptr && currplot->plotter_type() == PlotterType::Line) {
-            LinePlotter *plt = static_cast<LinePlotter*>(currplot);
-            plt->setFixedHeight(200);
-            plt->add_segments(positions, extents, QString::fromStdString(tag.name()));
-        }
+void PlotWidget::process(const nix::Tag &tag, nix::ndsize_t ref) {
+    if (tag.referenceCount() == 0) {
+        return;
+    }
+    this->text = QString::fromStdString(EntityDescriptor::describe(tag));
+
+    if (ref >= tag.referenceCount()) {
+        ref = tag.referenceCount() -1;
+    }
+
+    Plotter *currplot = process(tag.getReference(ref));
+    QVector<double> positions, extents;
+    positions.push_back(tag.position()[0]);
+    if (tag.extent().size() > 0)
+        extents.push_back(tag.extent()[0]);
+    if (currplot != nullptr && currplot->plotter_type() == PlotterType::Category) {
+        CategoryPlotter* plt = static_cast<CategoryPlotter*>(currplot);
+        plt->setFixedHeight(200);
+        plt->add_segments(positions, extents, QString::fromStdString(tag.name()));
+    } else if (currplot != nullptr && currplot->plotter_type() == PlotterType::Line) {
+        LinePlotter *plt = static_cast<LinePlotter*>(currplot);
+        plt->setFixedHeight(200);
+        plt->add_segments(positions, extents, QString::fromStdString(tag.name()));
     }
 }
 
-void PlotWidget::process(const nix::MultiTag &mtag) {
+
+void PlotWidget::process(const nix::MultiTag &mtag, nix::ndsize_t ref) {
+    if (mtag.referenceCount() == 0)
+        return;
+    this->text = QString::fromStdString(EntityDescriptor::describe(mtag));
     std::vector<double> pos(mtag.positions().dataExtent()[0]);
     std::vector<double> ext;
 
@@ -115,21 +126,21 @@ void PlotWidget::process(const nix::MultiTag &mtag) {
     }
     QVector<double> extents = QVector<double>::fromStdVector(ext);
     QString name = QString::fromStdString(mtag.name());
-
-    for (nix::ndsize_t i = 0; i < mtag.referenceCount(); i++){
-        Plotter *currplot = process(mtag.getReference(i));
-        if (currplot != nullptr && currplot->plotter_type() == PlotterType::Category) {
-            CategoryPlotter* plt = static_cast<CategoryPlotter*>(currplot);
-            plt->setFixedHeight(200);
+    if (ref >= mtag.referenceCount()) {
+        ref = mtag.referenceCount() -1;
+    }
+    Plotter *currplot = process(mtag.getReference(ref));
+    if (currplot != nullptr && currplot->plotter_type() == PlotterType::Category) {
+        CategoryPlotter* plt = static_cast<CategoryPlotter*>(currplot);
+        plt->setFixedHeight(200);
+        plt->add_segments(positions, extents, name);
+    } else if (currplot != nullptr && currplot->plotter_type() == PlotterType::Line) {
+        LinePlotter *plt = static_cast<LinePlotter*>(currplot);
+        plt->setFixedHeight(200);
+        if (extents.size() > 0) {
             plt->add_segments(positions, extents, name);
-        } else if (currplot != nullptr && currplot->plotter_type() == PlotterType::Line) {
-            LinePlotter *plt = static_cast<LinePlotter*>(currplot);
-            plt->setFixedHeight(200);
-            if (extents.size() > 0) {
-                plt->add_segments(positions, extents, name);
-            } else {
-                plt->add_events(positions, name, false);
-            }
+        } else {
+            plt->add_events(positions, name, false);
         }
     }
 }
