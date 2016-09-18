@@ -12,6 +12,8 @@ namespace Ui {
 class TagView;
 }
 
+class PlotWidget;
+
 class TagView : public QScrollArea
 {
     Q_OBJECT
@@ -26,6 +28,7 @@ public:
 public slots:
     void reference_selected();
     void feature_selected();
+    void header_clicked();
 
 private:
     Ui::TagView *ui;
@@ -33,8 +36,10 @@ private:
 
     void fill_references();
     void fill_features();
-    void clear_plot_widget(QWidget *plot_widget);
-    void plot_data(QWidget *plot_widget, const nix::DataArray &array);
+    void clear_references();
+    void clear_features();
+    void clear_plot_widget(PlotWidget *plot_widget);
+    void plot_data(PlotWidget *plot_widget, const nix::DataArray &array);
 };
 
 #endif // TAGVIEW_H

@@ -37,27 +37,41 @@
    <property name="styleSheet">
     <string notr="true"/>
    </property>
-   <layout class="QGridLayout" name="gridLayout">
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <property name="spacing">
+     <number>10</number>
+    </property>
     <property name="leftMargin">
-     <number>2</number>
+     <number>0</number>
     </property>
     <property name="topMargin">
-     <number>2</number>
+     <number>0</number>
     </property>
     <property name="rightMargin">
-     <number>2</number>
+     <number>0</number>
     </property>
     <property name="bottomMargin">
-     <number>2</number>
+     <number>0</number>
     </property>
-    <property name="horizontalSpacing">
-     <number>1</number>
-    </property>
-    <property name="verticalSpacing">
-     <number>2</number>
-    </property>
-    <item row="0" column="0" rowspan="2">
-     <widget class="QGroupBox" name="tag_info">
+    <item>
+     <widget class="QPushButton" name="tagLabel">
+      <property name="font">
+       <font>
+        <pointsize>14</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="text">
+       <string>PushButton</string>
+      </property>
+      <property name="flat">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QGroupBox" name="groupBox">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
         <horstretch>0</horstretch>
@@ -68,41 +82,51 @@
        <bool>false</bool>
       </property>
       <property name="styleSheet">
-       <string notr="true"/>
+       <string notr="true">gridline-color: rgb(255, 255, 255);</string>
       </property>
       <property name="title">
-       <string>Tag information</string>
+       <string/>
       </property>
-      <layout class="QVBoxLayout" name="verticalLayout">
+      <layout class="QVBoxLayout" name="verticalLayout_2">
+       <property name="spacing">
+        <number>0</number>
+       </property>
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
        <item>
-        <widget class="QTextEdit" name="entity_description">
-         <property name="enabled">
-          <bool>true</bool>
+        <widget class="QTabWidget" name="referenceTabs">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>100</height>
+          </size>
          </property>
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="autoFillBackground">
-          <bool>true</bool>
-         </property>
-         <property name="styleSheet">
-          <string notr="true"/>
-         </property>
-         <property name="frameShape">
-          <enum>QFrame::NoFrame</enum>
-         </property>
-         <property name="readOnly">
-          <bool>true</bool>
-         </property>
+         <widget class="QWidget" name="tab">
+          <attribute name="title">
+           <string>Tab 1</string>
+          </attribute>
+         </widget>
+         <widget class="QWidget" name="tab_2">
+          <attribute name="title">
+           <string>Tab 2</string>
+          </attribute>
+         </widget>
         </widget>
        </item>
       </layout>
      </widget>
     </item>
-    <item row="3" column="0">
+    <item>
      <widget class="QGroupBox" name="feature_box">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
@@ -166,112 +190,32 @@
       </layout>
      </widget>
     </item>
-    <item row="2" column="0">
-     <widget class="QGroupBox" name="groupBox">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="autoFillBackground">
-       <bool>false</bool>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">gridline-color: rgb(255, 255, 255);</string>
-      </property>
-      <property name="title">
-       <string>References</string>
-      </property>
-      <layout class="QHBoxLayout" name="horizontalLayout">
-       <property name="spacing">
-        <number>6</number>
-       </property>
-       <property name="topMargin">
-        <number>3</number>
-       </property>
-       <property name="bottomMargin">
-        <number>0</number>
-       </property>
-       <item>
-        <widget class="QSplitter" name="splitter">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="frameShape">
-          <enum>QFrame::NoFrame</enum>
-         </property>
-         <property name="frameShadow">
-          <enum>QFrame::Raised</enum>
-         </property>
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <widget class="QListWidget" name="reference_list">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="minimumSize">
-           <size>
-            <width>200</width>
-            <height>0</height>
-           </size>
-          </property>
-          <property name="styleSheet">
-           <string notr="true">border-color: rgb(206, 206, 206);</string>
-          </property>
-          <property name="frameShape">
-           <enum>QFrame::Box</enum>
-          </property>
-          <property name="lineWidth">
-           <number>1</number>
-          </property>
-         </widget>
-         <widget class="QWidget" name="reference_plot" native="true">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="minimumSize">
-           <size>
-            <width>500</width>
-            <height>0</height>
-           </size>
-          </property>
-          <property name="styleSheet">
-           <string notr="true">border-color:black;</string>
-          </property>
-          <layout class="QHBoxLayout" name="horizontalLayout_5">
-           <property name="leftMargin">
-            <number>0</number>
-           </property>
-           <property name="topMargin">
-            <number>0</number>
-           </property>
-           <property name="rightMargin">
-            <number>0</number>
-           </property>
-           <property name="bottomMargin">
-            <number>0</number>
-           </property>
-          </layout>
-         </widget>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-    </item>
    </layout>
+   <zorder>feature_box</zorder>
+   <zorder>groupBox</zorder>
+   <zorder>tagLabel</zorder>
   </widget>
  </widget>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>tagLabel</sender>
+   <signal>clicked()</signal>
+   <receiver>TagView</receiver>
+   <slot>header_clicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>460</x>
+     <y>16</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>460</x>
+     <y>239</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>header_clicked()</slot>
+ </slots>
 </ui>
