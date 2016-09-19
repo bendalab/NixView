@@ -238,7 +238,30 @@ std::string EntityDescriptor::describe(const nix::Group &g) {
 
 
 std::string EntityDescriptor::describe(const nix::Feature &f) {
-    return EntityDescriptor::describe(f.data());
+    nix::DataArray da = f.data();
+    EntityDescriptor desc("Feature: " + da.name(), da.type(), (da.definition() ? *da.definition() : "none"), da.id(),
+                          nix::util::timeToStr(da.createdAt()), nix::util::timeToStr(da.updatedAt()));
+    desc.addInfo("Feature type", nix::link_type_to_string(f.linkType()));
+    std::vector<std::string> dims;
+    for (nix::Dimension d : da.dimensions()) {
+        dims.push_back(nix::util::dimTypeToStr(d.dimensionType()));
+    }
+    desc.addEnumeration("Dimensions", dims);
+    std::string s = " [";
+    for (size_t i = 0; i < da.dataExtent().size(); i++) {
+        s = s + nix::util::numToStr(da.dataExtent()[i]);
+        if (i < da.dataExtent().size() - 1)
+            s = s + ", ";
+    }
+    s = s + "]";
+    desc.addInfo("Shape", s);
+    desc.addInfo("Metadata", (da.metadata() ? da.metadata().name() : "none"));
+    std::vector<std::string> sources;
+    for (nix::Source src : da.sources()) {
+        sources.push_back(src.name());
+    }
+    desc.addItemize("Sources", sources);
+    return desc.toHtml();
 }
 
 
