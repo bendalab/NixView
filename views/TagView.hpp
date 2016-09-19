@@ -4,6 +4,7 @@
 #include <QScrollArea>
 #include <nix.hpp>
 #include <QModelIndex>
+#include <QMap>
 #include <QListWidget>
 #include "model/NixModelItem.hpp"
 #include "utils/entitydescriptor.h"
@@ -26,20 +27,19 @@ public:
     void clear();
 
 public slots:
-    void reference_selected();
-    void feature_selected();
+    void reference_selected(int i);
+    void feature_selected(int i);
     void header_clicked();
 
 private:
     Ui::TagView *ui;
     nix::Tag tag;
+    QMap<int, int> feature_map, reference_map;
 
     void fill_references();
     void fill_features();
     void clear_references();
     void clear_features();
-    void clear_plot_widget(PlotWidget *plot_widget);
-    void plot_data(PlotWidget *plot_widget, const nix::DataArray &array);
 };
 
 #endif // TAGVIEW_H
