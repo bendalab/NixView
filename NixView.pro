@@ -140,3 +140,6 @@ DEPENDPATH += /usr/local/include
 
 RESOURCES += \
     resources.qrc
+
+DISTFILES += \
+    images/info.png
