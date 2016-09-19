@@ -109,7 +109,7 @@ void TagView::feature_selected(int i) {
         w->setLayout(new QVBoxLayout());
         PlotWidget *pw = new PlotWidget();
         w->layout()->addWidget(pw);
-        pw->process(this->tag.features()[i].data());
+        pw->process(this->tag.features()[i], this->tag);
         ui->featureStack->addWidget(w);
         feature_map[i] = ui->featureStack->count() - 1;
         ui->featureStack->setCurrentIndex(feature_map[i]);
