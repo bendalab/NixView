@@ -54,43 +54,8 @@
      <number>0</number>
     </property>
     <item>
-     <widget class="QPushButton" name="tagLabel">
-      <property name="font">
-       <font>
-        <pointsize>14</pointsize>
-        <weight>75</weight>
-        <bold>true</bold>
-       </font>
-      </property>
-      <property name="text">
-       <string>PushButton</string>
-      </property>
-      <property name="flat">
-       <bool>true</bool>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <widget class="QGroupBox" name="groupBox">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="autoFillBackground">
-       <bool>false</bool>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">gridline-color: rgb(255, 255, 255);</string>
-      </property>
-      <property name="title">
-       <string/>
-      </property>
+     <widget class="QWidget" name="widget" native="true">
       <layout class="QVBoxLayout" name="verticalLayout_2">
-       <property name="spacing">
-        <number>0</number>
-       </property>
        <property name="leftMargin">
         <number>0</number>
        </property>
@@ -101,112 +66,273 @@
         <number>0</number>
        </property>
        <property name="bottomMargin">
-        <number>0</number>
+        <number>1</number>
        </property>
        <item>
-        <widget class="QTabWidget" name="referenceTabs">
-         <property name="minimumSize">
-          <size>
-           <width>0</width>
-           <height>100</height>
-          </size>
-         </property>
-         <widget class="QWidget" name="tab">
-          <attribute name="title">
-           <string>Tab 1</string>
-          </attribute>
-         </widget>
-         <widget class="QWidget" name="tab_2">
-          <attribute name="title">
-           <string>Tab 2</string>
-          </attribute>
-         </widget>
+        <widget class="QWidget" name="tagWidget" native="true">
+         <layout class="QHBoxLayout" name="horizontalLayout">
+          <property name="topMargin">
+           <number>6</number>
+          </property>
+          <property name="bottomMargin">
+           <number>6</number>
+          </property>
+          <item>
+           <widget class="QLabel" name="tagLabel">
+            <property name="font">
+             <font>
+              <pointsize>18</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string>TextLabel</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="horizontalSpacer">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>741</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QPushButton" name="tagInfoBtn">
+            <property name="text">
+             <string/>
+            </property>
+            <property name="icon">
+             <iconset resource="../resources.qrc">
+              <normaloff>:/images/info.png</normaloff>:/images/info.png</iconset>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </widget>
        </item>
-      </layout>
-     </widget>
-    </item>
-    <item>
-     <widget class="QGroupBox" name="feature_box">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="autoFillBackground">
-       <bool>false</bool>
-      </property>
-      <property name="styleSheet">
-       <string notr="true"/>
-      </property>
-      <property name="title">
-       <string>Features</string>
-      </property>
-      <layout class="QHBoxLayout" name="horizontalLayout_2">
-       <property name="topMargin">
-        <number>3</number>
-       </property>
-       <property name="bottomMargin">
-        <number>0</number>
-       </property>
        <item>
-        <widget class="QSplitter" name="splitter_2">
+        <widget class="Line" name="line">
+         <property name="frameShadow">
+          <enum>QFrame::Sunken</enum>
+         </property>
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
          </property>
-         <widget class="QListWidget" name="feature_list">
-          <property name="styleSheet">
-           <string notr="true">border-color: rgb(206, 206, 206);</string>
+        </widget>
+       </item>
+       <item>
+        <widget class="QWidget" name="referenceSelectorWidget" native="true">
+         <layout class="QHBoxLayout" name="horizontalLayout_2">
+          <property name="leftMargin">
+           <number>3</number>
           </property>
-          <property name="frameShape">
-           <enum>QFrame::Box</enum>
+          <property name="topMargin">
+           <number>0</number>
           </property>
-         </widget>
-         <widget class="QWidget" name="feature_plot" native="true">
-          <property name="minimumSize">
-           <size>
-            <width>500</width>
-            <height>0</height>
-           </size>
+          <property name="rightMargin">
+           <number>0</number>
           </property>
-          <layout class="QHBoxLayout" name="horizontalLayout_3">
-           <property name="leftMargin">
-            <number>0</number>
-           </property>
-           <property name="topMargin">
-            <number>0</number>
-           </property>
-           <property name="rightMargin">
-            <number>0</number>
-           </property>
-           <property name="bottomMargin">
-            <number>0</number>
-           </property>
-          </layout>
-         </widget>
+          <property name="bottomMargin">
+           <number>0</number>
+          </property>
+          <item>
+           <widget class="QLabel" name="refLabel">
+            <property name="toolTip">
+             <string>A Tag refers to 0 - n DataArray entities... </string>
+            </property>
+            <property name="text">
+             <string>Reference:</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QComboBox" name="referencesCombo">
+            <property name="minimumSize">
+             <size>
+              <width>150</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="toolTip">
+             <string>Select the referenced data you want to plot</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="horizontalSpacer_2">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>685</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QWidget" name="referencePlotWidget" native="true">
+         <layout class="QVBoxLayout" name="verticalLayout_3">
+          <property name="leftMargin">
+           <number>0</number>
+          </property>
+          <property name="topMargin">
+           <number>0</number>
+          </property>
+          <property name="rightMargin">
+           <number>0</number>
+          </property>
+          <property name="bottomMargin">
+           <number>0</number>
+          </property>
+          <item>
+           <widget class="QStackedWidget" name="referenceStack">
+            <widget class="QWidget" name="page"/>
+            <widget class="QWidget" name="page_2"/>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QWidget" name="featureSelectorWidget" native="true">
+         <layout class="QHBoxLayout" name="horizontalLayout_3">
+          <property name="leftMargin">
+           <number>3</number>
+          </property>
+          <property name="topMargin">
+           <number>0</number>
+          </property>
+          <property name="rightMargin">
+           <number>0</number>
+          </property>
+          <property name="bottomMargin">
+           <number>0</number>
+          </property>
+          <item>
+           <widget class="QLabel" name="featureLabel">
+            <property name="toolTip">
+             <string>A Tag may refer to DataArrayEntities that are feaures of the tagged data regions...</string>
+            </property>
+            <property name="text">
+             <string>Feature:</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QComboBox" name="featuresCombo">
+            <property name="minimumSize">
+             <size>
+              <width>150</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="toolTip">
+             <string>Select the feature you want to plot</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="horizontalSpacer_3">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>701</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QWidget" name="featurePlotWidget" native="true">
+         <layout class="QVBoxLayout" name="verticalLayout_4">
+          <property name="leftMargin">
+           <number>0</number>
+          </property>
+          <property name="topMargin">
+           <number>0</number>
+          </property>
+          <property name="rightMargin">
+           <number>0</number>
+          </property>
+          <property name="bottomMargin">
+           <number>0</number>
+          </property>
+          <item>
+           <widget class="QStackedWidget" name="featureStack">
+            <widget class="QWidget" name="page_3"/>
+            <widget class="QWidget" name="page_4"/>
+           </widget>
+          </item>
+         </layout>
         </widget>
        </item>
       </layout>
      </widget>
     </item>
    </layout>
-   <zorder>feature_box</zorder>
-   <zorder>groupBox</zorder>
-   <zorder>tagLabel</zorder>
   </widget>
  </widget>
- <resources/>
+ <resources>
+  <include location="../resources.qrc"/>
+ </resources>
  <connections>
   <connection>
-   <sender>tagLabel</sender>
+   <sender>tagInfoBtn</sender>
    <signal>clicked()</signal>
    <receiver>TagView</receiver>
    <slot>header_clicked()</slot>
    <hints>
     <hint type="sourcelabel">
+     <x>870</x>
+     <y>37</y>
+    </hint>
+    <hint type="destinationlabel">
      <x>460</x>
-     <y>16</y>
+     <y>239</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>referencesCombo</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>TagView</receiver>
+   <slot>reference_selected(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>147</x>
+     <y>93</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>460</x>
+     <y>239</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>featuresCombo</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>TagView</receiver>
+   <slot>feature_selected(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>131</x>
+     <y>297</y>
     </hint>
     <hint type="destinationlabel">
      <x>460</x>
@@ -217,5 +343,7 @@
  </connections>
  <slots>
   <slot>header_clicked()</slot>
+  <slot>reference_selected(int)</slot>
+  <slot>feature_selected(int)</slot>
  </slots>
 </ui>
