@@ -108,6 +108,30 @@ void PlotWidget::process(const nix::Tag &tag, nix::ndsize_t ref) {
 }
 
 
+void PlotWidget::process(const nix::Feature & feat, const nix::Tag & tag) {
+    nix::DataArray da = feat.data();
+    Plotter *currplot = process(da);
+    this->text = QString::fromStdString(EntityDescriptor::describe(feat));
+    QVector<double> positions, extents;
+    positions.push_back(tag.position()[0]);
+    if (tag.extent().size() > 0)
+        extents.push_back(tag.extent()[0]);
+    if (currplot != nullptr && currplot->plotter_type() == PlotterType::Category) {
+        CategoryPlotter* plt = static_cast<CategoryPlotter*>(currplot);
+        plt->setFixedHeight(200);
+        if (feat.linkType() == nix::LinkType::Tagged) {
+            plt->add_segments(positions, extents, QString::fromStdString(tag.name()));
+        }
+    } else if (currplot != nullptr && currplot->plotter_type() == PlotterType::Line) {
+        LinePlotter *plt = static_cast<LinePlotter*>(currplot);
+        plt->setFixedHeight(200);
+        if (feat.linkType() == nix::LinkType::Tagged) {
+            plt->add_segments(positions, extents, QString::fromStdString(tag.name()));
+        }
+    }
+}
+
+
 void PlotWidget::process(const nix::MultiTag &mtag, nix::ndsize_t ref) {
     if (mtag.referenceCount() == 0)
         return;
