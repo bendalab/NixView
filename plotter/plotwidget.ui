@@ -67,31 +67,26 @@
        </spacer>
       </item>
       <item>
-       <widget class="QToolButton" name="moreButton">
-        <property name="toolTip">
-         <string>more information</string>
-        </property>
-        <property name="autoFillBackground">
-         <bool>false</bool>
+       <widget class="QPushButton" name="moreButton">
+        <property name="font">
+         <font>
+          <family>Bodoni 72 Oldstyle</family>
+          <pointsize>12</pointsize>
+          <underline>false</underline>
+         </font>
         </property>
         <property name="text">
-         <string>...</string>
+         <string/>
         </property>
         <property name="icon">
          <iconset resource="../resources.qrc">
-          <normaloff>:/images/more.png</normaloff>:/images/more.png</iconset>
+          <normaloff>:/images/info.png</normaloff>:/images/info.png</iconset>
         </property>
         <property name="iconSize">
          <size>
           <width>12</width>
           <height>12</height>
          </size>
-        </property>
-        <property name="shortcut">
-         <string>Ctrl+I</string>
-        </property>
-        <property name="autoRaise">
-         <bool>false</bool>
         </property>
        </widget>
       </item>
@@ -108,7 +103,7 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>755</width>
+        <width>719</width>
         <height>291</height>
        </rect>
       </property>
@@ -142,8 +137,8 @@
    <slot>show_more()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>24</x>
-     <y>24</y>
+     <x>10</x>
+     <y>10</y>
     </hint>
     <hint type="destinationlabel">
      <x>394</x>
