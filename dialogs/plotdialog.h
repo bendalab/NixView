@@ -24,7 +24,7 @@ public:
     ~PlotDialog();
 
 public slots:
-    void save_plot();
+
    /*
     void show_context_menu();
     void show_legend();
