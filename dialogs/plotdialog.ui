@@ -28,21 +28,10 @@
     <enum>QLayout::SetNoConstraint</enum>
    </property>
    <item>
-    <layout class="QVBoxLayout" name="verticalLayout_2">
-     <property name="sizeConstraint">
-      <enum>QLayout::SetMaximumSize</enum>
-     </property>
-     <item>
-      <widget class="PlotWidget" name="plot" native="true">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-      </widget>
-     </item>
-    </layout>
+    <widget class="QStackedWidget" name="stackedWidget">
+     <widget class="PlotWidget" name="plot"/>
+     <widget class="TagView" name="tag_view"/>
+    </widget>
    </item>
    <item>
     <widget class="QDialogButtonBox" name="buttonBox">
@@ -70,6 +59,12 @@
    <class>PlotWidget</class>
    <extends>QWidget</extends>
    <header>plotter/plotwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>TagView</class>
+   <extends>QWidget</extends>
+   <header>views/TagView.hpp</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

@@ -18,7 +18,17 @@ PlotDialog::PlotDialog(QWidget *parent) :
 }
 
 void PlotDialog::set_entity(QModelIndex qml) {
-    ui->plot->setEntity(qml);
+    NixTreeModelItem *item = static_cast<NixTreeModelItem*>(qml.internalPointer());
+
+    if ((item->nixType() == NixType::NIX_TAG) || (item->nixType() == NixType::NIX_MTAG)){
+        ui->tag_view->setEntity(qml);
+        ui->stackedWidget->setCurrentIndex(1);
+        resize(800, 650);
+    } else {
+        ui->plot->setEntity(qml);
+        ui->stackedWidget->setCurrentIndex(0);
+        resize(640, 240);
+    }
 }
 
 PlotDialog::~PlotDialog()
