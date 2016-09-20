@@ -176,7 +176,7 @@ void PlotWidget::setEntity(QModelIndex qml) {
     }
 }
 
-void PlotWidget::savePlot() {
+void PlotWidget::save_plot() {
     QString fileName = QFileDialog::getSaveFileName(this, tr("Save plot"), "untitled.pdf", tr("Images (*.pdf)"));
 
     if (fileName.isEmpty()) {

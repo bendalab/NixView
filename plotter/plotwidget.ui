@@ -75,6 +75,9 @@
           <underline>false</underline>
          </font>
         </property>
+        <property name="toolTip">
+         <string>more information ...</string>
+        </property>
         <property name="text">
          <string/>
         </property>
@@ -87,6 +90,16 @@
           <width>12</width>
           <height>12</height>
          </size>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="saveButton">
+        <property name="toolTip">
+         <string>save plot as pdf file to disk</string>
+        </property>
+        <property name="text">
+         <string>save</string>
         </property>
        </widget>
       </item>
@@ -103,7 +116,7 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>719</width>
+        <width>696</width>
         <height>291</height>
        </rect>
       </property>
@@ -146,8 +159,25 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>saveButton</sender>
+   <signal>clicked()</signal>
+   <receiver>PlotWidget</receiver>
+   <slot>save_plot()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>746</x>
+     <y>279</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>394</x>
+     <y>146</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>show_more()</slot>
+  <slot>save_plot()</slot>
  </slots>
 </ui>

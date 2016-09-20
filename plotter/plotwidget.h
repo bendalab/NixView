@@ -23,7 +23,7 @@ public:
 
     bool can_draw() const;
     void setEntity(QModelIndex qml);
-    void savePlot();
+
     void clear();
 
     Plotter* process(const nix::DataArray &array);
@@ -33,6 +33,7 @@ public:
 
 public slots:
     void show_more();
+    void save_plot();
 
 private:
     Ui::PlotWidget *ui;
