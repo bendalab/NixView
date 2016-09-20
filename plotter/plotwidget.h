@@ -30,6 +30,7 @@ public:
     void process(const nix::MultiTag &mtag, nix::ndsize_t ref=0);
     void process(const nix::Tag &tag, nix::ndsize_t ref=0);
     void process(const nix::Feature &feat, const nix::Tag & tag);
+    void process(const nix::Feature &feat, const nix::MultiTag & mtag);
 
 public slots:
     void show_more();

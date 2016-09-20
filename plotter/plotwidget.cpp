@@ -15,7 +15,6 @@ PlotWidget::PlotWidget(QWidget *parent) :
 
 PlotWidget::~PlotWidget()
 {
-    std::cerr << "PlotWidget destructor!" << std::endl;
     delete ui;
 }
 
@@ -127,6 +126,38 @@ void PlotWidget::process(const nix::Feature & feat, const nix::Tag & tag) {
         plt->setFixedHeight(200);
         if (feat.linkType() == nix::LinkType::Tagged) {
             plt->add_segments(positions, extents, QString::fromStdString(tag.name()));
+        }
+    }
+}
+
+
+void PlotWidget::process(const nix::Feature & feat, const nix::MultiTag & mtag) {
+    nix::DataArray da = feat.data();
+    Plotter *currplot = process(da);
+    this->text = QString::fromStdString(EntityDescriptor::describe(feat));
+    std::vector<double> pos(mtag.positions().dataExtent()[0]);
+    std::vector<double> ext;
+
+    mtag.positions().getData(nix::DataType::Double, pos.data(), {mtag.positions().dataExtent()[0]}, {0});
+    QVector<double> positions = QVector<double>::fromStdVector(pos);
+
+    if (mtag.extents() != nix::none) {
+        ext.resize(positions.size());
+        mtag.extents().getData(nix::DataType::Double, ext.data(), {mtag.positions().dataExtent()[0]}, {0});
+    }
+    QVector<double> extents = QVector<double>::fromStdVector(ext);
+
+    if (currplot != nullptr && currplot->plotter_type() == PlotterType::Category) {
+        CategoryPlotter* plt = static_cast<CategoryPlotter*>(currplot);
+        plt->setFixedHeight(200);
+        if (feat.linkType() == nix::LinkType::Tagged) {
+            plt->add_segments(positions, extents, QString::fromStdString(mtag.name()));
+        }
+    } else if (currplot != nullptr && currplot->plotter_type() == PlotterType::Line) {
+        LinePlotter *plt = static_cast<LinePlotter*>(currplot);
+        plt->setFixedHeight(200);
+        if (feat.linkType() == nix::LinkType::Tagged) {
+            plt->add_segments(positions, extents, QString::fromStdString(mtag.name()));
         }
     }
 }
