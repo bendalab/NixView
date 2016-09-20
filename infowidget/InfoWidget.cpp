@@ -15,8 +15,8 @@ InfoWidget::InfoWidget(QWidget *parent) :
     tp = new TagPanel(this);
     ui->verticalLayout_page_tag->addWidget(tp);
 
-    tv = new TagView(this);
-    ui->tagViewLayout->addWidget(tv);
+    //tv = new TagView(this);
+    //ui->tagViewLayout->addWidget(tv);
 
     dp = new DescriptionPanel(this);
     ui->verticalLayout_page_info->addWidget(dp);
@@ -31,7 +31,7 @@ void InfoWidget::update_info_widget(QModelIndex qml) {
     mp->updateMetadataPanel(qml);
     tp->update_tag_panel(qml);
     dp->update_description_panel(qml);
-    tv->setEntity(qml);
+    //tv->setEntity(qml);
 }
 
 
