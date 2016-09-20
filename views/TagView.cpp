@@ -6,6 +6,70 @@
 #include "plotter/lineplotter.h"
 #include "plotter/plotwidget.h"
 
+TagContainer::TagContainer(QVariant entity):entity(entity) {}
+
+TagContainer::TagContainer(){}
+
+std::vector<nix::Feature> TagContainer::features(){
+    std::vector<nix::Feature> vec;
+    if (entity.canConvert<nix::Tag>()) {
+        vec = entity.value<nix::Tag>().features();
+    } else if (entity.canConvert<nix::MultiTag>()) {
+        vec = entity.value<nix::MultiTag>().features();
+    }
+    return vec;
+}
+
+
+std::vector<nix::DataArray> TagContainer::references() {
+    std::vector<nix::DataArray> vec;
+    if (entity.canConvert<nix::Tag>()) {
+        vec = entity.value<nix::Tag>().references();
+    } else if (entity.canConvert<nix::MultiTag>()) {
+        vec = entity.value<nix::MultiTag>().references();
+    }
+    return vec;
+}
+
+
+std::string TagContainer::name() {
+    std::string name;
+    if (entity.canConvert<nix::Tag>()) {
+        name = entity.value<nix::Tag>().name();
+    } else if (entity.canConvert<nix::MultiTag>()) {
+        name = entity.value<nix::MultiTag>().name();
+    }
+    return name;
+}
+
+
+std::string TagContainer::type() {
+    std::string type;
+    if (entity.canConvert<nix::Tag>()) {
+        type = entity.value<nix::Tag>().type();
+    } else if (entity.canConvert<nix::MultiTag>()) {
+        type = entity.value<nix::MultiTag>().type();
+    }
+    return type;
+}
+
+
+std::string TagContainer::description() {
+    std::string description;
+    if (entity.canConvert<nix::Tag>()) {
+        description = EntityDescriptor::describe(entity.value<nix::Tag>());
+    } else if (entity.canConvert<nix::MultiTag>()) {
+        description = EntityDescriptor::describe(entity.value<nix::MultiTag>());
+    }
+    return description;
+}
+
+
+QVariant TagContainer::getEntity() {
+    return this->entity;
+}
+
+
 TagView::TagView(QWidget *parent) :
     QScrollArea(parent),
     ui(new Ui::TagView)
