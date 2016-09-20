@@ -52,8 +52,9 @@ public slots:
 
 private:
     Ui::TagView *ui;
-    nix::Tag tag;
+    //nix::Tag tag;
     QMap<int, int> feature_map, reference_map;
+    TagContainer tag;
 
     void fill_references();
     void fill_features();
