@@ -296,7 +296,7 @@
    <sender>tagInfoBtn</sender>
    <signal>clicked()</signal>
    <receiver>TagView</receiver>
-   <slot>header_clicked()</slot>
+   <slot>show_tag_info()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>870</x>
@@ -342,8 +342,8 @@
   </connection>
  </connections>
  <slots>
-  <slot>header_clicked()</slot>
   <slot>reference_selected(int)</slot>
   <slot>feature_selected(int)</slot>
+  <slot>show_tag_info()</slot>
  </slots>
 </ui>

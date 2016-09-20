@@ -48,7 +48,7 @@ public:
 public slots:
     void reference_selected(int i);
     void feature_selected(int i);
-    void header_clicked();
+    void show_tag_info();
 
 private:
     Ui::TagView *ui;

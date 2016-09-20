@@ -181,7 +181,7 @@ void TagView::feature_selected(int i) {
 }
 
 
-void TagView::header_clicked() {
+void TagView::show_tag_info() {
     QMessageBox msgBox;
     msgBox.setWindowFlags(Qt::FramelessWindowHint);
     msgBox.setText(EntityDescriptor::describe(this->tag).c_str());
