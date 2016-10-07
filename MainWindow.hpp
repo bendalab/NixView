@@ -23,6 +23,8 @@ public:
     MainWindow(QWidget *parent, QApplication *app);
     ~MainWindow();
 
+    void read_nix_file(QString filename);
+
 public slots:
     void on_actionTree_triggered();
     void on_actionColumn_triggered();
@@ -56,7 +58,7 @@ private:
 
     void get_recent_files();
     void populate_recent_file_menu();
-    void read_nix_file(QString filename);
+
     void update_file_list(QString filename);
     void save_recent_files(QStringList &files);
 };
