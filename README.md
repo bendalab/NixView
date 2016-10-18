@@ -53,7 +53,7 @@ git clone https://github.com/bendalab/nixview.git
 cd nixview
 mkdir build
 cd build
-cmake ..
+CMAKE_PREFIX_PATH=/usr/local/opt/qt5/ cmake ..
 make -j 4
 ./nixview
 ```
