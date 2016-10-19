@@ -23,7 +23,7 @@ before_install:
     brew update;
     brew install qt5 cmake boost;
     brew unlink qt4;
-    brew install homebrew/science/nixio --HEAD;
+    brew install homebrew/science/nixio;
     fi
 
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then
