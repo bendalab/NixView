@@ -31,17 +31,13 @@ before_install:
     sudo apt-get install -q gcc-4.8 g++-4.8 libstdc++-4.8-dev libboost-all-dev -y;
     sudo apt-get install libcppunit-dev libboost-all-dev libhdf5-serial-dev libhdf5-dev libhdf5-7 -y;
     sudo apt-get install qt5-default qttools5-dev-tools -y;
+    sudo add-apt-repository ppa:gnode/nix
+    sudo apt-get update
+    sudo apt-get install libnix-dev
     g++ --version;
     mkdir nix-build;
     cd nix-build;
-    git clone https://github.com/G-Node/nix;
-    cd nix;
-    mkdir build;
-    cd build;
-    cmake -DBUILD_TESTING=OFF ..;
-    make all;
-    sudo make install;
-    cd ../../..;
+    cd;
     fi
 
   
