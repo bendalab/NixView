@@ -35,9 +35,6 @@ before_install:
     sudo apt-get update;
     sudo apt-get install libnix-dev -y;
     g++ --version;
-    mkdir nix-build;
-    cd nix-build;
-    cd;
     fi
 
   
