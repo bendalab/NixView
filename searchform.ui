@@ -28,6 +28,13 @@
    </property>
    <item>
     <layout class="QGridLayout" name="gridLayout">
+     <item row="0" column="2">
+      <widget class="QLabel" name="label_3">
+       <property name="text">
+        <string>Search term:</string>
+       </property>
+      </widget>
+     </item>
      <item row="2" column="2">
       <widget class="QLineEdit" name="termEdit">
        <property name="toolTip">
@@ -73,10 +80,10 @@
        </property>
       </widget>
      </item>
-     <item row="0" column="2">
-      <widget class="QLabel" name="label_3">
+     <item row="2" column="4">
+      <widget class="QPushButton" name="goBtn">
        <property name="text">
-        <string>Search term:</string>
+        <string>go</string>
        </property>
       </widget>
      </item>
@@ -85,5 +92,25 @@
   </layout>
  </widget>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>goBtn</sender>
+   <signal>clicked()</signal>
+   <receiver>SearchForm</receiver>
+   <slot>go()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>701</x>
+     <y>60</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>365</x>
+     <y>39</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>go()</slot>
+ </slots>
 </ui>

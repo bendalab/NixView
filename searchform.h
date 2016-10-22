@@ -18,8 +18,15 @@ public:
 
     void setNixFile(const nix::File &f);
 
+signals:
+    void newResults(std::vector<QVariant>);
+
+public slots:
+    void go();
+
 private:
     Ui::SearchForm *ui;
+    std::vector<QVariant> results;
     nix::File nix_file;
 };
 
