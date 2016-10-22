@@ -1,15 +1,22 @@
 #include "searchform.h"
 #include "ui_searchform.h"
+#include <iostream>
+#include "common/Common.hpp"
+
 
 SearchForm::SearchForm(QWidget *parent) :
     QWidget(parent),
-    ui(new Ui::SearchForm)
-{
+    ui(new Ui::SearchForm) {
     ui->setupUi(this);
+    QStringList filter_expressions = {FILTER_EXP_DATAARRAY, FILTER_EXP_BLOCK,
+                                      FILTER_EXP_TAG, FILTER_EXP_MULTITAG, FILTER_EXP_GROUP,
+                                      FILTER_EXP_SOURCE, FILTER_EXP_METADATA };
+    ui->typeComboBox->addItems(filter_expressions);
+    ui->fieldComboBox->addItems({"name", "type", "id", "definition"});
 }
 
-SearchForm::~SearchForm()
-{
+
+SearchForm::~SearchForm() {
     delete ui;
 }
 
