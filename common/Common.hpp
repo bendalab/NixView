@@ -57,6 +57,7 @@ Q_DECLARE_METATYPE(nix::Dimension)
 #define FILTER_EXP_GROUP "is Group"
 #define FILTER_EXP_BLOCK "is Block"
 #define FILTER_EXP_METADATA "is MetaData"
+#define FILTER_EXP_SOURCE "is Source"
 #define FILTER_EXP_DATAARRAY "is DataArray"
 #define FILTER_EXP_TAG "is Tag"
 #define FILTER_EXP_MULTITAG "is MultiTag"
