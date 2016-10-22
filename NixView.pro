@@ -56,7 +56,8 @@ SOURCES += main.cpp\
     views/lazyloadview.cpp \
     dialogs/optionsdialog.cpp \
     dialogs/filepropertiesdialog.cpp \
-    model/nixmetadatatreemodel.cpp
+    model/nixmetadatatreemodel.cpp \
+    searchform.cpp
 
 
 HEADERS  += MainWindow.hpp \
@@ -98,7 +99,8 @@ HEADERS  += MainWindow.hpp \
     views/lazyloadview.h \
     dialogs/optionsdialog.h \
     dialogs/filepropertiesdialog.hpp \
-    model/nixmetadatatreemodel.h
+    model/nixmetadatatreemodel.h \
+    searchform.h
 
 
 FORMS    += MainWindow.ui \
@@ -124,7 +126,8 @@ FORMS    += MainWindow.ui \
     views/TagView.ui \
     views/lazyloadview.ui \
     dialogs/optionsdialog.ui \
-    dialogs/filepropertiesdialog.ui
+    dialogs/filepropertiesdialog.ui \
+    searchform.ui
 
 #standard windows folder?
 #win32:CONFIG(release, debug|release): LIBS += /usr/local/lib/release/ -lnix
