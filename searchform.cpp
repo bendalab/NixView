@@ -12,3 +12,10 @@ SearchForm::~SearchForm()
 {
     delete ui;
 }
+
+
+void SearchForm::setNixFile(const nix::File &f) {
+    this->nix_file = f;
+}
+
+
