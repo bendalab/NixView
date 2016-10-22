@@ -41,6 +41,10 @@ public slots:
     void invalid_file_error();
     void recent_file_update(QStringList files);
     void open_recent_file(QAction* a);
+    void find();
+    void closeSearch();
+    void clearSearch();
+    void newSearchResults(std::vector<QVariant>);
 
 signals:
     void emit_view_change(int);

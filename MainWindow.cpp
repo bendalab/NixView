@@ -44,6 +44,7 @@ void MainWindow::connect_widgets() {
     QObject::connect(ui->main_view, SIGNAL(scan_progress_update()), this, SLOT(file_scan_progress()));
     QObject::connect(ui->menu_open_recent, SIGNAL(triggered(QAction*)), this, SLOT(open_recent_file(QAction*)));
     QObject::connect(ui->actionFind, SIGNAL(triggered()), ui->main_view, SLOT(toggle_find()));
+    QObject::connect(ui->searchForm, SIGNAL(newResults(std::vector<QVariant>)), this, SLOT(newSearchResults(std::vector<QVariant>)));
 }
 
 
@@ -118,6 +119,38 @@ void MainWindow::show_options() {
     QObject::connect(&d, SIGNAL(recent_file_changed(QStringList)), this, SLOT(recent_file_update(QStringList)));
     QObject::connect(&d, SIGNAL(column_visibility_changed(QString, QString,bool)), this, SLOT(visible_columns_update(QString, QString,bool)));
     d.exec();
+}
+
+
+void MainWindow::find() {
+    ui->searchForm->setNixFile(ui->main_view->get_nix_file());
+    ui->stackedWidget->setCurrentIndex(1);
+    //TODO disable find button when no file is set...
+}
+
+
+void MainWindow::closeSearch() {
+    ui->stackedWidget->setCurrentIndex(0);
+}
+
+
+void MainWindow::clearSearch() {
+    ui->searchForm->clear();
+    ui->searchResults->clear();
+    ui->searchResults->update();
+}
+
+
+void MainWindow::newSearchResults(std::vector<QVariant> results) {
+    std::cerr << "going to display search results"<< std::endl;
+    for (auto r : results) {
+        std::string str;
+        if (r.canConvert<nix::DataArray>()) {
+            nix::DataArray a = r.value<nix::DataArray>();
+            str = a.name() + " [" + a.type() + "]";
+        }
+        ui->searchResults->addItem(QString::fromStdString(str));
+    }
 }
 
 

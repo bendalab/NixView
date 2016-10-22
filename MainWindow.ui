@@ -94,6 +94,50 @@
            </item>
           </layout>
          </widget>
+         <widget class="QWidget" name="search">
+          <layout class="QVBoxLayout" name="verticalLayout_3">
+           <item>
+            <widget class="SearchForm" name="searchForm" native="true"/>
+           </item>
+           <item>
+            <widget class="QListWidget" name="searchResults"/>
+           </item>
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_3">
+             <item>
+              <spacer name="horizontalSpacer_3">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item>
+              <widget class="QPushButton" name="clearSearchBtn">
+               <property name="text">
+                <string>clear</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="closeSearchBtn">
+               <property name="toolTip">
+                <string>closeSearch</string>
+               </property>
+               <property name="text">
+                <string>close</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+          </layout>
+         </widget>
          <widget class="QWidget" name="splash">
           <property name="autoFillBackground">
            <bool>false</bool>
@@ -558,7 +602,7 @@ color: rgb(150,150, 150);</string>
   </action>
   <action name="actionFind">
    <property name="enabled">
-    <bool>false</bool>
+    <bool>true</bool>
    </property>
    <property name="icon">
     <iconset resource="resources.qrc">
@@ -597,6 +641,12 @@ color: rgb(150,150, 150);</string>
    <class>MainViewWidget</class>
    <extends>QWidget</extends>
    <header>views/MainViewWidget.hpp</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>SearchForm</class>
+   <extends>QWidget</extends>
+   <header>searchform.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
@@ -732,6 +782,38 @@ color: rgb(150,150, 150);</string>
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>actionFind</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>find()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>699</x>
+     <y>393</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>closeSearchBtn</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>closeSearch()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1348</x>
+     <y>736</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>699</x>
+     <y>393</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>open_file()</slot>
@@ -741,5 +823,7 @@ color: rgb(150,150, 150);</string>
   <slot>recent_file_selected(QListWidgetItem*)</slot>
   <slot>show_options()</slot>
   <slot>show_file_properties()</slot>
+  <slot>find()</slot>
+  <slot>closeSearch()</slot>
  </slots>
 </ui>
