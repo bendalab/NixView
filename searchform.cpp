@@ -55,3 +55,8 @@ void SearchForm::setNixFile(const nix::File &f) {
 }
 
 
+void SearchForm::clear() {
+    this->results.clear();
+    ui->termEdit->clear();
+    ui->caseSensitivityCheckBox->setChecked(false);
+}

@@ -16,6 +16,7 @@ public:
     explicit SearchForm(QWidget *parent = 0);
     ~SearchForm();
 
+    void clear();
     void setNixFile(const nix::File &f);
 
 signals:
@@ -31,3 +32,4 @@ private:
 };
 
 #endif // SEARCHFORM_H
+// TODO invalidate nix file, if file was closed
