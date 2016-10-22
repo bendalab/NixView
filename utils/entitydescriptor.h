@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include <nix.hpp>
+#include <QVariant>
 
 class EntityDescriptor
 {
@@ -25,7 +26,7 @@ public:
     void clear();
 
     std::string toHtml();
-
+    static std::string describe(const QVariant &var);
     static std::string describe(const nix::DataArray &da);
     static std::string describe(const nix::Block &b);
     static std::string describe(const nix::Tag &t);

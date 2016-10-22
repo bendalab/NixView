@@ -1,4 +1,5 @@
 #include "entitydescriptor.h"
+#include "common/Common.hpp"
 
 EntityDescriptor::EntityDescriptor()
 {
@@ -334,4 +335,30 @@ std::string EntityDescriptor::describe(const nix::Property &p) {
     }
     desc.addItemize("Values", values);
     return desc.toHtml();
+}
+
+
+std::string EntityDescriptor::describe(const QVariant &var) {
+    if (var.canConvert<nix::DataArray>()) {
+        return describe(var.value<nix::DataArray>());
+    } else if (var.canConvert<nix::Block>()) {
+        return describe(var.value<nix::Block>());
+    } else if (var.canConvert<nix::Group>()) {
+        return describe(var.value<nix::Group>());
+    } else if (var.canConvert<nix::Tag>()) {
+        return describe(var.value<nix::Tag>());
+    } else if (var.canConvert<nix::MultiTag>()) {
+        return describe(var.value<nix::MultiTag>());
+    } else if (var.canConvert<nix::Source>()) {
+        return describe(var.value<nix::Source>());
+    } else if (var.canConvert<nix::Section>()) {
+        return describe(var.value<nix::Section>());
+    } else if (var.canConvert<nix::Feature>()) {
+        return describe(var.value<nix::Feature>());
+    } else if (var.canConvert<nix::Property>()) {
+        return describe(var.value<nix::Property>());
+    } else if (var.canConvert<nix::Dimension>()) {
+        return describe(var.value<nix::Dimension>());
+    }
+    return "";
 }
