@@ -33,7 +33,10 @@ void SearchForm::go() {
                 std::cerr << "in dataArrays" << std::endl;
                 if (ui->typeComboBox->currentIndex() == 0) {
                     for (nix::Block b : this->nix_file.blocks()){
-                        std::vector<nix::DataArray> arrays = b.dataArrays(nix::util::NameFilter<nix::DataArray>(ui->termEdit->text().toStdString()));
+                        std::vector<nix::DataArray> arrays =
+                                b.dataArrays(NameSearch<nix::DataArray>(ui->termEdit->text().toStdString(),
+                                                                        ui->caseSensitivityCheckBox->isChecked(),
+                                                                        false));
                         for (nix::DataArray da : arrays) {
                             this->results.push_back(QVariant::fromValue(da));
                         }
