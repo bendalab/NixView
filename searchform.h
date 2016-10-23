@@ -3,6 +3,56 @@
 
 #include <QWidget>
 #include <nix.hpp>
+#include "utils/utils.hpp"
+
+
+template<typename T>
+struct NameSearch : nix::util::Filter<T> {
+
+    const std::string name;
+    bool case_sensitive, exact;
+
+    NameSearch(const std::string &str, bool case_sensitive=false, bool exact=false)
+            : name(str), case_sensitive(case_sensitive), exact(exact)
+        {}
+
+    virtual bool operator()(const T &e) {
+        return nixview::util::stringCompare(e.name(), name, case_sensitive, exact);
+    }
+};
+
+
+template<typename T>
+struct TypeSearch : nix::util::Filter<T> {
+
+    const std::string name;
+    bool case_sensitive, exact;
+
+    NameSearch(const std::string &str, bool case_sensitive=false, bool exact=false)
+            : name(str), case_sensitive(case_sensitive), exact(exact)
+        {}
+
+    virtual bool operator()(const T &e) {
+        return nixview::util::stringCompare(e.type(), name, case_sensitive, exact);
+    }
+};
+
+
+template<typename T>
+struct DefinitionSearch : nix::util::Filter<T> {
+
+    const std::string name;
+    bool case_sensitive, exact;
+
+    NameSearch(const std::string &str, bool case_sensitive=false, bool exact=false)
+            : name(str), case_sensitive(case_sensitive), exact(exact)
+        {}
+
+    virtual bool operator()(const T &e) {
+        return nixview::util::stringCompare(e.definition(), name, case_sensitive, exact);
+    }
+};
+
 
 namespace Ui {
 class SearchForm;
