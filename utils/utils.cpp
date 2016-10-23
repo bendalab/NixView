@@ -23,5 +23,32 @@ void remove_duplicates(QStringList &duplicate_list) {
         duplicate_list.removeAt(removes[i]);
 }
 
+
+std::string toLowerCase(const std::string &str) {
+    std::string b;
+    for (size_t i = 0; i < str.length(); i++) {
+        b.push_back(std::tolower(str[i]));
+    }
+    return b;
+}
+
+
+bool stringCompare(const std::string &a, const std::string &b, bool case_sensitive, bool exact) {
+    std::string str_a, str_b;
+
+    if (!case_sensitive) {
+        str_a = toLowerCase(a);
+        str_b = toLowerCase(b);
+    } else {
+        str_a = a;
+        str_b = b;
+    }
+    if (exact) {
+        return str_a == str_b;
+    } else {
+        return str_a.find(str_b) != std::string::npos;
+    }
+}
+
 } // util
 } // nixview
