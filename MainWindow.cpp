@@ -78,6 +78,14 @@ void MainWindow::on_actionColumn_triggered() {
 }
 
 
+void MainWindow::searchResultSelected() {
+    QList<QListWidgetItem*> items = ui->searchResults->selectedItems();
+    if (items.size() > 0) {
+        item_selected(items[0]->data(Qt::UserRole));
+    }
+}
+
+
 void MainWindow::item_selected(QModelIndex qml) {
     selected_qml = qml;
     ui->actionPlot->setEnabled(false);

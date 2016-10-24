@@ -45,6 +45,7 @@ public slots:
     void closeSearch();
     void clearSearch();
     void newSearchResults(std::vector<QVariant>);
+    void searchResultSelected();
 
 signals:
     void emit_view_change(int);
