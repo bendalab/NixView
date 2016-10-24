@@ -87,15 +87,19 @@ void MainWindow::searchResultSelected() {
 
 
 void MainWindow::item_selected(QModelIndex qml) {
-    selected_qml = qml;
+    NixTreeModelItem *item = static_cast<NixTreeModelItem*>(qml.internalPointer());
+    item_selected(item->itemData());
+}
+
+
+void MainWindow::item_selected(QVariant v) {
+    selected_item = v;
     ui->actionPlot->setEnabled(false);
     ui->actionTable->setEnabled(false);
-    NixTreeModelItem *item = static_cast<NixTreeModelItem*>(qml.internalPointer());
-    NixType type = item->nixType();
-    if(type == NixType::NIX_DATA_ARRAY | type == NixType::NIX_FEAT) {
+    if(v.canConvert<nix::DataArray>() | v.canConvert<nix::Feature>()) {
         ui->actionTable->setEnabled(true);
         ui->actionPlot->setEnabled(true);
-    } else if (type == NixType::NIX_TAG | type == NixType::NIX_MTAG) {
+    } else if (v.canConvert<nix::Tag>() | v.canConvert<nix::MultiTag>()) {
         ui->actionPlot->setEnabled(true);
     }
 }
@@ -109,14 +113,14 @@ void MainWindow::show_about() {
 
 void MainWindow::show_plot() {
     PlotDialog d(this);
-    d.set_entity(selected_qml);
+    d.set_entity(selected_item);
     d.exec();
 }
 
 
 void MainWindow::show_table() {
     TableDialog d(this);
-    d.set_entity(selected_qml);
+    d.set_entity(selected_item);
     d.exec();
 }
 
@@ -133,7 +137,7 @@ void MainWindow::find() {
     previous_page = ui->stackedWidget->currentIndex();
     ui->searchForm->setNixFile(ui->main_view->get_nix_file());
     ui->stackedWidget->setCurrentIndex(1);
-    //TODO disable find button when no file is set...
+    ui->searchForm->receiveFocus();
 }
 
 

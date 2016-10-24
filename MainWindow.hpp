@@ -29,6 +29,7 @@ public slots:
     void on_actionTree_triggered();
     void on_actionColumn_triggered();
     void item_selected(QModelIndex qml);
+    void item_selected(QVariant v);
     void open_file();
     void close_file();
     void show_about();
@@ -57,6 +58,7 @@ private:
     Ui::MainWindow *ui;
     void connect_widgets();
     QModelIndex selected_qml;
+    QVariant selected_item;
     QLabel* file_label;
     QProgressBar* file_progress;
     QStringList recent_files;
