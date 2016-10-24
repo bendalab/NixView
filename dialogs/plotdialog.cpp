@@ -17,15 +17,13 @@ PlotDialog::PlotDialog(QWidget *parent) :
     QObject::connect(ui->buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
 }
 
-void PlotDialog::set_entity(QModelIndex qml) {
-    NixTreeModelItem *item = static_cast<NixTreeModelItem*>(qml.internalPointer());
-
-    if ((item->nixType() == NixType::NIX_TAG) || (item->nixType() == NixType::NIX_MTAG)){
-        ui->tag_view->setEntity(qml);
+void PlotDialog::set_entity(QVariant var) {
+    if (var.canConvert<nix::Tag>() || var.canConvert<nix::MultiTag>()) {
+        ui->tag_view->setEntity(var);
         ui->stackedWidget->setCurrentIndex(1);
         resize(800, 650);
     } else {
-        ui->plot->setEntity(qml);
+        ui->plot->setEntity(var);
         ui->stackedWidget->setCurrentIndex(0);
         resize(640, 240);
     }

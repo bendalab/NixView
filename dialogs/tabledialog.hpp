@@ -18,7 +18,7 @@ public:
     explicit TableDialog(QWidget *parent = 0);
     ~TableDialog();
 
-    void set_entity(const QModelIndex qml);
+    void set_entity(const QVariant var);
 
 public slots:
     void button_clicked(QAbstractButton *button);

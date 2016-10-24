@@ -15,8 +15,8 @@ TableDialog::~TableDialog()
 }
 
 
-void TableDialog::set_entity(const QModelIndex qml) {
-    ui->data_table->set_entity(qml);
+void TableDialog::set_entity(const QVariant var) {
+    ui->data_table->set_entity(var);
 }
 
 

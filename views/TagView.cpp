@@ -72,23 +72,18 @@ QVariant TagContainer::getEntity() {
 
 TagView::TagView(QWidget *parent) :
     QScrollArea(parent),
-    ui(new Ui::TagView)
-{
+    ui(new Ui::TagView) {
     ui->setupUi(this);
 }
 
-TagView::~TagView()
-{
+TagView::~TagView() {
     delete ui;
 }
 
-void TagView::setEntity(QModelIndex qml) {
-    NixTreeModelItem *item = static_cast<NixTreeModelItem*>(qml.internalPointer());
-    clear();
-    if (item->nixType() == NixType::NIX_TAG) {
-        this->tag = TagContainer(QVariant::fromValue(item->itemData().value<nix::Tag>()));
-    } else if (item->nixType() == NixType::NIX_MTAG) {
-        this->tag = TagContainer(QVariant::fromValue(item->itemData().value<nix::MultiTag>()));
+
+void TagView::setEntity(QVariant var) {
+    if (var.canConvert<nix::Tag>() | var.canConvert<nix::MultiTag>()) {
+        this->tag = TagContainer(var);
     }
     ui->tagLabel->setText(QString::fromStdString(tag.name() + " - " + tag.type()));
     ui->tagLabel->setToolTip(tag.description().c_str());

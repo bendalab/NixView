@@ -22,7 +22,7 @@ public:
     ~PlotWidget();
 
     bool can_draw() const;
-    void setEntity(QModelIndex qml);
+    void setEntity(QVariant item);
 
     void clear();
 
@@ -38,8 +38,7 @@ public slots:
 
 private:
     Ui::PlotWidget *ui;
-    QModelIndex item_qml;
-    NixTreeModelItem* item;
+    QVariant item;
     Plotter *plot;
     QString text;
 

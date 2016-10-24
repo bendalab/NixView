@@ -42,7 +42,7 @@ public:
     explicit TagView(QWidget *parent = 0);
     ~TagView();
 
-    void setEntity(QModelIndex qml);
+    void setEntity(QVariant var);
     void clear();
 
 public slots:

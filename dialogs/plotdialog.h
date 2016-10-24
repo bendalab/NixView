@@ -19,7 +19,7 @@ class PlotDialog : public QDialog
 public:
     explicit PlotDialog(QWidget *parent = 0);
 
-    void set_entity(QModelIndex qml);
+    void set_entity(QVariant var);
 
     ~PlotDialog();
 

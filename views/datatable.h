@@ -23,8 +23,8 @@ public:
     explicit DataTable(QWidget *parent = 0);
     ~DataTable();
 
-    void set_entity(const QModelIndex qml);
-    bool can_draw(const QModelIndex qml) const;
+    void set_entity(const QVariant var);
+    bool can_draw(const QVariant var) const;
     QTableView* get_table();
 
 private:

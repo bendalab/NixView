@@ -23,13 +23,13 @@ DataTable::~DataTable()
 }
 
 
-bool DataTable::can_draw(const QModelIndex qml) const {
-    NixTreeModelItem *item = static_cast<NixTreeModelItem*>(qml.internalPointer());
-    if (item->nixType() == NixType::NIX_DATA_ARRAY) {
-        nix::DataArray da = item->itemData().value<nix::DataArray>();
+bool DataTable::can_draw(const QVariant var) const {
+
+    if (var.canConvert<nix::DataArray>()) {
+        nix::DataArray da = var.value<nix::DataArray>();
         return nix::data_type_is_numeric(da.dataType()) && da.dimensionCount() < 3;
-    } else if (item->nixType() == NixType::NIX_FEAT) {
-        nix::DataArray da = item->itemData().value<nix::Feature>().data();
+    } else if (var.canConvert<nix::Feature>()) {
+        nix::DataArray da = var.value<nix::Feature>().data();
         return nix::data_type_is_numeric(da.dataType()) && da.dimensionCount() < 3;
     } else {
         return false;
@@ -37,13 +37,11 @@ bool DataTable::can_draw(const QModelIndex qml) const {
 }
 
 
-void DataTable::set_entity(const QModelIndex qml) {
-    NixTreeModelItem *item = static_cast<NixTreeModelItem*>(qml.internalPointer());
-
-    if (item->nixType() == NixType::NIX_DATA_ARRAY) {
-        this->array = item->itemData().value<nix::DataArray>();
-    } else if (item->nixType() == NixType::NIX_FEAT){
-        this->array = item->itemData().value<nix::Feature>().data();
+void DataTable::set_entity(const QVariant var) {
+    if (var.canConvert<nix::DataArray>()) {
+        this->array = var.value<nix::DataArray>();
+    } else if (var.canConvert<nix::Feature>()) {
+        this->array = var.value<nix::Feature>().data();
     } else {
         return;
     }
@@ -58,7 +56,6 @@ void DataTable::set_entity(const QModelIndex qml) {
     build_model();
     ui->description->setText(QString::fromStdString(EntityDescriptor::describe(array)));
 }
-
 
 
 void DataTable::next_page() {

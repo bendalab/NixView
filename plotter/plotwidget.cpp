@@ -10,7 +10,6 @@ PlotWidget::PlotWidget(QWidget *parent) :
     ui(new Ui::PlotWidget)
 {
     ui->setupUi(this);
-    item = nullptr;
 }
 
 PlotWidget::~PlotWidget()
@@ -20,24 +19,23 @@ PlotWidget::~PlotWidget()
 
 
 bool PlotWidget::can_draw() const {
-    NixType type = item->nixType();
-    return (type == NixType::NIX_DATA_ARRAY) | (type == NixType::NIX_MTAG)
-            | (type == NixType::NIX_TAG) | (type == NixType::NIX_FEAT);
+    return item.canConvert<nix::DataArray>() | item.canConvert<nix::MultiTag>() |
+            item.canConvert<nix::Tag>() | item.canConvert<nix::Feature>();
 }
 
 
 void PlotWidget::process_item() {
-    if (this->item->nixType() == NixType::NIX_DATA_ARRAY) {
-        nix::DataArray array = item->itemData().value<nix::DataArray>();
+    if (item.canConvert<nix::DataArray>()) {
+        nix::DataArray array = item.value<nix::DataArray>();
         process(array);
-    } else if (item->nixType() == NixType::NIX_TAG) {
-        nix::Tag tag = item->itemData().value<nix::Tag>();
+    } else if (item.canConvert<nix::Tag>()) {
+        nix::Tag tag = item.value<nix::Tag>();
         process(tag);
-    } else if (item->nixType() == NixType::NIX_MTAG) {
-        nix::MultiTag mtag = item->itemData().value<nix::MultiTag>();
+    } else if (item.canConvert<nix::MultiTag>()) {
+        nix::MultiTag mtag = item.value<nix::MultiTag>();
         process(mtag);
-    } else if (item->nixType() == NixType::NIX_FEAT) {
-        nix::Feature feat = item->itemData().value<nix::Feature>();
+    } else if (item.canConvert<nix::Feature>()) {
+        nix::Feature feat = item.value<nix::Feature>();
         process(feat.data());
     }
 }
@@ -199,9 +197,8 @@ void PlotWidget::process(const nix::MultiTag &mtag, nix::ndsize_t ref) {
 }
 
 
-void PlotWidget::setEntity(QModelIndex qml) {
-    this->item_qml = qml;
-    this->item = static_cast<NixTreeModelItem*>(qml.internalPointer());
+void PlotWidget::setEntity(QVariant var) {
+    this->item = var;
     if (can_draw()) {
         process_item();
     }
