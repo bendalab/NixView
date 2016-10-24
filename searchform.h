@@ -71,6 +71,7 @@ public:
 
     void clear();
     void setNixFile(const nix::File &f);
+    void receiveFocus();
 
 signals:
     void newResults(std::vector<QVariant>);

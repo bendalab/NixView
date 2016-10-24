@@ -202,6 +202,11 @@ void SearchForm::setNixFile(const nix::File &f) {
 }
 
 
+void SearchForm::receiveFocus() {
+    ui->termEdit->setFocus();
+}
+
+
 void SearchForm::fieldSelected(int index) {
     if (ui->fieldComboBox->itemText(index) == "id") {
         ui->caseSensitivityCheckBox->setEnabled(false);
