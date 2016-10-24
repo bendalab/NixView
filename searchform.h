@@ -28,7 +28,7 @@ struct TypeSearch : nix::util::Filter<T> {
     const std::string name;
     bool case_sensitive, exact;
 
-    NameSearch(const std::string &str, bool case_sensitive=false, bool exact=false)
+    TypeSearch(const std::string &str, bool case_sensitive=false, bool exact=false)
             : name(str), case_sensitive(case_sensitive), exact(exact)
         {}
 
@@ -44,12 +44,15 @@ struct DefinitionSearch : nix::util::Filter<T> {
     const std::string name;
     bool case_sensitive, exact;
 
-    NameSearch(const std::string &str, bool case_sensitive=false, bool exact=false)
+    DefinitionSearch(const std::string &str, bool case_sensitive=false, bool exact=false)
             : name(str), case_sensitive(case_sensitive), exact(exact)
         {}
 
     virtual bool operator()(const T &e) {
-        return nixview::util::stringCompare(e.definition(), name, case_sensitive, exact);
+        if (!e.definition()) {
+            return false;
+        }
+        return nixview::util::stringCompare(*e.definition(), name, case_sensitive, exact);
     }
 };
 
@@ -74,6 +77,7 @@ signals:
 
 public slots:
     void go();
+    void fieldSelected(int index);
 
 private:
     Ui::SearchForm *ui;

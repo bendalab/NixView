@@ -58,6 +58,17 @@ void SearchForm::setNixFile(const nix::File &f) {
 }
 
 
+void SearchForm::fieldSelected(int index) {
+    if (ui->fieldComboBox->itemText(index) == "id") {
+        ui->caseSensitivityCheckBox->setEnabled(false);
+        ui->exactCheckBox->setEnabled(false);
+    } else {
+        ui->caseSensitivityCheckBox->setEnabled(true);
+        ui->exactCheckBox->setEnabled(true);
+    }
+}
+
+
 void SearchForm::clear() {
     this->results.clear();
     ui->termEdit->clear();
