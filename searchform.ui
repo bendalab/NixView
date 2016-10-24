@@ -28,45 +28,16 @@
    </property>
    <item>
     <layout class="QGridLayout" name="gridLayout">
-     <item row="0" column="2">
-      <widget class="QLabel" name="label_3">
-       <property name="text">
-        <string>Search term:</string>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="2">
-      <widget class="QLineEdit" name="termEdit">
+     <item row="2" column="5">
+      <widget class="QPushButton" name="goBtn">
        <property name="toolTip">
-        <string>The seach term</string>
+        <string>perform seach (cmd - enter)</string>
        </property>
-      </widget>
-     </item>
-     <item row="2" column="0">
-      <widget class="QComboBox" name="typeComboBox">
-       <property name="toolTip">
-        <string>Type of entity you'r looking for</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="1">
-      <widget class="QLabel" name="label_2">
        <property name="text">
-        <string>Field:</string>
+        <string>go</string>
        </property>
-      </widget>
-     </item>
-     <item row="0" column="0">
-      <widget class="QLabel" name="label">
-       <property name="text">
-        <string>Storage type</string>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="1">
-      <widget class="QComboBox" name="fieldComboBox">
-       <property name="toolTip">
-        <string>The field on which the search should be performed</string>
+       <property name="shortcut">
+        <string>Ctrl+Return</string>
        </property>
       </widget>
      </item>
@@ -80,10 +51,58 @@
        </property>
       </widget>
      </item>
-     <item row="2" column="4">
-      <widget class="QPushButton" name="goBtn">
+     <item row="2" column="0">
+      <widget class="QComboBox" name="typeComboBox">
+       <property name="toolTip">
+        <string>Type of entity you'r looking for</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="QComboBox" name="fieldComboBox">
+       <property name="toolTip">
+        <string>The field on which the search should be performed</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="0">
+      <widget class="QLabel" name="label">
        <property name="text">
-        <string>go</string>
+        <string>Storage type</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QLabel" name="label_2">
+       <property name="text">
+        <string>Field:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="2">
+      <widget class="QLineEdit" name="termEdit">
+       <property name="toolTip">
+        <string>The seach term</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="2">
+      <widget class="QLabel" name="label_3">
+       <property name="text">
+        <string>Search term:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="4">
+      <widget class="QCheckBox" name="exactCheckBox">
+       <property name="toolTip">
+        <string>Defines whether the term must be an exact match, or may be a substring.</string>
+       </property>
+       <property name="text">
+        <string>exact</string>
+       </property>
+       <property name="checked">
+        <bool>false</bool>
        </property>
       </widget>
      </item>
@@ -109,8 +128,25 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>fieldComboBox</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>SearchForm</receiver>
+   <slot>fieldSelected(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>160</x>
+     <y>59</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>365</x>
+     <y>39</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>go()</slot>
+  <slot>fieldSelected(int)</slot>
  </slots>
 </ui>
