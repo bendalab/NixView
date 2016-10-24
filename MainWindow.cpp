@@ -122,6 +122,7 @@ void MainWindow::show_options() {
 
 
 void MainWindow::find() {
+    previous_page = ui->stackedWidget->currentIndex();
     ui->searchForm->setNixFile(ui->main_view->get_nix_file());
     ui->stackedWidget->setCurrentIndex(1);
     //TODO disable find button when no file is set...
@@ -129,26 +130,31 @@ void MainWindow::find() {
 
 
 void MainWindow::closeSearch() {
-    ui->stackedWidget->setCurrentIndex(0);
+    ui->stackedWidget->setCurrentIndex(previous_page);
 }
 
 
 void MainWindow::clearSearch() {
     ui->searchForm->clear();
     ui->searchResults->clear();
-    ui->searchResults->update();
 }
 
 
 void MainWindow::newSearchResults(std::vector<QVariant> results) {
-    std::cerr << "going to display search results"<< std::endl;
+    ui->searchResults->clear();
     for (auto r : results) {
         std::string str;
         if (r.canConvert<nix::DataArray>()) {
             nix::DataArray a = r.value<nix::DataArray>();
             str = a.name() + " [" + a.type() + "]";
+        } else if (r.canConvert<nix::Block>()) {
+            nix::Block b = r.value<nix::Block>();
+            str = b.name() + " [" + b.type() + "]";
         }
-        ui->searchResults->addItem(QString::fromStdString(str));
+        QListWidgetItem *itm = new QListWidgetItem(QString::fromStdString(str));
+        itm->setData(Qt::UserRole, r);
+        itm->setToolTip(QString::fromStdString(EntityDescriptor::describe(r)));
+        ui->searchResults->addItem(itm);
     }
 }
 
@@ -190,12 +196,13 @@ void MainWindow::open_file() {
 
 
 void MainWindow::close_file() {
-    ui->stackedWidget->setCurrentIndex(1);
+    ui->stackedWidget->setCurrentIndex(2);
     ui->main_view->clear();
     ui->actionCloseFile->setEnabled(false);
     ui->actionPlot->setEnabled(false);
     ui->actionTable->setEnabled(false);
     ui->actionFile_properties->setEnabled(false);
+    ui->actionFind->setEnabled(false);
 }
 
 
@@ -209,6 +216,7 @@ void MainWindow::read_nix_file(QString filename) {
     ui->stackedWidget->setCurrentIndex(0);
     ui->actionCloseFile->setEnabled(true);
     ui->actionFile_properties->setEnabled(true);
+    ui->actionFind->setEnabled(true);
     update_file_list(filename);
 }
 

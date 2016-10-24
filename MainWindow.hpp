@@ -59,7 +59,7 @@ private:
     QLabel* file_label;
     QProgressBar* file_progress;
     QStringList recent_files;
-
+    int previous_page;
     void get_recent_files();
     void populate_recent_file_menu();
 
