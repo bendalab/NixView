@@ -19,20 +19,7 @@ MainViewWidget::MainViewWidget(QWidget *parent) :
     nix_proxy_model = nullptr;
     iw = nullptr;
     cv = nullptr;
-    QStringList filter_expressions = {FILTER_EXP_NONE,
-                                      FILTER_EXP_BLOCK,
-                                      FILTER_EXP_GROUP,
-                                      FILTER_EXP_METADATA,
-                                      FILTER_EXP_DATAARRAY,
-                                      FILTER_EXP_TAG,
-                                      FILTER_EXP_MULTITAG,
-                                      FILTER_EXP_NAME_CONTAINS,
-                                      FILTER_EXP_NIXTYPE_CONTAINS};
-    ui->cmbx_filter->addItems(filter_expressions);
-    ui->find_widget->setVisible(false);
-    shortcut_filter = new QShortcut(QKeySequence("Ctrl+f"), this);
     populate_data_stacked_widget();
-    connect_widgets();
 }
 
 /**
@@ -66,9 +53,6 @@ void MainViewWidget::set_nix_file(const std::string &nix_file_path) {
     QObject::connect(tv->getTreeView(), SIGNAL(collapsed(QModelIndex)), tv, SLOT(resizeRequest()));
     QObject::connect(tv->getTreeView()->selectionModel(), SIGNAL(currentChanged(QModelIndex, QModelIndex)), this, SLOT(emit_current_qml_worker_slot(QModelIndex, QModelIndex)));
     QObject::connect(cv->get_column_view(), SIGNAL(clicked(QModelIndex)), this, SLOT(emit_current_qml_worker_slot(QModelIndex)));
-    QObject::connect(ui->cmbx_filter, SIGNAL(currentIndexChanged(QString)), nix_proxy_model, SLOT(set_rough_filter(QString)));
-    QObject::connect(ui->line_edit_filter, SIGNAL(textChanged(QString)), nix_proxy_model, SLOT(set_fine_filter(QString)));
-    QObject::connect(ui->cbx_filter, SIGNAL(toggled(bool)), nix_proxy_model, SLOT(set_case_sensitivity(bool)));
 }
 
 
@@ -138,26 +122,6 @@ void MainViewWidget::scan_progress() {
 int MainViewWidget::get_scan_progress() {
     //return nix_model->progress();
     return 100;
-}
-
-
-void MainViewWidget::toggle_find() {
-    ui->find_widget->setVisible(!ui->find_widget->isVisible());
-}
-
-// widget connection
-void MainViewWidget::connect_widgets() {
-    // tree widget expanded/collapsed
-    //QObject::connect(rtv->get_tree_view(), SIGNAL(expanded(QModelIndex)), rtv, SLOT(resize_to_content(QModelIndex)));
-    //QObject::connect(rtv->get_tree_view(), SIGNAL(collapsed(QModelIndex)), rtv, SLOT(resize_to_content(QModelIndex)));
-    //QObject::connect(rtv->get_tree_view(), SIGNAL(expanded(QModelIndex)), rtv, SLOT(set_current_depth_expanded(QModelIndex)));
-    //QObject::connect(rtv->get_tree_view(), SIGNAL(collapsed(QModelIndex)), rtv, SLOT(set_current_depth_collapsed(QModelIndex)));
-
-    // filter
-    //QObject::connect(ui->cmbx_filter, SIGNAL(currentIndexChanged(QString)), rtv, SLOT(expand_collapse(QString)));
-    //QObject::connect(ui->line_edit_filter, SIGNAL(textChanged(QString)), rtv, SLOT(expand_collapse(QString)));
-    //QObject::connect(ui->cbx_filter, SIGNAL(toggled(bool)), rtv, SLOT(expand_collapse(bool)));
-    QObject::connect(shortcut_filter, SIGNAL(activated()), ui->line_edit_filter, SLOT(setFocus()));
 }
 
 

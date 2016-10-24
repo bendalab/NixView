@@ -43,7 +43,6 @@ void MainWindow::connect_widgets() {
     QObject::connect(ui->main_view, SIGNAL(emit_current_qml(QModelIndex)), ui->info_view, SLOT(update_info_widget(QModelIndex)));
     QObject::connect(ui->main_view, SIGNAL(scan_progress_update()), this, SLOT(file_scan_progress()));
     QObject::connect(ui->menu_open_recent, SIGNAL(triggered(QAction*)), this, SLOT(open_recent_file(QAction*)));
-    QObject::connect(ui->actionFind, SIGNAL(triggered()), ui->main_view, SLOT(toggle_find()));
     QObject::connect(ui->searchForm, SIGNAL(newResults(std::vector<QVariant>)), this, SLOT(newSearchResults(std::vector<QVariant>)));
 }
 

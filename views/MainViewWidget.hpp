@@ -44,7 +44,6 @@ public slots:
     void emit_current_qml_worker_slot(QModelIndex qml);
     void emit_current_qml_worker_slot(QModelIndex qml, QModelIndex prev);
     void scan_progress();
-    void toggle_find();
 
 signals:
     void emit_model_update(NixTreeModel*);
@@ -67,7 +66,6 @@ private:
     QShortcut *shortcut_filter;
 
     void populate_data_stacked_widget();
-    void connect_widgets();
 };
 
 #endif // MAINVIEWWIDGET_HPP
