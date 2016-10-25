@@ -163,6 +163,18 @@ void MainWindow::newSearchResults(std::vector<QVariant> results) {
         } else if (r.canConvert<nix::Block>()) {
             nix::Block b = r.value<nix::Block>();
             str = b.name() + " [" + b.type() + "]";
+        } else if (r.canConvert<nix::Tag>()) {
+            nix::Tag t = r.value<nix::Tag>();
+            str = t.name() + " [" + t.type() + "]";
+        } else if (r.canConvert<nix::MultiTag>()) {
+            nix::MultiTag t = r.value<nix::MultiTag>();
+            str = t.name() + " [" + t.type() + "]";
+        } else if (r.canConvert<nix::Group>()) {
+            nix::Group g = r.value<nix::Group>();
+            str = g.name() + " [" + g.type() + "]";
+        } else if (r.canConvert<nix::Source>()) {
+            nix::Source s = r.value<nix::Source>();
+            str = s.name() + " [" + s.type() + "]";
         }
         QListWidgetItem *itm = new QListWidgetItem(QString::fromStdString(str));
         itm->setData(Qt::UserRole, r);
