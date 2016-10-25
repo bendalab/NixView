@@ -354,7 +354,7 @@ color: rgb(150,150, 150);</string>
      <x>0</x>
      <y>0</y>
      <width>1400</width>
-     <height>22</height>
+     <height>27</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -399,9 +399,15 @@ color: rgb(150,150, 150);</string>
     </property>
     <addaction name="actionAbout"/>
    </widget>
+   <widget class="QMenu" name="menuFind">
+    <property name="title">
+     <string>Find</string>
+    </property>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuView"/>
    <addaction name="menuPlot"/>
+   <addaction name="menuFind"/>
    <addaction name="menuHelp"/>
   </widget>
   <widget class="QStatusBar" name="statusBar">

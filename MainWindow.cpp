@@ -31,6 +31,7 @@ MainWindow::MainWindow(QWidget *parent, QApplication *app) : QMainWindow(parent)
     ui->actionFile_properties->setEnabled(false);
     QObject::connect(app, SIGNAL(invalid_file_error()), this, SLOT(invalid_file_error()));
     ui->recent_file_list->setAttribute(Qt::WA_MacShowFocusRect, false);
+    ui->menuFind->addAction(ui->actionFind);
     connect_widgets();
     get_recent_files();
 }
