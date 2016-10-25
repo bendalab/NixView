@@ -47,6 +47,7 @@ public slots:
     void clearSearch();
     void newSearchResults(std::vector<QVariant>);
     void searchResultSelected();
+    void checkToolTip(QListWidgetItem*);
 
 signals:
     void emit_view_change(int);

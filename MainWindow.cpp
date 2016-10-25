@@ -166,8 +166,14 @@ void MainWindow::newSearchResults(std::vector<QVariant> results) {
         }
         QListWidgetItem *itm = new QListWidgetItem(QString::fromStdString(str));
         itm->setData(Qt::UserRole, r);
-        itm->setToolTip(QString::fromStdString(EntityDescriptor::describe(r)));
         ui->searchResults->addItem(itm);
+    }
+}
+
+
+void MainWindow::checkToolTip(QListWidgetItem *item) {
+    if (item->toolTip().size() == 0) {
+        item->setToolTip(QString::fromStdString(EntityDescriptor::describe(item->data(Qt::UserRole))));
     }
 }
 

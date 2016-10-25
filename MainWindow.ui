@@ -100,7 +100,11 @@
             <widget class="SearchForm" name="searchForm" native="true"/>
            </item>
            <item>
-            <widget class="QListWidget" name="searchResults"/>
+            <widget class="QListWidget" name="searchResults">
+             <property name="mouseTracking">
+              <bool>true</bool>
+             </property>
+            </widget>
            </item>
            <item>
             <layout class="QHBoxLayout" name="horizontalLayout_3">
@@ -861,6 +865,22 @@ color: rgb(150,150, 150);</string>
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>searchResults</sender>
+   <signal>itemEntered(QListWidgetItem*)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>checkToolTip(QListWidgetItem*)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>699</x>
+     <y>412</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>699</x>
+     <y>393</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>open_file()</slot>
@@ -874,5 +894,6 @@ color: rgb(150,150, 150);</string>
   <slot>closeSearch()</slot>
   <slot>clearSearch()</slot>
   <slot>searchResultSelected()</slot>
+  <slot>checkToolTip(QListWidgetItem*)</slot>
  </slots>
 </ui>
