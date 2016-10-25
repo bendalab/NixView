@@ -222,6 +222,7 @@ void MainWindow::close_file() {
     ui->actionTable->setEnabled(false);
     ui->actionFile_properties->setEnabled(false);
     ui->actionFind->setEnabled(false);
+    clearSearch();
 }
 
 
