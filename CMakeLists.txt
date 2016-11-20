@@ -15,11 +15,13 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake")
 find_package(Qt5Core QUIET)
 find_package(Qt5Widgets QUIET)
 find_package(Qt5PrintSupport QUIET)
+find_package(Qt5SQL QUIET)
 
 include_directories(BEFORE
   ${Qt5Core_INCLUDE_DIRS}
   ${Qt5Widgets_INCLUDE_DIRS}
-  ${Qt5PrintSupport_INCLUDE_DIRS})
+  ${Qt5PrintSupport_INCLUDE_DIRS}
+  ${Qt5Sql_INCLUDE_DIRS})
 
 add_definitions(${Qt5Core_DEFINITIONS})
 
@@ -56,7 +58,8 @@ file(GLOB NIXVIEW_SOURCES *.cpp
   views/*.cpp 
   filter/*.cpp 
   options/*.cpp
-  utils/*.cpp)
+  utils/*.cpp
+  db/*.cpp)
 
 file(GLOB NIXVIEW_INCLUDES *.hpp 
   *.h
@@ -66,7 +69,8 @@ file(GLOB NIXVIEW_INCLUDES *.hpp
   model/*.hpp 
   views/*.hpp 
   filter/*.hpp 
-  options/*.hpp)
+  options/*.hpp
+  db/*.hpp)
 
 file(GLOB NIXVIEW_UI *.ui
   dialogs/*.ui
@@ -82,7 +86,7 @@ QT5_WRAP_UI(NIXVIEW_UI_HDRS ${NIXVIEW_UI})
 QT5_ADD_RESOURCES(NIXVIEW_RES_SOURCES ${NIXVIEW_RES})
 
 add_executable(nix-view ${NIXVIEW_UI_HDRS} ${NIXVIEW_INCUDES} ${NIXVIEW_SOURCES} ${NIXVIEW_RES_SOURCES})
-target_link_libraries(nix-view Qt5::Core Qt5::Widgets Qt5::PrintSupport ${NIX_LIBRARIES} ${Boost_LIBRARIES})
+target_link_libraries(nix-view Qt5::Core Qt5::Widgets Qt5::PrintSupport Qt5::Sql ${NIX_LIBRARIES} ${Boost_LIBRARIES})
 qt5_use_modules(nix-view Gui)
 
 ########################################
