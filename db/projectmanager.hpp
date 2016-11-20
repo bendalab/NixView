@@ -23,7 +23,7 @@ public:
 private:
     QSqlDatabase project_db;
 
-    bool create_new_database();
+    bool create_new_database(const QString &path);
 
 };
 
