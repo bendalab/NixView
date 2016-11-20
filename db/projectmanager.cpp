@@ -87,6 +87,19 @@ bool ProjectManager::remove_project(const QString &name) {
 }
 
 
+bool ProjectManager::rename_project(const QString &old_name, const QString &new_name) {
+    if (project_db.isOpen()) {
+        QSqlQuery q(project_db);
+        q.prepare("UPDATE projects SET name=(:new_name) WHERE name = (:old_name)");
+        q.bindValue(":new_name", new_name);
+        q.bindValue(":old_name", old_name);
+        if (!q.exec())
+            std::cerr << q.lastError().text().toStdString() << std::endl;
+    }
+    return false;
+}
+
+
 bool ProjectManager::check_project_name(const QString &name) const {
     bool is_valid = false;
     QSqlQuery query;
