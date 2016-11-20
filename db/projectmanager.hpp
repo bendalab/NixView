@@ -14,7 +14,7 @@ public:
 
     bool check_project_name(const QString &name) const;
     bool add_project(const QString &name) const;
-    // bool remove_project(const QString &name);
+    bool remove_project(const QString &name);
     // bool rename_project(const QString &name);
     QSqlQuery project_list();
     bool is_open();

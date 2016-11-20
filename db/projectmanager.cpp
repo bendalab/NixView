@@ -76,6 +76,17 @@ bool ProjectManager::add_project(const QString &name) const {
 }
 
 
+bool ProjectManager::remove_project(const QString &name) {
+    if (project_db.isOpen()) {
+        QSqlQuery q(project_db);
+        q.prepare("DELETE FROM projects WHERE name = (:name)");
+        q.bindValue(0, name);
+        return q.exec();
+    }
+    return false;
+}
+
+
 bool ProjectManager::check_project_name(const QString &name) const {
     bool is_valid = false;
     QSqlQuery query;
