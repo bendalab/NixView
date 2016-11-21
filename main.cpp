@@ -16,10 +16,10 @@ int main(int argc, char *argv[]) {
 
     parser.process(a);
     const QStringList args = parser.positionalArguments();
+
+    w.show();
     if (args.length() > 0) {
         w.read_nix_file(args[0]);
     }
-    w.show();
-
     return a.exec();
 }

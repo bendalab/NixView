@@ -240,6 +240,11 @@ void MainWindow::close_file() {
 
 void MainWindow::read_nix_file(QString filename) {
     std::string file_path = filename.toStdString();
+    QFile f(filename);
+    if (!f.exists()) {
+        QMessageBox::information(this, "File not found!", "File " + filename + " does not exist!", QMessageBox::Ok);
+        return;
+    }
     file_label->setText(file_path.c_str());
     file_progress->setVisible(true);
 
