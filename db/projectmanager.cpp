@@ -5,12 +5,13 @@
 #include <QSqlError>
 #include <QSqlQuery>
 #include <QVariant>
+#include "projectindex.hpp"
 
 ProjectManager::ProjectManager() {}
 
 
 ProjectManager::ProjectManager(const QString &path) {
-    project_db = QSqlDatabase::addDatabase("QSQLITE");
+    project_db = QSqlDatabase::addDatabase("QSQLITE", "projects_db");
     QFile db(path);
     if (!db.exists()) {
         std::cerr << "database does not exist!"<< std::endl;
@@ -30,13 +31,11 @@ ProjectManager::~ProjectManager() {
 
 
 QSqlQuery ProjectManager::project_list() {
-    QSqlQuery query(project_db);
-    if (project_db.isOpen()) {
-        query.prepare("SELECT name FROM projects");
-        query.exec();
-    } else
-        std::cerr << "db not open!!!" << std::endl;
-
+    QSqlDatabase db = QSqlDatabase::database("projects_db");
+    db.open();
+    QSqlQuery query(db);
+    query.prepare("SELECT name FROM projects");
+    query.exec();
     return query;
 }
 
@@ -60,10 +59,14 @@ bool ProjectManager::create_new_database(const QString &path) {
 }
 
 
-bool ProjectManager::add_project(const QString &name) const {
+bool ProjectManager::add_project(const QString &path) const {
     bool success = false;
+    QDir dir(path);
+    QString name = dir.dirName();
+    if (!ProjectIndex::create_project_index(path))
+            return success;
     if (project_db.isOpen() && !name.isEmpty() && check_project_name(name)) {
-        QSqlQuery query;
+        QSqlQuery query(QSqlDatabase::database("projects_db"));
         query.prepare("INSERT INTO projects (name) VALUES (:name)");
         query.bindValue(0, name);
         if(query.exec()) {
@@ -72,41 +75,46 @@ bool ProjectManager::add_project(const QString &name) const {
             std::cerr << "add_project error:  " << query.lastError().text().toStdString();
         }
     }
+    QSqlDatabase::database("projects_db").close();
     return success;
 }
 
 
 bool ProjectManager::remove_project(const QString &name) {
-    if (project_db.isOpen()) {
-        QSqlQuery q(project_db);
-        q.prepare("DELETE FROM projects WHERE name = (:name)");
-        q.bindValue(0, name);
-        return q.exec();
-    }
-    return false;
+    QSqlDatabase::database("projects_db").open();
+    QSqlQuery q(QSqlDatabase::database("projects_db"));
+    q.prepare("DELETE FROM projects WHERE name = (:name)");
+    q.bindValue(0, name);
+    bool success = q.exec();
+    QSqlDatabase::database("projects_db").open();
+    return success;
 }
 
 
 bool ProjectManager::rename_project(const QString &old_name, const QString &new_name) {
-    if (project_db.isOpen()) {
-        QSqlQuery q(project_db);
-        q.prepare("UPDATE projects SET name=(:new_name) WHERE name = (:old_name)");
-        q.bindValue(":new_name", new_name);
-        q.bindValue(":old_name", old_name);
-        if (!q.exec())
-            std::cerr << q.lastError().text().toStdString() << std::endl;
+    QSqlDatabase::database("projects_db").open();
+    QSqlQuery q(QSqlDatabase::database("projects_db"));
+    q.prepare("UPDATE projects SET name=(:new_name) WHERE name = (:old_name)");
+    q.bindValue(":new_name", new_name);
+    q.bindValue(":old_name", old_name);
+    bool success = q.exec();
+    if (!success) {
+        std::cerr << q.lastError().text().toStdString() << std::endl;
     }
-    return false;
+    QSqlDatabase::database("projects_db").close();
+    return success;
 }
 
 
 bool ProjectManager::check_project_name(const QString &name) const {
     bool is_valid = false;
-    QSqlQuery query;
+    QSqlDatabase::database("projects_db").open();
+    QSqlQuery query(QSqlDatabase::database("projects_db"));
     query.prepare("SELECT name FROM projects WHERE name = (:name)");
     query.bindValue(0, name);
     if (query.exec()) {
         is_valid = !query.next();
     }
+    QSqlDatabase::database("projects_db").close();
     return is_valid;
 }
