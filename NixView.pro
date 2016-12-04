@@ -6,7 +6,7 @@
 
 # QT       += core gui widgets printsupport
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += core gui widgets printsupport
+greaterThan(QT_MAJOR_VERSION, 4): QT += core gui widgets printsupport sql
 
 TARGET = NixView
 TEMPLATE = app
@@ -57,7 +57,11 @@ SOURCES += main.cpp\
     dialogs/optionsdialog.cpp \
     dialogs/filepropertiesdialog.cpp \
     model/nixmetadatatreemodel.cpp \
-    searchform.cpp
+    searchform.cpp \
+    dialogs/projectdialog.cpp \
+    db/projectmanager.cpp \
+    views/projectnavigator.cpp \
+    db/projectindex.cpp
 
 
 HEADERS  += MainWindow.hpp \
@@ -100,7 +104,11 @@ HEADERS  += MainWindow.hpp \
     dialogs/optionsdialog.h \
     dialogs/filepropertiesdialog.hpp \
     model/nixmetadatatreemodel.h \
-    searchform.h
+    searchform.h \
+    dialogs/projectdialog.hpp \
+    db/projectmanager.hpp \
+    views/projectnavigator.hpp \
+    db/projectindex.hpp
 
 
 FORMS    += MainWindow.ui \
@@ -127,7 +135,9 @@ FORMS    += MainWindow.ui \
     views/lazyloadview.ui \
     dialogs/optionsdialog.ui \
     dialogs/filepropertiesdialog.ui \
-    searchform.ui
+    searchform.ui \
+    dialogs/projectdialog.ui \
+    views/projectnavigator.ui
 
 #standard windows folder?
 #win32:CONFIG(release, debug|release): LIBS += /usr/local/lib/release/ -lnix

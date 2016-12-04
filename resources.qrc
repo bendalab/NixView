@@ -15,5 +15,8 @@
         <file>images/find.png</file>
         <file>images/more.png</file>
         <file>images/info.png</file>
+        <file>images/project_close.png</file>
+        <file>images/project_open.png</file>
+        <file>images/project_new.png</file>
     </qresource>
 </RCC>
