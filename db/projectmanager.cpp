@@ -44,14 +44,6 @@ QSqlQuery ProjectManager::project_list() {
 }
 
 
-bool ProjectManager::is_open() {
-    return project_db.isOpen();
-}
-
-
-void ProjectManager::close() {
-    if (project_db.isOpen())
-        project_db.close();
 }
 
 
