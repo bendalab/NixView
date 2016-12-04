@@ -54,6 +54,7 @@ signals:
 
 private slots:
     void recent_file_selected(QListWidgetItem*);
+    void new_file_update();
 
 private:
     Ui::MainWindow *ui;
@@ -67,7 +68,7 @@ private:
     void get_recent_files();
     void populate_recent_file_menu();
 
-    void update_file_list(QString filename);
+    void update_recent_file_list(QString filename);
     void save_recent_files(QStringList &files);
 };
 

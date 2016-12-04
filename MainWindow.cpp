@@ -255,10 +255,12 @@ void MainWindow::read_nix_file(QString filename) {
     ui->actionFile_properties->setEnabled(true);
     ui->actionFind->setEnabled(true);
     update_file_list(filename);
+    update_recent_file_list(filename);
 }
 
 
 void MainWindow::update_file_list(QString filename) {
+void MainWindow::update_recent_file_list(QString filename) {
     QSettings *settings = new QSettings();
     settings->beginGroup(RECENT_FILES_GROUP);
     settings->beginGroup(RECENT_FILES_LIST);
@@ -337,4 +339,8 @@ void MainWindow::open_recent_file(QAction *a) {
 
 void MainWindow::recent_file_selected(QListWidgetItem *item) {
     read_nix_file(item->text());
+}
+
+void MainWindow::new_file_update() {
+    ui->actionFind->setEnabled(true);
 }
