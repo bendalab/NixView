@@ -11,16 +11,19 @@ ProjectManager::ProjectManager() {}
 
 
 ProjectManager::ProjectManager(const QString &path) {
-    project_db = QSqlDatabase::addDatabase("QSQLITE", "projects_db");
-    QFile db(path);
-    if (!db.exists()) {
-        std::cerr << "database does not exist!"<< std::endl;
-        create_new_database(path);
-    } else {
-        project_db.setDatabaseName(path);
-        if (!project_db.open()) {
-            std::cerr << "failed to open database!\n";
+    if (!QSqlDatabase::contains("projects_db")) {
+        QSqlDatabase project_db = QSqlDatabase::addDatabase("QSQLITE", "projects_db");
+        QFile db(path);
+        if (!db.exists()) {
+            std::cerr << "database does not exist!"<< std::endl;
+            create_new_database(project_db, path);
+        } else {
+            project_db.setDatabaseName(path);
+            if (!project_db.open()) {
+                std::cerr << "failed to open database!\n";
+            }
         }
+        project_db.close();
     }
 }
 
@@ -36,6 +39,7 @@ QSqlQuery ProjectManager::project_list() {
     QSqlQuery query(db);
     query.prepare("SELECT name FROM projects");
     query.exec();
+    QSqlDatabase::database("projects_db").close();
     return query;
 }
 
