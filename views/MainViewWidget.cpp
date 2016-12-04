@@ -32,10 +32,16 @@ MainViewWidget::MainViewWidget(const std::string &nix_file_path, QWidget *parent
     set_nix_file(nix_file_path);
 }
 
+void MainViewWidget::set_nix_file(const QString &nix_file_path) {
+    set_nix_file(nix_file_path.toStdString());
+}
 
 void MainViewWidget::set_nix_file(const std::string &nix_file_path) {
     if (tv == nullptr)
         populate_data_stacked_widget();
+    if (nix_file_path.empty()) {
+        return;
+    }
     nix_file = nix::File::open(nix_file_path, nix::FileMode::ReadOnly);
 
     nix_model = new NixTreeModel(this);
@@ -48,6 +54,7 @@ void MainViewWidget::set_nix_file(const std::string &nix_file_path) {
     tv->setColumns();
     cv->set_proxy_model(nix_proxy_model);
     emit emit_model_update(nix_model);
+    emit update_file();
     QObject::connect(tv->getTreeView(), SIGNAL(clicked(QModelIndex)), this, SLOT(emit_current_qml_worker_slot(QModelIndex)));
     QObject::connect(tv->getTreeView(), SIGNAL(expanded(QModelIndex)), tv, SLOT(resizeRequest()));
     QObject::connect(tv->getTreeView(), SIGNAL(collapsed(QModelIndex)), tv, SLOT(resizeRequest()));
@@ -56,14 +63,26 @@ void MainViewWidget::set_nix_file(const std::string &nix_file_path) {
 }
 
 
+void MainViewWidget::set_project(const QString &project) {
+    ui->project_navigator->set_project(project);
+}
+
+
+void MainViewWidget::new_project() {
+   ui->project_navigator->new_project();
+}
+
+
 void MainViewWidget::clear() {
     nix_model = nullptr;
     nix_proxy_model = nullptr;
     emit emit_model_update(nix_model);
+    ui->project_navigator->clear();
     delete cv;
     cv = nullptr;
     delete tv;
     tv = nullptr;
+    populate_data_stacked_widget();
 }
 
 
@@ -118,6 +137,9 @@ void MainViewWidget::scan_progress() {
     emit scan_progress_update();
 }
 
+void MainViewWidget::update_nix_file(const QString &nix_file_path) {
+    set_nix_file(nix_file_path);
+}
 
 int MainViewWidget::get_scan_progress() {
     //return nix_model->progress();

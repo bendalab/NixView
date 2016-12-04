@@ -30,7 +30,10 @@ public:
     explicit MainViewWidget(const std::string &nix_file_path, QWidget *parent = 0);
     ~MainViewWidget();
 
+    void set_nix_file(const QString &nix_file_path);
     void set_nix_file(const std::string &nix_file_path);
+    void set_project(const QString &project);
+    void new_project();
     nix::File get_nix_file() const;
     ColumnView *get_cv();
     LazyLoadView* getTreeView();
@@ -44,11 +47,13 @@ public slots:
     void emit_current_qml_worker_slot(QModelIndex qml);
     void emit_current_qml_worker_slot(QModelIndex qml, QModelIndex prev);
     void scan_progress();
+    void update_nix_file(const QString &nix_file_path);
 
 signals:
     void emit_model_update(NixTreeModel*);
     void scan_progress_update();
     void emit_current_qml(QModelIndex);
+    void update_file();
 
 private:
     Ui::MainViewWidget *ui;
