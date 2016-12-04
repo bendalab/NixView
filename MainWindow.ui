@@ -176,79 +176,7 @@
              <property name="topMargin">
               <number>0</number>
              </property>
-             <item row="0" column="1">
-              <spacer name="verticalSpacer">
-               <property name="orientation">
-                <enum>Qt::Vertical</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>20</width>
-                 <height>40</height>
-                </size>
-               </property>
-              </spacer>
-             </item>
-             <item row="1" column="0">
-              <spacer name="horizontalSpacer">
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>40</width>
-                 <height>20</height>
-                </size>
-               </property>
-              </spacer>
-             </item>
-             <item row="1" column="2">
-              <spacer name="horizontalSpacer_2">
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>40</width>
-                 <height>20</height>
-                </size>
-               </property>
-              </spacer>
-             </item>
-             <item row="4" column="1">
-              <widget class="QLabel" name="label_2">
-               <property name="font">
-                <font>
-                 <pointsize>10</pointsize>
-                 <weight>75</weight>
-                 <bold>true</bold>
-                </font>
-               </property>
-               <property name="styleSheet">
-                <string notr="true">color: rgb(115, 115, 115);</string>
-               </property>
-               <property name="text">
-                <string>recently opened files:</string>
-               </property>
-               <property name="textFormat">
-                <enum>Qt::PlainText</enum>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="1">
-              <widget class="QLabel" name="label">
-               <property name="text">
-                <string/>
-               </property>
-               <property name="pixmap">
-                <pixmap resource="resources.qrc">:/images/images/nixview256.png</pixmap>
-               </property>
-               <property name="alignment">
-                <set>Qt::AlignCenter</set>
-               </property>
-              </widget>
-             </item>
-             <item row="5" column="1">
+             <item row="8" column="1">
               <widget class="QFrame" name="button_frame">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Maximum" vsizetype="Minimum">
@@ -288,11 +216,68 @@
                  <number>0</number>
                 </property>
                 <item>
+                 <widget class="QLabel" name="label_3">
+                  <property name="font">
+                   <font>
+                    <pointsize>10</pointsize>
+                    <weight>75</weight>
+                    <bold>true</bold>
+                   </font>
+                  </property>
+                  <property name="styleSheet">
+                   <string notr="true">color: rgb(115, 115, 115);</string>
+                  </property>
+                  <property name="text">
+                   <string>recently opened projects:</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QListWidget" name="recent_projects_list">
+                  <property name="font">
+                   <font>
+                    <pointsize>9</pointsize>
+                   </font>
+                  </property>
+                  <property name="styleSheet">
+                   <string notr="true">background-color: white;
+border-color: rgb(235, 235, 235);
+color: rgb(150,150, 150);</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLabel" name="label_2">
+                  <property name="font">
+                   <font>
+                    <pointsize>10</pointsize>
+                    <weight>75</weight>
+                    <bold>true</bold>
+                   </font>
+                  </property>
+                  <property name="styleSheet">
+                   <string notr="true">color: rgb(115, 115, 115);</string>
+                  </property>
+                  <property name="text">
+                   <string>recently opened files:</string>
+                  </property>
+                  <property name="textFormat">
+                   <enum>Qt::PlainText</enum>
+                  </property>
+                 </widget>
+                </item>
+                <item>
                  <widget class="QListWidget" name="recent_file_list">
                   <property name="minimumSize">
                    <size>
                     <width>400</width>
                     <height>0</height>
+                   </size>
+                  </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>16777215</width>
+                    <height>120</height>
                    </size>
                   </property>
                   <property name="font">
@@ -328,7 +313,59 @@ color: rgb(150,150, 150);</string>
                </layout>
               </widget>
              </item>
-             <item row="2" column="1">
+             <item row="0" column="1">
+              <spacer name="verticalSpacer">
+               <property name="orientation">
+                <enum>Qt::Vertical</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>20</width>
+                 <height>40</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item row="1" column="0">
+              <spacer name="horizontalSpacer">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item row="1" column="2">
+              <spacer name="horizontalSpacer_2">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item row="1" column="1">
+              <widget class="QLabel" name="label">
+               <property name="text">
+                <string/>
+               </property>
+               <property name="pixmap">
+                <pixmap resource="resources.qrc">:/images/images/nixview256.png</pixmap>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignCenter</set>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="1">
               <spacer name="verticalSpacer_2">
                <property name="orientation">
                 <enum>Qt::Vertical</enum>
@@ -358,7 +395,7 @@ color: rgb(150,150, 150);</string>
      <x>0</x>
      <y>0</y>
      <width>1400</width>
-     <height>27</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -370,6 +407,10 @@ color: rgb(150,150, 150);</string>
       <string>open recent ...</string>
      </property>
     </widget>
+    <addaction name="actionOpenProject"/>
+    <addaction name="actionNew_project"/>
+    <addaction name="actionClose_project"/>
+    <addaction name="separator"/>
     <addaction name="actionOpenFile"/>
     <addaction name="menu_open_recent"/>
     <addaction name="actionCloseFile"/>
@@ -459,12 +500,17 @@ color: rgb(150,150, 150);</string>
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
-   <addaction name="separator"/>
    <addaction name="actionOpenFile"/>
    <addaction name="actionCloseFile"/>
+   <addaction name="separator"/>
+   <addaction name="actionOpenProject"/>
+   <addaction name="actionNew_project"/>
+   <addaction name="actionClose_project"/>
+   <addaction name="separator"/>
    <addaction name="actionFind"/>
    <addaction name="actionPlot"/>
    <addaction name="actionTable"/>
+   <addaction name="separator"/>
    <addaction name="actionQuit"/>
   </widget>
   <widget class="QToolBar" name="toolBar_2">
@@ -635,16 +681,53 @@ color: rgb(150,150, 150);</string>
    </property>
   </action>
   <action name="actionFile_properties">
+   <property name="icon">
+    <iconset resource="resources.qrc">
+     <normaloff>:/images/info.png</normaloff>:/images/info.png</iconset>
+   </property>
    <property name="text">
-    <string>file properties</string>
+    <string>file information</string>
    </property>
    <property name="toolTip">
     <string>show file properties</string>
+   </property>
+   <property name="shortcut">
+    <string/>
    </property>
   </action>
   <action name="actionPreferences">
    <property name="text">
     <string>preferences</string>
+   </property>
+  </action>
+  <action name="actionOpenProject">
+   <property name="icon">
+    <iconset resource="resources.qrc">
+     <normaloff>:/images/project_open.png</normaloff>:/images/project_open.png</iconset>
+   </property>
+   <property name="text">
+    <string>open project</string>
+   </property>
+  </action>
+  <action name="actionNew_project">
+   <property name="icon">
+    <iconset resource="resources.qrc">
+     <normaloff>:/images/project_new.png</normaloff>:/images/project_new.png</iconset>
+   </property>
+   <property name="text">
+    <string>new project</string>
+   </property>
+  </action>
+  <action name="actionClose_project">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="resources.qrc">
+     <normaloff>:/images/project_close.png</normaloff>:/images/project_close.png</iconset>
+   </property>
+   <property name="text">
+    <string>close project</string>
    </property>
   </action>
  </widget>
@@ -881,6 +964,70 @@ color: rgb(150,150, 150);</string>
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>actionOpenProject</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>open_project()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>699</x>
+     <y>393</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionNew_project</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>new_project()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>699</x>
+     <y>393</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionClose_project</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>close_project()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>699</x>
+     <y>393</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>recent_projects_list</sender>
+   <signal>itemClicked(QListWidgetItem*)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>recent_project_selected(QListWidgetItem*)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>699</x>
+     <y>526</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>699</x>
+     <y>393</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>open_file()</slot>
@@ -895,5 +1042,9 @@ color: rgb(150,150, 150);</string>
   <slot>clearSearch()</slot>
   <slot>searchResultSelected()</slot>
   <slot>checkToolTip(QListWidgetItem*)</slot>
+  <slot>open_project()</slot>
+  <slot>new_project()</slot>
+  <slot>close_project()</slot>
+  <slot>recent_project_selected(QListWidgetItem*)</slot>
  </slots>
 </ui>

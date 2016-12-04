@@ -31,6 +31,9 @@ public slots:
     void item_selected(QModelIndex qml);
     void item_selected(QVariant v);
     void open_file();
+    void open_project();
+    void new_project();
+    void close_project();
     void close_file();
     void show_about();
     void show_plot();
@@ -54,6 +57,7 @@ signals:
 
 private slots:
     void recent_file_selected(QListWidgetItem*);
+    void recent_project_selected(QListWidgetItem*);
     void new_file_update();
 
 private:
@@ -67,6 +71,7 @@ private:
     int previous_page;
     void get_recent_files();
     void populate_recent_file_menu();
+    void populate_recent_projects();
 
     void update_recent_file_list(QString filename);
     void save_recent_files(QStringList &files);

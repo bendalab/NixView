@@ -12,6 +12,8 @@
 #include "dialogs/filepropertiesdialog.hpp"
 #include <QSettings>
 #include "utils/utils.hpp"
+#include "db/projectmanager.hpp"
+#include <QInputDialog>
 
 
 MainWindow::MainWindow(QWidget *parent, QApplication *app) : QMainWindow(parent),
@@ -34,6 +36,7 @@ MainWindow::MainWindow(QWidget *parent, QApplication *app) : QMainWindow(parent)
     ui->menuFind->addAction(ui->actionFind);
     connect_widgets();
     get_recent_files();
+    populate_recent_projects();
 }
 
 
@@ -43,6 +46,7 @@ void MainWindow::connect_widgets() {
     QObject::connect(ui->main_view, SIGNAL(emit_current_qml(QModelIndex)), this, SLOT(item_selected(QModelIndex)));
     QObject::connect(ui->main_view, SIGNAL(emit_current_qml(QModelIndex)), ui->info_view, SLOT(update_info_widget(QModelIndex)));
     QObject::connect(ui->main_view, SIGNAL(scan_progress_update()), this, SLOT(file_scan_progress()));
+    QObject::connect(ui->main_view, SIGNAL(update_file()), this, SLOT(new_file_update()));
     QObject::connect(ui->menu_open_recent, SIGNAL(triggered(QAction*)), this, SLOT(open_recent_file(QAction*)));
     QObject::connect(ui->searchForm, SIGNAL(newResults(std::vector<QVariant>)), this, SLOT(newSearchResults(std::vector<QVariant>)));
 }
@@ -226,6 +230,61 @@ void MainWindow::open_file() {
 }
 
 
+void MainWindow::open_project() {
+    close_file();
+    close_project();
+    QSettings *settings = new QSettings();
+    QString db;
+    if (settings->contains(PROJECT_LIST)) {
+        db = settings->value(PROJECT_LIST).toString();
+        QFile f(db);
+        if (!f.exists()) {
+            QMessageBox msgBox;
+            msgBox.setText("The project database could not be found at location " + db);
+            msgBox.exec();
+            QString dir_name = QFileDialog::getExistingDirectory(this, "Select location for project database.");
+            if (!dir_name.isEmpty()) {
+                db = QDir::cleanPath(dir_name + QDir::separator() + "projects.db");
+                settings->setValue(PROJECT_LIST, db);
+                settings->sync();
+            }
+        }
+    } else {
+        QString dir_name = QFileDialog::getExistingDirectory(this, "Select location for project database.");
+        if (!dir_name.isEmpty()) {
+            db = QDir::cleanPath(dir_name + QDir::separator() + "projects.db");
+            settings->setValue(PROJECT_LIST, db);
+            settings->sync();
+        }
+    }
+    delete settings;
+    if (!db.isEmpty()) {
+        ProjectManager pm = ProjectManager(db);
+        QStringList list = pm.get_project_name_list();
+        bool ok;
+        QString project = QInputDialog::getItem(this, "Select project ...", "Select a project",
+                                                list, 0, false, &ok);
+        if (ok) {
+            ui->main_view->set_project(project);
+        }
+    }
+
+    ui->actionClose_project->setEnabled(true);
+    ui->stackedWidget->setCurrentIndex(0);
+}
+
+
+void MainWindow::new_project() {
+    ui->main_view->new_project();
+}
+
+
+void MainWindow::close_project() {
+    ui->actionClose_project->setEnabled(false);
+    close_file();
+}
+
+
 void MainWindow::close_file() {
     ui->stackedWidget->setCurrentIndex(2);
     ui->main_view->clear();
@@ -254,12 +313,10 @@ void MainWindow::read_nix_file(QString filename) {
     ui->actionCloseFile->setEnabled(true);
     ui->actionFile_properties->setEnabled(true);
     ui->actionFind->setEnabled(true);
-    update_file_list(filename);
     update_recent_file_list(filename);
 }
 
 
-void MainWindow::update_file_list(QString filename) {
 void MainWindow::update_recent_file_list(QString filename) {
     QSettings *settings = new QSettings();
     settings->beginGroup(RECENT_FILES_GROUP);
@@ -317,6 +374,24 @@ void MainWindow::populate_recent_file_menu() {
 }
 
 
+void MainWindow::populate_recent_projects() {
+    QSettings *settings = new QSettings();
+    QString db;
+    if (settings->contains(PROJECT_LIST)) {
+        db = settings->value(PROJECT_LIST).toString();
+        delete settings;
+    }
+    if (!db.isEmpty()) {
+        ProjectManager pm = ProjectManager(db);
+        QStringList list = pm.get_project_name_list();
+        for (auto s : list) {
+            QListWidgetItem *item = new QListWidgetItem(s);
+            ui->recent_projects_list->addItem(item);
+        }
+    }
+}
+
+
 void MainWindow::recent_file_update(QStringList files) {
     save_recent_files(files);
     this->recent_files = files;
@@ -337,8 +412,18 @@ void MainWindow::open_recent_file(QAction *a) {
     read_nix_file(a->text());
 }
 
+
 void MainWindow::recent_file_selected(QListWidgetItem *item) {
     read_nix_file(item->text());
+}
+
+
+void MainWindow::recent_project_selected(QListWidgetItem *item) {
+    close_file();
+    close_project();
+    ui->actionClose_project->setEnabled(true);
+    ui->stackedWidget->setCurrentIndex(0);
+    ui->main_view->set_project(item->text());
 }
 
 void MainWindow::new_file_update() {
