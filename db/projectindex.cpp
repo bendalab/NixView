@@ -5,15 +5,20 @@
 #include <QSqlQuery>
 #include <QVariant>
 
-ProjectIndex::ProjectIndex(const QString &path):path(path){
+ProjectIndex::ProjectIndex(const QString &path)
+    : path(path) {
     QFile f(path);
     if (!f.exists()) {
         create_project_index(path);
     } else {
-        QSqlDatabase index_db = QSqlDatabase::addDatabase("QSQLITE",  path);
-        index_db.setDatabaseName(path);
-        if (!index_db.open()) {
-            std::cerr << "failed to open database!\n";
+        if (!QSqlDatabase::contains(path)) {
+            QSqlDatabase index_db = QSqlDatabase::addDatabase("QSQLITE",  path);
+            index_db.setDatabaseName(path);
+            if (!index_db.open()) {
+                std::cerr << "failed to open database!\n";
+            } else
+                std::cerr << "successfully opened database for project:  " << path.toStdString() << std::endl;
+            index_db.close();
         }
     }
 }
