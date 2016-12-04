@@ -15,7 +15,13 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake")
 find_package(Qt5Core QUIET)
 find_package(Qt5Widgets QUIET)
 find_package(Qt5PrintSupport QUIET)
-find_package(Qt5SQL QUIET)
+
+IF (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+   message(status "Macos!")
+   find_package(Qt5SQL QUIET)
+ELSE ()
+   find_package(Qt5Sql QUIET)
+ENDIF ()
 
 include_directories(BEFORE
   ${Qt5Core_INCLUDE_DIRS}
