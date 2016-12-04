@@ -16,12 +16,12 @@ public:
     bool add_project(const QString &path) const;
     bool remove_project(const QString &name);
     bool rename_project(const QString &old_name, const QString &new_name);
+    QString get_project_path(const QString &name);
     QSqlQuery project_list();
+    QStringList get_project_name_list();
 
 private:
-    QSqlDatabase project_db;
-
-    bool create_new_database(const QString &path);
+    bool create_new_database(QSqlDatabase db, const QString &path);
 
 };
 

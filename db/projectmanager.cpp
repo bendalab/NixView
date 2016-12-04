@@ -4,6 +4,7 @@
 #include <iostream>
 #include <QSqlError>
 #include <QSqlQuery>
+#include <QSqlRecord>
 #include <QVariant>
 #include "projectindex.hpp"
 
@@ -44,14 +45,29 @@ QSqlQuery ProjectManager::project_list() {
 }
 
 
+QStringList ProjectManager::get_project_name_list() {
+    QSqlDatabase db = QSqlDatabase::database("projects_db");
+    db.open();
+    QSqlQuery q(db);
+    q.prepare("SELECT name FROM projects");
+    q.exec();
+    QStringList list;
+    int index = q.record().indexOf("name");
+    while (q.next()) {
+        list.append(QStringList(q.value(index).toString()));
+    }
+    QSqlDatabase::database("projects_db").close();
+    return list;
 }
 
 
-bool ProjectManager::create_new_database(const QString &path) {
-    project_db.setDatabaseName(path);
-    project_db.open();
-    QSqlQuery q(project_db);
-    return q.exec(QLatin1String("create table projects(id integer primary key, name varchar, project_index varchar)"));
+bool ProjectManager::create_new_database(QSqlDatabase db, const QString &path) {
+    db.setDatabaseName(path);
+    db.open();
+    QSqlQuery q(db);
+    bool success = q.exec(QLatin1String("create table projects(id integer primary key, name varchar, project_index varchar)"));
+    db.close();
+    return success;
 }
 
 
@@ -61,17 +77,20 @@ bool ProjectManager::add_project(const QString &path) const {
     QString name = dir.dirName();
     if (!ProjectIndex::create_project_index(path))
             return success;
+    QSqlDatabase project_db = QSqlDatabase::database("projects_db");
+    project_db.open();
     if (project_db.isOpen() && !name.isEmpty() && check_project_name(name)) {
         QSqlQuery query(QSqlDatabase::database("projects_db"));
-        query.prepare("INSERT INTO projects (name) VALUES (:name)");
+        query.prepare("INSERT INTO projects (name, project_index) VALUES (:name, :path)");
         query.bindValue(0, name);
+        query.bindValue(1, path);
         if(query.exec()) {
             success = true;
         } else {
             std::cerr << "add_project error:  " << query.lastError().text().toStdString();
         }
     }
-    QSqlDatabase::database("projects_db").close();
+    project_db.close();
     return success;
 }
 
@@ -82,7 +101,7 @@ bool ProjectManager::remove_project(const QString &name) {
     q.prepare("DELETE FROM projects WHERE name = (:name)");
     q.bindValue(0, name);
     bool success = q.exec();
-    QSqlDatabase::database("projects_db").open();
+    QSqlDatabase::database("projects_db").close();
     return success;
 }
 
@@ -99,6 +118,22 @@ bool ProjectManager::rename_project(const QString &old_name, const QString &new_
     }
     QSqlDatabase::database("projects_db").close();
     return success;
+}
+
+
+QString ProjectManager::get_project_path(const QString &name) {
+    QString path;
+    QSqlDatabase db = QSqlDatabase::database("projects_db");
+    db.open();
+    QSqlQuery q(db);
+    q.prepare("SELECT project_index FROM projects WHERE name = (:name)");
+    q.bindValue(":name", name);
+    if (q.exec() && q.next()) {
+        int fieldNo = q.record().indexOf("project_index");
+        path = q.value(fieldNo).toString();
+    }
+    db.close();
+    return path;
 }
 
 
