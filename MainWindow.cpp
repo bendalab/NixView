@@ -271,6 +271,8 @@ void MainWindow::open_project() {
 
     ui->actionClose_project->setEnabled(true);
     ui->stackedWidget->setCurrentIndex(0);
+    ui->actionProjectAdd_file->setEnabled(true);
+    ui->actionProjectRemove_file->setEnabled(true);
 }
 
 
@@ -281,6 +283,8 @@ void MainWindow::new_project() {
 
 void MainWindow::close_project() {
     ui->actionClose_project->setEnabled(false);
+    ui->actionProjectAdd_file->setEnabled(false);
+    ui->actionProjectRemove_file->setEnabled(false);
     close_file();
 }
 

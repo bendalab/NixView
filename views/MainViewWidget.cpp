@@ -141,6 +141,14 @@ void MainViewWidget::update_nix_file(const QString &nix_file_path) {
     set_nix_file(nix_file_path);
 }
 
+void MainViewWidget::project_add_file() {
+    this->ui->project_navigator->add_file();
+}
+
+void MainViewWidget::project_remove_file() {
+    this->ui->project_navigator->remove_file();
+}
+
 int MainViewWidget::get_scan_progress() {
     //return nix_model->progress();
     return 100;

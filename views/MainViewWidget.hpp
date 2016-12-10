@@ -48,6 +48,8 @@ public slots:
     void emit_current_qml_worker_slot(QModelIndex qml, QModelIndex prev);
     void scan_progress();
     void update_nix_file(const QString &nix_file_path);
+    void project_add_file();
+    void project_remove_file();
 
 signals:
     void emit_model_update(NixTreeModel*);

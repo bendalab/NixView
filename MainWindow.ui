@@ -449,7 +449,19 @@ color: rgb(150,150, 150);</string>
      <string>Find</string>
     </property>
    </widget>
+   <widget class="QMenu" name="menuProject">
+    <property name="title">
+     <string>Project</string>
+    </property>
+    <addaction name="actionProjectAdd_file"/>
+    <addaction name="actionProjectRemove_file"/>
+    <addaction name="separator"/>
+    <addaction name="actionProjectIndex_files"/>
+    <addaction name="separator"/>
+    <addaction name="actionProject_edit"/>
+   </widget>
    <addaction name="menuFile"/>
+   <addaction name="menuProject"/>
    <addaction name="menuView"/>
    <addaction name="menuPlot"/>
    <addaction name="menuFind"/>
@@ -730,6 +742,50 @@ color: rgb(150,150, 150);</string>
     <string>close project</string>
    </property>
   </action>
+  <action name="actionProjectAdd_file">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>add file</string>
+   </property>
+   <property name="toolTip">
+    <string>add ile to project</string>
+   </property>
+  </action>
+  <action name="actionProjectRemove_file">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>remove file</string>
+   </property>
+   <property name="toolTip">
+    <string>remove file from project</string>
+   </property>
+  </action>
+  <action name="actionProjectIndex_files">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>index files</string>
+   </property>
+   <property name="toolTip">
+    <string>re-index all files associated with this project</string>
+   </property>
+  </action>
+  <action name="actionProject_edit">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>edit</string>
+   </property>
+   <property name="toolTip">
+    <string> edit roject information</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
@@ -744,6 +800,10 @@ color: rgb(150,150, 150);</string>
    <extends>QWidget</extends>
    <header>views/MainViewWidget.hpp</header>
    <container>1</container>
+   <slots>
+    <slot>project_add_file()</slot>
+    <slot>project_remove_file()</slot>
+   </slots>
   </customwidget>
   <customwidget>
    <class>SearchForm</class>
@@ -1025,6 +1085,38 @@ color: rgb(150,150, 150);</string>
     <hint type="destinationlabel">
      <x>699</x>
      <y>393</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionProjectAdd_file</sender>
+   <signal>triggered()</signal>
+   <receiver>main_view</receiver>
+   <slot>project_add_file()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>63</x>
+     <y>98</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionProjectRemove_file</sender>
+   <signal>triggered()</signal>
+   <receiver>main_view</receiver>
+   <slot>project_remove_file()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>355</x>
+     <y>418</y>
     </hint>
    </hints>
   </connection>
