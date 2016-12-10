@@ -16,6 +16,7 @@ public:
     QStringList get_file_list();
     QString get_file_path(const QString &file_name);
     bool add_file(const QString &file_path);
+    bool remove_file(const QString &file_name);
 
     static bool create_project_index(const QString &path);
 };

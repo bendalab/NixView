@@ -130,8 +130,16 @@ void ProjectNavigator::add_file() {
 
 
 void ProjectNavigator::remove_file() {
-
+    QList<QTreeWidgetItem*> items = ui->treeWidget->selectedItems();
+    if (items.size() <= 0) {
+        return;
+    }
+    QString file_name = items[0]->data(0, Qt::UserRole).toString();
+    ProjectIndex pi(this->project_path);
+    pi.remove_file(file_name);
+    open_project(this->project_name, this->project_path);
 }
+
 
 void ProjectNavigator::rename_project() {
     bool ok;

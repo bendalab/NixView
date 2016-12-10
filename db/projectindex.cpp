@@ -3,6 +3,8 @@
 #include <QDir>
 #include <iostream>
 #include <QSqlQuery>
+#include <QSqlRecord>
+#include <QSqlError>
 #include <QVariant>
 
 ProjectIndex::ProjectIndex(const QString &path)
@@ -58,7 +60,6 @@ QString ProjectIndex::get_file_path(const QString &file_name) {
 
 
 bool ProjectIndex::add_file(const QString &file_path) {
-    std::cerr << "add file:  " << file_path.toStdString() << std::endl;
     QFile f(file_path);
     QDir d(file_path);
     QString name = d.dirName();
@@ -66,7 +67,8 @@ bool ProjectIndex::add_file(const QString &file_path) {
         return false;
     }
     QSqlDatabase db = QSqlDatabase::database(path);
-    std::cerr << db.open() << std::endl;
+    if (!db.isOpen())
+        db.open();
     QSqlQuery q(db);
     q.prepare("INSERT INTO files (name, path) VALUES (:name, :path)");
     q.bindValue(":name", QVariant(name));
@@ -76,6 +78,45 @@ bool ProjectIndex::add_file(const QString &file_path) {
     }
     db.close();
     index_file(file_path);
+    return true;
+}
+
+
+bool ProjectIndex::remove_file(const QString &file_path) {
+    QSqlDatabase db = QSqlDatabase::database(path);
+    if (!db.isOpen())
+        db.open();
+    int pri_key = -1;
+    QSqlQuery q(db);
+    q.prepare("SELECT id FROM files WHERE path = (:name)");
+    q.bindValue(":name", file_path);
+    if (q.exec() && q.next()) {
+        int fieldNo = q.record().indexOf("id");
+        QVariant id = q.value(fieldNo);
+        pri_key = id.toInt();
+    }
+    if (pri_key == -1) {
+        return false;
+    }
+
+    QSqlQuery q2(db);
+    q2.prepare("DELETE FROM data_index WHERE file_id = (:id)");
+    q2.bindValue(":id", QVariant(pri_key));
+    if (!q2.exec()) {
+        std::cerr << q2.lastError().text().toStdString() << std::endl;
+        std::cerr << "Something went wrong when removing indexes of file: " << file_path.toStdString() << std::endl;
+        return false;
+    }
+
+    QSqlQuery q3(db);
+    q3.prepare("DELETE FROM files WHERE id = (:id)");
+    q3.bindValue(":id", QVariant(pri_key));
+    if (!q3.exec()){
+        std::cerr << q3.lastError().text().toStdString() << std::endl;
+        std::cerr << "Something went wrong when removing file: " << file_path.toStdString() << std::endl;
+        return false;
+    }
+    db.close();
     return true;
 }
 
