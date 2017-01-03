@@ -30,8 +30,8 @@ public:
     explicit MainViewWidget(const std::string &nix_file_path, QWidget *parent = 0);
     ~MainViewWidget();
 
-    void set_nix_file(const QString &nix_file_path);
-    void set_nix_file(const std::string &nix_file_path);
+    bool set_nix_file(const QString &nix_file_path);
+    bool set_nix_file(const std::string &nix_file_path);
     void set_project(const QString &project);
     void new_project();
     nix::File get_nix_file() const;

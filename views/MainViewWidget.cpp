@@ -1,3 +1,4 @@
+#include <QMessageBox>
 #include "views/MainViewWidget.hpp"
 #include "ui_MainViewWidget.h"
 #include "common/Common.hpp"
@@ -32,34 +33,43 @@ MainViewWidget::MainViewWidget(const std::string &nix_file_path, QWidget *parent
     set_nix_file(nix_file_path);
 }
 
-void MainViewWidget::set_nix_file(const QString &nix_file_path) {
-    set_nix_file(nix_file_path.toStdString());
+bool MainViewWidget::set_nix_file(const QString &nix_file_path) {
+    return set_nix_file(nix_file_path.toStdString());
 }
 
-void MainViewWidget::set_nix_file(const std::string &nix_file_path) {
+bool MainViewWidget::set_nix_file(const std::string &nix_file_path) {
+    bool result = false;
     if (tv == nullptr)
         populate_data_stacked_widget();
     if (nix_file_path.empty()) {
-        return;
+        return result;
     }
-    nix_file = nix::File::open(nix_file_path, nix::FileMode::ReadOnly);
 
-    nix_model = new NixTreeModel(this);
-    nix_model->set_entity(nix_file);
-    MainViewWidget::CURRENT_MODEL = nix_model;
-    nix_proxy_model = new NixProxyModel(this);
-    nix_proxy_model->setSourceModel(nix_model);
-    tv->getTreeView()->setModel(nix_proxy_model);
-    tv->getTreeView()->setSortingEnabled(true);
-    tv->setColumns();
-    cv->set_proxy_model(nix_proxy_model);
-    emit emit_model_update(nix_model);
-    emit update_file();
-    QObject::connect(tv->getTreeView(), SIGNAL(clicked(QModelIndex)), this, SLOT(emit_current_qml_worker_slot(QModelIndex)));
-    QObject::connect(tv->getTreeView(), SIGNAL(expanded(QModelIndex)), tv, SLOT(resizeRequest()));
-    QObject::connect(tv->getTreeView(), SIGNAL(collapsed(QModelIndex)), tv, SLOT(resizeRequest()));
-    QObject::connect(tv->getTreeView()->selectionModel(), SIGNAL(currentChanged(QModelIndex, QModelIndex)), this, SLOT(emit_current_qml_worker_slot(QModelIndex, QModelIndex)));
-    QObject::connect(cv->get_column_view(), SIGNAL(clicked(QModelIndex)), this, SLOT(emit_current_qml_worker_slot(QModelIndex)));
+    try {
+        nix_file = nix::File::open(nix_file_path, nix::FileMode::ReadOnly);
+        nix_model = new NixTreeModel(this);
+        nix_model->set_entity(nix_file);
+        MainViewWidget::CURRENT_MODEL = nix_model;
+        nix_proxy_model = new NixProxyModel(this);
+        nix_proxy_model->setSourceModel(nix_model);
+        tv->getTreeView()->setModel(nix_proxy_model);
+        tv->getTreeView()->setSortingEnabled(true);
+        tv->setColumns();
+        cv->set_proxy_model(nix_proxy_model);
+        emit emit_model_update(nix_model);
+        emit update_file();
+        QObject::connect(tv->getTreeView(), SIGNAL(clicked(QModelIndex)), this, SLOT(emit_current_qml_worker_slot(QModelIndex)));
+        QObject::connect(tv->getTreeView(), SIGNAL(expanded(QModelIndex)), tv, SLOT(resizeRequest()));
+        QObject::connect(tv->getTreeView(), SIGNAL(collapsed(QModelIndex)), tv, SLOT(resizeRequest()));
+        QObject::connect(tv->getTreeView()->selectionModel(), SIGNAL(currentChanged(QModelIndex, QModelIndex)), this, SLOT(emit_current_qml_worker_slot(QModelIndex, QModelIndex)));
+        QObject::connect(cv->get_column_view(), SIGNAL(clicked(QModelIndex)), this, SLOT(emit_current_qml_worker_slot(QModelIndex)));
+        result = true;
+    } catch (const std::exception& e) {
+        QMessageBox::information(this, QString::fromStdString("Error reading file " + nix_file_path + "!"),
+                                 e.what(), QMessageBox::Ok);
+        result = false;
+    }
+    return result;
 }
 
 

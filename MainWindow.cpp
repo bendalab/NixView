@@ -311,13 +311,14 @@ void MainWindow::read_nix_file(QString filename) {
     file_label->setText(file_path.c_str());
     file_progress->setVisible(true);
 
-    ui->main_view->set_nix_file(file_path);
-    file_progress->setVisible(false);
-    ui->stackedWidget->setCurrentIndex(0);
-    ui->actionCloseFile->setEnabled(true);
-    ui->actionFile_properties->setEnabled(true);
-    ui->actionFind->setEnabled(true);
-    update_recent_file_list(filename);
+    if (ui->main_view->set_nix_file(file_path)) {
+        file_progress->setVisible(false);
+        ui->stackedWidget->setCurrentIndex(0);
+        ui->actionCloseFile->setEnabled(true);
+        ui->actionFile_properties->setEnabled(true);
+        ui->actionFind->setEnabled(true);
+        update_recent_file_list(filename);
+    }
 }
 
 
