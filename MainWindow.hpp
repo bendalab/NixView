@@ -78,6 +78,8 @@ private:
     void set_current_project(const QString &project);
     void update_recent_file_list(QString filename);
     void save_recent_files(QStringList &files);
+    void toggle_file_controls(bool enabled);
+    void toggle_project_controls(bool enabled);
 };
 
 #endif // MAINWINDOW_HPP

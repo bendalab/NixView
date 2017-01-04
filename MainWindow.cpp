@@ -14,6 +14,7 @@
 #include "utils/utils.hpp"
 #include "db/projectmanager.hpp"
 #include <QInputDialog>
+#include <QDebug>
 
 
 MainWindow::MainWindow(QWidget *parent, QApplication *app) : QMainWindow(parent),
@@ -268,11 +269,8 @@ void MainWindow::open_project() {
             ui->main_view->set_project(project);
         }
     }
-
-    ui->actionClose_project->setEnabled(true);
+    toggle_project_controls(true);
     ui->stackedWidget->setCurrentIndex(0);
-    ui->actionProjectAdd_file->setEnabled(true);
-    ui->actionProjectRemove_file->setEnabled(true);
 }
 
 
@@ -282,9 +280,7 @@ void MainWindow::new_project() {
 
 
 void MainWindow::close_project() {
-    ui->actionClose_project->setEnabled(false);
-    ui->actionProjectAdd_file->setEnabled(false);
-    ui->actionProjectRemove_file->setEnabled(false);
+    toggle_project_controls(false);
     set_current_project("");
     close_file();
 }
@@ -293,11 +289,7 @@ void MainWindow::close_project() {
 void MainWindow::close_file() {
     ui->stackedWidget->setCurrentIndex(2);
     ui->main_view->clear();
-    ui->actionCloseFile->setEnabled(false);
-    ui->actionPlot->setEnabled(false);
-    ui->actionTable->setEnabled(false);
-    ui->actionFile_properties->setEnabled(false);
-    ui->actionFind->setEnabled(false);
+    toggle_file_controls(false);
     set_current_file("");
     clearSearch();
 }
@@ -316,9 +308,7 @@ void MainWindow::read_nix_file(QString filename) {
     if (ui->main_view->set_nix_file(file_path)) {
         file_progress->setVisible(false);
         ui->stackedWidget->setCurrentIndex(0);
-        ui->actionCloseFile->setEnabled(true);
-        ui->actionFile_properties->setEnabled(true);
-        ui->actionFind->setEnabled(true);
+        toggle_file_controls(true);
         update_recent_file_list(filename);
         set_current_file(filename);
     }
@@ -432,10 +422,12 @@ void MainWindow::recent_project_selected(QListWidgetItem *item) {
     ui->actionClose_project->setEnabled(true);
     ui->stackedWidget->setCurrentIndex(0);
     ui->main_view->set_project(item->text());
+void MainWindow::new_file_update(QString filename) {
+    set_current_file(filename);
+    toggle_file_controls(true);
 }
 
-void MainWindow::new_file_update() {
-    ui->actionFind->setEnabled(true);
+
 void MainWindow::set_current_file(const QString &filename) {
     qDebug() << ("[Info] Set filename from " + this->currentFile + " to ") << filename;
     this->currentFile = filename;
@@ -448,4 +440,21 @@ void MainWindow::set_current_project(const QString &project) {
 }
 
 
+void MainWindow::toggle_file_controls(bool enabled) {
+    //qDebug() << ("[Info] Toggle file controls from " + ui->actionCloseFile->isEnabled() + " to ") << enabled;
+    std::cerr << "toggle file controls from " << ui->actionCloseFile->isEnabled() << " to " <<  enabled << std::endl;
+    ui->actionCloseFile->setEnabled(enabled);
+    ui->actionFile_properties->setEnabled(enabled);
+    ui->actionFind->setEnabled(enabled);
+    ui->actionPlot->setEnabled(enabled);
+    ui->actionTable->setEnabled(enabled);
+}
+
+void MainWindow::toggle_project_controls(bool enabled) {
+    //qDebug() << ("[Info] Toggle project controls from " + ui->actionCloseFile->isEnabled() + " to ") << enabled;
+    std::cerr << "toggle project controls from " << ui->actionClose_project->isEnabled() << " to " <<  enabled << std::endl;
+
+    ui->actionClose_project->setEnabled(enabled);
+    ui->actionProjectAdd_file->setEnabled(enabled);
+    ui->actionProjectRemove_file->setEnabled(enabled);
 }
