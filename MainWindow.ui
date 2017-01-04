@@ -458,6 +458,8 @@ color: rgb(150,150, 150);</string>
     <addaction name="separator"/>
     <addaction name="actionProjectIndex_files"/>
     <addaction name="separator"/>
+    <addaction name="actionExport"/>
+    <addaction name="separator"/>
     <addaction name="actionProject_edit"/>
    </widget>
    <addaction name="menuFile"/>
@@ -786,6 +788,17 @@ color: rgb(150,150, 150);</string>
     <string> edit roject information</string>
    </property>
   </action>
+  <action name="actionExport">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>export</string>
+   </property>
+   <property name="toolTip">
+    <string>select metadata and export to to csv, e.g. for handling with pandas</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
@@ -801,6 +814,8 @@ color: rgb(150,150, 150);</string>
    <header>views/MainViewWidget.hpp</header>
    <container>1</container>
    <slots>
+    <signal>update_file(QString)</signal>
+    <signal>close_file()</signal>
     <slot>project_add_file()</slot>
     <slot>project_remove_file()</slot>
    </slots>
@@ -1120,6 +1135,38 @@ color: rgb(150,150, 150);</string>
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>main_view</sender>
+   <signal>update_file(QString)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>new_file_update(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>31</x>
+     <y>86</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>699</x>
+     <y>393</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>main_view</sender>
+   <signal>close_file()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>close_file()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>355</x>
+     <y>418</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>699</x>
+     <y>393</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>open_file()</slot>
@@ -1138,5 +1185,7 @@ color: rgb(150,150, 150);</string>
   <slot>new_project()</slot>
   <slot>close_project()</slot>
   <slot>recent_project_selected(QListWidgetItem*)</slot>
+  <slot>new_file_update(QString)</slot>
+  <slot>close_file()</slot>
  </slots>
 </ui>

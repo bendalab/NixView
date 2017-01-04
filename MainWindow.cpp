@@ -421,7 +421,12 @@ void MainWindow::recent_project_selected(QListWidgetItem *item) {
     close_project();
     ui->actionClose_project->setEnabled(true);
     ui->stackedWidget->setCurrentIndex(0);
-    ui->main_view->set_project(item->text());
+    if (ui->main_view->set_project(item->text())) {
+        set_current_project(item->text());
+    }
+}
+
+
 void MainWindow::new_file_update(QString filename) {
     set_current_file(filename);
     toggle_file_controls(true);

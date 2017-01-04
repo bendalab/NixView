@@ -58,7 +58,7 @@ signals:
 private slots:
     void recent_file_selected(QListWidgetItem*);
     void recent_project_selected(QListWidgetItem*);
-    void new_file_update();
+    void new_file_update(QString);
 
 private:
     Ui::MainWindow *ui;
