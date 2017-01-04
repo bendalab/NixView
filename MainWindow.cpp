@@ -266,11 +266,19 @@ void MainWindow::open_project() {
         QString project = QInputDialog::getItem(this, "Select project ...", "Select a project",
                                                 list, 0, false, &ok);
         if (ok) {
-            ui->main_view->set_project(project);
+            open_project(project);
         }
+    }  
+}
+
+
+void MainWindow::open_project(const QString &project) {
+    if (ui->main_view->set_project(project)) {
+        set_current_project(project);
+        toggle_project_controls(true);
+        ui->main_view->show_project_navigator(true);
+        ui->stackedWidget->setCurrentIndex(0);
     }
-    toggle_project_controls(true);
-    ui->stackedWidget->setCurrentIndex(0);
 }
 
 
@@ -311,6 +319,8 @@ void MainWindow::read_nix_file(QString filename) {
         toggle_file_controls(true);
         update_recent_file_list(filename);
         set_current_file(filename);
+        qDebug() << "[Info] current project.count " << currentProject.count();
+        ui->main_view->show_project_navigator(currentProject.count() > 0);
     }
 }
 
@@ -417,13 +427,7 @@ void MainWindow::recent_file_selected(QListWidgetItem *item) {
 
 
 void MainWindow::recent_project_selected(QListWidgetItem *item) {
-    close_file();
-    close_project();
-    ui->actionClose_project->setEnabled(true);
-    ui->stackedWidget->setCurrentIndex(0);
-    if (ui->main_view->set_project(item->text())) {
-        set_current_project(item->text());
-    }
+    open_project(item->text());
 }
 
 
@@ -434,20 +438,20 @@ void MainWindow::new_file_update(QString filename) {
 
 
 void MainWindow::set_current_file(const QString &filename) {
-    qDebug() << ("[Info] Set filename from " + this->currentFile + " to ") << filename;
+    qDebug() << ("[DEBUG] Set filename from " + this->currentFile + " to ") << filename;
     this->currentFile = filename;
 }
 
 
 void MainWindow::set_current_project(const QString &project) {
-    qDebug() << ("[Info] Set project from " + this->currentProject + " to ") << project;
+    qDebug() << ("[DEBUG] Set project from " + this->currentProject + " to ") << project;
     this->currentProject = project;
 }
 
 
 void MainWindow::toggle_file_controls(bool enabled) {
-    //qDebug() << ("[Info] Toggle file controls from " + ui->actionCloseFile->isEnabled() + " to ") << enabled;
-    std::cerr << "toggle file controls from " << ui->actionCloseFile->isEnabled() << " to " <<  enabled << std::endl;
+    //qDebug() << ("[DEBUG] Toggle file controls from " + ui->actionCloseFile->isEnabled() + " to ") << enabled;
+    std::cerr << "[DEBUG] Toggle file controls from " << ui->actionCloseFile->isEnabled() << " to " <<  enabled << std::endl;
     ui->actionCloseFile->setEnabled(enabled);
     ui->actionFile_properties->setEnabled(enabled);
     ui->actionFind->setEnabled(enabled);
@@ -457,7 +461,7 @@ void MainWindow::toggle_file_controls(bool enabled) {
 
 void MainWindow::toggle_project_controls(bool enabled) {
     //qDebug() << ("[Info] Toggle project controls from " + ui->actionCloseFile->isEnabled() + " to ") << enabled;
-    std::cerr << "toggle project controls from " << ui->actionClose_project->isEnabled() << " to " <<  enabled << std::endl;
+    std::cerr << "[DEBUG] Toggle project controls from " << ui->actionClose_project->isEnabled() << " to " <<  enabled << std::endl;
 
     ui->actionClose_project->setEnabled(enabled);
     ui->actionProjectAdd_file->setEnabled(enabled);

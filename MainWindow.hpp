@@ -32,6 +32,7 @@ public slots:
     void item_selected(QVariant v);
     void open_file();
     void open_project();
+    void open_project(const QString &project);
     void new_project();
     void close_project();
     void close_file();
