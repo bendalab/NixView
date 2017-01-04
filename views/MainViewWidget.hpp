@@ -39,6 +39,7 @@ public:
     LazyLoadView* getTreeView();
     static NixTreeModel* get_current_model() {return CURRENT_MODEL; }
     int get_scan_progress();
+    void show_project_navigator(bool show);
     void clear();
 
 public slots:

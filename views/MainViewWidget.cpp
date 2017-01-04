@@ -164,6 +164,13 @@ int MainViewWidget::get_scan_progress() {
     return 100;
 }
 
+void MainViewWidget::show_project_navigator(bool show) {
+    if (!show) {
+        ui->splitter->setSizes({0, 100});
+    } else {
+        ui->splitter->setSizes({120,100});
+    }
+}
 
 MainViewWidget::~MainViewWidget() {
     if (nix_file.isOpen()) {
