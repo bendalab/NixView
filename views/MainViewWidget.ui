@@ -62,6 +62,7 @@
    <container>1</container>
    <slots>
     <signal>file_selected(QString)</signal>
+    <signal>close_file()</signal>
     <slot>update_nix_file(QString)</slot>
    </slots>
   </customwidget>
@@ -86,6 +87,7 @@
   </connection>
  </connections>
  <slots>
+  <signal>close_file()</signal>
   <slot>toggle_find()</slot>
   <slot>update_nix_file(QString)</slot>
  </slots>

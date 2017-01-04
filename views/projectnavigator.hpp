@@ -20,7 +20,7 @@ public:
     explicit ProjectNavigator(QWidget *parent = 0);
     ~ProjectNavigator();
 
-    void set_project(const QString &project);
+    bool set_project(const QString &project);
     void clear();
 
 private:
@@ -32,16 +32,17 @@ private:
 
 public slots:
     void new_project();
-    void delete_project();
-    void rename_project();
-    void refresh_projects();
-    void select_project(int index);
+    // void delete_project();
+    // void rename_project();
+    // void refresh_projects();
+    // void select_project(int index);
     void item_selected(QTreeWidgetItem*, int);
     void add_file();
     void remove_file();
 
 signals:
     void file_selected(QString);
+    void close_file();
 };
 
 #endif // PROJECTNAVIGATOR_HPP

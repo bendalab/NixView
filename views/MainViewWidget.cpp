@@ -57,7 +57,7 @@ bool MainViewWidget::set_nix_file(const std::string &nix_file_path) {
         tv->setColumns();
         cv->set_proxy_model(nix_proxy_model);
         emit emit_model_update(nix_model);
-        emit update_file();
+        emit update_file(QString::fromStdString(nix_file_path));
         QObject::connect(tv->getTreeView(), SIGNAL(clicked(QModelIndex)), this, SLOT(emit_current_qml_worker_slot(QModelIndex)));
         QObject::connect(tv->getTreeView(), SIGNAL(expanded(QModelIndex)), tv, SLOT(resizeRequest()));
         QObject::connect(tv->getTreeView(), SIGNAL(collapsed(QModelIndex)), tv, SLOT(resizeRequest()));
@@ -73,8 +73,8 @@ bool MainViewWidget::set_nix_file(const std::string &nix_file_path) {
 }
 
 
-void MainViewWidget::set_project(const QString &project) {
-    ui->project_navigator->set_project(project);
+bool MainViewWidget::set_project(const QString &project) {
+    return ui->project_navigator->set_project(project);
 }
 
 

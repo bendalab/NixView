@@ -42,7 +42,6 @@ void ProjectNavigator::open_projects_db() {
             }
         }
     } else {
-        std::cerr << "Settings not found!" << std::endl;
         QString dir_name = QFileDialog::getExistingDirectory(this, "Select location for project database.");
         if (!dir_name.isEmpty()) {
             db = QDir::cleanPath(dir_name + QDir::separator() + "projects.db");
@@ -56,11 +55,10 @@ void ProjectNavigator::open_projects_db() {
 }
 
 
-void ProjectNavigator::set_project(const QString &project) {
-    std::cerr << "ProjectNavigator SetProject: " << project.toStdString() << std::endl;
+bool ProjectNavigator::set_project(const QString &project) {
     QString path = pm.get_project_path(project);
-    std::cerr << "ProjectNavigator: " << path.toStdString() << std::endl;
     open_project(project, path);
+    return true;
 }
 
 
@@ -80,11 +78,12 @@ void ProjectNavigator::open_project(const QString &name, const QString &path) {
         item->addChild(it);
     }
     ui->treeWidget->insertTopLevelItem(0, item);
+    ui->treeWidget->expandAll();
     this->project_name = name;
     this->project_path = path;
 }
 
-
+/*
 void ProjectNavigator::refresh_projects() {
     ui->treeWidget->clear();
     QList<QTreeWidgetItem *> items;
@@ -94,16 +93,14 @@ void ProjectNavigator::refresh_projects() {
     }
     ui->treeWidget->insertTopLevelItems(0, items);
 }
-
-
+*/
+/*
 void ProjectNavigator::select_project(int index) {
     std::cerr << "selected index: " << index << std::endl;
 }
-
+*/
 
 void ProjectNavigator::item_selected(QTreeWidgetItem *item, int column) {
-    std::cerr << "ProjectNavigator, file selected: " << column << std::endl;
-    std::cerr << "ProjectNavigator, file path: " << item->data(column, Qt::UserRole).toString().toStdString() << std::endl;
     emit file_selected(item->data(0, Qt::UserRole).toString());
 }
 
@@ -137,10 +134,11 @@ void ProjectNavigator::remove_file() {
     QString file_name = items[0]->data(0, Qt::UserRole).toString();
     ProjectIndex pi(this->project_path);
     pi.remove_file(file_name);
+    emit close_file();
     open_project(this->project_name, this->project_path);
 }
 
-
+/*
 void ProjectNavigator::rename_project() {
     bool ok;
     //QString old_name = ui->comboBox->currentText();
@@ -156,7 +154,7 @@ void ProjectNavigator::rename_project() {
     }
     refresh_projects();
 }
-
+*/
 
 void ProjectNavigator::new_project() {
     QString fileName = QFileDialog::getSaveFileName(this, tr("new project"),
@@ -164,12 +162,13 @@ void ProjectNavigator::new_project() {
     if (fileName.isEmpty())
         return;
     pm.add_project(fileName);
-    refresh_projects();
+    //refresh_projects();
 }
 
-
+/*
 void ProjectNavigator::delete_project() {
     QString curr_project = ui->treeWidget->currentItem()->text(0);
     pm.remove_project(curr_project);
     refresh_projects();
 }
+*/

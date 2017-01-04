@@ -32,7 +32,7 @@ public:
 
     bool set_nix_file(const QString &nix_file_path);
     bool set_nix_file(const std::string &nix_file_path);
-    void set_project(const QString &project);
+    bool set_project(const QString &project);
     void new_project();
     nix::File get_nix_file() const;
     ColumnView *get_cv();
@@ -55,7 +55,8 @@ signals:
     void emit_model_update(NixTreeModel*);
     void scan_progress_update();
     void emit_current_qml(QModelIndex);
-    void update_file();
+    void update_file(QString);
+    void close_file();
 
 private:
     Ui::MainViewWidget *ui;
