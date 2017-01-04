@@ -68,11 +68,14 @@ private:
     QLabel* file_label;
     QProgressBar* file_progress;
     QStringList recent_files;
+    QString currentFile;
+    QString currentProject;
     int previous_page;
     void get_recent_files();
     void populate_recent_file_menu();
     void populate_recent_projects();
-
+    void set_current_file(const QString &filename);
+    void set_current_project(const QString &project);
     void update_recent_file_list(QString filename);
     void save_recent_files(QStringList &files);
 };

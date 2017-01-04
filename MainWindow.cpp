@@ -17,7 +17,7 @@
 
 
 MainWindow::MainWindow(QWidget *parent, QApplication *app) : QMainWindow(parent),
-    ui(new Ui::MainWindow) {
+    ui(new Ui::MainWindow), currentFile(""), currentProject("") {
 
     QCoreApplication::setOrganizationName("g-node");
     QCoreApplication::setApplicationName("nixview");
@@ -46,7 +46,7 @@ void MainWindow::connect_widgets() {
     QObject::connect(ui->main_view, SIGNAL(emit_current_qml(QModelIndex)), this, SLOT(item_selected(QModelIndex)));
     QObject::connect(ui->main_view, SIGNAL(emit_current_qml(QModelIndex)), ui->info_view, SLOT(update_info_widget(QModelIndex)));
     QObject::connect(ui->main_view, SIGNAL(scan_progress_update()), this, SLOT(file_scan_progress()));
-    QObject::connect(ui->main_view, SIGNAL(update_file()), this, SLOT(new_file_update()));
+    //QObject::connect(ui->main_view, SIGNAL(update_file()), this, SLOT(new_file_update()));
     QObject::connect(ui->menu_open_recent, SIGNAL(triggered(QAction*)), this, SLOT(open_recent_file(QAction*)));
     QObject::connect(ui->searchForm, SIGNAL(newResults(std::vector<QVariant>)), this, SLOT(newSearchResults(std::vector<QVariant>)));
 }
@@ -285,6 +285,7 @@ void MainWindow::close_project() {
     ui->actionClose_project->setEnabled(false);
     ui->actionProjectAdd_file->setEnabled(false);
     ui->actionProjectRemove_file->setEnabled(false);
+    set_current_project("");
     close_file();
 }
 
@@ -297,6 +298,7 @@ void MainWindow::close_file() {
     ui->actionTable->setEnabled(false);
     ui->actionFile_properties->setEnabled(false);
     ui->actionFind->setEnabled(false);
+    set_current_file("");
     clearSearch();
 }
 
@@ -318,6 +320,7 @@ void MainWindow::read_nix_file(QString filename) {
         ui->actionFile_properties->setEnabled(true);
         ui->actionFind->setEnabled(true);
         update_recent_file_list(filename);
+        set_current_file(filename);
     }
 }
 
@@ -433,4 +436,16 @@ void MainWindow::recent_project_selected(QListWidgetItem *item) {
 
 void MainWindow::new_file_update() {
     ui->actionFind->setEnabled(true);
+void MainWindow::set_current_file(const QString &filename) {
+    qDebug() << ("[Info] Set filename from " + this->currentFile + " to ") << filename;
+    this->currentFile = filename;
+}
+
+
+void MainWindow::set_current_project(const QString &project) {
+    qDebug() << ("[Info] Set project from " + this->currentProject + " to ") << project;
+    this->currentProject = project;
+}
+
+
 }
