@@ -1,5 +1,6 @@
-cmake_minimum_required(VERSION 2.8.4)
-project(NixView CXX)
+cmake_minimum_required(VERSION 3.0.0)
+
+project(NixView LANGUAGES CXX VERSION 0.8)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_INIT} -std=c++11 -Wall") ## Optimize
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -pedantic -Wunreachable-code")
@@ -8,6 +9,15 @@ set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS} -O0 -ggdb3")
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} -O2")
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake")
+
+set(COMPANY "Bendalab")
+set(COPYRIGHT "Copyright (c) 2017 Jan Grewe. All rights reserved.")
+set(IDENTIFIER "neuroetho.uni-tuebingen.de")
+
+include(QtCommon)
+
+fix_project_version()
+add_project_meta(META_FILES_TO_INCLUDE)
 
 ########################################
 # Qt5
@@ -85,9 +95,11 @@ file(GLOB NIXVIEW_RES *.qrc
 QT5_WRAP_UI(NIXVIEW_UI_HDRS ${NIXVIEW_UI})
 QT5_ADD_RESOURCES(NIXVIEW_RES_SOURCES ${NIXVIEW_RES})
 
-add_executable(nix-view ${NIXVIEW_UI_HDRS} ${NIXVIEW_INCUDES} ${NIXVIEW_SOURCES} ${NIXVIEW_RES_SOURCES})
-target_link_libraries(nix-view Qt5::Core Qt5::Widgets Qt5::PrintSupport Qt5::Sql ${NIX_LIBRARIES} ${Boost_LIBRARIES})
-qt5_use_modules(nix-view Gui)
+add_executable(nixview ${OS_BUNDLE} ${NIXVIEW_UI_HDRS} ${NIXVIEW_INCUDES} ${NIXVIEW_SOURCES}
+		       ${NIXVIEW_RES_SOURCES} ${META_FILES_TO_INCLUDE})
+target_link_libraries(nixview Qt5::Core Qt5::Widgets Qt5::PrintSupport Qt5::Sql ${NIX_LIBRARIES} ${Boost_LIBRARIES})
+
+qt5_use_modules(nixview Gui)
 
 ########################################
 # Status
