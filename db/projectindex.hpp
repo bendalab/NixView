@@ -1,7 +1,7 @@
 #ifndef PROJECTINDEX_H
 #define PROJECTINDEX_H
 #include <QString>
-#include <QSql>
+#include <QtSql>
 
 class ProjectIndex {
 
