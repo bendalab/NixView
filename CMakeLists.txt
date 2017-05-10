@@ -2,8 +2,15 @@ message ("-------------------------------------------")
 message ("-       setting up nixview build          -")
 message ("-------------------------------------------")
 
-cmake_minimum_required (VERSION 3.0.0)
-project (NixView LANGUAGES CXX VERSION 0.8)
+cmake_minimum_required (VERSION 2.8.11)
+
+if (NOT CMAKE_BUILD_TYPE)
+  set (CMAKE_BUILD_TYPE DEBUG)
+endif ()
+
+message ("=> ${CMAKE_BUILD_TYPE} configuration")
+
+project (NixView CXX)
 
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_INIT} -std=c++11 -Wall") ## Optimize
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -pedantic -Wunreachable-code")
@@ -43,11 +50,15 @@ include_directories (AFTER ${NIX_INCLUDE_DIR})
 
 ########################################
 # Boost
-if(WIN32)
+if (WIN32)
   set (Boost_USE_STATIC_LIBS ON)
   set (Boost_USE_STATIC_RUNTIME OFF)
-else()
-  set (Boost_USE_STATIC_LIBS OFF)
+else ()
+  if (CMAKE_BUILD_TYPE STREQUAL "DEBUG")
+    set (Boost_USE_STATIC_LIBS OFF)
+  else ()
+    set (Boost_USE_STATIC_LIBS ON)
+  endif ()
 endif()
 
 set (Boost_USE_MULTITHREADED ON)
@@ -95,11 +106,18 @@ file (GLOB NIXVIEW_RES *.qrc
 QT5_WRAP_UI (NIXVIEW_UI_HDRS ${NIXVIEW_UI})
 QT5_ADD_RESOURCES (NIXVIEW_RES_SOURCES ${NIXVIEW_RES})
 
-add_executable (nixview ${OS_BUNDLE} ${NIXVIEW_UI_HDRS} ${NIXVIEW_INCUDES}
-  ${NIXVIEW_SOURCES} ${NIXVIEW_RES_SOURCES} ${META_FILES_TO_INCLUDE})
+if (CMAKE_BUILD_TYPE STREQUAL "RELEASE")
+  add_executable (nixview ${OS_BUNDLE} ${NIXVIEW_UI_HDRS} ${NIXVIEW_INCUDES}
+    ${NIXVIEW_SOURCES} ${NIXVIEW_RES_SOURCES} ${META_FILES_TO_INCLUDE})
+else ()
+  add_executable (nixview ${NIXVIEW_UI_HDRS} ${NIXVIEW_INCUDES}
+    ${NIXVIEW_SOURCES} ${NIXVIEW_RES_SOURCES} ${META_FILES_TO_INCLUDE})
+endif ()
 
-target_link_libraries (nixview Qt5::Core Qt5::Widgets Qt5::PrintSupport Qt5::Sql ${NIX_LIBRARIES} ${Boost_LIBRARIES})
-install (TARGETS nixview BUNDLE DESTINATION .)
+target_link_libraries (nixview Qt5::Core Qt5::Widgets Qt5::PrintSupport Qt5::Sql
+  ${NIX_LIBRARIES} ${Boost_LIBRARIES})
+
+install (TARGETS nixview BUNDLE DESTINATION . RUNTIME  DESTINATION "${CMAKE_INSTALL_PREFIX}/bin")
 
 ########################################
 # Status
