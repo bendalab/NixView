@@ -7,7 +7,6 @@ cmake_minimum_required (VERSION 2.8.11)
 if (NOT CMAKE_BUILD_TYPE)
   set (CMAKE_BUILD_TYPE DEBUG)
 endif ()
-
 message ("=> ${CMAKE_BUILD_TYPE} configuration")
 
 project (NixView CXX)
@@ -20,8 +19,11 @@ set (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake")
 
 include (NixView) # project settings
 include (QtCommon) # qt settings
-include (CMakeCPackOptions) # packaging config
-include (CPack)
+
+if (CMAKE_BUILD_TYPE STREQUAL "RELEASE")
+  include (CMakeCPackOptions) # packaging config
+  include (CPack)
+endif ()
 
 fix_project_version ()
 add_project_meta (META_FILES_TO_INCLUDE)
@@ -60,11 +62,8 @@ else ()
     set (Boost_USE_STATIC_LIBS ON)
   endif ()
 endif()
-
 set (Boost_USE_MULTITHREADED ON)
-
 find_package (Boost 1.49.0 REQUIRED date_time regex program_options system filesystem)
-
 include_directories (AFTER ${Boost_INCLUDE_DIR})
 
 ########################################
@@ -117,7 +116,8 @@ endif ()
 target_link_libraries (nixview Qt5::Core Qt5::Widgets Qt5::PrintSupport Qt5::Sql
   ${NIX_LIBRARIES} ${Boost_LIBRARIES})
 
-install (TARGETS nixview BUNDLE DESTINATION . RUNTIME  DESTINATION "${CMAKE_INSTALL_PREFIX}/bin")
+install (TARGETS nixview BUNDLE DESTINATION . RUNTIME  DESTINATION
+  "${CMAKE_INSTALL_PREFIX}/bin")
 
 ########################################
 # Status
