@@ -4,7 +4,10 @@
 #include <QSqlDatabase>
 
 class QSqlQuery;
-
+/**
+ * @brief The ProjectManager class is supposed to manage all nixview projects. That is, it opens the
+ * "projects.db" database, can return a list of projects, you can add and delete projects...
+ */
 class ProjectManager
 {
 public:

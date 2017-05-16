@@ -76,7 +76,7 @@ bool ProjectManager::add_project(const QString &path) const {
     QDir dir(path);
     QString name = dir.dirName();
     if (!ProjectIndex::create_project_index(path))
-            return success;
+        return success;
     QSqlDatabase project_db = QSqlDatabase::database("projects_db");
     project_db.open();
     if (project_db.isOpen() && !name.isEmpty() && check_project_name(name)) {

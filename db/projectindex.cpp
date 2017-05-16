@@ -70,11 +70,14 @@ QStringList ProjectIndex::get_file_list() {
         return list;
     QSqlQuery q(db);
     q.prepare("SELECT name FROM files");
-    if(!q.exec())
+    if(!q.exec()) {
+        db.close();
         return list;
+    }
     while (q.next()) {
         list.append(q.value(0).toString());
     }
+    db.close();
     return list;
 }
 
@@ -87,8 +90,10 @@ QString ProjectIndex::get_file_path(const QString &file_name) {
     QSqlQuery q(db);
     q.prepare("SELECT path FROM files WHERE name = (:name)");
     q.bindValue(":name", file_name);
-    if(!q.exec())
+    if(!q.exec()) {
+        db.close();
         return file_path;
+    }
     if (q.next()) {
         return file_path = q.value(0).toString();
     }
@@ -199,7 +204,7 @@ bool ProjectIndex::create_project_index(const QString &path) {
         QSqlQuery q(QSqlDatabase::database(path));
         success = q.exec(QLatin1String("create table files(id integer primary key, name varchar, path varchar)"));
         if(success)
-            success = q.exec(QLatin1String("create table data_index(id integer primary key, file_id integer, entity_name varchar, entity_type varchar)"));
+            success = q.exec(QLatin1String("create table data_index(id integer primary key, file_id integer, entity_id, entity_path, entity_name varchar, entity_type varchar)"));
         if(success)
             q.exec(QLatin1String("ALTER TABLE data_index ADD FOREIGN KEY (file_id) REFERENCES files (id)"));
         index_db.close();
