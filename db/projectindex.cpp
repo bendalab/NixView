@@ -81,6 +81,21 @@ bool ProjectIndex::add_file(const QString &file_path) {
     return true;
 }
 
+int ProjectIndex::file_id(const QString &file_name) {
+    QSqlDatabase db = QSqlDatabase::database(path);
+    if (!db.isOpen())
+        db.open();
+    int pri_key = -1;
+    QSqlQuery q(db);
+    q.prepare("SELECT id FROM files WHERE path = (:name)");
+    q.bindValue(":name", file_name);
+    if (q.exec() && q.next()) {
+        int fieldNo = q.record().indexOf("id");
+        QVariant id = q.value(fieldNo);
+        pri_key = id.toInt();
+    }
+    return pri_key;
+}
 
 bool ProjectIndex::remove_file(const QString &file_path) {
     QSqlDatabase db = QSqlDatabase::database(path);

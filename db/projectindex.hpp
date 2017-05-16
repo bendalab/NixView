@@ -47,6 +47,13 @@ public:
     bool remove_file(const QString &file_name);
 
     /**
+     * @brief file_id returns the id returns the id of the file
+     * @param file_name QString the file name
+     * @return int the id -1 if not found
+     */
+
+    int file_id(const QString &file_name);
+    /**
      * @brief create_project_index
      * @param path
      * @return
