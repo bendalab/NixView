@@ -15,9 +15,16 @@ private:
     QString path;
 
     void index_file(const QString &file_path);
+    void version(int);
 
 public:
     ProjectIndex(const QString &path);
+
+    /**
+     * @brief version get the version of the project index
+     * @return int the version (-1) if not set
+     */
+    int version();
 
     /**
      * @brief get_file_list

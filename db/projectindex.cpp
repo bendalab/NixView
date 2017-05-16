@@ -18,11 +18,48 @@ ProjectIndex::ProjectIndex(const QString &path)
             index_db.setDatabaseName(path);
             if (!index_db.open()) {
                 std::cerr << "failed to open database!\n";
-            } else
+            } else {
                 std::cerr << "successfully opened database for project:  " << path.toStdString() << std::endl;
+                if (version() == 0) {
+                    version(1);
+                }
+            }
             index_db.close();
         }
     }
+}
+
+
+void ProjectIndex::version(int v) {
+    QSqlDatabase db = QSqlDatabase::database(path);
+    if (!db.open())
+        return;
+    QSqlQuery q(db);
+    q.prepare(QString("PRAGMA user_version=%1").arg(v));
+    if(!q.exec())
+        std::cerr << "[Error] ProjectIndex::version(int): " << q.lastError().text().toStdString() << std::endl;
+    db.close();
+}
+
+
+int ProjectIndex::version() {
+    int version = -1;
+    QSqlDatabase db = QSqlDatabase::database(path);
+    if (!db.open())
+        return version;
+    QSqlQuery q(db);
+    q.prepare(QString("PRAGMA %1").arg("user_version"));
+    if(!q.exec()) {
+        std::cerr << "[Error] ProjectIndex::version(): " << q.lastError().text().toStdString() << std::endl;
+        db.close();
+        return version;
+    }
+    if(q.next()) {
+        QVariant value = q.value(0);
+        version = value.toInt();
+    }
+    db.close();
+    return version;
 }
 
 
