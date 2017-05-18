@@ -5,11 +5,13 @@ MESSAGE("=> setup NIXView Project settings ...")
 
 if (APPLE)
   #
-  # The following variables define the portability and compatability attributes of the Mac OS X build
-  # they are choosen with care and should not be changed without good cause.
+  # The following variables define the portability and compatability
+  # attributes of the Mac OS X build they are choosen with care and
+  # should not be changed without good cause.
   #
-  # Among other things these options are chosen to match the portability and compatability options of the
-  # Qt framework dylibs which can be checked as follows:
+  # Among other things these options are chosen to match the
+  # portability and compatability options of the Qt framework dylibs
+  # which can be checked as follows:
   #
   # otool -l <binary> | grep -A3 LC_VERSION_MIN_MACOSX
   #
@@ -37,4 +39,6 @@ set (PROJECT_COPYRIGHT "Copyright (C) 2016-2017 by Jan Grewe")
 set (PROJECT_HOMEPAGE https://www.github.com/bendalab/nixview)
 
 set (PROJECT_SUMMARY_DESCRIPTION "${PROJECT_NAME} - Viewer for Nix Data files.")
-set (PROJECT_DESCRIPTION "${PROJECT_SUMMARY_DESCRIPTION}")
+set (PROJECT_DESCRIPTION "${PROJECT_SUMMARY_DESCRIPTION} The NIX format specifies a generic data model for scientific data (for more information see https://github.com/g-node/nix). Main features are the versatility of the data model with a minimum set of entities. Further, stored data can be annotated with arbitrary metadata. If required, such annotations can be done for individual data points. NIX uses the hdf5 file format as storage backend. 
+
+NixView is a viewer for such files for easy browsing and plotting of the stored data.")
