@@ -37,6 +37,20 @@ make -j 4
 ./nix-view
 ```
 
+
+
+### Ubuntu 16.04 
+```bash
+sudo apt-get install qt5-default cmake libboost-regex-dev libboost-program-options-dev libboost-date-time-dev libboost-program-options-dev libboost-system-dev libboost-filesystem-dev libcpptest-dev
+git clone https://github.com/bendalab/nixview.git
+cd nixview
+mkdir build
+cd build
+cmake ..
+make -j 4
+./nix-view
+```
+
 ### MacOS X
 
 The easiest way to install the dependencies is via [homebrew](http://brew.sh).
