@@ -22,12 +22,26 @@ For more information on nix see https://github.com/G-Node/nix
 
 To build NixView from source you may follow these instructions. This
 software is under development and usually works with/requires the
-latest nix version. To install this, follow the instructions given there: https://github.com/G-node/nix/README.md
+latest nix version. To install this, follow the instructions given there: https://github.com/G-Node/nix/blob/1.3/README.md
 
 ### Ubuntu 14.04 and higher
 
 ```bash
 sudo apt-get install qt5-default cmake libboost-regexp-dev libboost-program-options-dev libboost-date-time-dev libboost-program-options-dev libboost-system-dev libboost-filesystem-dev libcpptest
+git clone https://github.com/bendalab/nixview.git
+cd nixview
+mkdir build
+cd build
+cmake ..
+make -j 4
+./nix-view
+```
+
+
+
+### Ubuntu 16.04 
+```bash
+sudo apt-get install qt5-default cmake libboost-regex-dev libboost-program-options-dev libboost-date-time-dev libboost-program-options-dev libboost-system-dev libboost-filesystem-dev libcpptest-dev
 git clone https://github.com/bendalab/nixview.git
 cd nixview
 mkdir build
