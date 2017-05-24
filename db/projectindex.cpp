@@ -191,17 +191,19 @@ bool ProjectIndex::remove_file(const QString &file_path) {
 
 
 void ProjectIndex::index_block(const nix::Block &block, int f_id) {
+    std::cerr << "indexing Block " << block.name() << std::endl;
     QSqlDatabase db = QSqlDatabase::database(this->path);
     db.open();
     std::string def = block.definition() ? *(block.definition()) : "";
     std::string descr = block.name() + " " + block.type() + " " + def;
+    QString block_path(block.name().c_str());
     QSqlQuery query(db);
     query.prepare("INSERT INTO data_index (file_id, entity_id, entity_type, entity_description, entity_path) VALUES (:id, :ent_id, :type, :descr, :path)");
     query.bindValue(":id", QVariant(f_id));
     query.bindValue(":ent_id", QVariant(block.id().c_str()));
     query.bindValue(":type", QVariant(QString("Block")));
     query.bindValue(":descr", QVariant(descr.c_str()));
-    query.bindValue(":path", QVariant(block.name().c_str()));
+    query.bindValue(":path", QVariant(block_path));
     query.exec();
     query.prepare("SELECT id FROM data_index WHERE entity_id = :id");
     query.bindValue(":id", QVariant(block.id().c_str()));
@@ -209,7 +211,30 @@ void ProjectIndex::index_block(const nix::Block &block, int f_id) {
     if (block.metadata() && block_id > -1) {
         index_metadata(block.metadata(), block_id, query);
     }
+    for (nix::DataArray a : block.dataArrays()) {
+        index_data_array(a, f_id, query, block_path);
+    }
     db.close();
+}
+
+
+void ProjectIndex::index_data_array(const nix::DataArray &array, int file_id, QSqlQuery &query, const QString &parent_path) {
+    std::cerr << "indexing dataArray " << array.name() << std::endl;
+    std::string def = array.definition() ? *(array.definition()) : "";
+    std::string descr = array.name() + " " + array.type() + " " + def;
+    query.prepare("INSERT INTO data_index (file_id, entity_id, entity_type, entity_description, entity_path) VALUES (:id, :ent_id, :type, :descr, :path)");
+    query.bindValue(":id", QVariant(file_id));
+    query.bindValue(":ent_id", QVariant(array.id().c_str()));
+    query.bindValue(":type", QVariant(QString("DataArray")));
+    query.bindValue(":descr", QVariant(descr.c_str()));
+    query.bindValue(":path", QVariant(parent_path + "/"+ array.name().c_str()));
+    query.exec();
+    query.prepare("SELECT id FROM data_index WHERE entity_id = :id");
+    query.bindValue(":id", QVariant(array.id().c_str()));
+    int array_id = (query.exec() && query.next()) ? query.value(query.record().indexOf("id")).toInt() : -1;
+    if (array.metadata() && array_id > -1) {
+        index_metadata(array.metadata(), array_id, query);
+    }
 }
 
 

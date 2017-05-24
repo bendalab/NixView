@@ -24,6 +24,7 @@ private:
     void version(int);
     void index_block(const nix::Block &block, int file_id);
     void index_metadata(const nix::Section &section, int entity_id, QSqlQuery &query);
+    void index_data_array(const nix::DataArray &array, int file_id, QSqlQuery &query, const QString &parent_path);
 
 public:
     ProjectIndex(const QString &path);
