@@ -126,6 +126,7 @@ bool ProjectIndex::add_file(const QString &file_path) {
     return true;
 }
 
+
 int ProjectIndex::file_id(const QString &file_name) {
     QSqlDatabase db = QSqlDatabase::database(path);
     if (!db.isOpen())
@@ -198,21 +199,19 @@ void ProjectIndex::index_block(const nix::Block &block, int f_id) {
     std::string descr = block.name() + " " + block.type() + " " + def;
     QString block_path(block.name().c_str());
     QSqlQuery query(db);
-    query.prepare("INSERT INTO data_index (file_id, entity_id, entity_type, entity_description, entity_path) VALUES (:id, :ent_id, :type, :descr, :path)");
-    query.bindValue(":id", QVariant(f_id));
-    query.bindValue(":ent_id", QVariant(block.id().c_str()));
-    query.bindValue(":type", QVariant(QString("Block")));
-    query.bindValue(":descr", QVariant(descr.c_str()));
-    query.bindValue(":path", QVariant(block_path));
-    query.exec();
-    query.prepare("SELECT id FROM data_index WHERE entity_id = :id");
-    query.bindValue(":id", QVariant(block.id().c_str()));
-    int block_id = (query.exec() && query.next()) ? query.value(query.record().indexOf("id")).toInt() : -1;
+    int block_id = store_data_index(f_id, QString::fromStdString(block.id()), QString::fromStdString(block.type()),
+                                    QString::fromStdString(descr), block_path, query);
     if (block.metadata() && block_id > -1) {
         index_metadata(block.metadata(), block_id, query);
     }
     for (nix::DataArray a : block.dataArrays()) {
         index_data_array(a, f_id, query, block_path);
+    }
+    for(nix::Tag t : block.tags()) {
+        index_tag(t, f_id, query, block_path);
+    }
+    for(nix::MultiTag t : block.multiTags()) {
+        index_mtag(t, f_id, query, block_path);
     }
     db.close();
 }
@@ -222,19 +221,51 @@ void ProjectIndex::index_data_array(const nix::DataArray &array, int file_id, QS
     std::cerr << "indexing dataArray " << array.name() << std::endl;
     std::string def = array.definition() ? *(array.definition()) : "";
     std::string descr = array.name() + " " + array.type() + " " + def;
-    query.prepare("INSERT INTO data_index (file_id, entity_id, entity_type, entity_description, entity_path) VALUES (:id, :ent_id, :type, :descr, :path)");
-    query.bindValue(":id", QVariant(file_id));
-    query.bindValue(":ent_id", QVariant(array.id().c_str()));
-    query.bindValue(":type", QVariant(QString("DataArray")));
-    query.bindValue(":descr", QVariant(descr.c_str()));
-    query.bindValue(":path", QVariant(parent_path + "/"+ array.name().c_str()));
-    query.exec();
-    query.prepare("SELECT id FROM data_index WHERE entity_id = :id");
-    query.bindValue(":id", QVariant(array.id().c_str()));
-    int array_id = (query.exec() && query.next()) ? query.value(query.record().indexOf("id")).toInt() : -1;
+    int array_id = store_data_index(file_id, QString::fromStdString(array.id()), QString::fromStdString(array.type()),
+                                    QString::fromStdString(descr), parent_path + "/" + QString::fromStdString(array.name()), query);
     if (array.metadata() && array_id > -1) {
         index_metadata(array.metadata(), array_id, query);
     }
+}
+
+
+void ProjectIndex::index_tag(const nix::Tag &tag, int file_id, QSqlQuery &query, const QString &parent_path) {
+    std::cerr << "indexing Tag " << tag.name() << std::endl;
+    std::string def = tag.definition() ? *(tag.definition()) : "";
+    std::string descr = tag.name() + " " + tag.type() + " " + def;
+    int tag_id = store_data_index(file_id, QString::fromStdString(tag.id()), QString::fromStdString(tag.type()),
+                                  QString::fromStdString(descr), parent_path + "/" + QString::fromStdString(tag.name()), query);
+    if (tag.metadata() && tag_id > -1) {
+        index_metadata(tag.metadata(), tag_id, query);
+    }
+}
+
+
+void ProjectIndex::index_mtag(const nix::MultiTag &mtag, int file_id, QSqlQuery &query, const QString &parent_path) {
+    std::cerr << "indexing MultiTag " << mtag.name() << std::endl;
+    std::string def = mtag.definition() ? *(mtag.definition()) : "";
+    std::string descr = mtag.name() + " " + mtag.type() + " " + def;
+    int mtag_id = store_data_index(file_id, QString::fromStdString(mtag.id()), QString::fromStdString(mtag.type()),
+                                    QString::fromStdString(descr), parent_path + "/" + QString::fromStdString(mtag.name()), query);
+    if (mtag.metadata() && mtag_id > -1) {
+        index_metadata(mtag.metadata(), mtag_id, query);
+    }
+}
+
+
+int ProjectIndex::store_data_index(int file_id, const QString &entity_id, const QString &entity_type,
+                      const QString &description, const QString &entity_path, QSqlQuery &query) {
+    query.prepare("INSERT INTO data_index (file_id, entity_id, entity_type, entity_description, entity_path) VALUES (:id, :ent_id, :type, :descr, :path)");
+    query.bindValue(":id", QVariant(file_id));
+    query.bindValue(":ent_id", QVariant(entity_id));
+    query.bindValue(":type", QVariant(entity_type));
+    query.bindValue(":descr", QVariant(description));
+    query.bindValue(":path", QVariant(entity_path));
+    query.exec();
+    query.prepare("SELECT id FROM data_index WHERE entity_id = :id");
+    query.bindValue(":id", QVariant(entity_id));
+    int id = (query.exec() && query.next()) ? query.value(query.record().indexOf("id")).toInt() : -1;
+    return id;
 }
 
 

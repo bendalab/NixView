@@ -13,6 +13,8 @@ namespace nix {
     class Block;
     class Section;
     class DataArray;
+    class Tag;
+    class MultiTag;
 }
 
 class ProjectIndex {
@@ -25,6 +27,11 @@ private:
     void index_block(const nix::Block &block, int file_id);
     void index_metadata(const nix::Section &section, int entity_id, QSqlQuery &query);
     void index_data_array(const nix::DataArray &array, int file_id, QSqlQuery &query, const QString &parent_path);
+    void index_tag(const nix::Tag &tag, int file_id, QSqlQuery &query, const QString &parent_path);
+    void index_mtag(const nix::MultiTag &mtag, int file_id, QSqlQuery &query, const QString &parent_path);
+
+    int store_data_index(int file_id, const QString &entity_id, const QString &entity_type,
+                          const QString &description, const QString &entity_path, QSqlQuery &query);
 
 public:
     ProjectIndex(const QString &path);
