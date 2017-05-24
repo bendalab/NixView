@@ -7,8 +7,14 @@
  * ProjectIndex database has (at the moment) two tables that manage the files.
  * 1. files merely stores file name and path in two separate columns (so far absolute paths...)
  * 2. data_index stores all the different NIX entity_names, ids, entity_types, and path.
- * 3. not implemented a entity_index, basically a triplestore associated with each entity....
+ * 3. not implemented yet: a entity_index, basically a triplestore associated with each entity....
  */
+namespace nix {
+    class Block;
+    class Section;
+    class DataArray;
+}
+
 class ProjectIndex {
 
 private:
@@ -16,6 +22,8 @@ private:
 
     void index_file(const QString &file_path);
     void version(int);
+    void index_block(const nix::Block &block, int file_id);
+    void index_metadata(const nix::Section &section, int entity_id, QSqlQuery &query);
 
 public:
     ProjectIndex(const QString &path);

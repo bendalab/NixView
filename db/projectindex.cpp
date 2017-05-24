@@ -6,6 +6,9 @@
 #include <QSqlRecord>
 #include <QSqlError>
 #include <QVariant>
+#include <nix.hpp>
+#include "utils/entitydescriptor.h"
+
 
 ProjectIndex::ProjectIndex(const QString &path)
     : path(path) {
@@ -139,6 +142,7 @@ int ProjectIndex::file_id(const QString &file_name) {
     return pri_key;
 }
 
+
 bool ProjectIndex::remove_file(const QString &file_path) {
     QSqlDatabase db = QSqlDatabase::database(path);
     if (!db.isOpen())
@@ -155,7 +159,15 @@ bool ProjectIndex::remove_file(const QString &file_path) {
     if (pri_key == -1) {
         return false;
     }
+    QSqlQuery q4(db);
+    q4.prepare("DELETE FROM metadata_index WHERE metadata_index.entity_id = data_index.id AND data_index.file_id = :id");\
 
+    q4.bindValue(":id", QVariant(pri_key));
+    if (!q4.exec()) {
+        std::cerr << q4.lastError().text().toStdString() << std::endl;
+        std::cerr << "Something went wrong when removing metadata_indexes of file: " << file_path.toStdString() << std::endl;
+        return false;
+    }
     QSqlQuery q2(db);
     q2.prepare("DELETE FROM data_index WHERE file_id = (:id)");
     q2.bindValue(":id", QVariant(pri_key));
@@ -178,14 +190,60 @@ bool ProjectIndex::remove_file(const QString &file_path) {
 }
 
 
-void ProjectIndex::index_file(const QString &file_path) {
+void ProjectIndex::index_block(const nix::Block &block, int f_id) {
     QSqlDatabase db = QSqlDatabase::database(this->path);
     db.open();
-
-
-
+    std::string def = block.definition() ? *(block.definition()) : "";
+    std::string descr = block.name() + " " + block.type() + " " + def;
+    QSqlQuery query(db);
+    query.prepare("INSERT INTO data_index (file_id, entity_id, entity_type, entity_description, entity_path) VALUES (:id, :ent_id, :type, :descr, :path)");
+    query.bindValue(":id", QVariant(f_id));
+    query.bindValue(":ent_id", QVariant(block.id().c_str()));
+    query.bindValue(":type", QVariant(QString("Block")));
+    query.bindValue(":descr", QVariant(descr.c_str()));
+    query.bindValue(":path", QVariant(block.name().c_str()));
+    query.exec();
+    query.prepare("SELECT id FROM data_index WHERE entity_id = :id");
+    query.bindValue(":id", QVariant(block.id().c_str()));
+    int block_id = (query.exec() && query.next()) ? query.value(query.record().indexOf("id")).toInt() : -1;
+    if (block.metadata() && block_id > -1) {
+        index_metadata(block.metadata(), block_id, query);
+    }
     db.close();
+}
 
+
+void ProjectIndex::index_metadata(const nix::Section &section, int entity_id, QSqlQuery &query) {
+    query.prepare("INSERT INTO metadata_index (data_id, section_id, metadata) VALUES (:entity_id, :sec_id, :metadata)");
+    QString sec_name(section.name().c_str());
+    QString sec_id(section.id().c_str());
+    QString sec_type(section.type().c_str());
+    for (nix::Property p : section.properties()) {
+        QString metadata = sec_name + " " + sec_type + " " + QString::fromStdString(p.name());
+        for (nix::Value v : p.values()) {
+            metadata  = metadata + " " + QString::fromStdString(EntityDescriptor::value_to_str(v, p.dataType()));
+        }
+        query.bindValue(":entity_id", QVariant(entity_id));
+        query.bindValue(":sec_id", QVariant(sec_id));
+        query.bindValue(":metadata", QVariant(metadata));
+        query.exec();
+    }
+    for (nix::Section s : section.sections()) {
+        index_metadata(s, entity_id, query);
+    }
+}
+
+
+void ProjectIndex::index_file(const QString &file_path) {
+    std::cerr << "indexing file " << file_path.toStdString() << std::endl;
+    int f_id = file_id(file_path);
+    nix::File file = nix::File::open(file_path.toStdString());
+    // walk through data
+    for (nix::Block b : file.blocks()) {
+        index_block(b, f_id);
+    }
+    file.close();
+    std::cerr << "... finished!" << std::endl;
 }
 
 
@@ -202,14 +260,18 @@ bool ProjectIndex::create_project_index(const QString &path) {
             std::cerr << "failed to open database!\n";
         }
         QSqlQuery q(QSqlDatabase::database(path));
-        success = q.exec(QLatin1String("create table files(id integer primary key, name varchar, path varchar)"));
-        if(success)
-            success = q.exec(QLatin1String("create table data_index(id integer primary key, file_id integer, entity_id, entity_path, entity_name varchar, entity_type varchar)"));
-        if(success)
+        success = q.exec(QLatin1String("CREATE TABLE files(id integer primary key, name varchar, path varchar)"));
+        if (success)
+            success = q.exec(QLatin1String("CREATE TABLE data_index(id integer primary key, file_id integer, entity_id varchar, entity_type varchar, entity_path varchar, entity_description varchar)"));
+        if (success)
             q.exec(QLatin1String("ALTER TABLE data_index ADD FOREIGN KEY (file_id) REFERENCES files (id)"));
+        success = q.exec(QLatin1String("CREATE TABLE metadata_index(id integer primary key, data_id integer, section_id, metadata varchar)"));
+        if (success)
+            q.exec(QLatin1String("ALTER TABLE metadata_index ADD FOREIGN KEY (data_id) REFERENCES data_index (id)"));
+
+        q.prepare(QString("PRAGMA user_version=%1").arg(1));
         index_db.close();
     }
-
     return success;
 }
 
