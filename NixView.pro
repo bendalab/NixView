@@ -17,6 +17,7 @@ unix {
 
 macx {
     CONFIG += c++11
+    QMAKE_CXXFLAGS += -std=c++11
 }
 
 SOURCES += main.cpp\
@@ -58,7 +59,6 @@ SOURCES += main.cpp\
     dialogs/filepropertiesdialog.cpp \
     model/nixmetadatatreemodel.cpp \
     searchform.cpp \
-    dialogs/projectdialog.cpp \
     db/projectmanager.cpp \
     views/projectnavigator.cpp \
     db/projectindex.cpp
@@ -105,7 +105,6 @@ HEADERS  += MainWindow.hpp \
     dialogs/filepropertiesdialog.hpp \
     model/nixmetadatatreemodel.h \
     searchform.h \
-    dialogs/projectdialog.hpp \
     db/projectmanager.hpp \
     views/projectnavigator.hpp \
     db/projectindex.hpp
@@ -136,7 +135,6 @@ FORMS    += MainWindow.ui \
     dialogs/optionsdialog.ui \
     dialogs/filepropertiesdialog.ui \
     searchform.ui \
-    dialogs/projectdialog.ui \
     views/projectnavigator.ui
 
 #standard windows folder?
