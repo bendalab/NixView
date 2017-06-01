@@ -6,6 +6,7 @@
 #include <QSqlRecord>
 #include <QSqlError>
 #include <QVariant>
+#include <QList>
 #include <nix.hpp>
 #include "utils/entitydescriptor.h"
 
@@ -294,7 +295,6 @@ void ProjectIndex::index_file(const QString &file_path) {
     std::cerr << "indexing file " << file_path.toStdString() << std::endl;
     int f_id = file_id(file_path);
     nix::File file = nix::File::open(file_path.toStdString());
-    // walk through data
     for (nix::Block b : file.blocks()) {
         index_block(b, f_id);
     }
@@ -331,3 +331,68 @@ bool ProjectIndex::create_project_index(const QString &path) {
     return success;
 }
 
+
+void ProjectIndex::assemble_query(std::vector<QString> &parts, std::vector<QString> &connectors, QSqlQuery &query)  const {
+    QStringList subqueries;
+    QString query_string;
+    QString select = "SELECT * FROM metadata_index WHERE";
+    int count = 0;
+    for (QString s : parts) {
+        QString subquery;
+        query_string = query_string + " (metadata like :" + QString::fromStdString(nix::util::numToStr(count)) + ") ";
+        QStringList ps = s.split(" ");
+        for (auto p : ps) {
+            subquery = subquery + "%" + p;
+        }
+        subquery = subquery + "%";
+        subqueries.append(subquery);
+        if (count < connectors.size()) {
+            query_string = query_string + connectors[count];
+        }
+        count++;
+    }
+    query.prepare(select + query_string);
+    for (int i = 0; i < subqueries.size(); i++) {
+        query.bindValue(":"+QString::fromStdString(nix::util::numToStr(i)), QVariant(subqueries[i]));
+    }
+}
+
+
+void ProjectIndex::parse_search_string(const QString &search_string, std::vector<QString> &parts,
+                                       std::vector<QString> &connectors, LogicalOperator logical_operator) const {
+    QString op = (" " + OperatorNames[(int)logical_operator] + " ");
+    QString alt_op = (" " + OperatorNames[1 - (int)logical_operator] + " ");
+    QStringList ps = search_string.split(op, QString::SplitBehavior::SkipEmptyParts, Qt::CaseInsensitive);
+    if (ps.size() > 0) {
+        connectors.push_back(op);
+    }
+    for (QString s : ps) {
+        if (!s.contains(alt_op, Qt::CaseInsensitive)) {
+            parts.push_back(s);
+        } else {
+            parse_search_string(s, parts, connectors, next(logical_operator));
+        }
+    }
+}
+
+
+std::vector<QString> ProjectIndex::find(const QString &search_pattern) const {
+    std::vector<QString> results, parts, connectors;
+    parse_search_string(search_pattern, parts, connectors);
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE",  path);
+    db.setDatabaseName(path);
+    db.open();
+    QSqlQuery query(db);
+    assemble_query(parts, connectors, query);
+    if (query.exec()) {
+        int fieldNo = query.record().indexOf("metadata");
+        while (query.next()) {
+            QVariant metdata = query.value(fieldNo);
+            std::cerr << metdata.toString().toStdString() << std::endl;
+        }
+    } else {
+        std::cerr << query.lastError().text().toStdString() << std::endl;
+    }
+
+    return results;
+}

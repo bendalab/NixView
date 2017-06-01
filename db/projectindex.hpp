@@ -17,6 +17,23 @@ namespace nix {
     class MultiTag;
 }
 
+enum class LogicalOperator {
+    AND = 0,
+    OR = 1
+};
+
+
+inline LogicalOperator next(LogicalOperator last) {
+    if (last == LogicalOperator::AND) {
+        return LogicalOperator::OR;
+    } else {
+        return LogicalOperator::AND;
+    }
+}
+
+
+static std::vector<QString> OperatorNames{"AND", "OR"};
+
 class ProjectIndex {
 
 private:
@@ -32,6 +49,9 @@ private:
 
     int store_data_index(int file_id, const QString &entity_id, const QString &entity_type,
                           const QString &description, const QString &entity_path, QSqlQuery &query);
+    void parse_search_string(const QString &search_string, std::vector<QString> &parts, std::vector<QString> &connectors,
+                             LogicalOperator logical_operator = LogicalOperator::AND) const;
+    void assemble_query(std::vector<QString> &parts, std::vector<QString> &connectors, QSqlQuery &query) const;
 
 public:
     ProjectIndex(const QString &path);
@@ -84,6 +104,14 @@ public:
      */
     static bool create_project_index(const QString &path);
 
+    /**
+     * @brief find matches in the project index
+     * Allows finding entities in the project index that matches according to the search string.
+     * The string can contain AND and OR logical operators to join queries.
+     * @param search_pattern QString the search pattern, works case insensitive!
+     * @return std::vector of QString.
+     */
+    std::vector<QString> find(const QString &search_pattern) const;
 
 };
 
