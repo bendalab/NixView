@@ -90,6 +90,19 @@
      </item>
      <item>
       <layout class="QGridLayout" name="gridLayout">
+       <property name="horizontalSpacing">
+        <number>5</number>
+       </property>
+       <item row="0" column="2">
+        <widget class="QPushButton" name="remove_file_btn">
+         <property name="toolTip">
+          <string>remove file from project</string>
+         </property>
+         <property name="text">
+          <string>delete</string>
+         </property>
+        </widget>
+       </item>
        <item row="0" column="0">
         <widget class="QPushButton" name="add_file_btn">
          <property name="toolTip">
@@ -100,13 +113,10 @@
          </property>
         </widget>
        </item>
-       <item row="0" column="1">
-        <widget class="QPushButton" name="remove_file_btn">
-         <property name="toolTip">
-          <string>remove file from project</string>
-         </property>
+       <item row="0" column="3">
+        <widget class="QPushButton" name="find_btn">
          <property name="text">
-          <string>remove</string>
+          <string>find</string>
          </property>
         </widget>
        </item>
@@ -166,11 +176,28 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>find_btn</sender>
+   <signal>clicked()</signal>
+   <receiver>ProjectNavigator</receiver>
+   <slot>find()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>152</x>
+     <y>441</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>94</x>
+     <y>230</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <signal>file_selected(QString)</signal>
   <slot>add_file()</slot>
   <slot>remove_file()</slot>
   <slot>item_selected(QTreeWidgetItem*,int)</slot>
+  <slot>find()</slot>
  </slots>
 </ui>

@@ -22,7 +22,7 @@ ProjectNavigator::~ProjectNavigator()
     delete ui;
 }
 
-
+/*
 void ProjectNavigator::open_projects_db() {
     QString db;
 
@@ -53,11 +53,11 @@ void ProjectNavigator::open_projects_db() {
     if (!db.isEmpty())
         pm = ProjectManager(db);
 }
-
+*/
 
 bool ProjectNavigator::set_project(const QString &project) {
-    QString path = pm.get_project_path(project);
-    open_project(project, path);
+    QStringList name = project.split('/');
+    open_project(name[name.size()-1], project);
     return true;
 }
 
@@ -138,6 +138,11 @@ void ProjectNavigator::remove_file() {
     open_project(this->project_name, this->project_path);
 }
 
+void ProjectNavigator::find() {
+    ProjectIndex pi(this->project_path);
+    pi.find("Deltaf 10 AND chirp");
+}
+
 /*
 void ProjectNavigator::rename_project() {
     bool ok;
@@ -158,7 +163,7 @@ void ProjectNavigator::rename_project() {
 
 void ProjectNavigator::new_project() {
     QString fileName = QFileDialog::getSaveFileName(this, tr("new project"),
-                                "", tr("Project index database (*.db)"));
+                                "", tr("nixview project index (*.npi)"));
     if (fileName.isEmpty())
         return;
     pm.add_project(fileName);

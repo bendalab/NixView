@@ -28,7 +28,7 @@ private:
     ProjectManager pm;
     QString project_name, project_path;
     void open_project(const QString &name, const QString &path);
-    void open_projects_db();
+    // void open_projects_db();
 
 public slots:
     void new_project();
@@ -39,6 +39,7 @@ public slots:
     void item_selected(QTreeWidgetItem*, int);
     void add_file();
     void remove_file();
+    void find();
 
 signals:
     void file_selected(QString);
