@@ -231,8 +231,6 @@ void MainWindow::open_file() {
 
 
 void MainWindow::open_project() {
-    close_file();
-    close_project();
     QSettings *settings = new QSettings();
     QString db;
     if (settings->contains(PROJECT_LIST)) {
@@ -265,6 +263,8 @@ void MainWindow::open_project() {
         QString project = QInputDialog::getItem(this, "Select project ...", "Select a project",
                                                 list, 0, false, &ok);
         if (ok) {
+            close_file();
+            close_project();
             ui->main_view->set_project(project);
         }
     }
