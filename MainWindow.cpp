@@ -16,6 +16,9 @@
 #include <QInputDialog>
 #include <QDebug>
 
+//new for export option:
+#include "dialogs/csvexportdialog.h"
+
 
 MainWindow::MainWindow(QWidget *parent, QApplication *app) : QMainWindow(parent),
     ui(new Ui::MainWindow), currentFile(""), currentProject("") {
@@ -120,9 +123,11 @@ void MainWindow::item_selected(QVariant v) {
     selected_item = v;
     ui->actionPlot->setEnabled(false);
     ui->actionTable->setEnabled(false);
+    ui->actionTo_CSV->setEnabled(false);
     if(v.canConvert<nix::DataArray>() | v.canConvert<nix::Feature>()) {
         ui->actionTable->setEnabled(true);
         ui->actionPlot->setEnabled(true);
+        ui->actionTo_CSV->setEnabled(true);
     } else if (v.canConvert<nix::Tag>() | v.canConvert<nix::MultiTag>()) {
         ui->actionPlot->setEnabled(true);
     }
@@ -507,3 +512,38 @@ void MainWindow::toggle_project_controls(bool enabled) {
     ui->actionProjectAdd_file->setEnabled(enabled);
     ui->actionProjectRemove_file->setEnabled(enabled);
 }
+
+void MainWindow::exportToCsv() {
+    std::cerr << "Export to do" << std::endl;
+    /*
+    if(selected_item.canConvert<nix::DataArray>() | selected_item.canConvert<nix::Feature>()) {
+        CSVExportDialog dialog(this);
+        dialog.set_table(QTableView());
+        dialog.exec();
+
+    }
+    */
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

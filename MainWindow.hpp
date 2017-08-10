@@ -53,6 +53,7 @@ public slots:
     void newSearchResults(std::vector<QVariant>);
     void searchResultSelected();
     void checkToolTip(QListWidgetItem*);
+    void exportToCsv();
 
 signals:
     void emit_view_change(int);
