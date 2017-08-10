@@ -6,6 +6,8 @@
 #include <QTextStream>
 #include <math.h>
 
+#include<QTime>
+
 
 CSVExportDialog::CSVExportDialog(QWidget *parent) :
     QDialog(parent),
@@ -89,6 +91,12 @@ void CSVExportDialog::export_csv() {
     QCoreApplication::processEvents();
     double step = 95. / this->table->model()->rowCount();
     int count = 0;
+    //Test stuff to find faster implementation:
+    QTime timer;
+    timer.start();
+
+    //given Implemetation. first ~500ms second ~400ms for the eod-data in test file
+
     for (QModelIndex i: indexes) {
         QVariant var = table->model()->data(i);
         if (!var.canConvert<double>())
@@ -108,6 +116,8 @@ void CSVExportDialog::export_csv() {
         QCoreApplication::processEvents();
         count++;
     }
+    std::cerr << "Run time for csv-export was: " << timer.elapsed() << "ms" << std::endl;
+
 
     if (!ui->export_selection->isChecked())
         table->clearSelection();
