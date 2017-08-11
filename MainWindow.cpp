@@ -18,6 +18,7 @@
 
 //new for export option:
 #include "dialogs/csvexportdialog.h"
+#include "views/datatable.h"
 
 
 MainWindow::MainWindow(QWidget *parent, QApplication *app) : QMainWindow(parent),
@@ -514,36 +515,13 @@ void MainWindow::toggle_project_controls(bool enabled) {
 }
 
 void MainWindow::exportToCsv() {
-    std::cerr << "Export to do" << std::endl;
-    /*
-    if(selected_item.canConvert<nix::DataArray>() | selected_item.canConvert<nix::Feature>()) {
-        CSVExportDialog dialog(this);
-        dialog.set_table(QTableView());
-        dialog.exec();
 
-    }
-    */
+    //Current way (over tableview):
+
+    DataTable *data_table = new DataTable(this);
+    data_table->set_entity(selected_item);
+
+    CSVExportDialog d(this);
+    d.set_table(data_table->get_table());
+    d.exec();
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
