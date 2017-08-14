@@ -18,7 +18,6 @@
 
 //new for export option:
 #include "dialogs/csvexportdialog.h"
-#include "views/datatable.h"
 
 
 MainWindow::MainWindow(QWidget *parent, QApplication *app) : QMainWindow(parent),
@@ -517,11 +516,25 @@ void MainWindow::toggle_project_controls(bool enabled) {
 void MainWindow::exportToCsv() {
 
     //Current way (over tableview):
-
+    /*
     DataTable *data_table = new DataTable(this);
     data_table->set_entity(selected_item);
 
-    CSVExportDialog d(this);
-    d.set_table(data_table->get_table());
-    d.exec();
+    CSVExportDialog dialog(this);
+    dialog.setArray(data_table->get_table());
+    dialog.exec();
+    */
+
+    CSVExportDialog dialog(this);
+
+    if (selected_item.canConvert<nix::DataArray>()) {
+        dialog.setArray(selected_item.value<nix::DataArray>());
+    } else if (selected_item.canConvert<nix::Feature>()) {
+        dialog.setArray(selected_item.value<nix::Feature>().data());
+    } else {
+        // What kind of error message ? (also shouldn't be possible because the button should be disabled.)
+        std::cerr << "Menu export to csv: Cannot export the selected item! (not a DataArray or Feature)" << std::endl;
+    }
+
+    dialog.exec();
 }

@@ -7,6 +7,7 @@
 #include <math.h>
 
 #include<QTime>
+#include "nix.hpp"
 
 
 CSVExportDialog::CSVExportDialog(QWidget *parent) :
@@ -16,6 +17,9 @@ CSVExportDialog::CSVExportDialog(QWidget *parent) :
     ui->setupUi(this);
     ui->progressBar->setValue(0);
     ui->progressBar->setVisible(false);
+
+    minCol = -1;
+    maxCol = -1;
 }
 
 CSVExportDialog::~CSVExportDialog()
@@ -24,8 +28,13 @@ CSVExportDialog::~CSVExportDialog()
 }
 
 
-void CSVExportDialog::set_table(QTableView *table) {
-    this->table = table;
+void CSVExportDialog::setArray(nix::DataArray array) {
+    this->array = array;
+}
+
+void CSVExportDialog::setSelection(int minCol, int maxCol) {
+    this->minCol = minCol;
+    this->maxCol = maxCol;
 }
 
 
@@ -35,10 +44,7 @@ void CSVExportDialog::accept() {
 
 
 void CSVExportDialog::get_header(QStringList &vheader, QStringList &hheader) {
-    for (int i = 0; i < table->model()->columnCount(); i++)
-      hheader.push_back(table->model()->headerData(i, Qt::Horizontal).toString());
-    for (int i = 0; i < table->model()->rowCount(); i++)
-        vheader.push_back(table->model()->headerData(i, Qt::Vertical).toString());
+
 }
 
 
@@ -54,21 +60,6 @@ void CSVExportDialog::export_csv() {
         fileNames = fd.selectedFiles();
     if (fileNames.size() == 0)
         return;
-    QItemSelectionModel* temp = table->selectionModel();
-    if (!ui->export_selection->isChecked() || temp->selection().count() == 0) {
-        table->selectAll();
-    }
-
-    QModelIndexList indexes = table->selectionModel()->selection().indexes();
-    int min_col = indexes[0].column();
-    int max_col = indexes.back().column();
-
-    QStringList vheader, hheader;
-    if (ui->export_header->isChecked()) {
-        get_header(vheader, hheader);
-    }
-
-    QString sep = ui->separator_edit->text();
 
     QFile outfile(fileNames[0]);
     outfile.open(QIODevice::WriteOnly);
@@ -78,11 +69,26 @@ void CSVExportDialog::export_csv() {
     }
     QTextStream outStream(&outfile);
 
+
+    //**********
+    if((minCol == -1) | (maxCol == -1)) {
+        minCol = 0;
+        // maxCol = array. maxCol??
+    }
+    /*
+    QStringList vheader, hheader;
     if (ui->export_header->isChecked()) {
-        outStream << " " << sep << " ";
+        get_header(vheader, hheader);
+    }
+
+    QString sep = ui->separator_edit->text().append(" ");
+
+
+    if (ui->export_header->isChecked()) {
+        outStream << " " << sep;
         for (int i = 0; i < hheader.size(); i++) {
-            if (i >= min_col && i <= max_col) {
-                outStream << hheader[i] << sep << " ";
+            if (i >= minCol && i <= maxCol) {
+                outStream << hheader[i] << sep;
             }
         }
         outStream << "\n";
@@ -102,12 +108,12 @@ void CSVExportDialog::export_csv() {
         if (!var.canConvert<double>())
             continue;
         if (ui->export_header->isChecked()) {
-            if (i.column() == min_col) {
-                outStream << vheader[i.row()] << sep << " ";
+            if (i.column() == minCol) {
+                outStream << vheader[i.row()] << sep;
             }
         }
-        if (i.column() < max_col) {
-            outStream << var.value<double>() << sep << " ";
+        if (i.column() < maxCol) {
+            outStream << var.value<double>() << sep;
         }
         else {
             outStream << var.value<double>() << "\n";
@@ -121,6 +127,7 @@ void CSVExportDialog::export_csv() {
 
     if (!ui->export_selection->isChecked())
         table->clearSelection();
+        */
     outfile.close();
     this->close();
 }

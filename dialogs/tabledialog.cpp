@@ -29,6 +29,12 @@ void TableDialog::button_clicked(QAbstractButton *button) {
 
 void TableDialog::accept() {
     CSVExportDialog d(this);
-    d.set_table(ui->data_table->get_table());
+
+    QModelIndexList indexes = ui->data_table->get_table()->selectionModel()->selection().indexes();
+    int minCol = indexes[0].column();
+    int maxCol = indexes.back().column();
+
+    d.setArray(ui->data_table->getArray());
+    d.setSelection(minCol, maxCol);
     d.exec();
 }

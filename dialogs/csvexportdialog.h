@@ -2,7 +2,7 @@
 #define CSVEXPORTDIALOG_H
 
 #include <QDialog>
-#include <QTableView>
+#include "nix.hpp"
 
 namespace Ui {
 class CSVExportDialog;
@@ -16,11 +16,13 @@ public:
     explicit CSVExportDialog(QWidget *parent = 0);
     ~CSVExportDialog();
 
-    void set_table(QTableView *table);
+    void setArray(nix::DataArray array);
+    void setSelection(int minCol, int maxCol);
 
 private:
     Ui::CSVExportDialog *ui;
-    QTableView *table;
+    nix::DataArray array;
+    int minCol, maxCol;
 
     void accept();
     void export_csv();

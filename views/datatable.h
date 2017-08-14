@@ -26,6 +26,7 @@ public:
     void set_entity(const QVariant var);
     bool can_draw(const QVariant var) const;
     QTableView* get_table();
+    nix::DataArray getArray();
 
 private:
     Ui::DataTable *ui;

@@ -96,3 +96,7 @@ void DataTable::build_model(int page) {
 QTableView* DataTable::get_table() {
     return ui->table;
 }
+
+nix::DataArray DataTable::getArray() {
+    return this->array;
+}
