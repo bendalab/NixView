@@ -44,7 +44,52 @@ void CSVExportDialog::accept() {
 
 
 void CSVExportDialog::get_header(QStringList &vheader, QStringList &hheader) {
+    // copied from nixarraytablemodel: what does the dimension do why should it be a setDimension for the labels ?
 
+    nix::NDSize shape = array.dataExtent();
+
+
+    if(array.getDimension(1).dimensionType() == nix::DimensionType::Set) {
+        std::vector<std::string> labels = array.getDimension(1).asSetDimension().labels();
+        for(std::vector<std::string>::iterator it = labels.begin(); it != labels.end(); ++it) {
+            vheader.append(QString::fromStdString(*it));
+        }
+
+    } else if(array.getDimension(1).dimensionType() == nix::DimensionType::Sample) {
+        double si = array.getDimension(1).asSampledDimension().samplingInterval();
+        for(unsigned int i = 0; i<shape[0]; i++) {
+            vheader.append(QString::number(i*si)); //unsure how to use unit with boost::optional<std::string>.
+        }
+
+    } else if(array.getDimension(1).dimensionType() == nix::DimensionType::Range) {
+        std::vector<double> ticks = array.getDimension(1).asRangeDimension().ticks();
+        for(std::vector<double>::iterator it = ticks.begin(); it != ticks.end(); ++it) {
+            vheader.append(QString::number(*it));
+        }
+    }
+    //code doubled...
+    if(shape.size() > 1) {
+        if(array.getDimension(2).dimensionType() == nix::DimensionType::Set) {
+            std::vector<std::string> labels = array.getDimension(1).asSetDimension().labels();
+            for(std::vector<std::string>::iterator it = labels.begin(); it != labels.end(); ++it) {
+                hheader.append(QString::fromStdString(*it));
+            }
+
+        } else if(array.getDimension(2).dimensionType() == nix::DimensionType::Sample) {
+            double si = array.getDimension(1).asSampledDimension().samplingInterval();
+            for(unsigned int i = 0; i<shape[0]; i++) {
+                hheader.append(QString::number(i*si)); //unsure how to use unit with boost::optional<std::string>.
+            }
+
+        } else if(array.getDimension(2).dimensionType() == nix::DimensionType::Range) {
+            std::vector<double> ticks = array.getDimension(1).asRangeDimension().ticks();
+            for(std::vector<double>::iterator it = ticks.begin(); it != ticks.end(); ++it) {
+                hheader.append(QString::number(*it));
+            }
+        }
+
+
+    }
 }
 
 
