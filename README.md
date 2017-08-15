@@ -15,14 +15,14 @@ For more information on nix see https://github.com/G-Node/nix
  - Qt5
  - Boost > 1.49
  - cmake
- - Nix libraries (build from source or install with --Head option when using homebrew)
+ - Nix libraries (currently builds against the 1.3 release, build from source or install via launchpad/homebrew)
 
 
 ## Installation
 
 To build NixView from source you may follow these instructions. This
 software is under development and usually works with/requires the
-latest nix version. To install this, follow the instructions given there: https://github.com/G-node/nix/README.md
+latest nix version. To install this, follow the instructions given there: https://github.com/G-Node/nix/blob/1.3/README.md
 
 ### Ubuntu 14.04 and higher
 
@@ -34,17 +34,30 @@ mkdir build
 cd build
 cmake ..
 make -j 4
-./nix-view
+./nixview
+```
+
+
+
+### Ubuntu 16.04 
+```bash
+sudo apt-get install qt5-default cmake libboost-regex-dev libboost-program-options-dev libboost-date-time-dev libboost-program-options-dev libboost-system-dev libboost-filesystem-dev libcpptest-dev
+git clone https://github.com/bendalab/nixview.git
+cd nixview
+mkdir build
+cd build
+cmake ..
+make -j 4
+./nixview
 ```
 
 ### MacOS X
 
 The easiest way to install the dependencies is via [homebrew](http://brew.sh).
-The latest nix version can be installed using the --HEAD option.
 ```shell
 brew update
 brew tap homebrew/science
-brew install --HEAD nixio
+brew install nixio
 
 brew install qt5
 brew install boost
