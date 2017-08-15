@@ -51,6 +51,7 @@ public slots:
     void update_nix_file(const QString &nix_file_path);
     void project_add_file();
     void project_remove_file();
+    void close_nix_file();
 
 signals:
     void emit_model_update(NixTreeModel*);
