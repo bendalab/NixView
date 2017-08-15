@@ -26,7 +26,8 @@ private:
 
     void accept();
     void export_csv();
-    void get_header(QStringList &vheader, QStringList &hheader);
+    void get_header(QStringList &vheader, QStringList &hheader, QStringList &dheader);
+    QStringList readLabels(int dim, nix::DimensionType type);
 };
 
 #endif // CSVEXPORTDIALOG_H
