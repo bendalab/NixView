@@ -71,7 +71,9 @@ Q_DECLARE_METATYPE(nix::Dimension)
 #define RECENT_FILES_GROUP "recent_files"
 #define RECENT_FILES_LIST "recent_files_list"
 #define RECENT_FILES_COUNT "recent_files_count"
-#define PROJECT_LIST "project_list"
+#define RECENT_PROJECTS_GROUP "recent_projects"
+#define RECENT_PROJECTS_LIST "recent_projects_list"
+#define RECENT_PROJECTS_COUNT "recent_projects_count"
 
 #define MAIN_TREE_VIEW "tree_view"
 #define METADATA_TREE_VIEW "metadata_tree"

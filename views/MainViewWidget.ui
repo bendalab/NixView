@@ -62,6 +62,7 @@
    <container>1</container>
    <slots>
     <signal>file_selected(QString)</signal>
+    <signal>close_file()</signal>
     <slot>update_nix_file(QString)</slot>
    </slots>
   </customwidget>
@@ -84,9 +85,27 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>project_navigator</sender>
+   <signal>close_file()</signal>
+   <receiver>MainViewWidget</receiver>
+   <slot>close_nix_file()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>99</x>
+     <y>233</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>387</x>
+     <y>233</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
+  <signal>close_file()</signal>
   <slot>toggle_find()</slot>
   <slot>update_nix_file(QString)</slot>
+  <slot>close_nix_file()</slot>
  </slots>
 </ui>

@@ -32,6 +32,7 @@ public slots:
     void item_selected(QVariant v);
     void open_file();
     void open_project();
+    void open_project(const QString &project);
     void new_project();
     void close_project();
     void close_file();
@@ -44,6 +45,7 @@ public slots:
     void file_scan_progress();
     void invalid_file_error();
     void recent_file_update(QStringList files);
+    void recent_project_update(QStringList projects);
     void open_recent_file(QAction* a);
     void find();
     void closeSearch();
@@ -58,7 +60,7 @@ signals:
 private slots:
     void recent_file_selected(QListWidgetItem*);
     void recent_project_selected(QListWidgetItem*);
-    void new_file_update();
+    void new_file_update(QString);
 
 private:
     Ui::MainWindow *ui;
@@ -67,14 +69,22 @@ private:
     QVariant selected_item;
     QLabel* file_label;
     QProgressBar* file_progress;
-    QStringList recent_files;
+    QStringList recent_files, recent_projects;
+    QString currentFile;
+    QString currentProject;
     int previous_page;
     void get_recent_files();
+    void get_recent_projects();
     void populate_recent_file_menu();
-    void populate_recent_projects();
-
+    void populate_recent_projects_menu();
+    void set_current_file(const QString &filename);
+    void set_current_project(const QString &project);
     void update_recent_file_list(QString filename);
+    void update_recent_projects_list(QString filename);
     void save_recent_files(QStringList &files);
+    void save_recent_projects(QStringList &projects);
+    void toggle_file_controls(bool enabled);
+    void toggle_project_controls(bool enabled);
 };
 
 #endif // MAINWINDOW_HPP

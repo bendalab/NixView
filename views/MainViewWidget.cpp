@@ -1,3 +1,4 @@
+#include <QMessageBox>
 #include "views/MainViewWidget.hpp"
 #include "ui_MainViewWidget.h"
 #include "common/Common.hpp"
@@ -32,39 +33,55 @@ MainViewWidget::MainViewWidget(const std::string &nix_file_path, QWidget *parent
     set_nix_file(nix_file_path);
 }
 
-void MainViewWidget::set_nix_file(const QString &nix_file_path) {
-    set_nix_file(nix_file_path.toStdString());
+bool MainViewWidget::set_nix_file(const QString &nix_file_path) {
+    return set_nix_file(nix_file_path.toStdString());
 }
 
-void MainViewWidget::set_nix_file(const std::string &nix_file_path) {
+bool MainViewWidget::set_nix_file(const std::string &nix_file_path) {
+    bool result = false;
     if (tv == nullptr)
         populate_data_stacked_widget();
     if (nix_file_path.empty()) {
-        return;
+        return result;
     }
-    nix_file = nix::File::open(nix_file_path, nix::FileMode::ReadOnly);
-
     nix_model = new NixTreeModel(this);
-    nix_model->set_entity(nix_file);
-    MainViewWidget::CURRENT_MODEL = nix_model;
     nix_proxy_model = new NixProxyModel(this);
+
+    if (!nix_file.isNone() && nix_file.isOpen()) {
+        nix_file.close();
+    }
+    if(!nix_file_path.empty()) {
+        try {
+            nix_file = nix::File::open(nix_file_path, nix::FileMode::ReadOnly);
+            nix_model->set_entity(nix_file);
+            tv->getTreeView()->setModel(nix_proxy_model);
+            tv->getTreeView()->setSortingEnabled(true);
+            tv->setColumns();
+            emit emit_model_update(nix_model);
+            emit update_file(QString::fromStdString(nix_file_path));
+            QObject::connect(tv->getTreeView(), SIGNAL(clicked(QModelIndex)), this, SLOT(emit_current_qml_worker_slot(QModelIndex)));
+            QObject::connect(tv->getTreeView(), SIGNAL(expanded(QModelIndex)), tv, SLOT(resizeRequest()));
+            QObject::connect(tv->getTreeView(), SIGNAL(collapsed(QModelIndex)), tv, SLOT(resizeRequest()));
+            QObject::connect(tv->getTreeView()->selectionModel(), SIGNAL(currentChanged(QModelIndex, QModelIndex)), this, SLOT(emit_current_qml_worker_slot(QModelIndex, QModelIndex)));
+            QObject::connect(cv->get_column_view(), SIGNAL(clicked(QModelIndex)), this, SLOT(emit_current_qml_worker_slot(QModelIndex)));
+            result = true;
+        } catch (const std::exception& e) {
+            QMessageBox::information(this, QString::fromStdString("Error reading file " + nix_file_path + "!"),
+                                     e.what(), QMessageBox::Ok);
+        }
+    } else {
+        emit emit_model_update(nix_model);
+        emit update_file(QString(""));
+    }
     nix_proxy_model->setSourceModel(nix_model);
-    tv->getTreeView()->setModel(nix_proxy_model);
-    tv->getTreeView()->setSortingEnabled(true);
-    tv->setColumns();
+    MainViewWidget::CURRENT_MODEL = nix_model;
     cv->set_proxy_model(nix_proxy_model);
-    emit emit_model_update(nix_model);
-    emit update_file();
-    QObject::connect(tv->getTreeView(), SIGNAL(clicked(QModelIndex)), this, SLOT(emit_current_qml_worker_slot(QModelIndex)));
-    QObject::connect(tv->getTreeView(), SIGNAL(expanded(QModelIndex)), tv, SLOT(resizeRequest()));
-    QObject::connect(tv->getTreeView(), SIGNAL(collapsed(QModelIndex)), tv, SLOT(resizeRequest()));
-    QObject::connect(tv->getTreeView()->selectionModel(), SIGNAL(currentChanged(QModelIndex, QModelIndex)), this, SLOT(emit_current_qml_worker_slot(QModelIndex, QModelIndex)));
-    QObject::connect(cv->get_column_view(), SIGNAL(clicked(QModelIndex)), this, SLOT(emit_current_qml_worker_slot(QModelIndex)));
+    return result;
 }
 
 
-void MainViewWidget::set_project(const QString &project) {
-    ui->project_navigator->set_project(project);
+bool MainViewWidget::set_project(const QString &project) {
+    return ui->project_navigator->set_project(project);
 }
 
 
@@ -141,11 +158,31 @@ void MainViewWidget::update_nix_file(const QString &nix_file_path) {
     set_nix_file(nix_file_path);
 }
 
+void MainViewWidget::project_add_file() {
+    this->ui->project_navigator->add_file();
+}
+
+void MainViewWidget::project_remove_file() {
+    this->ui->project_navigator->remove_file();
+}
+
+void MainViewWidget::close_nix_file() {
+    this->set_nix_file(QString(""));
+    //emit close_file();
+}
+
 int MainViewWidget::get_scan_progress() {
     //return nix_model->progress();
     return 100;
 }
 
+void MainViewWidget::show_project_navigator(bool show) {
+    if (!show) {
+        ui->splitter->setSizes({0, 100});
+    } else {
+        ui->splitter->setSizes({120,100});
+    }
+}
 
 MainViewWidget::~MainViewWidget() {
     if (nix_file.isOpen()) {

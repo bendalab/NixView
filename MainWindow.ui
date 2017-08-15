@@ -404,16 +404,23 @@ color: rgb(150,150, 150);</string>
     </property>
     <widget class="QMenu" name="menu_open_recent">
      <property name="title">
-      <string>open recent ...</string>
+      <string>open recent file ...</string>
+     </property>
+    </widget>
+    <widget class="QMenu" name="menu_open_recent_project">
+     <property name="title">
+      <string>open recent project ...</string>
      </property>
     </widget>
     <addaction name="actionOpenProject"/>
     <addaction name="actionNew_project"/>
+    <addaction name="menu_open_recent_project"/>
     <addaction name="actionClose_project"/>
     <addaction name="separator"/>
     <addaction name="actionOpenFile"/>
     <addaction name="menu_open_recent"/>
     <addaction name="actionCloseFile"/>
+    <addaction name="actionAddCurrentFileToProject"/>
     <addaction name="separator"/>
     <addaction name="actionFile_properties"/>
     <addaction name="separator"/>
@@ -449,7 +456,21 @@ color: rgb(150,150, 150);</string>
      <string>Find</string>
     </property>
    </widget>
+   <widget class="QMenu" name="menuProject">
+    <property name="title">
+     <string>Project</string>
+    </property>
+    <addaction name="actionProjectAdd_file"/>
+    <addaction name="actionProjectRemove_file"/>
+    <addaction name="separator"/>
+    <addaction name="actionProjectIndex_files"/>
+    <addaction name="separator"/>
+    <addaction name="actionExport"/>
+    <addaction name="separator"/>
+    <addaction name="actionProject_edit"/>
+   </widget>
    <addaction name="menuFile"/>
+   <addaction name="menuProject"/>
    <addaction name="menuView"/>
    <addaction name="menuPlot"/>
    <addaction name="menuFind"/>
@@ -708,6 +729,9 @@ color: rgb(150,150, 150);</string>
    <property name="text">
     <string>open project</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+O</string>
+   </property>
   </action>
   <action name="actionNew_project">
    <property name="icon">
@@ -716,6 +740,9 @@ color: rgb(150,150, 150);</string>
    </property>
    <property name="text">
     <string>new project</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+N</string>
    </property>
   </action>
   <action name="actionClose_project">
@@ -728,6 +755,80 @@ color: rgb(150,150, 150);</string>
    </property>
    <property name="text">
     <string>close project</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+W</string>
+   </property>
+  </action>
+  <action name="actionProjectAdd_file">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>add file</string>
+   </property>
+   <property name="toolTip">
+    <string>add ile to project</string>
+   </property>
+  </action>
+  <action name="actionProjectRemove_file">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>remove file</string>
+   </property>
+   <property name="toolTip">
+    <string>remove file from project</string>
+   </property>
+  </action>
+  <action name="actionProjectIndex_files">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>index files</string>
+   </property>
+   <property name="toolTip">
+    <string>re-index all files associated with this project</string>
+   </property>
+  </action>
+  <action name="actionProject_edit">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>edit</string>
+   </property>
+   <property name="toolTip">
+    <string> edit roject information</string>
+   </property>
+  </action>
+  <action name="actionExport">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>export</string>
+   </property>
+   <property name="toolTip">
+    <string>select metadata and export to to csv, e.g. for handling with pandas</string>
+   </property>
+  </action>
+  <action name="actionAddCurrentFileToProject">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>add to project</string>
+   </property>
+   <property name="toolTip">
+    <string>add currently opened file to current project</string>
+   </property>
+  </action>
+  <action name="actiontest">
+   <property name="text">
+    <string>test</string>
    </property>
   </action>
  </widget>
@@ -744,6 +845,12 @@ color: rgb(150,150, 150);</string>
    <extends>QWidget</extends>
    <header>views/MainViewWidget.hpp</header>
    <container>1</container>
+   <slots>
+    <signal>update_file(QString)</signal>
+    <signal>close_file()</signal>
+    <slot>project_add_file()</slot>
+    <slot>project_remove_file()</slot>
+   </slots>
   </customwidget>
   <customwidget>
    <class>SearchForm</class>
@@ -1028,6 +1135,70 @@ color: rgb(150,150, 150);</string>
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>actionProjectAdd_file</sender>
+   <signal>triggered()</signal>
+   <receiver>main_view</receiver>
+   <slot>project_add_file()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>63</x>
+     <y>98</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionProjectRemove_file</sender>
+   <signal>triggered()</signal>
+   <receiver>main_view</receiver>
+   <slot>project_remove_file()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>355</x>
+     <y>418</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>main_view</sender>
+   <signal>update_file(QString)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>new_file_update(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>31</x>
+     <y>86</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>699</x>
+     <y>393</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>main_view</sender>
+   <signal>close_file()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>close_file()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>355</x>
+     <y>418</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>699</x>
+     <y>393</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>open_file()</slot>
@@ -1046,5 +1217,7 @@ color: rgb(150,150, 150);</string>
   <slot>new_project()</slot>
   <slot>close_project()</slot>
   <slot>recent_project_selected(QListWidgetItem*)</slot>
+  <slot>new_file_update(QString)</slot>
+  <slot>close_file()</slot>
  </slots>
 </ui>
