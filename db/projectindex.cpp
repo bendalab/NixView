@@ -146,13 +146,14 @@ int ProjectIndex::file_id(const QString &file_name) {
 
 
 bool ProjectIndex::remove_file(const QString &file_path) {
+    std::cerr << "remove file: " << file_path.toStdString() << std::endl;
     QSqlDatabase db = QSqlDatabase::database(path);
     if (!db.isOpen())
         db.open();
     int pri_key = -1;
     QSqlQuery q(db);
     q.prepare("SELECT id FROM files WHERE path = (:name)");
-    q.bindValue(":name", file_path);
+    q.bindValue(":name", QVariant(file_path));
     if (q.exec() && q.next()) {
         int fieldNo = q.record().indexOf("id");
         QVariant id = q.value(fieldNo);
@@ -162,8 +163,8 @@ bool ProjectIndex::remove_file(const QString &file_path) {
         return false;
     }
     QSqlQuery q4(db);
-    q4.prepare("DELETE FROM metadata_index WHERE metadata_index.entity_id = data_index.id AND data_index.file_id = :id");\
-
+    //delete from metadata_index where metadata_index.data_id IN (select  data_index.id from data_index, files where data_index.file_id = file.od AND files.id = 1);
+    q4.prepare("DELETE FROM metadata_index WHERE metadata_index.data_id IN (SELECT data_index.id FROM data_index WHERE data_index.file_id = (:id))");
     q4.bindValue(":id", QVariant(pri_key));
     if (!q4.exec()) {
         std::cerr << q4.lastError().text().toStdString() << std::endl;
@@ -175,7 +176,7 @@ bool ProjectIndex::remove_file(const QString &file_path) {
     q2.bindValue(":id", QVariant(pri_key));
     if (!q2.exec()) {
         std::cerr << q2.lastError().text().toStdString() << std::endl;
-        std::cerr << "Something went wrong when removing indexes of file: " << file_path.toStdString() << std::endl;
+        std::cerr << "Something went wrong when removing data indexes : " << file_path.toStdString() << std::endl;
         return false;
     }
 
@@ -184,7 +185,7 @@ bool ProjectIndex::remove_file(const QString &file_path) {
     q3.bindValue(":id", QVariant(pri_key));
     if (!q3.exec()){
         std::cerr << q3.lastError().text().toStdString() << std::endl;
-        std::cerr << "Something went wrong when removing file: " << file_path.toStdString() << std::endl;
+        std::cerr << "Something went wrong when removing file entry: " << file_path.toStdString() << std::endl;
         return false;
     }
     db.close();
@@ -292,7 +293,6 @@ void ProjectIndex::index_metadata(const nix::Section &section, int entity_id, QS
 
 
 void ProjectIndex::index_file(const QString &file_path) {
-    std::cerr << "indexing file " << file_path.toStdString() << std::endl;
     int f_id = file_id(file_path);
     nix::File file = nix::File::open(file_path.toStdString());
     for (nix::Block b : file.blocks()) {
@@ -309,7 +309,6 @@ bool ProjectIndex::create_project_index(const QString &path) {
     if (f.exists()) {
         success = true;
     } else {
-        std::cerr << "create project index" << std::endl;
         QSqlDatabase index_db = QSqlDatabase::addDatabase("QSQLITE",  path);
         index_db.setDatabaseName(path);
         if (!index_db.open()) {
