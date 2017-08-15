@@ -404,16 +404,23 @@ color: rgb(150,150, 150);</string>
     </property>
     <widget class="QMenu" name="menu_open_recent">
      <property name="title">
-      <string>open recent ...</string>
+      <string>open recent file ...</string>
+     </property>
+    </widget>
+    <widget class="QMenu" name="menu_open_recent_project">
+     <property name="title">
+      <string>open recent project ...</string>
      </property>
     </widget>
     <addaction name="actionOpenProject"/>
     <addaction name="actionNew_project"/>
+    <addaction name="menu_open_recent_project"/>
     <addaction name="actionClose_project"/>
     <addaction name="separator"/>
     <addaction name="actionOpenFile"/>
     <addaction name="menu_open_recent"/>
     <addaction name="actionCloseFile"/>
+    <addaction name="actionAddCurrentFileToProject"/>
     <addaction name="separator"/>
     <addaction name="actionFile_properties"/>
     <addaction name="separator"/>
@@ -806,6 +813,22 @@ color: rgb(150,150, 150);</string>
    </property>
    <property name="toolTip">
     <string>select metadata and export to to csv, e.g. for handling with pandas</string>
+   </property>
+  </action>
+  <action name="actionAddCurrentFileToProject">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>add to project</string>
+   </property>
+   <property name="toolTip">
+    <string>add currently opened file to current project</string>
+   </property>
+  </action>
+  <action name="actiontest">
+   <property name="text">
+    <string>test</string>
    </property>
   </action>
  </widget>
