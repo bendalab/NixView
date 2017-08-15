@@ -8,6 +8,8 @@
 
 #include<QTime>
 #include "nix.hpp"
+#include "nix/NDArray.hpp"
+
 
 
 CSVExportDialog::CSVExportDialog(QWidget *parent) :
@@ -44,8 +46,6 @@ void CSVExportDialog::accept() {
 
 
 void CSVExportDialog::get_header(QStringList &vheader, QStringList &hheader, QStringList &dheader) {
-    // copied from nixarraytablemodel: what does the dimension do why should it be a setDimension for the labels ?
-
     nix::NDSize shape = array.dataExtent();
     vheader = QStringList();
     hheader = QStringList();
@@ -73,9 +73,9 @@ QStringList CSVExportDialog::readLabels(int dim, nix::DimensionType type) {
             labels.append(QString::number(i*si));
         }
     } else if(type == nix::DimensionType::Set) {
-        std::vector<double> ticks = array.getDimension(dim).asRangeDimension().ticks();
-        for(std::vector<double>::iterator it = ticks.begin(); it != ticks.end(); ++it) {
-            labels.append(QString::number(*it));
+        std::vector<std::string> stdLabels = array.getDimension(dim).asSetDimension().labels();
+        for(std::vector<std::string>::iterator it = stdLabels.begin(); it != stdLabels.end(); ++it) {
+            labels.append(QString::fromStdString(*it));
         }
     } else if(type == nix::DimensionType::Range) {
         std::vector<double> ticks = array.getDimension(dim).asRangeDimension().ticks();
@@ -108,63 +108,79 @@ void CSVExportDialog::export_csv() {
     }
     QTextStream outStream(&outfile);
 
-
-    if((minCol == -1) | (maxCol == -1)) {
-        minCol = 0;
-        maxCol = array.dataExtent()[0];
-    }
-
     QStringList vheader, hheader, dheader;
     if (ui->export_header->isChecked()) {
         get_header(vheader, hheader, dheader);
     }
-    /*
+    std::cerr << "not the headers." << std::endl;
     QString sep = ui->separator_edit->text().append(" ");
 
 
-    if (ui->export_header->isChecked()) {
-        outStream << " " << sep;
-        for (int i = 0; i < hheader.size(); i++) {
-            if (i >= minCol && i <= maxCol) {
+
+    int xLength, yLength, zLength;
+    nix::NDSize shape = array.dataExtent();
+
+    //as extra function ?
+    if(shape.size() == 1) {
+        xLength = shape[0];
+        yLength = 1;
+        zLength = 1;
+    } else if(shape.size() == 2) {
+        xLength = shape[0];
+        yLength = shape[1];
+        zLength = 1;
+    } else if(shape.size() == 3) {
+        xLength = shape[0];
+        yLength = shape[1];
+        zLength = shape[2];
+    }
+
+    nix::DataType type = array.dataType();
+
+    for(int z=0; z<zLength; z++) {
+        //write dheader+\n if there is one:
+        //write hheaders:
+        if (ui->export_header->isChecked()) {
+            if(zLength > 1) {
+                if(z < dheader.size()) {
+                    outStream << dheader[z];
+                }
+                    outStream << "\n";
+            }
+            outStream << " " << sep;
+            for (int i = 0; i < hheader.size(); i++) {
                 outStream << hheader[i] << sep;
             }
+            outStream << "\n";
         }
-        outStream << "\n";
-    }
-    ui->progressBar->setValue(5);
-    QCoreApplication::processEvents();
-    //double step = 95. / this->table->model()->rowCount();
-    int count = 0;
-    //Test stuff to find faster implementation:
-    QTime timer;
-    timer.start();
 
-
-    for (QModelIndex i: indexes) {
-        QVariant var = table->model()->data(i);
-        if (!var.canConvert<double>())
-            continue;
-        if (ui->export_header->isChecked()) {
-            if (i.column() == minCol) {
-                outStream << vheader[i.row()] << sep;
+        for(int x=0; x<xLength; x++) {
+            if(ui->export_header->isChecked()) {
+                outStream << vheader[x] << sep;
             }
+
+            nix::NDArray data = nix::NDArray(type, {1,yLength,1});
+            // inefficent to get the data line for line ? (better as to not kill the program with large data volumes?)
+            if(shape.size() == 1) {
+                array.getDataDirect(type, data.data(), {1},            {x});
+            } else if(shape.size() == 2) {
+                array.getDataDirect(type, data.data(), {1, yLength},   {x, 0});
+            } else if(shape.size() > 2) {
+                array.getDataDirect(type, data.data(), {1, yLength,1}, {x, 0, z});
+            }
+
+            for( nix::ndsize_t y=0; y<yLength; y++) {
+                nix::NDSize yIndex(3,1);
+                yIndex[1] = y;
+                //aufdröseln nach allen typen:
+                outStream << data.get<double>(yIndex) << sep;
+            }
+
+            outStream << "\n";
         }
-        if (i.column() < maxCol) {
-            outStream << var.value<double>() << sep;
-        }
-        else {
-            outStream << var.value<double>() << "\n";
-        }
-        ui->progressBar->setValue(5 + rint(count * step));
-        QCoreApplication::processEvents();
-        count++;
     }
-    std::cerr << "Run time for csv-export was: " << timer.elapsed() << "ms" << std::endl;
-
-
-    if (!ui->export_selection->isChecked())
-        table->clearSelection();
-*/
     outfile.close();
     this->close();
 }
+
+
