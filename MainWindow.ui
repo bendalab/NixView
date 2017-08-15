@@ -395,7 +395,7 @@ color: rgb(150,150, 150);</string>
      <x>0</x>
      <y>0</y>
      <width>1400</width>
-     <height>22</height>
+     <height>25</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -469,12 +469,19 @@ color: rgb(150,150, 150);</string>
     <addaction name="separator"/>
     <addaction name="actionProject_edit"/>
    </widget>
+   <widget class="QMenu" name="menuExport">
+    <property name="title">
+     <string>Export</string>
+    </property>
+    <addaction name="actionToCSV"/>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuProject"/>
    <addaction name="menuView"/>
    <addaction name="menuPlot"/>
    <addaction name="menuFind"/>
    <addaction name="menuHelp"/>
+   <addaction name="menuExport"/>
   </widget>
   <widget class="QStatusBar" name="statusBar">
    <property name="sizePolicy">
@@ -829,6 +836,11 @@ color: rgb(150,150, 150);</string>
   <action name="actiontest">
    <property name="text">
     <string>test</string>
+   </property>
+  </action>
+  <action name="actionToCSV">
+   <property name="text">
+    <string>toCSV</string>
    </property>
   </action>
  </widget>
@@ -1199,6 +1211,22 @@ color: rgb(150,150, 150);</string>
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>actionToCSV</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>exportToCsv()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>699</x>
+     <y>393</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>open_file()</slot>
@@ -1219,5 +1247,6 @@ color: rgb(150,150, 150);</string>
   <slot>recent_project_selected(QListWidgetItem*)</slot>
   <slot>new_file_update(QString)</slot>
   <slot>close_file()</slot>
+  <slot>exportToCsv()</slot>
  </slots>
 </ui>

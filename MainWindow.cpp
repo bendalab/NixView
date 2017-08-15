@@ -123,11 +123,11 @@ void MainWindow::item_selected(QVariant v) {
     selected_item = v;
     ui->actionPlot->setEnabled(false);
     ui->actionTable->setEnabled(false);
-    ui->actionTo_CSV->setEnabled(false);
+    ui->actionToCSV->setEnabled(false);
     if(v.canConvert<nix::DataArray>() | v.canConvert<nix::Feature>()) {
         ui->actionTable->setEnabled(true);
         ui->actionPlot->setEnabled(true);
-        ui->actionTo_CSV->setEnabled(true);
+        ui->actionToCSV->setEnabled(true);
     } else if (v.canConvert<nix::Tag>() | v.canConvert<nix::MultiTag>()) {
         ui->actionPlot->setEnabled(true);
     }
