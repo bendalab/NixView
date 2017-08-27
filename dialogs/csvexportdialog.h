@@ -2,6 +2,7 @@
 #define CSVEXPORTDIALOG_H
 
 #include <QDialog>
+#include <QTextStream>
 #include "nix.hpp"
 
 namespace Ui {
@@ -17,17 +18,18 @@ public:
     ~CSVExportDialog();
 
     void setArray(nix::DataArray array);
-    void setSelection(int minCol, int maxCol);
+    void setSelection(nix::NDSize start, nix::NDSize end);
 
 private:
     Ui::CSVExportDialog *ui;
     nix::DataArray array;
-    int minCol, maxCol;
+    nix::NDSize start,end;
 
     void accept();
     void export_csv();
     void get_header(QStringList &vheader, QStringList &hheader, QStringList &dheader);
     QStringList readLabels(int dim, nix::DimensionType type);
+    void exportData(QTextStream &outStream, nix::NDArray &data, nix::NDSize &yIndex, QString &sep);
 };
 
 #endif // CSVEXPORTDIALOG_H

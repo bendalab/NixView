@@ -19,9 +19,6 @@ CSVExportDialog::CSVExportDialog(QWidget *parent) :
     ui->setupUi(this);
     ui->progressBar->setValue(0);
     ui->progressBar->setVisible(false);
-
-    minCol = -1;
-    maxCol = -1;
 }
 
 CSVExportDialog::~CSVExportDialog()
@@ -34,9 +31,9 @@ void CSVExportDialog::setArray(nix::DataArray array) {
     this->array = array;
 }
 
-void CSVExportDialog::setSelection(int minCol, int maxCol) {
-    this->minCol = minCol;
-    this->maxCol = maxCol;
+void CSVExportDialog::setSelection(nix::NDSize start, nix::NDSize end) {
+    this->start = start;
+    this->end = end;
 }
 
 
@@ -112,10 +109,8 @@ void CSVExportDialog::export_csv() {
     if (ui->export_header->isChecked()) {
         get_header(vheader, hheader, dheader);
     }
-    std::cerr << "not the headers." << std::endl;
+
     QString sep = ui->separator_edit->text().append(" ");
-
-
 
     int xLength, yLength, zLength;
     nix::NDSize shape = array.dataExtent();
@@ -134,12 +129,20 @@ void CSVExportDialog::export_csv() {
         yLength = shape[1];
         zLength = shape[2];
     }
-
     nix::DataType type = array.dataType();
+    nix::NDArray data = nix::NDArray(type, {1});
+    if(shape.size() == 1) {
+        data = nix::NDArray(type, {1});
+    } else if(shape.size() == 2) {
+        data = nix::NDArray(type, {1, yLength});
+    } else if(shape.size() == 3) {
+        data = nix::NDArray(type, {1, yLength,1});
+    }
+
+    int count =0;
+    double step = 100. / (zLength*xLength);
 
     for(int z=0; z<zLength; z++) {
-        //write dheader+\n if there is one:
-        //write hheaders:
         if (ui->export_header->isChecked()) {
             if(zLength > 1) {
                 if(z < dheader.size()) {
@@ -159,28 +162,77 @@ void CSVExportDialog::export_csv() {
                 outStream << vheader[x] << sep;
             }
 
-            nix::NDArray data = nix::NDArray(type, {1,yLength,1});
             // inefficent to get the data line for line ? (better as to not kill the program with large data volumes?)
             if(shape.size() == 1) {
                 array.getDataDirect(type, data.data(), {1},            {x});
             } else if(shape.size() == 2) {
                 array.getDataDirect(type, data.data(), {1, yLength},   {x, 0});
-            } else if(shape.size() > 2) {
+            } else if(shape.size() == 3) {
                 array.getDataDirect(type, data.data(), {1, yLength,1}, {x, 0, z});
             }
 
             for( nix::ndsize_t y=0; y<yLength; y++) {
-                nix::NDSize yIndex(3,1);
-                yIndex[1] = y;
-                //aufdröseln nach allen typen:
-                outStream << data.get<double>(yIndex) << sep;
+
+                nix::NDSize yIndex;
+                if(shape.size() == 1) {
+                    yIndex = nix::NDSize(1,y);
+                } else if(shape.size() == 2) {
+                    yIndex = nix::NDSize(2,0);
+                    yIndex[1] = y;
+                } else if(shape.size() == 3) {
+                    yIndex = nix::NDSize(3,0);
+                    yIndex[1] = y;
+                }
+
+                //export depending on type:
+                exportData(outStream, data, yIndex, sep);
             }
 
             outStream << "\n";
+
+            count++;
+            ui->progressBar->setValue(rint(count * step));
+            QCoreApplication::processEvents();
+
         }
     }
     outfile.close();
     this->close();
+}
+
+void CSVExportDialog::exportData(QTextStream &outStream, nix::NDArray &data, nix::NDSize &yIndex, QString &sep) {
+    nix::DataType type = data.dtype();
+
+    // how do i get the correct form of int to export depending on machine and compiler ?
+    if(type == nix::DataType::Int64) {
+        outStream << data.get<long long int>(yIndex) << sep;
+    } else if(type == nix::DataType::Int32) {
+        outStream << data.get<int>(yIndex) << sep;
+    } else if(type == nix::DataType::Int16) {
+        outStream << QString::number(data.get<short int>(yIndex)) << sep;
+    } else if(type == nix::DataType::Int8) {
+        outStream << (int)data.get<char>(yIndex) << sep;
+    } else if(type == nix::DataType::Double) {
+        outStream << data.get<double>(yIndex) << sep;
+    } else if (type == nix::DataType::Float) {
+        outStream << data.get<float>(yIndex) << sep;
+    }  else if(type == nix::DataType::UInt64) {
+        outStream << data.get<unsigned long long int>(yIndex) << sep;
+    } else if(type == nix::DataType::UInt32) {
+        outStream << data.get<unsigned int>(yIndex) << sep;
+    } else if(type == nix::DataType::UInt16) {
+        outStream << data.get<unsigned short int>(yIndex) << sep;
+    } else if(type == nix::DataType::UInt8) {
+        outStream << (unsigned int)data.get<unsigned char>(yIndex) << sep;
+    } else if(type == nix::DataType::Bool) {
+        outStream << data.get<bool>(yIndex) << sep;
+    } else if(type == nix::DataType::Char) {
+        outStream << data.get<char>(yIndex) << sep;
+    } else if(type == nix::DataType::String) {
+        outStream << QString::fromStdString(data.get<std::string>(yIndex)) << sep;
+    } else if ((type == nix::DataType::Nothing) | (type == nix::DataType::Opaque))
+        //error message ?
+        return;
 }
 
 

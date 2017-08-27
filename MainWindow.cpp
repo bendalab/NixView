@@ -515,16 +515,6 @@ void MainWindow::toggle_project_controls(bool enabled) {
 
 void MainWindow::exportToCsv() {
 
-    //Current way (over tableview):
-    /*
-    DataTable *data_table = new DataTable(this);
-    data_table->set_entity(selected_item);
-
-    CSVExportDialog dialog(this);
-    dialog.setArray(data_table->get_table());
-    dialog.exec();
-    */
-
     CSVExportDialog dialog(this);
 
     if (selected_item.canConvert<nix::DataArray>()) {

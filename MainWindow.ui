@@ -480,8 +480,8 @@ color: rgb(150,150, 150);</string>
    <addaction name="menuView"/>
    <addaction name="menuPlot"/>
    <addaction name="menuFind"/>
-   <addaction name="menuHelp"/>
    <addaction name="menuExport"/>
+   <addaction name="menuHelp"/>
   </widget>
   <widget class="QStatusBar" name="statusBar">
    <property name="sizePolicy">

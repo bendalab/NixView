@@ -31,10 +31,10 @@ void TableDialog::accept() {
     CSVExportDialog d(this);
 
     QModelIndexList indexes = ui->data_table->get_table()->selectionModel()->selection().indexes();
-    int minCol = indexes[0].column();
-    int maxCol = indexes.back().column();
+    nix::NDSize start = {indexes[0].row(),      indexes[0].column(), } ;
+    nix::NDSize end   = {indexes.back().row(),  indexes.back().column()};
 
     d.setArray(ui->data_table->getArray());
-    d.setSelection(minCol, maxCol);
+    d.setSelection(start, end);
     d.exec();
 }

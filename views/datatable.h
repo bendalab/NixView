@@ -27,6 +27,7 @@ public:
     bool can_draw(const QVariant var) const;
     QTableView* get_table();
     nix::DataArray getArray();
+    int currentPage();
 
 private:
     Ui::DataTable *ui;
