@@ -39,6 +39,6 @@ void TableDialog::accept() {
         end   = {indexes.back().row(),  indexes.back().column()};
     }
     d.setArray(ui->data_table->getArray());
-    //d.setSelection(start, end);
+    d.setSelection(start, end);
     d.exec();
 }
