@@ -27,6 +27,11 @@ private:
 
     void accept();
     void export_csv();
+
+    void exportCsv1D(QTextStream &outStream, QString &sep);
+    void exportCsv2D(QTextStream &outStream, QString &sep);
+    void exportCsv3D(QTextStream &outStream, QString &sep);
+
     void get_header(QStringList &vheader, QStringList &hheader, QStringList &dheader);
     QStringList readLabels(int dim, nix::DimensionType type);
     void exportData(QTextStream &outStream, nix::NDArray &data, nix::NDSize &yIndex, QString &sep);

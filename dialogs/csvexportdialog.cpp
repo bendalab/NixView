@@ -4,7 +4,6 @@
 #include <Qt>
 #include <QFileDialog>
 #include <QTextStream>
-#include <math.h>
 
 #include<QTime>
 #include "nix.hpp"
@@ -19,6 +18,9 @@ CSVExportDialog::CSVExportDialog(QWidget *parent) :
     ui->setupUi(this);
     ui->progressBar->setValue(0);
     ui->progressBar->setVisible(false);
+
+    start = nix::NDSize(1,-1);
+    end   = nix::NDSize(1,-1);
 }
 
 CSVExportDialog::~CSVExportDialog()
@@ -105,51 +107,137 @@ void CSVExportDialog::export_csv() {
     }
     QTextStream outStream(&outfile);
 
+    QString sep = ui->separator_edit->text().append(" ");
+
+    if(array.dataExtent().size() == 1) {
+        exportCsv1D(outStream, sep);
+    } else if(array.dataExtent().size() == 2) {
+        exportCsv2D(outStream, sep);
+    } else if(array.dataExtent().size() == 3) {
+        exportCsv3D(outStream, sep);
+    } else if(array.dataExtent().size() > 3) {
+        // error message!
+    }
+
+    outfile.close();
+    this->close();
+}
+
+void CSVExportDialog::exportCsv1D(QTextStream &outStream, QString &sep) {
     QStringList vheader, hheader, dheader;
     if (ui->export_header->isChecked()) {
         get_header(vheader, hheader, dheader);
     }
-
-    QString sep = ui->separator_edit->text().append(" ");
-
-    int xLength, yLength, zLength;
     nix::NDSize shape = array.dataExtent();
-
-    //as extra function ?
-    if(shape.size() == 1) {
-        xLength = shape[0];
-        yLength = 1;
-        zLength = 1;
-    } else if(shape.size() == 2) {
-        xLength = shape[0];
-        yLength = shape[1];
-        zLength = 1;
-    } else if(shape.size() == 3) {
-        xLength = shape[0];
-        yLength = shape[1];
-        zLength = shape[2];
-    }
     nix::DataType type = array.dataType();
     nix::NDArray data = nix::NDArray(type, {1});
-    if(shape.size() == 1) {
-        data = nix::NDArray(type, {1});
-    } else if(shape.size() == 2) {
-        data = nix::NDArray(type, {1, yLength});
-    } else if(shape.size() == 3) {
-        data = nix::NDArray(type, {1, yLength,1});
-    }
 
     int count =0;
-    double step = 100. / (zLength*xLength);
+    int draw = 100;
+    double step = 100. / shape[0];
+
+    if (ui->export_header->isChecked()) {
+        outStream << " " << sep;
+        for (int i = 0; i < hheader.size(); i++) {
+            outStream << hheader[i] << sep;
+        }
+        outStream << "\n";
+    }
+
+    for(int x=0; x<(int)shape[0]; x++) {
+        if(ui->export_header->isChecked()) {
+            outStream << vheader[x] << sep;
+        }
+
+        array.getDataDirect(type, data.data(), {1}, {x});
+        nix::NDSize index = nix::NDSize(1,0);
+        //export depending on type:
+        exportData(outStream, data, index, sep);
+
+        outStream << "\n";
+
+        count++;
+        if(count%draw == 0) {
+            ui->progressBar->setValue(rint(count * step));
+            QCoreApplication::processEvents();
+        }
+    }
+}
+
+void CSVExportDialog::exportCsv2D(QTextStream &outStream, QString &sep) {
+    QStringList vheader, hheader, dheader;
+    if (ui->export_header->isChecked()) {
+        get_header(vheader, hheader, dheader);
+    }
+    nix::NDSize shape = array.dataExtent();
+    nix::DataType type = array.dataType();
+
+    int xLength = shape[0];
+    int yLength = shape[1];
+
+    nix::NDArray data = nix::NDArray(type, {1, yLength});
+
+    int count =0;
+    int draw = 100;
+    double step = 100. / xLength;
+
+    outStream << " " << sep;
+    for (int i = 0; i < hheader.size(); i++) {
+          outStream << hheader[i] << sep;
+    }
+    outStream << "\n";
+
+
+    for(int x=0; x<xLength; x++) {
+        if(ui->export_header->isChecked()) {
+            outStream << vheader[x] << sep;
+        }
+        array.getDataDirect(type, data.data(), {1, yLength},   {x, 0});
+
+        for( nix::ndsize_t y=0; y<yLength; y++) {
+            nix::NDSize yIndex;
+            yIndex = nix::NDSize(2,0);
+            yIndex[1] = y;
+            //export depending on type:
+            exportData(outStream, data, yIndex, sep);
+        }
+
+        outStream << "\n";
+
+        count++;
+        if(count%draw == 0) {
+            ui->progressBar->setValue(rint(count * step));
+            QCoreApplication::processEvents();
+        }
+    }
+}
+
+void CSVExportDialog::exportCsv3D(QTextStream &outStream, QString &sep) {
+    QStringList vheader, hheader, dheader;
+    if (ui->export_header->isChecked()) {
+        get_header(vheader, hheader, dheader);
+    }
+    nix::NDSize shape = array.dataExtent();
+    nix::DataType type = array.dataType();
+
+    int xLength = shape[0];
+    int yLength = shape[1];
+    int zLength = shape[2];
+
+    nix::NDArray data = nix::NDArray(type, {1, yLength,1});
+
+    int count =0;
+    int draw = 100;
+    double step = 100. / (shape[2]*shape[0]);
 
     for(int z=0; z<zLength; z++) {
         if (ui->export_header->isChecked()) {
-            if(zLength > 1) {
-                if(z < dheader.size()) {
-                    outStream << dheader[z];
-                }
-                    outStream << "\n";
+
+            if(z < dheader.size()) {
+                outStream << dheader[z];
+                outStream << "\n";
             }
+
             outStream << " " << sep;
             for (int i = 0; i < hheader.size(); i++) {
                 outStream << hheader[i] << sep;
@@ -162,27 +250,12 @@ void CSVExportDialog::export_csv() {
                 outStream << vheader[x] << sep;
             }
 
-            // inefficent to get the data line for line ? (better as to not kill the program with large data volumes?)
-            if(shape.size() == 1) {
-                array.getDataDirect(type, data.data(), {1},            {x});
-            } else if(shape.size() == 2) {
-                array.getDataDirect(type, data.data(), {1, yLength},   {x, 0});
-            } else if(shape.size() == 3) {
-                array.getDataDirect(type, data.data(), {1, yLength,1}, {x, 0, z});
-            }
-
+            array.getDataDirect(type, data.data(), {1, yLength,1}, {x, 0, z});
             for( nix::ndsize_t y=0; y<yLength; y++) {
 
                 nix::NDSize yIndex;
-                if(shape.size() == 1) {
-                    yIndex = nix::NDSize(1,y);
-                } else if(shape.size() == 2) {
-                    yIndex = nix::NDSize(2,0);
-                    yIndex[1] = y;
-                } else if(shape.size() == 3) {
-                    yIndex = nix::NDSize(3,0);
-                    yIndex[1] = y;
-                }
+                yIndex = nix::NDSize(3,0);
+                yIndex[1] = y;
 
                 //export depending on type:
                 exportData(outStream, data, yIndex, sep);
@@ -191,13 +264,13 @@ void CSVExportDialog::export_csv() {
             outStream << "\n";
 
             count++;
-            ui->progressBar->setValue(rint(count * step));
-            QCoreApplication::processEvents();
-
+            if(count%draw == 0) {
+                ui->progressBar->setValue(rint(count * step));
+                QCoreApplication::processEvents();
+            }
         }
+
     }
-    outfile.close();
-    this->close();
 }
 
 void CSVExportDialog::exportData(QTextStream &outStream, nix::NDArray &data, nix::NDSize &yIndex, QString &sep) {
