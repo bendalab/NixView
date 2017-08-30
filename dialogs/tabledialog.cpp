@@ -35,8 +35,17 @@ void TableDialog::accept() {
     nix::NDSize start(1,-1);
     nix::NDSize end(1,-1);
     if(! indexes.isEmpty()) {
-        start = {indexes[0].row(),      indexes[0].column()} ;
-        end   = {indexes.back().row(),  indexes.back().column()};
+        int size = ui->data_table->getArray().dataExtent().size();
+        if(size == 1) {
+            start = {indexes[0].row()};
+            end   = {indexes.last().row()+1};
+        } else if(size == 2) {
+            start = {indexes[0].row(),      indexes[0].column()};
+            end   = {indexes.last().row()+1,  indexes.last().column()+1};
+        } else if(size == 3) {
+            start = {indexes[0].row(),      indexes[0].column(),    ui->data_table->currentPage()-1};
+            end   = {indexes.last().row()+1,  indexes.last().column()+1,ui->data_table->currentPage()};
+        }
     }
     d.setArray(ui->data_table->getArray());
     d.setSelection(start, end);

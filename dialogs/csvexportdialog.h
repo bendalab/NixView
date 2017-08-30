@@ -34,6 +34,7 @@ private:
 
     void get_header(QStringList &vheader, QStringList &hheader, QStringList &dheader);
     QStringList readLabels(int dim, nix::DimensionType type);
+    bool testStartEnd();
     void exportData(QTextStream &outStream, nix::NDArray &data, nix::NDSize &yIndex, QString &sep);
 };
 

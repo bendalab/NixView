@@ -839,6 +839,9 @@ color: rgb(150,150, 150);</string>
    </property>
   </action>
   <action name="actionToCSV">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>toCSV</string>
    </property>

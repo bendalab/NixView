@@ -36,6 +36,10 @@ void CSVExportDialog::setArray(nix::DataArray array) {
 void CSVExportDialog::setSelection(nix::NDSize start, nix::NDSize end) {
     this->start = start;
     this->end = end;
+
+    if(testStartEnd()) {
+        ui->export_selection->setChecked(true);
+    }
 }
 
 
@@ -116,7 +120,7 @@ void CSVExportDialog::export_csv() {
     } else if(array.dataExtent().size() == 3) {
         exportCsv3D(outStream, sep);
     } else if(array.dataExtent().size() > 3) {
-        // error message!
+        std::cerr << "CSV-export of data with more than 3 dimensions currently not possible. Sorry!" << std::endl;
     }
 
     outfile.close();
@@ -132,10 +136,6 @@ void CSVExportDialog::exportCsv1D(QTextStream &outStream, QString &sep) {
     nix::DataType type = array.dataType();
     nix::NDArray data = nix::NDArray(type, {1});
 
-    int count =0;
-    int draw = 100;
-    double step = 100. / shape[0];
-
     if (ui->export_header->isChecked()) {
         outStream << " " << sep;
         for (int i = 0; i < hheader.size(); i++) {
@@ -144,7 +144,18 @@ void CSVExportDialog::exportCsv1D(QTextStream &outStream, QString &sep) {
         outStream << "\n";
     }
 
-    for(int x=0; x<(int)shape[0]; x++) {
+    if(! (ui->export_selection->isChecked()) || !testStartEnd()) {
+        start[0] = 0;
+        end[0] = shape[0];
+    }
+
+    int count =0;
+    int draw = 100;
+    double step = 100. / (end[0]-start[0]);
+
+
+
+    for(int x = start[0]; x<(int)end[0]; x++) {
         if(ui->export_header->isChecked()) {
             outStream << vheader[x] << sep;
         }
@@ -172,36 +183,40 @@ void CSVExportDialog::exportCsv2D(QTextStream &outStream, QString &sep) {
     nix::NDSize shape = array.dataExtent();
     nix::DataType type = array.dataType();
 
-    int xLength = shape[0];
-    int yLength = shape[1];
+    if(! ui->export_selection->isChecked() || ! testStartEnd()) {
+        start[0] = 0;
+        start[1] = 0;
+        end[0] = shape[0];
+        end[1] = shape[1];
+    }
 
-    nix::NDArray data = nix::NDArray(type, {1, yLength});
+    nix::NDArray data = nix::NDArray(type, {1, (int) (end[1]-start[1])});
 
     int count =0;
     int draw = 100;
-    double step = 100. / xLength;
+    double step = 100. / (end[0]-start[0]);
 
-    outStream << " " << sep;
-    for (int i = 0; i < hheader.size(); i++) {
-          outStream << hheader[i] << sep;
+    if(ui->export_header->isChecked()) {
+        outStream << " " << sep;
+        for (int i = 0; i < hheader.size(); i++) {
+              outStream << hheader[i] << sep;
+        }
+        outStream << "\n";
     }
-    outStream << "\n";
 
-
-    for(int x=0; x<xLength; x++) {
+    for(int x = start[0]; x<(int)end[0]; x++) {
         if(ui->export_header->isChecked()) {
             outStream << vheader[x] << sep;
         }
-        array.getDataDirect(type, data.data(), {1, yLength},   {x, 0});
+        array.getDataDirect(type, data.data(), {1, (int) (end[1]-start[1])},   {x, (int)start[1]});
 
-        for( nix::ndsize_t y=0; y<yLength; y++) {
+        for(unsigned int y = 0; y<(end[1]-start[1]); y++) {
             nix::NDSize yIndex;
             yIndex = nix::NDSize(2,0);
             yIndex[1] = y;
             //export depending on type:
             exportData(outStream, data, yIndex, sep);
         }
-
         outStream << "\n";
 
         count++;
@@ -220,17 +235,20 @@ void CSVExportDialog::exportCsv3D(QTextStream &outStream, QString &sep) {
     nix::NDSize shape = array.dataExtent();
     nix::DataType type = array.dataType();
 
-    int xLength = shape[0];
-    int yLength = shape[1];
-    int zLength = shape[2];
+    if( ! ui->export_selection->isChecked() || ! testStartEnd()) {
+        start = nix::NDSize(3,0);
+        end = nix::NDSize(3,shape[0]);
+        end[1] = shape[1];
+        end[2] = shape[2];
+    }
 
-    nix::NDArray data = nix::NDArray(type, {1, yLength,1});
+    nix::NDArray data = nix::NDArray(type, {1, (int) (end[1]-start[1]),1});
 
     int count =0;
     int draw = 100;
-    double step = 100. / (shape[2]*shape[0]);
+    double step = 100. / ((end[2]-start[2])*(end[0]-start[0])); // number of lines with data.
 
-    for(int z=0; z<zLength; z++) {
+    for(int z = start[2] ; z<(int)end[2]; z++) {
         if (ui->export_header->isChecked()) {
 
             if(z < dheader.size()) {
@@ -239,19 +257,19 @@ void CSVExportDialog::exportCsv3D(QTextStream &outStream, QString &sep) {
             }
 
             outStream << " " << sep;
-            for (int i = 0; i < hheader.size(); i++) {
+            for (unsigned int i = start[1]; i < end[1]; i++) {
                 outStream << hheader[i] << sep;
             }
             outStream << "\n";
         }
 
-        for(int x=0; x<xLength; x++) {
+        for(int x=start[0]; x<(int)end[0]; x++) {
             if(ui->export_header->isChecked()) {
                 outStream << vheader[x] << sep;
             }
 
-            array.getDataDirect(type, data.data(), {1, yLength,1}, {x, 0, z});
-            for( nix::ndsize_t y=0; y<yLength; y++) {
+            array.getDataDirect(type, data.data(), {1, (int) (end[1]-start[1]),1}, {x, (int) start[1], z});
+            for(unsigned int y=0; y<(end[1]-start[1]); y++) {
 
                 nix::NDSize yIndex;
                 yIndex = nix::NDSize(3,0);
@@ -289,7 +307,7 @@ void CSVExportDialog::exportData(QTextStream &outStream, nix::NDArray &data, nix
         outStream << data.get<double>(yIndex) << sep;
     } else if (type == nix::DataType::Float) {
         outStream << data.get<float>(yIndex) << sep;
-    }  else if(type == nix::DataType::UInt64) {
+    } else if(type == nix::DataType::UInt64) {
         outStream << data.get<unsigned long long int>(yIndex) << sep;
     } else if(type == nix::DataType::UInt32) {
         outStream << data.get<unsigned int>(yIndex) << sep;
@@ -307,5 +325,26 @@ void CSVExportDialog::exportData(QTextStream &outStream, nix::NDArray &data, nix
         //error message ?
         return;
 }
+
+bool CSVExportDialog::testStartEnd() {
+    if( (array.dataExtent().size() != start.size()) || (array.dataExtent().size() != end.size()) ) {
+        return false;
+    } else if( start.size() != end.size()) {
+        return false;
+    }
+    for(unsigned int i=0; i<start.size(); i++) {
+        if(start[i] > end[i]) {
+            return false;
+        }
+        if(start[i] < 0 || end[i] < 0) {
+            return false;
+        }
+    }
+    return true;
+}
+
+
+
+
 
 
