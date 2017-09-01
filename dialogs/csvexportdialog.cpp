@@ -65,6 +65,23 @@ void CSVExportDialog::get_header(QStringList &vheader, QStringList &hheader, QSt
             break;
         }
     }
+
+    if(vheader.isEmpty()) {
+        for(unsigned int i=0; i<shape[0]; i++) {
+            vheader.append(QString::number(i));
+        }
+    }
+    if(hheader.isEmpty() && shape.size() > 1) {
+        for(unsigned int i=0; i<shape[1]; i++) {
+            hheader.append(QString::number(i));
+        }
+    }
+    if(dheader.isEmpty() && shape.size() > 2) {
+        for(unsigned int i=0; i<shape[2]; i++) {
+            dheader.append(QString::number(i));
+        }
+    }
+    return;
 }
 
 QStringList CSVExportDialog::readLabels(int dim, nix::DimensionType type) {
@@ -184,9 +201,8 @@ void CSVExportDialog::exportCsv2D(QTextStream &outStream, QString &sep) {
     nix::DataType type = array.dataType();
 
     if(! ui->export_selection->isChecked() || ! testStartEnd()) {
-        start[0] = 0;
-        start[1] = 0;
-        end[0] = shape[0];
+        start = nix::NDSize(2,0);
+        end   = nix::NDSize(2, shape[0]);
         end[1] = shape[1];
     }
 
@@ -198,7 +214,7 @@ void CSVExportDialog::exportCsv2D(QTextStream &outStream, QString &sep) {
 
     if(ui->export_header->isChecked()) {
         outStream << " " << sep;
-        for (int i = 0; i < hheader.size(); i++) {
+        for (unsigned int i = start[1]; i < end[1]; i++) {
               outStream << hheader[i] << sep;
         }
         outStream << "\n";
