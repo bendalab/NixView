@@ -525,6 +525,6 @@ void MainWindow::exportToCsv() {
         // What kind of error message ? (also shouldn't be possible because the button should be disabled.)
         std::cerr << "Menu export to csv: Cannot export the selected item! (not a DataArray or Feature)" << std::endl;
     }
-
+    dialog.setSelectionStatus(false);
     dialog.exec();
 }

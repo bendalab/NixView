@@ -42,6 +42,10 @@ void CSVExportDialog::setSelection(nix::NDSize start, nix::NDSize end) {
     }
 }
 
+void CSVExportDialog::setSelectionStatus(bool enabled) {
+    ui->export_selection->setEnabled(enabled);
+}
+
 
 void CSVExportDialog::accept() {
     export_csv();

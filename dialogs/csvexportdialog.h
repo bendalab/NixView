@@ -19,6 +19,7 @@ public:
 
     void setArray(nix::DataArray array);
     void setSelection(nix::NDSize start, nix::NDSize end);
+    void setSelectionStatus(bool enabled);
 
 private:
     Ui::CSVExportDialog *ui;
