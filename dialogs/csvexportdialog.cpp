@@ -60,6 +60,12 @@ void CSVExportDialog::get_header(QStringList &vheader, QStringList &hheader, QSt
 
     for(unsigned int i=0; i<shape.size(); i++) {
         if(i == 0) {
+            if(shape.size() == 1) {
+                QString label = QString::fromStdString(array.label().get());
+                QString unit = QString::fromStdString(array.unit().get());
+                label = label.append(" ").append(unit);
+                hheader.append(label);
+            }
             vheader = readLabels(1, array.getDimension(1).dimensionType());
         } else if(i == 1) {
             hheader = readLabels(2, array.getDimension(2).dimensionType());
