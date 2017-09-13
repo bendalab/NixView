@@ -5,7 +5,7 @@
 #include <QFileDialog>
 #include <QTextStream>
 
-#include<QTime>
+#include<QPushButton>
 #include "nix.hpp"
 #include "nix/NDArray.hpp"
 
@@ -13,14 +13,14 @@
 
 CSVExportDialog::CSVExportDialog(QWidget *parent) :
     QDialog(parent),
-    ui(new Ui::CSVExportDialog)
+    ui(new Ui::CSVExportDialog),
+    start(1,0), extend(1,0)
 {
     ui->setupUi(this);
     ui->progressBar->setValue(0);
     ui->progressBar->setVisible(false);
 
-    start = nix::NDSize(1,-1);
-    end   = nix::NDSize(1,-1);
+
 }
 
 CSVExportDialog::~CSVExportDialog()
@@ -33,11 +33,11 @@ void CSVExportDialog::setArray(nix::DataArray array) {
     this->array = array;
 }
 
-void CSVExportDialog::setSelection(nix::NDSize start, nix::NDSize end) {
+void CSVExportDialog::setSelection(nix::NDSize start, nix::NDSize extend) {
     this->start = start;
-    this->end = end;
+    this->extend = extend;
 
-    if(testStartEnd()) {
+    if(testStartExtend()) {
         ui->export_selection->setChecked(true);
     }
 }
@@ -110,8 +110,8 @@ QStringList CSVExportDialog::readLabels(int dim, nix::DimensionType type) {
     return labels;
 }
 
-
 void CSVExportDialog::export_csv() {
+    ui->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(false);
     ui->progressBar->setVisible(true);
     ui->progressBar->setValue(0);
     QFileDialog fd(this);
@@ -165,18 +165,18 @@ void CSVExportDialog::exportCsv1D(QTextStream &outStream, QString &sep) {
         outStream << "\n";
     }
 
-    if(! (ui->export_selection->isChecked()) || !testStartEnd()) {
+    if(! (ui->export_selection->isChecked()) || !testStartExtend()) {
         start[0] = 0;
-        end[0] = shape[0];
+        extend[0] = shape[0];
     }
 
     int count =0;
     int draw = 100;
-    double step = 100. / (end[0]-start[0]);
+    double step = 100. / extend[0];
 
 
 
-    for(int x = start[0]; x<(int)end[0]; x++) {
+    for(unsigned int x = start[0]; x < start[0]+extend[0]; x++) {
         if(ui->export_header->isChecked()) {
             outStream << vheader[x] << sep;
         }
@@ -204,33 +204,33 @@ void CSVExportDialog::exportCsv2D(QTextStream &outStream, QString &sep) {
     nix::NDSize shape = array.dataExtent();
     nix::DataType type = array.dataType();
 
-    if(! ui->export_selection->isChecked() || ! testStartEnd()) {
+    if(! ui->export_selection->isChecked() || ! testStartExtend()) {
         start = nix::NDSize(2,0);
-        end   = nix::NDSize(2, shape[0]);
-        end[1] = shape[1];
+        extend   = nix::NDSize(2, shape[0]);
+        extend[1] = shape[1];
     }
 
-    nix::NDArray data = nix::NDArray(type, {1, (int) (end[1]-start[1])});
+    nix::NDArray data = nix::NDArray(type, {1, (int) extend[1]});
 
     int count =0;
     int draw = 100;
-    double step = 100. / (end[0]-start[0]);
+    double step = 100. / extend[0];
 
     if(ui->export_header->isChecked()) {
         outStream << " " << sep;
-        for (unsigned int i = start[1]; i < end[1]; i++) {
+        for (unsigned int i = start[1]; i < start[1]+extend[1]; i++) {
               outStream << hheader[i] << sep;
         }
         outStream << "\n";
     }
 
-    for(int x = start[0]; x<(int)end[0]; x++) {
+    for( int x = start[0]; x < (int)(start[0]+extend[0]); x++) {
         if(ui->export_header->isChecked()) {
             outStream << vheader[x] << sep;
         }
-        array.getDataDirect(type, data.data(), {1, (int) (end[1]-start[1])},   {x, (int)start[1]});
+        array.getDataDirect(type, data.data(), {1, (int) extend[1]},   {x, (int)start[1]});
 
-        for(unsigned int y = 0; y<(end[1]-start[1]); y++) {
+        for(unsigned int y = 0; y<extend[1]; y++) {
             nix::NDSize yIndex;
             yIndex = nix::NDSize(2,0);
             yIndex[1] = y;
@@ -255,20 +255,20 @@ void CSVExportDialog::exportCsv3D(QTextStream &outStream, QString &sep) {
     nix::NDSize shape = array.dataExtent();
     nix::DataType type = array.dataType();
 
-    if( ! ui->export_selection->isChecked() || ! testStartEnd()) {
+    if( ! ui->export_selection->isChecked() || ! testStartExtend()) {
         start = nix::NDSize(3,0);
-        end = nix::NDSize(3,shape[0]);
-        end[1] = shape[1];
-        end[2] = shape[2];
+        extend = nix::NDSize(3,shape[0]);
+        extend[1] = shape[1];
+        extend[2] = shape[2];
     }
 
-    nix::NDArray data = nix::NDArray(type, {1, (int) (end[1]-start[1]),1});
+    nix::NDArray data = nix::NDArray(type, {1, (int) extend[1], 1});
 
     int count =0;
     int draw = 100;
-    double step = 100. / ((end[2]-start[2])*(end[0]-start[0])); // number of lines with data.
+    double step = 100. / extend[2]*extend[0]; // number of lines with data.
 
-    for(int z = start[2] ; z<(int)end[2]; z++) {
+    for(int z = start[2] ; z < (int)(start[2]+extend[2]); z++) {
         if (ui->export_header->isChecked()) {
 
             if(z < dheader.size()) {
@@ -277,19 +277,19 @@ void CSVExportDialog::exportCsv3D(QTextStream &outStream, QString &sep) {
             }
 
             outStream << " " << sep;
-            for (unsigned int i = start[1]; i < end[1]; i++) {
+            for (unsigned int i = start[1]; i < start[1]+extend[1]; i++) {
                 outStream << hheader[i] << sep;
             }
             outStream << "\n";
         }
 
-        for(int x=start[0]; x<(int)end[0]; x++) {
+        for(int x=start[0]; x < (int) (start[0]+extend[0]); x++) {
             if(ui->export_header->isChecked()) {
                 outStream << vheader[x] << sep;
             }
 
-            array.getDataDirect(type, data.data(), {1, (int) (end[1]-start[1]),1}, {x, (int) start[1], z});
-            for(unsigned int y=0; y<(end[1]-start[1]); y++) {
+            array.getDataDirect(type, data.data(), { 1, (int) extend[1], 1}, {x, (int) start[1], z});
+            for(unsigned int y=0; y<extend[1]; y++) {
 
                 nix::NDSize yIndex;
                 yIndex = nix::NDSize(3,0);
@@ -346,17 +346,19 @@ void CSVExportDialog::exportData(QTextStream &outStream, nix::NDArray &data, nix
         return;
 }
 
-bool CSVExportDialog::testStartEnd() {
-    if( (array.dataExtent().size() != start.size()) || (array.dataExtent().size() != end.size()) ) {
+bool CSVExportDialog::testStartExtend() {
+    nix::NDSize shape;
+    array.dataExtent(shape);
+    if( (shape.size() != start.size()) || (shape.size() != extend.size()) ) {
         return false;
-    } else if( start.size() != end.size()) {
+    } else if( start.size() != extend.size()) {
         return false;
     }
-    for(unsigned int i=0; i<start.size(); i++) {
-        if(start[i] > end[i]) {
+    for(unsigned int i=0; i<extend.size(); i++) {
+        if(extend[i] == 0) {
             return false;
         }
-        if(start[i] < 0 || end[i] < 0) {
+        if(start[i]+ extend[i] > shape[i]) {
             return false;
         }
     }

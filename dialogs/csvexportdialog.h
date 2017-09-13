@@ -18,13 +18,13 @@ public:
     ~CSVExportDialog();
 
     void setArray(nix::DataArray array);
-    void setSelection(nix::NDSize start, nix::NDSize end);
+    void setSelection(nix::NDSize start, nix::NDSize extend);
     void setSelectionStatus(bool enabled);
 
 private:
     Ui::CSVExportDialog *ui;
     nix::DataArray array;
-    nix::NDSize start,end;
+    nix::NDSize start,extend;
 
     void accept();
     void export_csv();
@@ -35,7 +35,7 @@ private:
 
     void get_header(QStringList &vheader, QStringList &hheader, QStringList &dheader);
     QStringList readLabels(int dim, nix::DimensionType type);
-    bool testStartEnd();
+    bool testStartExtend();
     void exportData(QTextStream &outStream, nix::NDArray &data, nix::NDSize &yIndex, QString &sep);
 };
 
