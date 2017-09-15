@@ -6,6 +6,7 @@
 #include <QTextStream>
 
 #include<QPushButton>
+//#include<QStringList>
 #include "nix.hpp"
 #include "nix/NDArray.hpp"
 
@@ -16,6 +17,7 @@ CSVExportDialog::CSVExportDialog(QWidget *parent) :
     ui(new Ui::CSVExportDialog),
     start(1,0), extend(1,0)
 {
+    partLength = 100;
     ui->setupUi(this);
     ui->progressBar->setValue(0);
     ui->progressBar->setVisible(false);
@@ -51,7 +53,7 @@ void CSVExportDialog::accept() {
     export_csv();
 }
 
-
+/*
 void CSVExportDialog::get_header(QStringList &vheader, QStringList &hheader, QStringList &dheader) {
     nix::NDSize shape = array.dataExtent();
     vheader = QStringList();
@@ -61,8 +63,16 @@ void CSVExportDialog::get_header(QStringList &vheader, QStringList &hheader, QSt
     for(unsigned int i=0; i<shape.size(); i++) {
         if(i == 0) {
             if(shape.size() == 1) {
-                QString label = QString::fromStdString(array.label().get());
-                QString unit = QString::fromStdString(array.unit().get());
+                QString label("");
+                if(array.label()) {
+                    label = QString::fromStdString(array.label().get());
+                }
+
+                QString unit("");
+                if(array.unit()) {
+                 unit = QString::fromStdString(array.unit().get());
+                }
+
                 label = label.append(" ").append(unit);
                 hheader.append(label);
             }
@@ -75,6 +85,7 @@ void CSVExportDialog::get_header(QStringList &vheader, QStringList &hheader, QSt
             break;
         }
     }
+
 
     if(vheader.isEmpty()) {
         for(unsigned int i=0; i<shape[0]; i++) {
@@ -93,7 +104,8 @@ void CSVExportDialog::get_header(QStringList &vheader, QStringList &hheader, QSt
     }
     return;
 }
-
+*/
+/*
 QStringList CSVExportDialog::readLabels(int dim, nix::DimensionType type) {
     QStringList labels = QStringList();
 
@@ -114,6 +126,39 @@ QStringList CSVExportDialog::readLabels(int dim, nix::DimensionType type) {
         }
     }
     return labels;
+}
+*/
+QStringList CSVExportDialog::getHeaders(unsigned int dim, unsigned int current, unsigned int length) {
+    QStringList headers;
+    if(array.getDimension(dim).dimensionType() == nix::DimensionType::Sample) {
+        double si = array.getDimension(dim).asSampledDimension().samplingInterval();
+        for(unsigned int i=current; i<current+length; i++) {
+            headers.append(QString::number(i*si));
+        }
+    } else if(array.getDimension(dim).dimensionType() == nix::DimensionType::Range) {
+        std::vector<double>::iterator it = array.getDimension(dim).asRangeDimension().ticks().begin();
+        if(it != array.getDimension(dim).asRangeDimension().ticks().end()) {
+            for(std::vector<double>::iterator i = it+current; i != it+current+length; i++) {
+                headers.append(QString::number(*i));
+            }
+        }
+    } else if(array.getDimension(dim).dimensionType() == nix::DimensionType::Set) {
+        std::vector<std::string>::iterator it = array.getDimension(dim).asSetDimension().labels().begin();
+        if(it != array.getDimension(dim).asSetDimension().labels().end()) {
+            for(std::vector<std::string>::iterator i = it+current; i != it+current+length; i++) {
+                headers.append(QString::fromStdString(*i));
+            }
+        }
+    }
+
+    if(headers.isEmpty()) {
+        for(unsigned int i= current; i < current+length; i++) {
+            headers.append(QString::number(i));
+        }
+    }
+
+
+    return headers;
 }
 
 void CSVExportDialog::export_csv() {
@@ -155,20 +200,26 @@ void CSVExportDialog::export_csv() {
 }
 
 void CSVExportDialog::exportCsv1D(QTextStream &outStream, QString &sep) {
-    QStringList vheader, hheader, dheader;
-    if (ui->export_header->isChecked()) {
-        get_header(vheader, hheader, dheader);
-    }
+    QStringList vheader;
     nix::NDSize shape = array.dataExtent();
     nix::DataType type = array.dataType();
-    nix::NDArray data = nix::NDArray(type, {1});
+
+    nix::NDArray data = nix::NDArray(type, {partLength});
+
 
     if (ui->export_header->isChecked()) {
         outStream << " " << sep;
-        for (int i = 0; i < hheader.size(); i++) {
-            outStream << hheader[i] << sep;
+        QString label("");
+        if(array.label()) {
+            label = QString::fromStdString(array.label().get());
         }
-        outStream << "\n";
+        QString unit("");
+        if(array.unit()) {
+         unit = QString::fromStdString(array.unit().get());
+        }
+        label = label.append(" ").append(unit);
+
+        outStream << label << "\n";
     }
 
     if(! (ui->export_selection->isChecked()) || !testStartExtend()) {
@@ -180,15 +231,21 @@ void CSVExportDialog::exportCsv1D(QTextStream &outStream, QString &sep) {
     int draw = 100;
     double step = 100. / extend[0];
 
-
-
     for(unsigned int x = start[0]; x < start[0]+extend[0]; x++) {
+
+        unsigned int x_ind = x-start[0];
         if(ui->export_header->isChecked()) {
-            outStream << vheader[x] << sep;
+            export1DHeader(vheader, outStream, sep, x);
         }
 
-        array.getDataDirect(type, data.data(), {1}, {x});
-        nix::NDSize index = nix::NDSize(1,0);
+        if(x_ind % partLength == 0) {
+            if( partLength <= extend[0] - x_ind) {
+                array.getDataDirect(type, data.data(), {partLength}, {x});
+            } else {
+                array.getDataDirect(type, data.data(), {(extend[0]-x_ind)}, {x});
+            }
+        }
+        nix::NDSize index = nix::NDSize(1,x_ind%partLength);
         //export depending on type:
         exportData(outStream, data, index, sep);
 
@@ -203,10 +260,7 @@ void CSVExportDialog::exportCsv1D(QTextStream &outStream, QString &sep) {
 }
 
 void CSVExportDialog::exportCsv2D(QTextStream &outStream, QString &sep) {
-    QStringList vheader, hheader, dheader;
-    if (ui->export_header->isChecked()) {
-        get_header(vheader, hheader, dheader);
-    }
+    QStringList vheader, hheader;
     nix::NDSize shape = array.dataExtent();
     nix::DataType type = array.dataType();
 
@@ -216,29 +270,33 @@ void CSVExportDialog::exportCsv2D(QTextStream &outStream, QString &sep) {
         extend[1] = shape[1];
     }
 
-    nix::NDArray data = nix::NDArray(type, {1, (int) extend[1]});
+    nix::NDArray data = nix::NDArray(type, {(int)partLength, (int) extend[1]});
 
     int count =0;
     int draw = 100;
     double step = 100. / extend[0];
 
     if(ui->export_header->isChecked()) {
-        outStream << " " << sep;
-        for (unsigned int i = start[1]; i < start[1]+extend[1]; i++) {
-              outStream << hheader[i] << sep;
-        }
-        outStream << "\n";
+        export2DHeader(hheader, outStream, sep);
     }
 
     for( int x = start[0]; x < (int)(start[0]+extend[0]); x++) {
+        unsigned int x_ind = x-start[0];
         if(ui->export_header->isChecked()) {
-            outStream << vheader[x] << sep;
+            export1DHeader(vheader, outStream, sep, x);
         }
-        array.getDataDirect(type, data.data(), {1, (int) extend[1]},   {x, (int)start[1]});
 
+        if(x_ind % partLength == 0) {
+            if(partLength <= extend[0]-x_ind) {
+                array.getDataDirect(type, data.data(), { (int)partLength,        (int) extend[1] },   {x, (int) start[1] });
+            } else {
+                array.getDataDirect(type, data.data(), { (int)(extend[0]-x_ind), (int) extend[1] },   {x, (int) start[1] });
+            }
+
+        }
         for(unsigned int y = 0; y<extend[1]; y++) {
             nix::NDSize yIndex;
-            yIndex = nix::NDSize(2,0);
+            yIndex = nix::NDSize(2,x_ind % partLength);
             yIndex[1] = y;
             //export depending on type:
             exportData(outStream, data, yIndex, sep);
@@ -255,9 +313,6 @@ void CSVExportDialog::exportCsv2D(QTextStream &outStream, QString &sep) {
 
 void CSVExportDialog::exportCsv3D(QTextStream &outStream, QString &sep) {
     QStringList vheader, hheader, dheader;
-    if (ui->export_header->isChecked()) {
-        get_header(vheader, hheader, dheader);
-    }
     nix::NDSize shape = array.dataExtent();
     nix::DataType type = array.dataType();
 
@@ -268,38 +323,45 @@ void CSVExportDialog::exportCsv3D(QTextStream &outStream, QString &sep) {
         extend[2] = shape[2];
     }
 
-    nix::NDArray data = nix::NDArray(type, {1, (int) extend[1], 1});
-
+    nix::NDArray data = nix::NDArray(type, {(int)partLength, (int) extend[1], 1});
+    std::cerr << start << extend;
     int count =0;
     int draw = 100;
     double step = 100. / extend[2]*extend[0]; // number of lines with data.
 
     for(int z = start[2] ; z < (int)(start[2]+extend[2]); z++) {
-        if (ui->export_header->isChecked()) {
 
-            if(z < dheader.size()) {
-                outStream << dheader[z];
-                outStream << "\n";
-            }
-
-            outStream << " " << sep;
-            for (unsigned int i = start[1]; i < start[1]+extend[1]; i++) {
-                outStream << hheader[i] << sep;
-            }
+        std::cerr << "meep: " << z << std::endl;
+        if(ui->export_header->isChecked()) {
+            // 3rd dimension header
+            dheader = getHeaders(3,z,1);
+            outStream << dheader[0];
             outStream << "\n";
+
+            // 2nd dimension header
+            export2DHeader(hheader, outStream, sep);
         }
 
         for(int x=start[0]; x < (int) (start[0]+extend[0]); x++) {
+            unsigned int x_ind = x-start[0];
             if(ui->export_header->isChecked()) {
-                outStream << vheader[x] << sep;
+                export1DHeader(vheader, outStream, sep, x);
             }
 
-            array.getDataDirect(type, data.data(), { 1, (int) extend[1], 1}, {x, (int) start[1], z});
+            if(x_ind % partLength == 0) {
+                if(partLength <= extend[0]-x_ind) {
+                    array.getDataDirect(type, data.data(), {(int) partLength,       (int) extend[1], 1}, {x, (int) start[1], z });
+                } else {
+                    array.getDataDirect(type, data.data(), {(int)(extend[0]-x_ind), (int) extend[1], 1}, {x, (int) start[1], z });
+                }
+            }
+
             for(unsigned int y=0; y<extend[1]; y++) {
 
                 nix::NDSize yIndex;
-                yIndex = nix::NDSize(3,0);
+                yIndex = nix::NDSize(3,x_ind % partLength);
                 yIndex[1] = y;
+                yIndex[2] = 0;
 
                 //export depending on type:
                 exportData(outStream, data, yIndex, sep);
@@ -313,8 +375,28 @@ void CSVExportDialog::exportCsv3D(QTextStream &outStream, QString &sep) {
                 QCoreApplication::processEvents();
             }
         }
-
     }
+}
+
+void CSVExportDialog::export1DHeader(QStringList& vheader, QTextStream&  outStream, QString& sep, unsigned int x) {
+    unsigned int x_ind = x - start[0];
+    if(x_ind%partLength == 0) {
+        if( partLength <= extend[0] - x_ind) {
+            vheader = getHeaders(1,x,partLength);
+        } else {
+            vheader = getHeaders(1,x,extend[0] - x_ind);
+        }
+    }
+    outStream << vheader[x_ind%partLength] << sep;
+}
+
+void CSVExportDialog::export2DHeader(QStringList& hheader, QTextStream&  outStream, QString& sep) {
+    outStream << " " << sep;
+    hheader = getHeaders(2,start[1], extend[1]);
+    for (unsigned int i = 0; i < extend[1]; i++) {
+          outStream << hheader[i] << sep;
+    }
+    outStream << "\n";
 }
 
 void CSVExportDialog::exportData(QTextStream &outStream, nix::NDArray &data, nix::NDSize &yIndex, QString &sep) {
@@ -353,8 +435,8 @@ void CSVExportDialog::exportData(QTextStream &outStream, nix::NDArray &data, nix
 }
 
 bool CSVExportDialog::testStartExtend() {
-    nix::NDSize shape;
-    array.dataExtent(shape);
+    nix::NDSize shape = array.dataExtent();
+
     if( (shape.size() != start.size()) || (shape.size() != extend.size()) ) {
         return false;
     } else if( start.size() != extend.size()) {
