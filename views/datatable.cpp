@@ -81,6 +81,10 @@ void DataTable::select_page() {
     build_model(curr_page - 1);
 }
 
+int DataTable::currentPage() {
+    return QVariant(ui->current_page->text()).toInt();
+}
+
 
 void DataTable::build_model(int page) {
     if (this->model != nullptr)
@@ -95,4 +99,8 @@ void DataTable::build_model(int page) {
 
 QTableView* DataTable::get_table() {
     return ui->table;
+}
+
+nix::DataArray DataTable::getArray() {
+    return this->array;
 }

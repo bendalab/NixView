@@ -29,6 +29,25 @@ void TableDialog::button_clicked(QAbstractButton *button) {
 
 void TableDialog::accept() {
     CSVExportDialog d(this);
-    d.set_table(ui->data_table->get_table());
+
+    QModelIndexList indexes = ui->data_table->get_table()->selectionModel()->selection().indexes();
+    d.setArray(ui->data_table->getArray());
+
+    if(! indexes.isEmpty()) {
+        nix::NDSize start(1,0);
+        nix::NDSize extend(1,0);
+        int size = ui->data_table->getArray().dataExtent().size();
+        if(size == 1) {
+            start  = {indexes[0].row()};
+            extend = {indexes.last().row()-indexes[0].row()+1};
+        } else if(size == 2) {
+            start  = {indexes[0].row(),                         indexes[0].column()};
+            extend = {indexes.last().row()-indexes[0].row()+1,  indexes.last().column()-indexes[0].column()+1};
+        } else if(size == 3) {
+            start  = {indexes[0].row(),                         indexes[0].column(),                           ui->data_table->currentPage()-1};
+            extend = {indexes.last().row()-indexes[0].row()+1,  indexes.last().column()-indexes[0].column()+1, 1};
+        }
+        d.setSelection(start, extend);
+    }
     d.exec();
 }

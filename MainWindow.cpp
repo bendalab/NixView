@@ -16,6 +16,9 @@
 #include <QInputDialog>
 #include <QDebug>
 
+//new for export option:
+#include "dialogs/csvexportdialog.h"
+
 
 MainWindow::MainWindow(QWidget *parent, QApplication *app) : QMainWindow(parent),
     ui(new Ui::MainWindow), currentFile(""), currentProject("") {
@@ -120,9 +123,11 @@ void MainWindow::item_selected(QVariant v) {
     selected_item = v;
     ui->actionPlot->setEnabled(false);
     ui->actionTable->setEnabled(false);
+    ui->actionToCSV->setEnabled(false);
     if(v.canConvert<nix::DataArray>() | v.canConvert<nix::Feature>()) {
         ui->actionTable->setEnabled(true);
         ui->actionPlot->setEnabled(true);
+        ui->actionToCSV->setEnabled(true);
     } else if (v.canConvert<nix::Tag>() | v.canConvert<nix::MultiTag>()) {
         ui->actionPlot->setEnabled(true);
     }
@@ -249,9 +254,7 @@ void MainWindow::open_file() {
 }
 
 
-void MainWindow::open_project() {
-    close_file();
-    close_project();
+void MainWindow::open_project() {   
     QFileDialog fd(this);
     fd.setAcceptMode(QFileDialog::AcceptOpen);
     fd.setFileMode(QFileDialog::ExistingFile);
@@ -263,6 +266,8 @@ void MainWindow::open_project() {
     if (fileNames.size() == 0)
         return;
 
+    close_file();
+    close_project();
     open_project(fileNames.front());
 }
 
@@ -506,4 +511,20 @@ void MainWindow::toggle_project_controls(bool enabled) {
     ui->actionAddCurrentFileToProject->setEnabled(enabled && !currentFile.isEmpty());
     ui->actionProjectAdd_file->setEnabled(enabled);
     ui->actionProjectRemove_file->setEnabled(enabled);
+}
+
+void MainWindow::exportToCsv() {
+
+    CSVExportDialog dialog(this);
+
+    if (selected_item.canConvert<nix::DataArray>()) {
+        dialog.setArray(selected_item.value<nix::DataArray>());
+    } else if (selected_item.canConvert<nix::Feature>()) {
+        dialog.setArray(selected_item.value<nix::Feature>().data());
+    } else {
+        // What kind of error message ? (also shouldn't be possible because the button should be disabled.)
+        std::cerr << "Menu export to csv: Cannot export the selected item! (not a DataArray or Feature)" << std::endl;
+    }
+    dialog.setSelectionStatus(false);
+    dialog.exec();
 }
