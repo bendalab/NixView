@@ -56,20 +56,20 @@ QStringList CSVExportDialog::getHeaders(unsigned int dim, unsigned int current, 
             headers.append(QString::number(i*si));
         }
     } else if(array.getDimension(dim).dimensionType() == nix::DimensionType::Range) {
-        std::vector<double>::iterator it = array.getDimension(dim).asRangeDimension().ticks().begin();
-        for(std::vector<double>::iterator i = it+current; i != it+current+length; i++) {
-            if(it != array.getDimension(dim).asRangeDimension().ticks().end()) {
+        std::vector<double> ticks = array.getDimension(dim).asRangeDimension().ticks();
+        for(unsigned int i = current; i < current+length; i++) {
+            if(i >= ticks.size()){
                 break;
             }
-            headers.append(QString::number(*i));
+            headers.append(QString::number(ticks[i]));
         }
     } else if(array.getDimension(dim).dimensionType() == nix::DimensionType::Set) {
-        std::vector<std::string>::iterator it = array.getDimension(dim).asSetDimension().labels().begin();
-        for(std::vector<std::string>::iterator i = it+current; i != it+current+length; i++) {
-            if(i == array.getDimension(dim).asSetDimension().labels().end()) {
+        std::vector<std::string> labels = array.getDimension(dim).asSetDimension().labels();
+        for(unsigned int i = current; i < current+length; i++) {
+            if(i >= labels.size()) {
                 break;
             }
-            headers.append(QString::fromStdString(*i));
+            headers.append(QString::fromStdString(labels[i]));
         }
     }
 
@@ -310,7 +310,7 @@ void CSVExportDialog::export2DHeader(QStringList& hheader, QTextStream&  outStre
     outStream << " " << sep;
     hheader = getHeaders(2,start[1], extend[1]);
     for (unsigned int i = 0; i < extend[1]; i++) {
-          outStream << hheader[i] << sep;
+        outStream << hheader[i] << sep;
     }
     outStream << "\n";
 }
