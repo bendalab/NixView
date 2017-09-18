@@ -14,7 +14,6 @@ TableDialog::~TableDialog()
     delete ui;
 }
 
-
 void TableDialog::set_entity(const QVariant var) {
     ui->data_table->set_entity(var);
 }
@@ -25,7 +24,6 @@ void TableDialog::button_clicked(QAbstractButton *button) {
         this->close();
     }
 }
-
 
 void TableDialog::accept() {
     CSVExportDialog d(this);
