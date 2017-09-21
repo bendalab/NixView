@@ -80,7 +80,6 @@ void ImagePlotter::draw(const nix::DataArray &array) {
     plot->yAxis->setLabel(yi.label + " " + yi.unit);
 
     QCPColorMap *colorMap = new QCPColorMap(plot->xAxis, plot->yAxis);
-    plot->addPlottable(colorMap);
 
     int nx = xi.ticks.size();
     int ny = yi.ticks.size();
