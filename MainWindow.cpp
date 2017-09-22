@@ -346,7 +346,7 @@ void MainWindow::save_recent_files(QStringList &files) {
     nixview::util::remove_duplicates(files);
     QSettings *settings = new QSettings;
     settings->beginGroup(RECENT_FILES_GROUP);
-    int max_count = settings->value(RECENT_FILES_COUNT, 5).toInt();
+    int max_count = settings->value(RECENT_FILES_COUNT, 7).toInt();
     settings->beginGroup(RECENT_FILES_LIST);
     settings->remove("");
     for (int i = 0; i < files.size(); i ++) {
@@ -374,6 +374,7 @@ void MainWindow::populate_recent_file_menu() {
     }
     for (QString s : recent_files) {
         if (! QFile(s).exists()) {
+            recent_files.removeAll(s);
             continue;
         }
         ui->menu_open_recent->addAction(s);
@@ -501,8 +502,6 @@ void MainWindow::toggle_file_controls(bool enabled) {
     ui->actionCloseFile->setEnabled(enabled);
     ui->actionFile_properties->setEnabled(enabled);
     ui->actionFind->setEnabled(enabled);
-    ui->actionPlot->setEnabled(enabled);
-    ui->actionTable->setEnabled(enabled);
     ui->actionAddCurrentFileToProject->setEnabled(enabled && !currentProject.isEmpty());
 }
 
