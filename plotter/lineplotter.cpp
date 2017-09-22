@@ -255,7 +255,9 @@ void LinePlotter::selection_changed() {
         QCPPlottableLegendItem *item = ui->plot->legend->itemWithPlottable(graph);
         if (item->selected() || graph->selected()) {
             item->setSelected(true);
-            //graph->setSelected(true); ------------____________------_______------__----___-----__----__----___----__----__---------___---__----__---___---___---__-----
+            QCPDataRange wholeGraph = QCPDataRange(0, graph->dataCount());
+            QCPDataSelection selection = QCPDataSelection(wholeGraph);
+            graph->setSelection(selection);
         }
     }
 }
