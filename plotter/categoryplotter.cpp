@@ -63,7 +63,6 @@ void CategoryPlotter::draw_2d(const nix::DataArray &array) {
     for (int i = 0; i < yaxis.size(); i++) {
         QVector<double> data = get_data_line(array, i, best_dim);
         QCPBars *bars = new QCPBars(ui->plot->xAxis, ui->plot->yAxis);
-        ui->plot->addPlottable(bars);
         bars->setData(xaxis, data);
         QColor c = cmap.next();
         bars->setPen(c);
@@ -79,19 +78,21 @@ void CategoryPlotter::draw_2d(const nix::DataArray &array) {
         if (ma > ymax)
             ymax= ma;
     }
-    ui->plot->xAxis->setAutoTickStep(false);
-    ui->plot->xAxis->setAutoTickLabels(false);
 
-    ui->plot->xAxis->setTickStep(1);
-    ui->plot->xAxis->setSubTickCount(0);
-    ui->plot->xAxis->setTickLength(0, 4);
-    ui->plot->xAxis->setTickVector(xaxis);
+
+    QSharedPointer<QCPAxisTickerText> textTicker(new QCPAxisTickerText);
+    textTicker->setSubTickCount(0);
+    textTicker->addTicks(xaxis,xlabels);
+    ui->plot->xAxis->setTicker(textTicker);
+
     ui->plot->xAxis->grid()->setVisible(true);
+    ui->plot->legend->setVisible(true);
+
     ui->plot->xAxis->setRange(-0.5, xaxis.size());
     ui->plot->yAxis->setRange(1.5 * ymin, 1.5 * ymax);
-    ui->plot->legend->setVisible(true);
-    ui->plot->xAxis->setTickVectorLabels(xlabels);
+    ui->plot->xAxis->setTickLength(0, 4);
     ui->plot->xAxis->setTickLabelRotation(60);
+
     set_label(array.name());
     nix::Dimension dim = array.getDimension(3-best_dim);
     std::string unit = "";
@@ -159,7 +160,6 @@ void CategoryPlotter::set_ylabel(const std::string &label) {
 
 void CategoryPlotter::add_bar_plot(QVector<QString> categories, QVector<double> y_data, const QString &name){
     QCPBars *bars = new QCPBars(ui->plot->xAxis, ui->plot->yAxis);
-    ui->plot->addPlottable(bars);
 
     QPen pen;
     pen.setColor(QColor(150, 222, 0));
@@ -169,12 +169,15 @@ void CategoryPlotter::add_bar_plot(QVector<QString> categories, QVector<double> 
     for (int i = 0; i < categories.size(); ++i)
         ticks.push_back(i);
 
-    ui->plot->xAxis->setAutoTicks(false);
-    ui->plot->xAxis->setAutoTickLabels(false);
-    ui->plot->xAxis->setTickVector(ticks);
-    ui->plot->xAxis->setTickVectorLabels(categories);
+    QSharedPointer<QCPAxisTickerText> textTicker(new QCPAxisTickerText);
+    textTicker->setSubTickCount(0);
+    textTicker->addTicks(ticks,categories);
+    ui->plot->xAxis->setTicker(textTicker);
+
+    ui->plot->xAxis->grid()->setVisible(true);
+    ui->plot->legend->setVisible(true);
+
     ui->plot->xAxis->setTickLabelRotation(60);
-    ui->plot->xAxis->setSubTickCount(0);
     ui->plot->xAxis->setTickLength(0, 4);
     ui->plot->xAxis->grid()->setVisible(true);
     ui->plot->xAxis->setRange(-0.5, categories.size() - 0.5);

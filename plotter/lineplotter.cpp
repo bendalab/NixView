@@ -222,7 +222,6 @@ void LinePlotter::add_segments(const QVector<double> &positions, const QVector<d
         rect->position("bottomRight")->setCoords(x_max, y_min);
         rect->setPen(QPen(Qt::red));
         rect->setBrush(QBrush(QColor(255, 10, 10, 50)));
-        ui->plot->addItem(rect);
     }
 }
 
@@ -256,7 +255,9 @@ void LinePlotter::selection_changed() {
         QCPPlottableLegendItem *item = ui->plot->legend->itemWithPlottable(graph);
         if (item->selected() || graph->selected()) {
             item->setSelected(true);
-            graph->setSelected(true);
+            QCPDataRange wholeGraph = QCPDataRange(0, graph->dataCount());
+            QCPDataSelection selection = QCPDataSelection(wholeGraph);
+            graph->setSelection(selection);
         }
     }
 }
