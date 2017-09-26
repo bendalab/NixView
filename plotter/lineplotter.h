@@ -53,7 +53,18 @@ private:
 
     QCustomPlot* get_plot() override;
 
+signals:
+    void xAxisChanged(QCPRange);
+    void yAxisChanged(QCPRange);
+
 public slots:
+    void xAxisNewRange(QCPRange newRange);
+    void yAxisNewRange(QCPRange newRange);
+
+    void changeXAxisRange(QCPRange range);
+    void changeYAxisRange(QCPRange range);
+
+
     void selection_changed();
     void mouse_wheel();
     void mouse_press();

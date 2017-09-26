@@ -17,6 +17,10 @@ LinePlotter::LinePlotter(QWidget *parent) :
     ui->plot->setContextMenuPolicy(Qt::CustomContextMenu);
     connect(ui->plot, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(context_menu_request(QPoint)));
     ui->plot->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom | QCP::iSelectPlottables | QCP::iSelectAxes);
+
+    connect(ui->plot->xAxis, SIGNAL(rangeChanged(QCPRange)), this, SLOT(xAxisNewRange(QCPRange)));
+    connect(ui->plot->yAxis, SIGNAL(rangeChanged(QCPRange)), this, SLOT(yAxisNewRange(QCPRange)));
+
 }
 
 
@@ -165,12 +169,14 @@ void LinePlotter::add_line_plot(const QVector<double> &x_data, const QVector<dou
     pen.setColor(cmap.next());
     ui->plot->graph()->setPen(pen);
     ui->plot->graph()->addData(x_data, y_data);
-    ui->plot->xAxis->setRange(x_data[0], x_data.last());
-    double y_min = *std::min_element(std::begin(y_data), std::end(y_data));
-    double y_max = *std::max_element(std::begin(y_data), std::end(y_data));
-    if (y_min == y_max)
-        y_min = 0.0;
-    ui->plot->yAxis->setRange(1.05*y_min, 1.05*y_max);
+    //ui->plot->xAxis->setRange(x_data[0], x_data.last());
+        /*
+        double y_min = *std::min_element(std::begin(y_data), std::end(y_data));
+        double y_max = *std::max_element(std::begin(y_data), std::end(y_data));
+        if (y_min == y_max)
+            y_min = 0.0;
+        */
+    //ui->plot->yAxis->setRange(1.05*y_min, 1.05*y_max);
     ui->plot->graph()->setName(name);
     ui->plot->replot();
 }
@@ -189,9 +195,9 @@ void LinePlotter::add_events(const QVector<double> &x_data, const QVector<double
         if (y_min == y_max)
             y_min = 0.0;
 
-        ui->plot->yAxis->setRange(1.05*y_min, 1.05*y_max);
+        //ui->plot->yAxis->setRange(1.05*y_min, 1.05*y_max);
     }
-    ui->plot->xAxis->setRange(x_data[0], x_data.last());
+    //ui->plot->xAxis->setRange(x_data[0], x_data.last());
 }
 
 
@@ -228,6 +234,24 @@ void LinePlotter::add_segments(const QVector<double> &positions, const QVector<d
 
 QCustomPlot* LinePlotter::get_plot() {
     return ui->plot;
+}
+
+
+
+void LinePlotter::xAxisNewRange(QCPRange range) {
+    emit xAxisChanged(range);
+}
+
+void LinePlotter::yAxisNewRange(QCPRange range) {
+    emit yAxisChanged(range);
+}
+
+void LinePlotter::changeXAxisRange(QCPRange range) {
+    ui->plot->xAxis->setRange(range);
+}
+
+void LinePlotter::changeYAxisRange(QCPRange range) {
+    ui->plot->yAxis->setRange(range);
 }
 
 

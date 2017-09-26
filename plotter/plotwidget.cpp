@@ -10,6 +10,13 @@ PlotWidget::PlotWidget(QWidget *parent) :
     ui(new Ui::PlotWidget)
 {
     ui->setupUi(this);
+
+    connect(this->ui->hScrollBar, SIGNAL(valueChanged(int)), this, SLOT(hScrollBarPosChanged(int)));
+    connect(this->ui->vScrollBar, SIGNAL(valueChanged(int)), this, SLOT(vScrollBarPosChanged(int)));
+
+    ui->vScrollBar->setRange(-500,500);
+    ui->hScrollBar->setRange(-1000,0);
+
 }
 
 PlotWidget::~PlotWidget()
@@ -59,8 +66,20 @@ Plotter* PlotWidget::process(const nix::DataArray &array) {
         delete_widgets_from_layout();
         LinePlotter *lp = new LinePlotter();
         ui->scrollAreaWidgetContents->layout()->addWidget(lp);
+
+
+        connect(lp, SIGNAL(xAxisChanged(QCPRange)), this, SLOT(changeHScrollBarValue(QCPRange)) );
+        connect(lp, SIGNAL(yAxisChanged(QCPRange)), this, SLOT(changeVScrollBarValue(QCPRange)) );
+        connect(this, SIGNAL(hScrollValueChanged(QCPRange)), lp, SLOT(changeXAxisRange(QCPRange)) );
+        connect(this, SIGNAL(vScrollValueChanged(QCPRange)), lp, SLOT(changeYAxisRange(QCPRange)) );
+
+        //emit Signals to fit all or if too many points only the first 50 000 on the plot.
+        //always full y length! + 5% <-- max*1.05;
+        //also set xAxisLength and yAxisLength.
+
         lp->draw(array);
         plot = lp;
+
     } else if (suggestion == PlotterType::Category) {
         delete_widgets_from_layout();
         CategoryPlotter *cp = new CategoryPlotter();
@@ -243,4 +262,45 @@ void PlotWidget::show_more() {
         msgBox.setText(this->text);
     }
     msgBox.exec();
+}
+
+void PlotWidget::vScrollBarPosChanged(int value) {
+    QCPRange newRange;
+
+    //umrechnung von int value to QCPRange
+    //set yAxisLength ?
+
+    emit vScrollValueChanged(newRange);
+}
+
+void PlotWidget::hScrollBarPosChanged(int value) {
+    QCPRange newRange;
+
+    //umrechnung von int value to QCPRange
+    //set xAxisLength ?
+    /*
+    if (qAbs(ui->plot->xAxis->range().center()-value/100.0) > 0.01) // if user is dragging plot, we don't want to replot twice
+     {
+       ui->plot->xAxis->setRange(value/100.0, ui->plot->xAxis->range().size(), Qt::AlignCenter);
+       ui->plot->replot();
+     }
+     */
+
+    emit vScrollValueChanged(newRange);
+}
+
+void PlotWidget::changeHScrollBarValue(QCPRange newRange) {
+    this->xAxisLength = newRange;
+    //Umrechnung von QCPRange to int und verschieben der ScrollBar!
+
+    //ui->horizontalScrollBar->setValue(qRound(range.center()*100.0)); // adjust position of scroll bar slider
+    //ui->horizontalScrollBar->setPageStep(qRound(range.size()*100.0)); // adjust size of scroll bar slider
+
+
+}
+
+void PlotWidget::changeVScrollBarValue(QCPRange newRange) {
+    this->yAxisLength = newRange;
+    //Umrechnung von QCPRange to int und verschieben der ScrollBar!
+
 }

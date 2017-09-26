@@ -36,11 +36,24 @@ public slots:
     void show_more();
     void save_plot();
 
+    void vScrollBarPosChanged(int value);
+    void hScrollBarPosChanged(int value);
+
+    void changeHScrollBarValue(QCPRange newRange);
+    void changeVScrollBarValue(QCPRange newRange);
+
+signals:
+    void vScrollValueChanged(QCPRange);
+    void hScrollValueChanged(QCPRange);
+
 private:
     Ui::PlotWidget *ui;
     QVariant item;
     Plotter *plot;
     QString text;
+
+    QCPRange xAxisLength;
+    QCPRange yAxisLength;
 
     bool check_plottable_dtype(nix::DataType dtype) const;
     void delete_widgets_from_layout();
