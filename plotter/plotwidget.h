@@ -39,8 +39,8 @@ public slots:
     void vScrollBarPosChanged(int value);
     void hScrollBarPosChanged(int value);
 
-    void changeHScrollBarValue(QCPRange newRange);
-    void changeVScrollBarValue(QCPRange newRange);
+    void changeHScrollBarValue(QCPRange newRange, QCPRange completeRange);
+    void changeVScrollBarValue(QCPRange newRange, QCPRange completeRange);
 
 signals:
     void vScrollValueChanged(QCPRange);
@@ -52,13 +52,9 @@ private:
     Plotter *plot;
     QString text;
 
-    QCPRange xAxisLength;
-    QCPRange yAxisLength;
-
     bool check_plottable_dtype(nix::DataType dtype) const;
     void delete_widgets_from_layout();
     void process_item();
-
 
     void draw_1d(const nix::DataArray &array);
     void draw_2d(const nix::DataArray &array);

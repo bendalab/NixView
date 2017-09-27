@@ -67,15 +67,10 @@ Plotter* PlotWidget::process(const nix::DataArray &array) {
         LinePlotter *lp = new LinePlotter();
         ui->scrollAreaWidgetContents->layout()->addWidget(lp);
 
-
-        connect(lp, SIGNAL(xAxisChanged(QCPRange)), this, SLOT(changeHScrollBarValue(QCPRange)) );
-        connect(lp, SIGNAL(yAxisChanged(QCPRange)), this, SLOT(changeVScrollBarValue(QCPRange)) );
-        connect(this, SIGNAL(hScrollValueChanged(QCPRange)), lp, SLOT(changeXAxisRange(QCPRange)) );
-        connect(this, SIGNAL(vScrollValueChanged(QCPRange)), lp, SLOT(changeYAxisRange(QCPRange)) );
-
-        //emit Signals to fit all or if too many points only the first 50 000 on the plot.
-        //always full y length! + 5% <-- max*1.05;
-        //also set xAxisLength and yAxisLength.
+        connect(lp,   SIGNAL(xAxisChanged(QCPRange, QCPRange)),        this, SLOT(changeHScrollBarValue(QCPRange, QCPRange)) );
+        connect(lp,   SIGNAL(yAxisChanged(QCPRange, QCPRange)),        this, SLOT(changeVScrollBarValue(QCPRange, QCPRange)) );
+        connect(this, SIGNAL(hScrollValueChanged(QCPRange)), lp,   SLOT(changeXAxisRange(QCPRange)) );
+        connect(this, SIGNAL(vScrollValueChanged(QCPRange)), lp,   SLOT(changeYAxisRange(QCPRange)) );
 
         lp->draw(array);
         plot = lp;
@@ -289,8 +284,7 @@ void PlotWidget::hScrollBarPosChanged(int value) {
     emit vScrollValueChanged(newRange);
 }
 
-void PlotWidget::changeHScrollBarValue(QCPRange newRange) {
-    this->xAxisLength = newRange;
+void PlotWidget::changeHScrollBarValue(QCPRange newRange, QCPRange completeRange) {
     //Umrechnung von QCPRange to int und verschieben der ScrollBar!
 
     //ui->horizontalScrollBar->setValue(qRound(range.center()*100.0)); // adjust position of scroll bar slider
@@ -299,8 +293,7 @@ void PlotWidget::changeHScrollBarValue(QCPRange newRange) {
 
 }
 
-void PlotWidget::changeVScrollBarValue(QCPRange newRange) {
-    this->yAxisLength = newRange;
+void PlotWidget::changeVScrollBarValue(QCPRange newRange, QCPRange completeRange) {
     //Umrechnung von QCPRange to int und verschieben der ScrollBar!
 
 }

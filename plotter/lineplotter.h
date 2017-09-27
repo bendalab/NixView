@@ -14,7 +14,7 @@ class LinePlotter : public QWidget, public Plotter {
     Q_OBJECT
 
 public:
-    explicit LinePlotter(QWidget *parent = 0);
+    explicit LinePlotter(QWidget *parent = 0, int numofPoints = 50000);
     ~LinePlotter();
 
     void draw(const nix::DataArray &array);
@@ -50,12 +50,17 @@ public:
 private:
     Ui::LinePlotter *ui;
     ColorMap cmap;
+    int numOfPoints;
+    QCPRange totalXRange;
+    QCPRange totalYRange;
 
     QCustomPlot* get_plot() override;
+    void setXRange(QVector<double> xData);
+    void setYRange(QVector<double> yData);
 
 signals:
-    void xAxisChanged(QCPRange);
-    void yAxisChanged(QCPRange);
+    void xAxisChanged(QCPRange, QCPRange);
+    void yAxisChanged(QCPRange, QCPRange);
 
 public slots:
     void xAxisNewRange(QCPRange newRange);
