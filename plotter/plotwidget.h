@@ -43,14 +43,15 @@ public slots:
     void changeVScrollBarValue(QCPRange newRange, QCPRange completeRange);
 
 signals:
-    void vScrollValueChanged(QCPRange);
-    void hScrollValueChanged(QCPRange);
+    void vScrollValueChanged(double);
+    void hScrollValueChanged(double);
 
 private:
     Ui::PlotWidget *ui;
     QVariant item;
     Plotter *plot;
     QString text;
+    double scrollFaktor;
 
     bool check_plottable_dtype(nix::DataType dtype) const;
     void delete_widgets_from_layout();

@@ -253,18 +253,21 @@ void LinePlotter::setYRange(QVector<double> yData) {
 
 void LinePlotter::xAxisNewRange(QCPRange range) {
     emit xAxisChanged(range,totalXRange);
+
 }
 
 void LinePlotter::yAxisNewRange(QCPRange range) {
     emit yAxisChanged(range, totalYRange);
 }
 
-void LinePlotter::changeXAxisRange(QCPRange range) {
-    ui->plot->xAxis->setRange(range);
+void LinePlotter::changeXAxisRange(double newCenter) {
+    ui->plot->xAxis->setRange(newCenter, ui->plot->xAxis->range().size(), Qt::AlignCenter);
+    ui->plot->replot();
 }
 
-void LinePlotter::changeYAxisRange(QCPRange range) {
-    ui->plot->yAxis->setRange(range);
+void LinePlotter::changeYAxisRange(double newCenter) {
+    ui->plot->yAxis->setRange(newCenter, ui->plot->yAxis->range().size(), Qt::AlignCenter);
+    ui->plot->replot();
 }
 
 

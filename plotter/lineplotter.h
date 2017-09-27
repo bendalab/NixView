@@ -66,8 +66,8 @@ public slots:
     void xAxisNewRange(QCPRange newRange);
     void yAxisNewRange(QCPRange newRange);
 
-    void changeXAxisRange(QCPRange range);
-    void changeYAxisRange(QCPRange range);
+    void changeXAxisRange(double newCenter);
+    void changeYAxisRange(double newCenter);
 
 
     void selection_changed();
