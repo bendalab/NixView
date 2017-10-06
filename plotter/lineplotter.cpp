@@ -237,6 +237,7 @@ void LinePlotter::setXRange(QVector<double> xData) {
     } else {
         ui->plot->xAxis->setRange(totalXRange);
     }
+    emit xAxisNewRange(ui->plot->xAxis->range());
 }
 
 void LinePlotter::setYRange(QVector<double> yData) {
@@ -247,6 +248,7 @@ void LinePlotter::setYRange(QVector<double> yData) {
 
     totalYRange.expand(QCPRange(yMin, yMax));
     ui->plot->yAxis->setRange(totalYRange.lower*1.05, totalYRange.upper*1.05);
+    emit yAxisNewRange(ui->plot->yAxis->range());
 }
 
 
@@ -260,14 +262,20 @@ void LinePlotter::yAxisNewRange(QCPRange range) {
     emit yAxisChanged(range, totalYRange);
 }
 
-void LinePlotter::changeXAxisRange(double newCenter) {
-    ui->plot->xAxis->setRange(newCenter, ui->plot->xAxis->range().size(), Qt::AlignCenter);
-    ui->plot->replot();
+void LinePlotter::changeXAxisRange(double centerRatio) {
+    double newCenter = totalXRange.lower + (totalXRange.size() * centerRatio);
+    if(ui->plot->xAxis->range().center() != newCenter) {
+        ui->plot->xAxis->setRange(newCenter, ui->plot->xAxis->range().size(), Qt::AlignCenter);
+        ui->plot->replot();
+    }
 }
 
-void LinePlotter::changeYAxisRange(double newCenter) {
-    ui->plot->yAxis->setRange(newCenter, ui->plot->yAxis->range().size(), Qt::AlignCenter);
-    ui->plot->replot();
+void LinePlotter::changeYAxisRange(double centerRatio) {
+    double newCenter = totalYRange.lower + (totalYRange.size() * centerRatio);
+    if(ui->plot->yAxis->range().center() != newCenter) {
+        ui->plot->yAxis->setRange(newCenter, ui->plot->yAxis->range().size(), Qt::AlignCenter);
+        ui->plot->replot();
+    }
 }
 
 

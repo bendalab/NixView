@@ -14,8 +14,10 @@ PlotWidget::PlotWidget(QWidget *parent) :
     connect(this->ui->hScrollBar, SIGNAL(valueChanged(int)), this, SLOT(hScrollBarPosChanged(int)));
     connect(this->ui->vScrollBar, SIGNAL(valueChanged(int)), this, SLOT(vScrollBarPosChanged(int)));
 
-    ui->vScrollBar->setRange(-500,500);
-    ui->hScrollBar->setRange(-1000,0);
+    ui->hScrollBar->setRange(1,1);
+    ui->vScrollBar->setRange(1,1);
+    ui->hScrollBar->setEnabled(false);
+    ui->vScrollBar->setEnabled(false);
     scrollFaktor = 100;
 
 }
@@ -67,6 +69,9 @@ Plotter* PlotWidget::process(const nix::DataArray &array) {
         delete_widgets_from_layout();
         LinePlotter *lp = new LinePlotter();
         ui->scrollAreaWidgetContents->layout()->addWidget(lp);
+
+        ui->hScrollBar->setEnabled(true);
+        ui->vScrollBar->setEnabled(true);
 
         connect(lp,   SIGNAL(xAxisChanged(QCPRange, QCPRange)),        this, SLOT(changeHScrollBarValue(QCPRange, QCPRange)) );
         connect(lp,   SIGNAL(yAxisChanged(QCPRange, QCPRange)),        this, SLOT(changeVScrollBarValue(QCPRange, QCPRange)) );
@@ -261,29 +266,45 @@ void PlotWidget::show_more() {
 }
 
 void PlotWidget::vScrollBarPosChanged(int value) {
-    emit vScrollValueChanged((double) (value) / scrollFaktor);
+    value = std::abs(value);
+    double centerRatio = (double) value / (double) std::abs(ui->vScrollBar->minimum());
+    emit vScrollValueChanged(centerRatio);
 }
 
 void PlotWidget::hScrollBarPosChanged(int value) {
-    emit hScrollValueChanged((double) (value) / scrollFaktor);
+    value = std::abs(value);
+    double centerRatio = (double) value / (double) std::abs(ui->hScrollBar->minimum());
+    emit hScrollValueChanged(centerRatio);
 }
 
 void PlotWidget::changeHScrollBarValue(QCPRange newRange, QCPRange completeRange) {
     //Umrechnung von QCPRange to int und verschieben der ScrollBar!
-    ui->hScrollBar->setRange(qRound(completeRange.lower*scrollFaktor), qRound(completeRange.upper*scrollFaktor));
-    ui->hScrollBar->setValue(newRange.center()*scrollFaktor);
-    ui->hScrollBar->setPageStep(qRound( completeRange.size()*scrollFaktor / (completeRange.size()/newRange.size())));
 
-    //std::cerr << completeRange.lower << " to " << completeRange.upper << "--hScroll" << std::endl;
-
+        QCPRange hScrollRange = QCPRange( (-1* scrollFaktor * completeRange.size() / newRange.size()) , 0);
+        ui->hScrollBar->setRange(hScrollRange.lower, hScrollRange.upper);
+        ui->hScrollBar->setPageStep(hScrollRange.size() / ((completeRange.size() / newRange.size())));
+        int newPos = -1*(newRange.center()- completeRange.lower) / completeRange.size() * hScrollRange.size();
+        ui->hScrollBar->setValue(newPos);
 }
 
 void PlotWidget::changeVScrollBarValue(QCPRange newRange, QCPRange completeRange) {
     //Umrechnung von QCPRange to int und verschieben der ScrollBar!
-    ui->vScrollBar->setRange(qRound(completeRange.lower*scrollFaktor), qRound(completeRange.upper*scrollFaktor));
-    ui->vScrollBar->setValue(newRange.center()*scrollFaktor);
-    ui->vScrollBar->setPageStep(qRound( completeRange.size()*scrollFaktor / (completeRange.size()/newRange.size())));
 
-    //std::cerr << completeRange.lower << " to " << completeRange.upper << "--vScroll" << std::endl;
+        QCPRange vScrollRange = QCPRange( (-1* scrollFaktor * completeRange.size() / newRange.size()) , 0);
+        ui->vScrollBar->setRange(vScrollRange.lower, vScrollRange.upper);
+        ui->vScrollBar->setPageStep(vScrollRange.size() / ((completeRange.size() / newRange.size())));
+        int newPos = -1*(newRange.center()- completeRange.lower) / completeRange.size() * vScrollRange.size();
+        ui->vScrollBar->setValue(newPos);
 
 }
+
+
+
+
+
+
+
+
+
+
+
