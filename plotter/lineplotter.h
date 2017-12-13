@@ -14,7 +14,7 @@ class LinePlotter : public QWidget, public Plotter {
     Q_OBJECT
 
 public:
-    explicit LinePlotter(QWidget *parent = 0, int numofPoints = 50000);
+    explicit LinePlotter(QWidget *parent = 0, int numofPoints = 100000);
     ~LinePlotter();
 
     void draw(const nix::DataArray &array);
@@ -59,15 +59,18 @@ private:
     void setYRange(QVector<double> yData);
 
 signals:
-    void xAxisChanged(QCPRange, QCPRange);
-    void yAxisChanged(QCPRange, QCPRange);
+    void xAxisChanged(QCPRange xNow, QCPRange xComplete);
+    void yAxisChanged(QCPRange yNow, QCPRange yComplete);
+    void anyAxisChanged(QCPRange xNow, QCPRange xComplete, QCPRange yNow, QCPRange yComplete); // for zoom slider
 
 public slots:
     void xAxisNewRange(QCPRange newRange);
     void yAxisNewRange(QCPRange newRange);
+    void anyAxisNewRange(QCPRange newRange);
 
     void changeXAxisRange(double newCenter);
     void changeYAxisRange(double newCenter);
+    void changeAxisRanges(double ratio);
 
 
     void selection_changed();

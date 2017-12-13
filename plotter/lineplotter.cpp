@@ -21,7 +21,11 @@ LinePlotter::LinePlotter(QWidget *parent, int numOfPoints) :
     connect(ui->plot->xAxis, SIGNAL(rangeChanged(QCPRange)), this, SLOT(xAxisNewRange(QCPRange)));
     connect(ui->plot->yAxis, SIGNAL(rangeChanged(QCPRange)), this, SLOT(yAxisNewRange(QCPRange)));
 
-    this->numOfPoints = numOfPoints;
+    connect(ui->plot->xAxis, SIGNAL(rangeChanged(QCPRange)), this, SLOT(anyAxisNewRange(QCPRange)));
+    connect(ui->plot->yAxis, SIGNAL(rangeChanged(QCPRange)), this, SLOT(anyAxisNewRange(QCPRange)));
+
+
+    this->numOfPoints = numOfPoints; // standard 100 000
 
 }
 
@@ -255,12 +259,26 @@ void LinePlotter::setYRange(QVector<double> yData) {
 
 void LinePlotter::xAxisNewRange(QCPRange range) {
     emit xAxisChanged(range,totalXRange);
+    QCPRange yRange = ui->plot->yAxis->range();
+    //emit anyAxisChanged(range, totalXRange, yRange, totalYRange);
 
 }
 
 void LinePlotter::yAxisNewRange(QCPRange range) {
     emit yAxisChanged(range, totalYRange);
+    QCPRange xRange = ui->plot->xAxis->range();
+    //emit anyAxisChanged(xRange, totalXRange, range, totalYRange);
 }
+
+void LinePlotter::anyAxisNewRange(QCPRange range) {
+    QCPRange xRange = ui->plot->xAxis->range();
+    QCPRange yRange = ui->plot->yAxis->range();
+
+    emit anyAxisChanged(xRange, totalXRange, yRange, totalYRange);
+
+}
+
+
 
 void LinePlotter::changeXAxisRange(double centerRatio) {
     double newCenter = totalXRange.lower + (totalXRange.size() * centerRatio);
@@ -276,6 +294,27 @@ void LinePlotter::changeYAxisRange(double centerRatio) {
         ui->plot->yAxis->setRange(newCenter, ui->plot->yAxis->range().size(), Qt::AlignCenter);
         ui->plot->replot();
     }
+}
+
+void LinePlotter::changeAxisRanges(double ratio) {
+    double xNewSize = totalXRange.size() * ratio;
+    double yNewSize = totalYRange.size() * ratio;
+
+
+    //Cause a seg fault! Because of endless loop / rekursion ?
+    std::cerr << "newSize: " << xNewSize << std::endl;
+    std::cerr << "oldSize: " << ui->plot->xAxis->range().size() << std::endl;
+
+    if(xNewSize != ui->plot->xAxis->range().size()) {
+        ui->plot->xAxis->setRange(ui->plot->xAxis->range().center(), xNewSize);
+        std::cerr << "meep1" << std::endl;
+    }
+
+    if(yNewSize != ui->plot->yAxis->range().size()) {
+        ui->plot->yAxis->setRange(ui->plot->yAxis->range().center(), yNewSize);
+        std::cerr << "meep2" << std::endl;
+    }
+
 }
 
 
@@ -332,6 +371,7 @@ void LinePlotter::mouse_wheel() {
         ui->plot->axisRect()->setRangeZoom(ui->plot->yAxis->orientation());
     else
         ui->plot->axisRect()->setRangeZoom(Qt::Horizontal|Qt::Vertical);
+
 }
 
 

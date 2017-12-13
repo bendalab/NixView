@@ -13,12 +13,17 @@ PlotWidget::PlotWidget(QWidget *parent) :
 
     connect(this->ui->hScrollBar, SIGNAL(valueChanged(int)), this, SLOT(hScrollBarPosChanged(int)));
     connect(this->ui->vScrollBar, SIGNAL(valueChanged(int)), this, SLOT(vScrollBarPosChanged(int)));
+    connect(this->ui->zoomSlider, SIGNAL(valueChanged(int)), this, SLOT(sliderPosChanged(int)));
 
     ui->hScrollBar->setRange(1,1);
     ui->vScrollBar->setRange(1,1);
-    ui->hScrollBar->setEnabled(false);
-    ui->vScrollBar->setEnabled(false);
+    ui->hScrollBar->setHidden(true);
+    ui->vScrollBar->setHidden(true);
+    ui->zoomSlider->setEnabled(false);
+    ui->zoomSlider->setRange(-50, 0);
+
     scrollFaktor = 100;
+    zoomFaktor = 100;
 
 }
 
@@ -28,13 +33,13 @@ PlotWidget::~PlotWidget()
 }
 
 
-bool PlotWidget::can_draw() const {
+bool PlotWidget::canDraw() const {
     return item.canConvert<nix::DataArray>() | item.canConvert<nix::MultiTag>() |
             item.canConvert<nix::Tag>() | item.canConvert<nix::Feature>();
 }
 
 
-void PlotWidget::process_item() {
+void PlotWidget::processItem() {
     if (item.canConvert<nix::DataArray>()) {
         nix::DataArray array = item.value<nix::DataArray>();
         process(array);
@@ -51,7 +56,7 @@ void PlotWidget::process_item() {
 }
 
 
-void PlotWidget::delete_widgets_from_layout() {
+void PlotWidget::deleteWidgetsFromLayout() {
     if ((ui->scrollAreaWidgetContents->layout() != NULL) && (!ui->scrollAreaWidgetContents->layout()->isEmpty())) {
         QLayoutItem *item = ui->scrollAreaWidgetContents->layout()->itemAt(0);
         if (item->widget()) {
@@ -66,29 +71,35 @@ Plotter* PlotWidget::process(const nix::DataArray &array) {
     this->text = QString::fromStdString(EntityDescriptor::describe(array));
     PlotterType suggestion = Plotter::suggested_plotter(array);
     if (suggestion == PlotterType::Line) {
-        delete_widgets_from_layout();
+        deleteWidgetsFromLayout();
         LinePlotter *lp = new LinePlotter();
         ui->scrollAreaWidgetContents->layout()->addWidget(lp);
 
-        ui->hScrollBar->setEnabled(true);
-        ui->vScrollBar->setEnabled(true);
+        ui->hScrollBar->setHidden(false);
+        ui->vScrollBar->setHidden(false);
+        ui->zoomSlider->setEnabled(true);
+
+        connect(lp, SIGNAL(anyAxisChanged(QCPRange,QCPRange,QCPRange,QCPRange)), this, SLOT(changeSliderPos(QCPRange,QCPRange,QCPRange,QCPRange)));
+        connect(this, SIGNAL(sliderToPlot(double)), lp, SLOT(changeAxisRanges(double)));
 
         connect(lp,   SIGNAL(xAxisChanged(QCPRange, QCPRange)),        this, SLOT(changeHScrollBarValue(QCPRange, QCPRange)) );
         connect(lp,   SIGNAL(yAxisChanged(QCPRange, QCPRange)),        this, SLOT(changeVScrollBarValue(QCPRange, QCPRange)) );
-        connect(this, SIGNAL(hScrollValueChanged(double)), lp,   SLOT(changeXAxisRange(double)) );
-        connect(this, SIGNAL(vScrollValueChanged(double)), lp,   SLOT(changeYAxisRange(double)) );
+        connect(this, SIGNAL(hScrollBarToPlot(double)), lp,   SLOT(changeXAxisRange(double)) );
+        connect(this, SIGNAL(vScrollBarToPlot(double)), lp,   SLOT(changeYAxisRange(double)) );
+
+
 
         lp->draw(array);
         plot = lp;
 
     } else if (suggestion == PlotterType::Category) {
-        delete_widgets_from_layout();
+        deleteWidgetsFromLayout();
         CategoryPlotter *cp = new CategoryPlotter();
         ui->scrollAreaWidgetContents->layout()->addWidget(cp);
         cp->draw(array);
         plot = cp;
     } else if (suggestion == PlotterType::Image) {
-        delete_widgets_from_layout();
+        deleteWidgetsFromLayout();
         ImagePlotter *ip = new ImagePlotter();
         ui->scrollAreaWidgetContents->layout()->addWidget(ip);
         ip->draw(array);
@@ -219,12 +230,12 @@ void PlotWidget::process(const nix::MultiTag &mtag, nix::ndsize_t ref) {
 
 void PlotWidget::setEntity(QVariant var) {
     this->item = var;
-    if (can_draw()) {
-        process_item();
+    if (canDraw()) {
+        processItem();
     }
 }
 
-void PlotWidget::save_plot() {
+void PlotWidget::savePlot() {
     QString fileName = QFileDialog::getSaveFileName(this, tr("Save plot"), "untitled.pdf", tr("Images (*.pdf)"));
 
     if (fileName.isEmpty()) {
@@ -237,13 +248,13 @@ void PlotWidget::save_plot() {
 
 
 void PlotWidget::clear() {
-    delete_widgets_from_layout();
+    deleteWidgetsFromLayout();
     this->text = "";
     //this->repaint();
 }
 
 
-bool PlotWidget::check_plottable_dtype(nix::DataType dtype) const {
+bool PlotWidget::checkPlottableDType(nix::DataType dtype) const {
     bool plottable = true;
     plottable = plottable && dtype != nix::DataType::Bool;
     plottable = plottable && dtype != nix::DataType::String;
@@ -254,7 +265,7 @@ bool PlotWidget::check_plottable_dtype(nix::DataType dtype) const {
 }
 
 
-void PlotWidget::show_more() {
+void PlotWidget::showMore() {
     QMessageBox msgBox;
     msgBox.setWindowFlags(Qt::FramelessWindowHint);
     if (this->text.size() < 1) {
@@ -265,36 +276,76 @@ void PlotWidget::show_more() {
     msgBox.exec();
 }
 
-void PlotWidget::vScrollBarPosChanged(int value) {
-    value = std::abs(value);
-    double centerRatio = (double) value / (double) std::abs(ui->vScrollBar->minimum());
-    emit vScrollValueChanged(centerRatio);
-}
-
 void PlotWidget::hScrollBarPosChanged(int value) {
     value = std::abs(value);
     double centerRatio = (double) value / (double) std::abs(ui->hScrollBar->minimum());
-    emit hScrollValueChanged(centerRatio);
+    emit hScrollBarToPlot(centerRatio);
+}
+
+void PlotWidget::vScrollBarPosChanged(int value) {
+    value = std::abs(value);
+    double centerRatio = (double) value / (double) std::abs(ui->vScrollBar->minimum());
+    emit vScrollBarToPlot(centerRatio);
+}
+
+void PlotWidget::sliderPosChanged(int value) {
+    emit sliderToPlot((double) value / -25.0);
 }
 
 void PlotWidget::changeHScrollBarValue(QCPRange newRange, QCPRange completeRange) {
     //Umrechnung von QCPRange to int und verschieben der ScrollBar!
 
-        QCPRange hScrollRange = QCPRange( (-1* scrollFaktor * completeRange.size() / newRange.size()) , 0);
-        ui->hScrollBar->setRange(hScrollRange.lower, hScrollRange.upper);
-        ui->hScrollBar->setPageStep(hScrollRange.size() / ((completeRange.size() / newRange.size())));
-        int newPos = -1*(newRange.center()- completeRange.lower) / completeRange.size() * hScrollRange.size();
+    QCPRange hScrollRange = QCPRange( (-1* scrollFaktor * completeRange.size() / newRange.size()) , 0);
+    ui->hScrollBar->setRange(hScrollRange.lower, hScrollRange.upper);
+    ui->hScrollBar->setPageStep(hScrollRange.size() / ((completeRange.size() / newRange.size())));
+
+    int newPos = (int) (-1*(newRange.center()- completeRange.lower) / completeRange.size() * hScrollRange.size());
+    if( ! (ui->hScrollBar->value() == newPos)) {
         ui->hScrollBar->setValue(newPos);
+    }
+
 }
 
 void PlotWidget::changeVScrollBarValue(QCPRange newRange, QCPRange completeRange) {
     //Umrechnung von QCPRange to int und verschieben der ScrollBar!
 
-        QCPRange vScrollRange = QCPRange( (-1* scrollFaktor * completeRange.size() / newRange.size()) , 0);
-        ui->vScrollBar->setRange(vScrollRange.lower, vScrollRange.upper);
-        ui->vScrollBar->setPageStep(vScrollRange.size() / ((completeRange.size() / newRange.size())));
-        int newPos = -1*(newRange.center()- completeRange.lower) / completeRange.size() * vScrollRange.size();
+    QCPRange vScrollRange = QCPRange( (-1* scrollFaktor * completeRange.size() / newRange.size()) , 0);
+    ui->vScrollBar->setRange(vScrollRange.lower, vScrollRange.upper);
+    ui->vScrollBar->setPageStep(vScrollRange.size() / ((completeRange.size() / newRange.size())));
+
+    int newPos = (int) (-1*(newRange.center() - completeRange.lower) / completeRange.size() * vScrollRange.size());
+    if( ! (ui->vScrollBar->value() == newPos)) {
         ui->vScrollBar->setValue(newPos);
+    }
+}
+
+void PlotWidget::changeSliderPos(QCPRange xNow, QCPRange xComplete, QCPRange yNow, QCPRange yComplete) {
+
+    double xRelation = xNow.size() / xComplete.size();
+    double yRelation = yNow.size() / yComplete.size();
+    double xPart;
+    double yPart;
+
+    if(xRelation > 2) {
+        xPart = 2;
+    } else if (xRelation < 0.1) {
+        xPart = 0;
+    } else {
+        xPart = xRelation;
+    }
+
+    if(yRelation > 2) {
+        yPart = 2;
+    } else if (yRelation < 0.1) {
+        yPart = 0;
+    } else {
+        yPart = yRelation;
+    }
+
+    int newValue = (int) (-25 * (yPart + xPart) / 2);
+    if( ! (ui->zoomSlider->value() - newValue == 0) ) {
+       ui->zoomSlider->setValue(newValue);
+    }
 
 }
 
