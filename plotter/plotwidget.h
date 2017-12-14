@@ -42,7 +42,7 @@ public slots:
 
     void changeHScrollBarValue(QCPRange newRange, QCPRange completeRange); // react to signals from the plotter.
     void changeVScrollBarValue(QCPRange newRange, QCPRange completeRange);
-    void changeSliderPos(QCPRange xNow, QCPRange xComplete, QCPRange yNow, QCPRange yComplete);
+    void changeSliderPos(QCPRange xNow, QCPRange xComplete);
 
 signals:
     void hScrollBarToPlot(double); // signals for the plotter.

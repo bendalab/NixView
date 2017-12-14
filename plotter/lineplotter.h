@@ -61,16 +61,15 @@ private:
 signals:
     void xAxisChanged(QCPRange xNow, QCPRange xComplete);
     void yAxisChanged(QCPRange yNow, QCPRange yComplete);
-    void anyAxisChanged(QCPRange xNow, QCPRange xComplete, QCPRange yNow, QCPRange yComplete); // for zoom slider
+    void anyAxisChanged(QCPRange xNow, QCPRange xComplete); // for zoom slider
 
 public slots:
     void xAxisNewRange(QCPRange newRange);
     void yAxisNewRange(QCPRange newRange);
-    void anyAxisNewRange(QCPRange newRange);
 
-    void changeXAxisRange(double newCenter);
-    void changeYAxisRange(double newCenter);
-    void changeAxisRanges(double ratio);
+    void changeXAxisPosition(double newCenter);
+    void changeYAxisPosition(double newCenter);
+    void changeXAxisSize(double ratio);
 
 
     void selection_changed();

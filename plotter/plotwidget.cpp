@@ -23,7 +23,7 @@ PlotWidget::PlotWidget(QWidget *parent) :
     ui->zoomSlider->setRange(-50, 0);
 
     scrollFaktor = 100;
-    zoomFaktor = 100;
+    zoomFaktor = 50;
 
 }
 
@@ -79,14 +79,13 @@ Plotter* PlotWidget::process(const nix::DataArray &array) {
         ui->vScrollBar->setHidden(false);
         ui->zoomSlider->setEnabled(true);
 
-        connect(lp, SIGNAL(anyAxisChanged(QCPRange,QCPRange,QCPRange,QCPRange)), this, SLOT(changeSliderPos(QCPRange,QCPRange,QCPRange,QCPRange)));
-        connect(this, SIGNAL(sliderToPlot(double)), lp, SLOT(changeAxisRanges(double)));
+        connect(lp, SIGNAL(xAxisChanged(QCPRange,QCPRange)), this, SLOT(changeSliderPos(QCPRange,QCPRange)));
+        connect(this, SIGNAL(sliderToPlot(double)), lp, SLOT(changeXAxisSize(double)));
 
         connect(lp,   SIGNAL(xAxisChanged(QCPRange, QCPRange)),        this, SLOT(changeHScrollBarValue(QCPRange, QCPRange)) );
         connect(lp,   SIGNAL(yAxisChanged(QCPRange, QCPRange)),        this, SLOT(changeVScrollBarValue(QCPRange, QCPRange)) );
-        connect(this, SIGNAL(hScrollBarToPlot(double)), lp,   SLOT(changeXAxisRange(double)) );
-        connect(this, SIGNAL(vScrollBarToPlot(double)), lp,   SLOT(changeYAxisRange(double)) );
-
+        connect(this, SIGNAL(hScrollBarToPlot(double)), lp,   SLOT(changeXAxisPosition(double)) );
+        connect(this, SIGNAL(vScrollBarToPlot(double)), lp,   SLOT(changeYAxisPosition(double)) );
 
 
         lp->draw(array);
@@ -277,15 +276,11 @@ void PlotWidget::showMore() {
 }
 
 void PlotWidget::hScrollBarPosChanged(int value) {
-    value = std::abs(value);
-    double centerRatio = (double) value / (double) std::abs(ui->hScrollBar->minimum());
-    emit hScrollBarToPlot(centerRatio);
+    emit hScrollBarToPlot(-value / scrollFaktor);
 }
 
 void PlotWidget::vScrollBarPosChanged(int value) {
-    value = std::abs(value);
-    double centerRatio = (double) value / (double) std::abs(ui->vScrollBar->minimum());
-    emit vScrollBarToPlot(centerRatio);
+    emit vScrollBarToPlot(-value / scrollFaktor);
 }
 
 void PlotWidget::sliderPosChanged(int value) {
@@ -294,57 +289,53 @@ void PlotWidget::sliderPosChanged(int value) {
 
 void PlotWidget::changeHScrollBarValue(QCPRange newRange, QCPRange completeRange) {
     //Umrechnung von QCPRange to int und verschieben der ScrollBar!
-
-    QCPRange hScrollRange = QCPRange( (-1* scrollFaktor * completeRange.size() / newRange.size()) , 0);
-    ui->hScrollBar->setRange(hScrollRange.lower, hScrollRange.upper);
-    ui->hScrollBar->setPageStep(hScrollRange.size() / ((completeRange.size() / newRange.size())));
-
-    int newPos = (int) (-1*(newRange.center()- completeRange.lower) / completeRange.size() * hScrollRange.size());
-    if( ! (ui->hScrollBar->value() == newPos)) {
-        ui->hScrollBar->setValue(newPos);
+    int currentMin = ui->hScrollBar->minimum();
+    int currentMax = ui->hScrollBar->maximum();
+    //change range if needed:
+    if( (currentMin != std::round(-completeRange.upper*scrollFaktor)) | (currentMax != std::round(-completeRange.lower*scrollFaktor)) ) {
+        ui->hScrollBar->setRange(std::round(-completeRange.upper*scrollFaktor), std::round(-completeRange.lower*scrollFaktor));
     }
-
+    //change pagestep of scrollbar if needed: after zoom change
+    if((currentMax-currentMin)*scrollFaktor != (newRange.size() * scrollFaktor)) {
+        ui->hScrollBar->setPageStep(std::round(newRange.size() * scrollFaktor));
+    }
+    //change position of scrollbar
+    if(ui->hScrollBar->value() != std::round(-newRange.center()*scrollFaktor)) {
+        ui->hScrollBar->setValue(std::round(-newRange.center()*scrollFaktor));
+    }
 }
 
 void PlotWidget::changeVScrollBarValue(QCPRange newRange, QCPRange completeRange) {
     //Umrechnung von QCPRange to int und verschieben der ScrollBar!
-
-    QCPRange vScrollRange = QCPRange( (-1* scrollFaktor * completeRange.size() / newRange.size()) , 0);
-    ui->vScrollBar->setRange(vScrollRange.lower, vScrollRange.upper);
-    ui->vScrollBar->setPageStep(vScrollRange.size() / ((completeRange.size() / newRange.size())));
-
-    int newPos = (int) (-1*(newRange.center() - completeRange.lower) / completeRange.size() * vScrollRange.size());
-    if( ! (ui->vScrollBar->value() == newPos)) {
-        ui->vScrollBar->setValue(newPos);
+    int currentMin = ui->vScrollBar->minimum();
+    int currentMax = ui->vScrollBar->maximum();
+    //change range if needed:
+    if( (currentMin != std::round(-completeRange.upper*scrollFaktor)) | (currentMax != std::round(-completeRange.lower*scrollFaktor)) ) {
+        ui->vScrollBar->setRange(std::round(-completeRange.upper*scrollFaktor), std::round(-completeRange.lower*scrollFaktor));
+    }
+    //change pagestep of scrollbar if needed: after zoom change
+    if((currentMax-currentMin)*scrollFaktor != (newRange.size() * scrollFaktor)) {
+        ui->vScrollBar->setPageStep(std::round(newRange.size() * scrollFaktor));
+    }
+    //change position of scrollbar
+    if(ui->vScrollBar->value() != std::round(-newRange.center()*scrollFaktor)) {
+        ui->vScrollBar->setValue(std::round(-newRange.center()*scrollFaktor));
     }
 }
 
-void PlotWidget::changeSliderPos(QCPRange xNow, QCPRange xComplete, QCPRange yNow, QCPRange yComplete) {
-
+void PlotWidget::changeSliderPos(QCPRange xNow, QCPRange xComplete) {
     double xRelation = xNow.size() / xComplete.size();
-    double yRelation = yNow.size() / yComplete.size();
-    double xPart;
-    double yPart;
 
     if(xRelation > 2) {
-        xPart = 2;
+        xRelation = 2;
     } else if (xRelation < 0.1) {
-        xPart = 0;
-    } else {
-        xPart = xRelation;
+        xRelation = 0;
     }
 
-    if(yRelation > 2) {
-        yPart = 2;
-    } else if (yRelation < 0.1) {
-        yPart = 0;
-    } else {
-        yPart = yRelation;
-    }
+    int newValue = std::round(-25 * xRelation);
 
-    int newValue = (int) (-25 * (yPart + xPart) / 2);
-    if( ! (ui->zoomSlider->value() - newValue == 0) ) {
-       ui->zoomSlider->setValue(newValue);
+    if( ! (ui->zoomSlider->value() == newValue ) ) {
+        ui->zoomSlider->setValue(newValue);
     }
 
 }
