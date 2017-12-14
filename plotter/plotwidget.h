@@ -56,6 +56,7 @@ private:
     QString text;
     double scrollFaktor;
     double zoomFaktor;
+    double zoomMax;
 
     bool checkPlottableDType(nix::DataType dtype) const;
     void deleteWidgetsFromLayout();
@@ -64,6 +65,8 @@ private:
     void draw1D(const nix::DataArray &array);
     void draw2D(const nix::DataArray &array);
     void drawMultiLine(const nix::DataArray &array);
+
+    int sliderMapToValue(QCPRange current, QCPRange complete);
 };
 
 #endif // PLOTWIDGET_H
