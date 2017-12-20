@@ -22,6 +22,8 @@ PlotWidget::PlotWidget(QWidget *parent) :
     scrollFaktor = 100;
     ui->zoomSlider->setEnabled(false);
     ui->zoomSlider->setRange(-100, 0);
+
+    ui->resetViewButton->setHidden(true);
     zoomFaktor = 100;
     zoomMax = 1.1;
 
@@ -77,6 +79,7 @@ Plotter* PlotWidget::process(const nix::DataArray &array) {
 
         ui->hScrollBar->setHidden(false);
         ui->vScrollBar->setHidden(false);
+        ui->resetViewButton->setHidden(false);
         ui->zoomSlider->setEnabled(true);
 
         connect(this, SIGNAL(resetViewToPlot()), lp, SLOT(resetView()));
