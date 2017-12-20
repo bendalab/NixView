@@ -79,6 +79,8 @@ Plotter* PlotWidget::process(const nix::DataArray &array) {
         ui->vScrollBar->setHidden(false);
         ui->zoomSlider->setEnabled(true);
 
+        connect(this, SIGNAL(resetViewToPlot()), lp, SLOT(resetView()));
+
         connect(lp, SIGNAL(xAxisChanged(QCPRange,QCPRange)), this, SLOT(changeSliderPos(QCPRange,QCPRange)));
         connect(this, SIGNAL(sliderToPlot(double)), lp, SLOT(changeXAxisSize(double)));
 
@@ -273,6 +275,10 @@ void PlotWidget::showMore() {
         msgBox.setText(this->text);
     }
     msgBox.exec();
+}
+
+void PlotWidget::resetView() {
+    emit resetViewToPlot();
 }
 
 void PlotWidget::hScrollBarPosChanged(int value) {

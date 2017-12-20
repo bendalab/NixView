@@ -233,12 +233,12 @@ QCustomPlot* LinePlotter::get_plot() {
 void LinePlotter::setXRange(QVector<double> xData) {
     totalXRange.expand(QCPRange(xData[0],xData.last()));
 
-    if(numOfPoints == 0 || numOfPoints < xData.size()) {
+    if(numOfPoints < xData.size() && numOfPoints != 0) {
         ui->plot->xAxis->setRange(xData[0], xData[numOfPoints]);
     } else {
         ui->plot->xAxis->setRange(totalXRange);
     }
-    emit xAxisNewRange(ui->plot->xAxis->range());
+    //emit xAxisNewRange(ui->plot->xAxis->range());
 }
 
 void LinePlotter::setYRange(QVector<double> yData) {
@@ -249,14 +249,29 @@ void LinePlotter::setYRange(QVector<double> yData) {
 
     totalYRange.expand(QCPRange(yMin, yMax));
     ui->plot->yAxis->setRange(totalYRange.lower*1.05, totalYRange.upper*1.05);
-    emit yAxisNewRange(ui->plot->yAxis->range());
+
+    //emit yAxisNewRange(ui->plot->yAxis->range());
 }
 
 
+void LinePlotter::resetView() {
+    QCPDataContainer<QCPGraphData> data = *ui->plot->graph()->data().data();
+
+    // reset x Range
+    if(numOfPoints != 0 && numOfPoints < data.size()) {
+        QCPGraphData firstPoint = *data.at(0);
+        QCPGraphData lastPoint = *data.at(numOfPoints);
+        QCPRange resetX = QCPRange(firstPoint.sortKey(), lastPoint.sortKey());
+        ui->plot->xAxis->setRange(resetX);
+    } else {
+        ui->plot->xAxis->setRange(totalXRange);
+    }
+
+    ui->plot->yAxis->setRange(totalYRange.lower*1.05, totalYRange.upper*1.05);
+}
 
 void LinePlotter::xAxisNewRange(QCPRange range) {
     emit xAxisChanged(range,totalXRange);
-
 }
 
 void LinePlotter::yAxisNewRange(QCPRange range) {

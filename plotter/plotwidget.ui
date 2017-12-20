@@ -195,7 +195,7 @@
    <sender>moreButton</sender>
    <signal>clicked()</signal>
    <receiver>PlotWidget</receiver>
-   <slot>show_more()</slot>
+   <slot>showMore()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>10</x>
@@ -211,7 +211,7 @@
    <sender>saveButton</sender>
    <signal>clicked()</signal>
    <receiver>PlotWidget</receiver>
-   <slot>save_plot()</slot>
+   <slot>savePlot()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>746</x>
@@ -223,9 +223,26 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>resetViewButton</sender>
+   <signal>clicked()</signal>
+   <receiver>PlotWidget</receiver>
+   <slot>resetView()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>688</x>
+     <y>313</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>366</x>
+     <y>210</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
-  <slot>show_more()</slot>
-  <slot>save_plot()</slot>
+  <slot>showMore()</slot>
+  <slot>savePlot()</slot>
+  <slot>resetView()</slot>
  </slots>
 </ui>

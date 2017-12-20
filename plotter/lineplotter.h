@@ -64,6 +64,8 @@ signals:
     void anyAxisChanged(QCPRange xNow, QCPRange xComplete); // for zoom slider
 
 public slots:
+    void resetView();
+
     void xAxisNewRange(QCPRange newRange);
     void yAxisNewRange(QCPRange newRange);
 

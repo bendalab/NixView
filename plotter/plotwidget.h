@@ -35,6 +35,8 @@ public:
 public slots:
     void showMore();
     void savePlot();
+
+    void resetView();
     // slots and signals for the scrollbars and the zoom slider:
     void hScrollBarPosChanged(int value);   // emit signal to be caught by the plotter.
     void vScrollBarPosChanged(int value);
@@ -48,6 +50,7 @@ signals:
     void hScrollBarToPlot(double); // signals for the plotter.
     void vScrollBarToPlot(double);
     void sliderToPlot(double);
+    void resetViewToPlot();
 
 private:
     Ui::PlotWidget *ui;
