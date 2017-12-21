@@ -58,7 +58,6 @@ private:
     Plotter *plot;
     QString text;
     double scrollFaktor;
-    double zoomFaktor;
     double zoomMax;
 
     bool checkPlottableDType(nix::DataType dtype) const;

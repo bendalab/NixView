@@ -298,6 +298,7 @@ void LinePlotter::changeXAxisSize(double ratio) {
     if(xNewSize != ui->plot->xAxis->range().size()) {
         ui->plot->xAxis->setRange(ui->plot->xAxis->range().center(), xNewSize, Qt::AlignCenter);
         ui->plot->replot();
+
     }
 
 }

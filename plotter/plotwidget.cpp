@@ -21,10 +21,9 @@ PlotWidget::PlotWidget(QWidget *parent) :
     ui->vScrollBar->setHidden(true);
     scrollFaktor = 100;
     ui->zoomSlider->setEnabled(false);
-    ui->zoomSlider->setRange(-100, 0);
+    ui->zoomSlider->setRange(-100, -1); // size used as zoomfaktor!
 
     ui->resetViewButton->setHidden(true);
-    zoomFaktor = 100;
     zoomMax = 1.1;
 
 }
@@ -293,8 +292,7 @@ void PlotWidget::vScrollBarPosChanged(int value) {
 }
 
 void PlotWidget::sliderPosChanged(int value) {
-
-    emit sliderToPlot((double) ( value * zoomMax / ui->zoomSlider->minimum()));
+    emit sliderToPlot((double) (value * zoomMax / ui->zoomSlider->minimum()));
 }
 
 void PlotWidget::changeHScrollBarValue(QCPRange newRange, QCPRange completeRange) {
@@ -334,11 +332,11 @@ void PlotWidget::changeVScrollBarValue(QCPRange newRange, QCPRange completeRange
 }
 
 void PlotWidget::changeSliderPos(QCPRange xNow, QCPRange xComplete) {
-
     int newValue = sliderMapToValue(xNow, xComplete);
 
     if( ! (ui->zoomSlider->value() == newValue ) ) {
         ui->zoomSlider->setValue(newValue);
+
     }
 }
 
@@ -346,17 +344,16 @@ void PlotWidget::changeSliderPos(QCPRange xNow, QCPRange xComplete) {
      //for changes in the mapping also change the slot: sliderPosChanged(int value) correspondingly.
      double ratio = current.size() / complete.size();
 
-    double max = zoomMax;
-    double min = max / zoomFaktor;
+    double zoomMin = zoomMax / (ui->zoomSlider->maximum()-ui->zoomSlider->minimum());
 
-    if(ratio > max) {
-        ratio = max;
-    } else if(ratio < min) {
-        ratio = 0;
+    if(ratio > zoomMax) {
+        ratio = zoomMax;
+    } else if(ratio < zoomMin) {
+        ratio = zoomMin;
     }
 
-    int minimum = ui->zoomSlider->minimum();
-    double value = std::round(minimum / max * ratio);
+    int minimum = ui->zoomSlider->minimum(); //negative
+    double value = std::round(minimum / zoomMax * ratio);
 
     return value;
 
