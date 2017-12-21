@@ -105,7 +105,7 @@
        </spacer>
       </item>
       <item>
-       <widget class="QLabel" name="label">
+       <widget class="QLabel" name="zoomLabel">
         <property name="text">
          <string>Zoom:</string>
         </property>

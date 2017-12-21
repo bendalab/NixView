@@ -20,7 +20,8 @@ PlotWidget::PlotWidget(QWidget *parent) :
     ui->hScrollBar->setHidden(true);
     ui->vScrollBar->setHidden(true);
     scrollFaktor = 100;
-    ui->zoomSlider->setEnabled(false);
+    ui->zoomSlider->setHidden(true);
+    ui->zoomLabel->setHidden(true);
     ui->zoomSlider->setRange(-100, -1); // size used as zoomfaktor!
 
     ui->resetViewButton->setHidden(true);
@@ -79,7 +80,8 @@ Plotter* PlotWidget::process(const nix::DataArray &array) {
         ui->hScrollBar->setHidden(false);
         ui->vScrollBar->setHidden(false);
         ui->resetViewButton->setHidden(false);
-        ui->zoomSlider->setEnabled(true);
+        ui->zoomSlider->setHidden(false);
+        ui->zoomLabel->setHidden(false);
 
         connect(this, SIGNAL(resetViewToPlot()), lp, SLOT(resetView()));
 
