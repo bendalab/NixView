@@ -13,7 +13,7 @@ namespace Ui {
 }
 
 enum class PlotterType : unsigned int {
-    Line, Category, Image, Unsupported
+    Line, Category, Image, Event, Unsupported
 };
 
 class Plotter {
