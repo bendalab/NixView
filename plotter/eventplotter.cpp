@@ -1,4 +1,5 @@
 #include "eventplotter.h"
+#include "ui_eventplotter.h"
 
 EventPlotter::EventPlotter(QWidget *parent) :
   QWidget(parent), ui(new Ui::EventPlotter) {
@@ -31,12 +32,12 @@ void EventPlotter::set_label(const std::string &label) {
 
 // To be routed to the x-Axis Plotter
 void EventPlotter::set_xlabel(const std::string &label) {
-    //set_xlabel(QString::fromStdString(label));
+    set_xlabel(QString::fromStdString(label));
 }
 
 void EventPlotter::set_xlabel(const QString &label){
-    //ui->plot->xAxis->setLabel(label);
-    //ui->plot->replot();
+    ui->plot->xAxis->setLabel(label);
+    ui->plot->replot();
 }
 
 
@@ -50,6 +51,21 @@ void EventPlotter::set_ylabel(const QString &label){
     ui->plot->replot();
 }
 
+void EventPlotter::add_events(const QVector<double> &x_data, const QString &name, bool y_scale) {
+
+}
+
+void EventPlotter::add_events(const QVector<double> &x_data, const QVector<double> &y_data, const QString &name, bool y_scale) {
+
+}
+
+void EventPlotter::add_segments(const QVector<double> &positions, const QVector<double> &extents, const QString &name) {
+
+}
+
+QCustomPlot* EventPlotter::get_plot() {
+    return NULL;
+}
 
 
 void EventPlotter::draw(const nix::DataArray &array) {

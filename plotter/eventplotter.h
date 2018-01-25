@@ -5,9 +5,13 @@
 #include "plotter.h"
 #include <nix.hpp>
 
-class EventPlotter : public QWidget
-{
+namespace Ui {
+    class EventPlotter;
+}
+
+class EventPlotter : public QWidget , public Plotter {
     Q_OBJECT
+
 public:
     explicit EventPlotter(QWidget *parent = 0);
     ~EventPlotter();
@@ -39,8 +43,9 @@ public:
 private:
     Ui::EventPlotter *ui;
 
+
 public slots:
-    void selection_changed();
+    /*void selection_changed();
     void mouse_wheel();
     void mouse_press();
     void show_legend();
@@ -60,7 +65,7 @@ public slots:
     void marker_circle();
     void marker_cross();
     void marker_dot();
-    void marker_plus();
+    void marker_plus();*/
 };
 
 #endif // EVENTPLOTTER_H
