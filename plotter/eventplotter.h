@@ -4,6 +4,7 @@
 #include <QWidget>
 #include "plotter.h"
 #include <nix.hpp>
+#include "colormap.hpp"
 
 namespace Ui {
     class EventPlotter;
@@ -16,7 +17,8 @@ public:
     explicit EventPlotter(QWidget *parent = 0);
     ~EventPlotter();
 
-    void draw(const nix::DataArray &array);
+    void draw(const QVector<QVector<double>> &positions);
+    void draw(const QVector<QVector<double>> &positions, const QVector<QVector<double>> &extends);
 
     bool check_dimension(const nix::DataArray &array) const;
 
@@ -30,8 +32,6 @@ public:
 
     void add_events(const QVector<double> &x_data, const QVector<double> &y_data, const QString &name, bool y_scale) override;
 
-    void add_events(const QVector<double> &x_data, const QString &name, bool y_scale);
-
     void add_segments(const QVector<double> &positions, const QVector<double> &extents, const QString &name) override;
 
     PlotterType plotter_type() const override;
@@ -42,7 +42,12 @@ public:
 
 private:
     Ui::EventPlotter *ui;
+    ColorMap cmap;
 
+    //bool checkDimensions(QVector<QVector<double>> &positions, QVector<QVector<double>> &extends);
+    //bool checkDimensions(QVector<QVector<double>> &positions);
+    void plot(const QVector<double> &positions);
+    void plot(const QVector<double> &positions, const QVector<double> &extends);
 
 public slots:
     /*void selection_changed();
