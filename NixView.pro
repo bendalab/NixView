@@ -62,8 +62,9 @@ SOURCES += main.cpp\
     db/projectmanager.cpp \
     views/projectnavigator.cpp \
     db/projectindex.cpp \
-    plotter/eventplotter.cpp
-
+    plotter/eventplotter.cpp \
+    views/TagViewListed.cpp \
+    utils/tagcontainer.cpp
 
 
 HEADERS  += MainWindow.hpp \
@@ -110,7 +111,9 @@ HEADERS  += MainWindow.hpp \
     db/projectmanager.hpp \
     views/projectnavigator.hpp \
     db/projectindex.hpp \
-    plotter/eventplotter.h
+    plotter/eventplotter.h \
+    views/TagViewListed.h \
+    utils/tagcontainer.h
 
 
 FORMS    += MainWindow.ui \
