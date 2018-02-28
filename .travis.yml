@@ -21,9 +21,10 @@ matrix:
 before_install:
   - if [ "$TRAVIS_OS_NAME" == "osx" ]; then
     brew update;
-    brew install qt5 cmake boost;
-    brew unlink qt4;
-    brew install homebrew/science/nixio;
+    brew install qt5;
+    brew install gcc;
+    brew link --overwrite gcc;
+    brew install g-node/homebrew-data/nixio;
     fi
 
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then
