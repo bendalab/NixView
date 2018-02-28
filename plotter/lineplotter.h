@@ -14,7 +14,7 @@ class LinePlotter : public QWidget, public Plotter {
     Q_OBJECT
 
 public:
-    explicit LinePlotter(QWidget *parent = 0);
+    explicit LinePlotter(QWidget *parent = 0, int numofPoints = 100000);
     ~LinePlotter();
 
     void draw(const nix::DataArray &array);
@@ -50,10 +50,30 @@ public:
 private:
     Ui::LinePlotter *ui;
     ColorMap cmap;
+    int numOfPoints;
+    QCPRange totalXRange;
+    QCPRange totalYRange;
 
     QCustomPlot* get_plot() override;
+    void setXRange(QVector<double> xData);
+    void setYRange(QVector<double> yData);
+
+signals:
+    void xAxisChanged(QCPRange xNow, QCPRange xComplete);
+    void yAxisChanged(QCPRange yNow, QCPRange yComplete);
+    void anyAxisChanged(QCPRange xNow, QCPRange xComplete); // for zoom slider
 
 public slots:
+    void resetView();
+
+    void xAxisNewRange(QCPRange newRange);
+    void yAxisNewRange(QCPRange newRange);
+
+    void changeXAxisPosition(double newCenter);
+    void changeYAxisPosition(double newCenter);
+    void changeXAxisSize(double ratio);
+
+
     void selection_changed();
     void mouse_wheel();
     void mouse_press();

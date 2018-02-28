@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>789</width>
-    <height>293</height>
+    <width>734</width>
+    <height>421</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -25,7 +25,7 @@
   <property name="styleSheet">
    <string notr="true"/>
   </property>
-  <layout class="QHBoxLayout" name="horizontalLayout_3">
+  <layout class="QGridLayout" name="gridLayout">
    <property name="leftMargin">
     <number>0</number>
    </property>
@@ -38,7 +38,45 @@
    <property name="bottomMargin">
     <number>0</number>
    </property>
-   <item>
+   <item row="0" column="1">
+    <widget class="QScrollBar" name="vScrollBar">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="2">
+    <widget class="QScrollArea" name="contents">
+     <property name="widgetResizable">
+      <bool>true</bool>
+     </property>
+     <widget class="QWidget" name="scrollAreaWidgetContents">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>617</width>
+        <height>400</height>
+       </rect>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
+      </layout>
+     </widget>
+    </widget>
+   </item>
+   <item row="0" column="0">
     <widget class="QWidget" name="widget" native="true">
      <layout class="QVBoxLayout" name="verticalLayout_2">
       <property name="leftMargin">
@@ -65,6 +103,40 @@
          </size>
         </property>
        </spacer>
+      </item>
+      <item>
+       <widget class="QLabel" name="zoomLabel">
+        <property name="text">
+         <string>Zoom:</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QSlider" name="zoomSlider">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="resetViewButton">
+        <property name="text">
+         <string>reset view</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="Line" name="line">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
       </item>
       <item>
        <widget class="QPushButton" name="moreButton">
@@ -106,35 +178,11 @@
      </layout>
     </widget>
    </item>
-   <item>
-    <widget class="QScrollArea" name="contents">
-     <property name="widgetResizable">
-      <bool>true</bool>
+   <item row="1" column="2">
+    <widget class="QScrollBar" name="hScrollBar">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
      </property>
-     <widget class="QWidget" name="scrollAreaWidgetContents">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>696</width>
-        <height>291</height>
-       </rect>
-      </property>
-      <layout class="QHBoxLayout" name="horizontalLayout">
-       <property name="leftMargin">
-        <number>0</number>
-       </property>
-       <property name="topMargin">
-        <number>0</number>
-       </property>
-       <property name="rightMargin">
-        <number>0</number>
-       </property>
-       <property name="bottomMargin">
-        <number>0</number>
-       </property>
-      </layout>
-     </widget>
     </widget>
    </item>
   </layout>
@@ -147,7 +195,7 @@
    <sender>moreButton</sender>
    <signal>clicked()</signal>
    <receiver>PlotWidget</receiver>
-   <slot>show_more()</slot>
+   <slot>showMore()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>10</x>
@@ -163,7 +211,7 @@
    <sender>saveButton</sender>
    <signal>clicked()</signal>
    <receiver>PlotWidget</receiver>
-   <slot>save_plot()</slot>
+   <slot>savePlot()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>746</x>
@@ -175,9 +223,26 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>resetViewButton</sender>
+   <signal>clicked()</signal>
+   <receiver>PlotWidget</receiver>
+   <slot>resetView()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>688</x>
+     <y>313</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>366</x>
+     <y>210</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
-  <slot>show_more()</slot>
-  <slot>save_plot()</slot>
+  <slot>showMore()</slot>
+  <slot>savePlot()</slot>
+  <slot>resetView()</slot>
  </slots>
 </ui>

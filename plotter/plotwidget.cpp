@@ -10,6 +10,23 @@ PlotWidget::PlotWidget(QWidget *parent) :
     ui(new Ui::PlotWidget)
 {
     ui->setupUi(this);
+
+    connect(this->ui->hScrollBar, SIGNAL(valueChanged(int)), this, SLOT(hScrollBarPosChanged(int)));
+    connect(this->ui->vScrollBar, SIGNAL(valueChanged(int)), this, SLOT(vScrollBarPosChanged(int)));
+    connect(this->ui->zoomSlider, SIGNAL(valueChanged(int)), this, SLOT(sliderPosChanged(int)));
+
+    ui->hScrollBar->setRange(1,1);
+    ui->vScrollBar->setRange(1,1);
+    ui->hScrollBar->setHidden(true);
+    ui->vScrollBar->setHidden(true);
+    scrollFaktor = 100;
+    ui->zoomSlider->setHidden(true);
+    ui->zoomLabel->setHidden(true);
+    ui->zoomSlider->setRange(-100, -1); // size used as zoomfaktor!
+
+    ui->resetViewButton->setHidden(true);
+    zoomMax = 1.1;
+
 }
 
 PlotWidget::~PlotWidget()
@@ -18,13 +35,13 @@ PlotWidget::~PlotWidget()
 }
 
 
-bool PlotWidget::can_draw() const {
+bool PlotWidget::canDraw() const {
     return item.canConvert<nix::DataArray>() | item.canConvert<nix::MultiTag>() |
             item.canConvert<nix::Tag>() | item.canConvert<nix::Feature>();
 }
 
 
-void PlotWidget::process_item() {
+void PlotWidget::processItem() {
     if (item.canConvert<nix::DataArray>()) {
         nix::DataArray array = item.value<nix::DataArray>();
         process(array);
@@ -41,7 +58,7 @@ void PlotWidget::process_item() {
 }
 
 
-void PlotWidget::delete_widgets_from_layout() {
+void PlotWidget::deleteWidgetsFromLayout() {
     if ((ui->scrollAreaWidgetContents->layout() != NULL) && (!ui->scrollAreaWidgetContents->layout()->isEmpty())) {
         QLayoutItem *item = ui->scrollAreaWidgetContents->layout()->itemAt(0);
         if (item->widget()) {
@@ -56,19 +73,38 @@ Plotter* PlotWidget::process(const nix::DataArray &array) {
     this->text = QString::fromStdString(EntityDescriptor::describe(array));
     PlotterType suggestion = Plotter::suggested_plotter(array);
     if (suggestion == PlotterType::Line) {
-        delete_widgets_from_layout();
+        deleteWidgetsFromLayout();
         LinePlotter *lp = new LinePlotter();
         ui->scrollAreaWidgetContents->layout()->addWidget(lp);
+
+        ui->hScrollBar->setHidden(false);
+        ui->vScrollBar->setHidden(false);
+        ui->resetViewButton->setHidden(false);
+        ui->zoomSlider->setHidden(false);
+        ui->zoomLabel->setHidden(false);
+
+        connect(this, SIGNAL(resetViewToPlot()), lp, SLOT(resetView()));
+
+        connect(lp, SIGNAL(xAxisChanged(QCPRange,QCPRange)), this, SLOT(changeSliderPos(QCPRange,QCPRange)));
+        connect(this, SIGNAL(sliderToPlot(double)), lp, SLOT(changeXAxisSize(double)));
+
+        connect(lp,   SIGNAL(xAxisChanged(QCPRange, QCPRange)),        this, SLOT(changeHScrollBarValue(QCPRange, QCPRange)) );
+        connect(lp,   SIGNAL(yAxisChanged(QCPRange, QCPRange)),        this, SLOT(changeVScrollBarValue(QCPRange, QCPRange)) );
+        connect(this, SIGNAL(hScrollBarToPlot(double)), lp,   SLOT(changeXAxisPosition(double)) );
+        connect(this, SIGNAL(vScrollBarToPlot(double)), lp,   SLOT(changeYAxisPosition(double)) );
+
+
         lp->draw(array);
         plot = lp;
+
     } else if (suggestion == PlotterType::Category) {
-        delete_widgets_from_layout();
+        deleteWidgetsFromLayout();
         CategoryPlotter *cp = new CategoryPlotter();
         ui->scrollAreaWidgetContents->layout()->addWidget(cp);
         cp->draw(array);
         plot = cp;
     } else if (suggestion == PlotterType::Image) {
-        delete_widgets_from_layout();
+        deleteWidgetsFromLayout();
         ImagePlotter *ip = new ImagePlotter();
         ui->scrollAreaWidgetContents->layout()->addWidget(ip);
         ip->draw(array);
@@ -199,12 +235,12 @@ void PlotWidget::process(const nix::MultiTag &mtag, nix::ndsize_t ref) {
 
 void PlotWidget::setEntity(QVariant var) {
     this->item = var;
-    if (can_draw()) {
-        process_item();
+    if (canDraw()) {
+        processItem();
     }
 }
 
-void PlotWidget::save_plot() {
+void PlotWidget::savePlot() {
     QString fileName = QFileDialog::getSaveFileName(this, tr("Save plot"), "untitled.pdf", tr("Images (*.pdf)"));
 
     if (fileName.isEmpty()) {
@@ -217,13 +253,13 @@ void PlotWidget::save_plot() {
 
 
 void PlotWidget::clear() {
-    delete_widgets_from_layout();
+    deleteWidgetsFromLayout();
     this->text = "";
     //this->repaint();
 }
 
 
-bool PlotWidget::check_plottable_dtype(nix::DataType dtype) const {
+bool PlotWidget::checkPlottableDType(nix::DataType dtype) const {
     bool plottable = true;
     plottable = plottable && dtype != nix::DataType::Bool;
     plottable = plottable && dtype != nix::DataType::String;
@@ -234,7 +270,7 @@ bool PlotWidget::check_plottable_dtype(nix::DataType dtype) const {
 }
 
 
-void PlotWidget::show_more() {
+void PlotWidget::showMore() {
     QMessageBox msgBox;
     msgBox.setWindowFlags(Qt::FramelessWindowHint);
     if (this->text.size() < 1) {
@@ -244,3 +280,96 @@ void PlotWidget::show_more() {
     }
     msgBox.exec();
 }
+
+void PlotWidget::resetView() {
+    emit resetViewToPlot();
+}
+
+void PlotWidget::hScrollBarPosChanged(int value) {
+    emit hScrollBarToPlot(-value / scrollFaktor);
+}
+
+void PlotWidget::vScrollBarPosChanged(int value) {
+    emit vScrollBarToPlot(-value / scrollFaktor);
+}
+
+void PlotWidget::sliderPosChanged(int value) {
+    emit sliderToPlot((double) (value * zoomMax / ui->zoomSlider->minimum()));
+}
+
+void PlotWidget::changeHScrollBarValue(QCPRange newRange, QCPRange completeRange) {
+    //Umrechnung von QCPRange to int und verschieben der ScrollBar!
+    int currentMin = ui->hScrollBar->minimum();
+    int currentMax = ui->hScrollBar->maximum();
+    //change range if needed:
+    if( (currentMin != std::round(-completeRange.upper*scrollFaktor)) | (currentMax != std::round(-completeRange.lower*scrollFaktor)) ) {
+        ui->hScrollBar->setRange(std::round(-completeRange.upper*scrollFaktor), std::round(-completeRange.lower*scrollFaktor));
+    }
+    //change pagestep of scrollbar if needed: after zoom change
+    if((currentMax-currentMin)*scrollFaktor != (newRange.size() * scrollFaktor)) {
+        ui->hScrollBar->setPageStep(std::round(newRange.size() * scrollFaktor));
+    }
+    //change position of scrollbar
+    if(ui->hScrollBar->value() != std::round(-newRange.center()*scrollFaktor)) {
+        ui->hScrollBar->setValue(std::round(-newRange.center()*scrollFaktor));
+    }
+}
+
+void PlotWidget::changeVScrollBarValue(QCPRange newRange, QCPRange completeRange) {
+    //Umrechnung von QCPRange to int und verschieben der ScrollBar!
+    int currentMin = ui->vScrollBar->minimum();
+    int currentMax = ui->vScrollBar->maximum();
+    //change range if needed:
+    if( (currentMin != std::round(-completeRange.upper*scrollFaktor)) | (currentMax != std::round(-completeRange.lower*scrollFaktor)) ) {
+        ui->vScrollBar->setRange(std::round(-completeRange.upper*scrollFaktor), std::round(-completeRange.lower*scrollFaktor));
+    }
+    //change pagestep of scrollbar if needed: after zoom change
+    if((currentMax-currentMin)*scrollFaktor != (newRange.size() * scrollFaktor)) {
+        ui->vScrollBar->setPageStep(std::round(newRange.size() * scrollFaktor));
+    }
+    //change position of scrollbar
+    if(ui->vScrollBar->value() != std::round(-newRange.center()*scrollFaktor)) {
+        ui->vScrollBar->setValue(std::round(-newRange.center()*scrollFaktor));
+    }
+}
+
+void PlotWidget::changeSliderPos(QCPRange xNow, QCPRange xComplete) {
+    int newValue = sliderMapToValue(xNow, xComplete);
+
+    if( ! (ui->zoomSlider->value() == newValue ) ) {
+        ui->zoomSlider->setValue(newValue);
+
+    }
+}
+
+ int PlotWidget::sliderMapToValue(QCPRange current, QCPRange complete) {
+     //for changes in the mapping also change the slot: sliderPosChanged(int value) correspondingly.
+     double ratio = current.size() / complete.size();
+
+    double zoomMin = zoomMax / (ui->zoomSlider->maximum()-ui->zoomSlider->minimum());
+
+    if(ratio > zoomMax) {
+        ratio = zoomMax;
+    } else if(ratio < zoomMin) {
+        ratio = zoomMin;
+    }
+
+    int minimum = ui->zoomSlider->minimum(); //negative
+    double value = std::round(minimum / zoomMax * ratio);
+
+    return value;
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+

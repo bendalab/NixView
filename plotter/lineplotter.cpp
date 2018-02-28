@@ -2,8 +2,8 @@
 #include "ui_lineplotter.h"
 #include <QMenu>
 
-LinePlotter::LinePlotter(QWidget *parent) :
-    QWidget(parent), ui(new Ui::LinePlotter), cmap() {
+LinePlotter::LinePlotter(QWidget *parent, int numOfPoints) :
+    QWidget(parent), ui(new Ui::LinePlotter), cmap(), totalXRange(0,0), totalYRange(0,0) {
     ui->setupUi(this);
     // connect slot that ties some axis selections together (especially opposite axes):
     connect(ui->plot, SIGNAL(selectionChangedByUser()), this, SLOT(selection_changed()));
@@ -17,6 +17,13 @@ LinePlotter::LinePlotter(QWidget *parent) :
     ui->plot->setContextMenuPolicy(Qt::CustomContextMenu);
     connect(ui->plot, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(context_menu_request(QPoint)));
     ui->plot->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom | QCP::iSelectPlottables | QCP::iSelectAxes);
+
+    connect(ui->plot->xAxis, SIGNAL(rangeChanged(QCPRange)), this, SLOT(xAxisNewRange(QCPRange)));
+    connect(ui->plot->yAxis, SIGNAL(rangeChanged(QCPRange)), this, SLOT(yAxisNewRange(QCPRange)));
+
+
+    this->numOfPoints = numOfPoints; // standard 100 000
+
 }
 
 
@@ -159,46 +166,39 @@ bool LinePlotter::check_dimensions(const nix::DataArray &array) const {
 }
 
 
-void LinePlotter::add_line_plot(const QVector<double> &x_data, const QVector<double> &y_data, const QString &name) {
+void LinePlotter::add_line_plot(const QVector<double> &xData, const QVector<double> &yData, const QString &name) {
     ui->plot->addGraph();
     QPen pen;
     pen.setColor(cmap.next());
     ui->plot->graph()->setPen(pen);
-    ui->plot->graph()->addData(x_data, y_data);
-    ui->plot->xAxis->setRange(x_data[0], x_data.last());
-    double y_min = *std::min_element(std::begin(y_data), std::end(y_data));
-    double y_max = *std::max_element(std::begin(y_data), std::end(y_data));
-    if (y_min == y_max)
-        y_min = 0.0;
-    ui->plot->yAxis->setRange(1.05*y_min, 1.05*y_max);
+    ui->plot->graph()->addData(xData, yData);
+
+    setXRange(xData);
+    setYRange(yData);
+
     ui->plot->graph()->setName(name);
     ui->plot->replot();
 }
 
 
-void LinePlotter::add_events(const QVector<double> &x_data, const QVector<double> &y_data, const QString &name, bool y_scale) {
+void LinePlotter::add_events(const QVector<double> &xData, const QVector<double> &yData, const QString &name, bool yScale) {
     ui->plot->addGraph();
-    ui->plot->graph()->addData(x_data, y_data);
+    ui->plot->graph()->addData(xData, yData);
     ui->plot->graph()->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, 5));
     ui->plot->graph()->setLineStyle(QCPGraph::LineStyle::lsNone);
     ui->plot->graph()->setName(name);
     ui->plot->graph()->setPen(QPen(Qt::red));
-    if (y_scale) {
-        double y_min = *std::min_element(std::begin(y_data), std::end(y_data));
-        double y_max = *std::max_element(std::begin(y_data), std::end(y_data));
-        if (y_min == y_max)
-            y_min = 0.0;
-
-        ui->plot->yAxis->setRange(1.05*y_min, 1.05*y_max);
+    if (yScale) {
+        setYRange(yData);
     }
-    ui->plot->xAxis->setRange(x_data[0], x_data.last());
+    setXRange(xData);
 }
 
 
-void LinePlotter::add_events(const QVector<double> &x_data, const QString &name, bool y_scale) {
+void LinePlotter::add_events(const QVector<double> &xData, const QString &name, bool yScale) {
     double max = ui->plot->yAxis->range().upper * 0.9;
-    QVector<double> y_data(x_data.size(), max);
-    add_events(x_data, y_data, name, y_scale);
+    QVector<double> yData(xData.size(), max);
+    add_events(xData, yData, name, yScale);
 }
 
 
@@ -228,6 +228,79 @@ void LinePlotter::add_segments(const QVector<double> &positions, const QVector<d
 
 QCustomPlot* LinePlotter::get_plot() {
     return ui->plot;
+}
+
+void LinePlotter::setXRange(QVector<double> xData) {
+    totalXRange.expand(QCPRange(xData[0],xData.last()));
+
+    if(numOfPoints < xData.size() && numOfPoints != 0) {
+        ui->plot->xAxis->setRange(xData[0], xData[numOfPoints]);
+    } else {
+        ui->plot->xAxis->setRange(totalXRange);
+    }
+    //emit xAxisNewRange(ui->plot->xAxis->range());
+}
+
+void LinePlotter::setYRange(QVector<double> yData) {
+    double yMin = *std::min_element(std::begin(yData), std::end(yData));
+    double yMax = *std::max_element(std::begin(yData), std::end(yData));
+    if (yMin == yMax)
+        yMin = 0.0;
+
+    totalYRange.expand(QCPRange(yMin, yMax));
+    ui->plot->yAxis->setRange(totalYRange.lower*1.05, totalYRange.upper*1.05);
+
+    //emit yAxisNewRange(ui->plot->yAxis->range());
+}
+
+
+void LinePlotter::resetView() {
+    QCPDataContainer<QCPGraphData> data = *ui->plot->graph()->data().data();
+
+    // reset x Range
+    if(numOfPoints != 0 && numOfPoints < data.size()) {
+        QCPGraphData firstPoint = *data.at(0);
+        QCPGraphData lastPoint = *data.at(numOfPoints);
+        QCPRange resetX = QCPRange(firstPoint.sortKey(), lastPoint.sortKey());
+        ui->plot->xAxis->setRange(resetX);
+    } else {
+        ui->plot->xAxis->setRange(totalXRange);
+    }
+
+    ui->plot->yAxis->setRange(totalYRange.lower*1.05, totalYRange.upper*1.05);
+}
+
+void LinePlotter::xAxisNewRange(QCPRange range) {
+    emit xAxisChanged(range,totalXRange);
+}
+
+void LinePlotter::yAxisNewRange(QCPRange range) {
+    emit yAxisChanged(range, totalYRange);
+}
+
+void LinePlotter::changeXAxisPosition(double newCenter) {
+    if(ui->plot->xAxis->range().center() != newCenter) {
+        ui->plot->xAxis->setRange(newCenter, ui->plot->xAxis->range().size(), Qt::AlignCenter);
+        ui->plot->replot();
+    }
+}
+
+void LinePlotter::changeYAxisPosition(double newCenter) {
+    if(ui->plot->yAxis->range().center() != newCenter) {
+        ui->plot->yAxis->setRange(newCenter, ui->plot->yAxis->range().size(), Qt::AlignCenter);
+        ui->plot->replot();
+    }
+}
+
+void LinePlotter::changeXAxisSize(double ratio) {
+    double xNewSize = totalXRange.size() * ratio;
+
+    if(xNewSize != ui->plot->xAxis->range().size()) {
+        ui->plot->xAxis->setRange(ui->plot->xAxis->range().center(), xNewSize, Qt::AlignCenter);
+        ui->plot->replot();
+
+    }
+
 }
 
 
@@ -284,6 +357,7 @@ void LinePlotter::mouse_wheel() {
         ui->plot->axisRect()->setRangeZoom(ui->plot->yAxis->orientation());
     else
         ui->plot->axisRect()->setRangeZoom(Qt::Horizontal|Qt::Vertical);
+
 }
 
 
