@@ -17,7 +17,6 @@ EventPlotter::EventPlotter(QWidget *parent) :
     //connect(ui->plot, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(context_menu_request(QPoint)));
     ui->plot->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom | QCP::iSelectPlottables | QCP::iSelectAxes);
 
-    ui->plot->yAxis->setTicks(false);
     ui->plot->axisRect()->setRangeZoom(ui->plot->xAxis->orientation());
     ui->plot->axisRect()->setRangeDrag(ui->plot->xAxis->orientation());
 
@@ -70,7 +69,7 @@ QCustomPlot* EventPlotter::get_plot() {
 }
 
 
-void EventPlotter::draw(const QVector<QVector<double>> &positions) {
+void EventPlotter::draw(const QVector<QVector<double>> &positions, const QVector<QVector<QString>> &name) {
 //    if(! checkDimensions(positions)) {
 //        return;
 //    }
@@ -90,7 +89,7 @@ void EventPlotter::plot(const QVector<double> &positions) {
     QVector<double> yValues = QVector<double>(4*positions.size());
 
     for(int i = 0; i < positions.size(); i++) {
-        xValues[4*i]   = positions[i]-(1.0/80000); // half of the max sample rate (40k).
+        xValues[4*i]   = positions[i]-(1.0/80000); // half of a step of the max(?) sample rate (40k).
         xValues[4*i+1] = positions[i];
         xValues[4*i+2] = positions[i];
         xValues[4*i+3] = positions[i]+(1.0/80000);
@@ -99,7 +98,6 @@ void EventPlotter::plot(const QVector<double> &positions) {
         yValues[4*i+1] = 1;
         yValues[4*i+2] = -1;
         yValues[4*i+3] = 0;
-
     }
 
     ui->plot->graph()->addData(xValues, yValues);
@@ -108,7 +106,7 @@ void EventPlotter::plot(const QVector<double> &positions) {
     ui->plot->replot();
 }
 
-void EventPlotter::draw(const QVector<QVector<double>> &positions, const QVector<QVector<double>> &extends) {
+void EventPlotter::draw(const QVector<QVector<double>> &positions, const QVector<QVector<double>> &extends, const QVector<QVector<QString>> &name) {
 //    if( ! checkDimensions(positions, extends)) {
 //        return;
 //    }

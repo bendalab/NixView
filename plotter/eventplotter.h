@@ -17,8 +17,8 @@ public:
     explicit EventPlotter(QWidget *parent = 0);
     ~EventPlotter();
 
-    void draw(const QVector<QVector<double>> &positions);
-    void draw(const QVector<QVector<double>> &positions, const QVector<QVector<double>> &extends);
+    void draw(const QVector<QVector<double>> &positions, const QVector<QVector<QString>> &names);
+    void draw(const QVector<QVector<double>> &positions, const QVector<QVector<double>> &extends , const QVector<QVector<QString>> &names);
 
     bool check_dimension(const nix::DataArray &array) const;
 
