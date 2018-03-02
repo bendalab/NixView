@@ -140,6 +140,76 @@ std::string TagContainer::description() {
     return description;
 }
 
+void TagContainer::refLabels(QString &ylabel, QVector<QString> &xlabels, int index) {
+    if(index >= refCount()) {
+        std::cerr << "TagContainer::refLabels() - Index bigger than refCount." << std::endl;
+        return;
+    }
+
+    if (entity.canConvert<nix::Tag>()) {
+        Plotter::data_array_ax_labels(entity.value<nix::Tag>().references()[index],ylabel,xlabels);
+        return;
+    } else if (entity.canConvert<nix::MultiTag>()) {
+        Plotter::data_array_ax_labels(entity.value<nix::MultiTag>().references()[index],ylabel,xlabels);
+        return;
+    }
+}
+
+void TagContainer::tagLabels(QString &ylabel, QVector<QString> &xlabels, int index) {
+    if(index >= tagCount()) {
+        std::cerr << "TagContainer::tagLabels() - Index bigger than tagCount." << std::endl;
+        return;
+    }
+
+    refLabels(ylabel, xlabels, 0); // get xlabels from the first ref.
+    ylabel = QString::fromStdString("Tag: " + name() + " " + std::to_string(index));
+
+}
+
+// TODO? labels depending on linktype ?
+void TagContainer::featureLabels(QString &ylabel, QVector<QString> &xlabels, int index) {
+    if(index >= featureCount()) {
+        std::cerr << "TagContainer::featureLabels() - Index bigger than featureCount." << std::endl;
+        return;
+    }
+
+    nix::Feature f = features()[index];
+    Plotter::data_array_ax_labels(f.data(),ylabel,xlabels);
+
+}
+
+int TagContainer::refCount() {
+    if (entity.canConvert<nix::Tag>()) {
+        return entity.value<nix::Tag>().referenceCount();
+    } else if (entity.canConvert<nix::MultiTag>()) {
+        return entity.value<nix::MultiTag>().referenceCount();
+    }
+    return -1;
+}
+
+int TagContainer::tagCount() {
+    if (entity.canConvert<nix::Tag>()) {
+        return 1;
+    } else if (entity.canConvert<nix::MultiTag>()) {
+        nix::NDSize size = entity.value<nix::MultiTag>().positions().dataExtent();
+        if (size.size() == 1) {
+            return 1;
+        } else if (size.size() == 2) {
+            return size[1];
+        }
+    }
+    return -1;
+}
+
+int TagContainer::featureCount() {
+    if (entity.canConvert<nix::Tag>()) {
+        return entity.value<nix::Tag>().featureCount();
+    } else if (entity.canConvert<nix::MultiTag>()) {
+        return entity.value<nix::MultiTag>().featureCount();
+    }
+    return -1;
+}
+
 
 QVariant TagContainer::getEntity() {
     return this->entity;

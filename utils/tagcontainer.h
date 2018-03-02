@@ -24,5 +24,13 @@ public:
     QVector<QVector<double>> extents();
     std::string description();
 
+
+    void refLabels(QString &ylabel, QVector<QString> &xlabels, int index);
+    void tagLabels(QString &ylabel, QVector<QString> &xlabels, int index);
+    void featureLabels(QString &ylabel, QVector<QString> &xlabels, int index);
+
+    int refCount();
+    int tagCount();
+    int featureCount();
 };
 #endif // TAGCONTAINER_H
