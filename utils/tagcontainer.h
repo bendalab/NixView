@@ -23,6 +23,6 @@ public:
     bool hasExtents();
     QVector<QVector<double>> extents();
     std::string description();
-    QVector<QVector<QString>> completeDescription();
+
 };
 #endif // TAGCONTAINER_H

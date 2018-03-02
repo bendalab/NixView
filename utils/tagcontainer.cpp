@@ -45,43 +45,29 @@ QVector<QVector<double>> TagContainer::positions() {
     } else if (entity.canConvert<nix::MultiTag>()) {
         nix::DataArray array = entity.value<nix::MultiTag>().positions();
 
-        //USE ARRAY_TO_QVECTOR FROM PLOTTER.H (fix it first)
 
-//        if(array.dimensionCount() == 1) {
-//            nix::Dimension d = array.getDimension(1);
-//            if(d.dimensionType() == nix::DimensionType::Range) {
-//                QVector<double> pos = QVector<double>::fromStdVector(d.asRangeDimension().axis(array.dataExtent()[0]));
-//                return positions.append(pos);
-//            } else if(d.dimensionType() == nix::DimensionType::Set) {
-//                QVector<double> pos = QVector<double>::fromStdVector(d.asSetDimension().)
-//            }
-//        } else if (array.dimensionCount() == 2) {
+        if (array.dimensionCount() == 1) {
+            std::cerr << "tagContainer::positions() array dimCount = 1." << std::endl;
+            std::vector<double> data = std::vector<double>(array.dataExtent()[0]);
+            array.getData(nix::DataType::Double, data.data(), {array.dataExtent()[0]}, {0});
+            positions.append(QVector<double>::fromStdVector(data));
+        } else if (array.dimensionCount() == 2) {
+            std::cerr << "tagContainer::positions() array dimCount = 2." << std::endl;
+            QVector<double> data;
+            for (unsigned int i=0; i<array.dataExtent()[1]; i++) {
+               data = Plotter::get_data_line(array, i, 1);
+               positions.append(data);
+            }
 
-//        } else {
-//            std::cerr << "TagContainer::positions cannot handle more than 2 dimensions." << std::endl;
-//            return positions;
-//        }
-
-//        nix::DataArray array = entity.value<nix::MultiTag>().positions();
-//        if(array.dataExtent().size() == 1) {
-//            std::vector<double> pos = std::vector<double>(array.dataExtent()[0]);
-//            array.getDataDirect(array.dataType(), pos.data(), {array.dataExtent()[0]}, {0});
-//            positions.append(QVector<double>::fromStdVector(pos));
-//        } else if(array.dataExtent().size() == 2 ) {
-//            for (unsigned int i = 0; i < array.dataExtent()[0]; i++) {
-//                std::vector<double> pos = std::vector<double>(array.dataExtent()[1]);
-//                array.getDataDirect(array.dataType(), pos.data(), {array.dataExtent()[1]}, {(int) i, 0});
-//                positions.append(QVector<double>::fromStdVector(pos));
-//            }
-//        } else {
-//            std::cerr << "TagContainer::positions cannot handle more than 2 dimensions." << std::endl;
-//        }
+        } else {
+            std::cerr << "Tagcontainer::positions(): can't handle arrays with more than 2 dimensions." << std::endl;
+        }
 
     }
     return positions;
 }
 
-//Also use plotter.h array_to_qvector ?
+
 QVector<QVector<double>> TagContainer::extents() {
     QVector<QVector<double>> extents;
     if(this->hasExtents()) {
@@ -92,15 +78,18 @@ QVector<QVector<double>> TagContainer::extents() {
         } else if (entity.canConvert<nix::MultiTag>()) {
             nix::DataArray array = entity.value<nix::MultiTag>().extents();
             if(array.dataExtent().size() == 1) {
-                std::vector<double> ext = std::vector<double>(array.dataExtent()[0]);
-                array.getDataDirect(array.dataType(), ext.data(), {array.dataExtent()[0]}, {0});
-                extents.append(QVector<double>::fromStdVector(ext));
+                std::cerr << "tagContainer::extents() array dimCount = 1." << std::endl;
+                std::vector<double> data = std::vector<double>(array.dataExtent()[0]);
+                array.getData(nix::DataType::Double, data.data(), {array.dataExtent()[0]}, {0});
+                extents.append(QVector<double>::fromStdVector(data));
             } else if(array.dataExtent().size() == 2 ) {
-                for (unsigned int i = 0; i < array.dataExtent()[0]; i++) {
-                    std::vector<double> ext = std::vector<double>(array.dataExtent()[1]);
-                    array.getDataDirect(array.dataType(), ext.data(), {array.dataExtent()[1]}, {(int) i, 0});
-                    extents.append(QVector<double>::fromStdVector(ext));
+                std::cerr << "tagContainer::extents() array dimCount = 2." << std::endl;
+                QVector<double> ext;
+                for (unsigned int i=0; i<array.dataExtent()[1]; i++) {
+                   ext = Plotter::get_data_line(array, i, 1);
+                   extents.append(ext);
                 }
+
             } else {
                 std::cerr << "TagContainer::extents cannot handle more than 2 dimensions." << std::endl;
             }
@@ -151,36 +140,6 @@ std::string TagContainer::description() {
     return description;
 }
 
-/**
- * returns a nested QVector<QVector<QString>> to be able to describe everything of the tag in the plotter.
- *
- * ********unfinished********what else is needed
- *
- * index: 0 = normal description of the tag: name, type, description.
- * index: 1 = referenced array labels
- *
- * @brief TagContainer::completeDescription returns
- * @return
- */
-QVector<QVector<QString>> TagContainer::completeDescription() {
-    QVector<QVector<QString>> desc;
-
-    QVector<QString> tagDesc;
-    tagDesc.append(QString::fromStdString(this->name()));
-    tagDesc.append(QString::fromStdString(this->type()));
-    tagDesc.append(QString::fromStdString(this->description()));
-
-    desc.append(tagDesc);
-
-    if (entity.canConvert<nix::Tag>()) {
-
-    } else if (entity.canConvert<nix::MultiTag>()) {
-
-    }
-
-    return desc;
-
-}
 
 QVariant TagContainer::getEntity() {
     return this->entity;
