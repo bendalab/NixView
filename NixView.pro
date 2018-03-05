@@ -61,7 +61,9 @@ SOURCES += main.cpp\
     searchform.cpp \
     db/projectmanager.cpp \
     views/projectnavigator.cpp \
-    db/projectindex.cpp
+    db/projectindex.cpp \
+    plotter/eventplotter.cpp
+
 
 
 HEADERS  += MainWindow.hpp \
@@ -107,7 +109,8 @@ HEADERS  += MainWindow.hpp \
     searchform.h \
     db/projectmanager.hpp \
     views/projectnavigator.hpp \
-    db/projectindex.hpp
+    db/projectindex.hpp \
+    plotter/eventplotter.h
 
 
 FORMS    += MainWindow.ui \
@@ -135,7 +138,8 @@ FORMS    += MainWindow.ui \
     dialogs/optionsdialog.ui \
     dialogs/filepropertiesdialog.ui \
     searchform.ui \
-    views/projectnavigator.ui
+    views/projectnavigator.ui \
+    plotter/eventplotter.ui
 
 #standard windows folder?
 #win32:CONFIG(release, debug|release): LIBS += /usr/local/lib/release/ -lnix

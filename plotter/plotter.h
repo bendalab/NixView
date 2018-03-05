@@ -13,7 +13,7 @@ namespace Ui {
 }
 
 enum class PlotterType : unsigned int {
-    Line, Category, Image, Unsupported
+    Line, Category, Image, Event, Unsupported
 };
 
 class Plotter {
@@ -222,24 +222,37 @@ public:
         size_t dim_count = array.dimensionCount();
         switch (dim_count) {
         case 1:
-            if (array.getDimension(1).dimensionType() == nix::DimensionType::Sample ||
-                    array.getDimension(1).dimensionType() == nix::DimensionType::Range) {
+            if (array.getDimension(1).dimensionType() == nix::DimensionType::Sample) {
                 return PlotterType::Line;
+            } else if (array.getDimension(1).dimensionType() == nix::DimensionType::Range) {
+               if (array.getDimension(1).asRangeDimension().alias()) {
+                   return PlotterType::Event;
+               } else {
+                   return PlotterType::Line;
+               }
             } else if (array.getDimension(1).dimensionType() == nix::DimensionType::Set) {
-               return PlotterType::Category;
+                return PlotterType::Category;
             }
             break;
         case 2:
-            if (array.getDimension(1).dimensionType() == nix::DimensionType::Sample ||
-                    array.getDimension(1).dimensionType() == nix::DimensionType::Range) {
-                if (array.getDimension(2).dimensionType() == nix::DimensionType::Set) {
-                    return PlotterType::Line;
-                } else {
-                    return PlotterType::Image;
-                }
-            } else {
+            if (array.getDimension(1).dimensionType() == nix::DimensionType::Sample) {
                 if (array.getDimension(2).dimensionType() == nix::DimensionType::Sample ||
-                      array.getDimension(1).dimensionType() == nix::DimensionType::Range) {
+                    array.getDimension(2).dimensionType() == nix::DimensionType::Range ) {
+                    return PlotterType::Image;
+                } else {
+                    return PlotterType::Line;
+                }
+            } else if (array.getDimension(1).dimensionType() == nix::DimensionType::Range) {
+                if (array.getDimension(2).dimensionType() == nix::DimensionType::Sample) {
+                    return PlotterType::Image;
+                } else if ( array.getDimension(2).dimensionType() == nix::DimensionType::Range) {
+                    return PlotterType::Image;
+                } else {
+                    return PlotterType::Line;
+                }
+            } else if (array.getDimension(1).dimensionType() == nix::DimensionType::Set) {
+                if (array.getDimension(2).dimensionType() == nix::DimensionType::Range ||
+                    array.getDimension(2).dimensionType() == nix::DimensionType::Range) {
                     return PlotterType::Line;
                 } else {
                     return PlotterType::Category;
