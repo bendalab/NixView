@@ -14,6 +14,7 @@ TagContainer::TagContainer(QVariant entity) {
 }
 TagContainer::TagContainer(){}
 
+
 std::vector<nix::Feature> TagContainer::features(){
     std::vector<nix::Feature> vec;
     if (entity.canConvert<nix::Tag>()) {
@@ -36,67 +37,76 @@ std::vector<nix::DataArray> TagContainer::references() {
 }
 
 
-QVector<QVector<double>> TagContainer::positions() {
-    QVector<QVector<double>> positions;
-    if (entity.canConvert<nix::Tag>()) {
+QVector<double> TagContainer::positions(unsigned int index) {
+    QVector<double> positions;
+
+    if (index >= tagCount()) {
+        std::cerr << "TagContainer::positions() - Index is bigger than the tagCount()." << std::endl;
+        return positions;
+    }
+
+    if (entity.canConvert<nix::Tag>()) { // index has to be 0.
         std::vector<double> pos = entity.value<nix::Tag>().position();
-        positions.append(QVector<double>::fromStdVector(pos));
+        positions = QVector<double>::fromStdVector(pos);
+        return positions;
 
     } else if (entity.canConvert<nix::MultiTag>()) {
         nix::DataArray array = entity.value<nix::MultiTag>().positions();
 
 
-        if (array.dimensionCount() == 1) {
-            std::cerr << "tagContainer::positions() array dimCount = 1." << std::endl;
+        if (array.dataExtent().size() == 1) { // index has to be 0.
             std::vector<double> data = std::vector<double>(array.dataExtent()[0]);
             array.getData(nix::DataType::Double, data.data(), {array.dataExtent()[0]}, {0});
-            positions.append(QVector<double>::fromStdVector(data));
-        } else if (array.dimensionCount() == 2) {
-            std::cerr << "tagContainer::positions() array dimCount = 2." << std::endl;
-            QVector<double> data;
-            for (unsigned int i=0; i<array.dataExtent()[1]; i++) {
-               data = Plotter::get_data_line(array, i, 1);
-               positions.append(data);
-            }
+            positions = QVector<double>::fromStdVector(data);
+            return positions;
+
+        } else if (array.dimensionCount() == 2) {     
+               positions = Plotter::get_data_line(array, index, 1);
+               return positions;
 
         } else {
             std::cerr << "Tagcontainer::positions(): can't handle arrays with more than 2 dimensions." << std::endl;
         }
-
     }
     return positions;
 }
 
 
-QVector<QVector<double>> TagContainer::extents() {
-    QVector<QVector<double>> extents;
+QVector<double> TagContainer::extents(unsigned int index) {
+    QVector<double> extents;
+
+    if (index >= tagCount()) {
+        std::cerr << "TagContainer::extents() - Index is bigger than the tagCount()." << std::endl;
+        return extents;
+    }
+
     if(this->hasExtents()) {
         if (entity.canConvert<nix::Tag>()) {
             std::vector<double> ext = entity.value<nix::Tag>().extent();
-            extents.append(QVector<double>::fromStdVector(ext));
+            extents = QVector<double>::fromStdVector(ext);
+            return extents;
 
         } else if (entity.canConvert<nix::MultiTag>()) {
             nix::DataArray array = entity.value<nix::MultiTag>().extents();
+
             if(array.dataExtent().size() == 1) {
-                std::cerr << "tagContainer::extents() array dimCount = 1." << std::endl;
                 std::vector<double> data = std::vector<double>(array.dataExtent()[0]);
                 array.getData(nix::DataType::Double, data.data(), {array.dataExtent()[0]}, {0});
-                extents.append(QVector<double>::fromStdVector(data));
+                extents = QVector<double>::fromStdVector(data);
+                return extents;
+
             } else if(array.dataExtent().size() == 2 ) {
-                std::cerr << "tagContainer::extents() array dimCount = 2." << std::endl;
-                QVector<double> ext;
-                for (unsigned int i=0; i<array.dataExtent()[1]; i++) {
-                   ext = Plotter::get_data_line(array, i, 1);
-                   extents.append(ext);
-                }
+                extents = Plotter::get_data_line(array, index, 1);
+                return extents;
 
             } else {
-                std::cerr << "TagContainer::extents cannot handle more than 2 dimensions." << std::endl;
+                std::cerr << "TagContainer::extents(): cannot handle more than 2 dimensions." << std::endl;
             }
         }
     }
     return extents;
 }
+
 
 bool TagContainer::hasExtents() {
     if (entity.canConvert<nix::Tag>()) {
@@ -140,7 +150,8 @@ std::string TagContainer::description() {
     return description;
 }
 
-void TagContainer::refLabels(QString &ylabel, QVector<QString> &xlabels, int index) {
+
+void TagContainer::refLabels(QString &ylabel, QVector<QString> &xlabels, unsigned int index) {
     if(index >= refCount()) {
         std::cerr << "TagContainer::refLabels() - Index bigger than refCount." << std::endl;
         return;
@@ -155,7 +166,8 @@ void TagContainer::refLabels(QString &ylabel, QVector<QString> &xlabels, int ind
     }
 }
 
-void TagContainer::tagLabels(QString &ylabel, QVector<QString> &xlabels, int index) {
+
+void TagContainer::tagLabels(QString &ylabel, QVector<QString> &xlabels, unsigned int index) {
     if(index >= tagCount()) {
         std::cerr << "TagContainer::tagLabels() - Index bigger than tagCount." << std::endl;
         return;
@@ -166,8 +178,9 @@ void TagContainer::tagLabels(QString &ylabel, QVector<QString> &xlabels, int ind
 
 }
 
+
 // TODO? labels depending on linktype ?
-void TagContainer::featureLabels(QString &ylabel, QVector<QString> &xlabels, int index) {
+void TagContainer::featureLabels(QString &ylabel, QVector<QString> &xlabels, unsigned int index) {
     if(index >= featureCount()) {
         std::cerr << "TagContainer::featureLabels() - Index bigger than featureCount." << std::endl;
         return;
@@ -178,7 +191,8 @@ void TagContainer::featureLabels(QString &ylabel, QVector<QString> &xlabels, int
 
 }
 
-int TagContainer::refCount() {
+
+unsigned int TagContainer::refCount() {
     if (entity.canConvert<nix::Tag>()) {
         return entity.value<nix::Tag>().referenceCount();
     } else if (entity.canConvert<nix::MultiTag>()) {
@@ -187,7 +201,8 @@ int TagContainer::refCount() {
     return -1;
 }
 
-int TagContainer::tagCount() {
+
+unsigned int TagContainer::tagCount() {
     if (entity.canConvert<nix::Tag>()) {
         return 1;
     } else if (entity.canConvert<nix::MultiTag>()) {
@@ -201,7 +216,8 @@ int TagContainer::tagCount() {
     return -1;
 }
 
-int TagContainer::featureCount() {
+
+unsigned int TagContainer::featureCount() {
     if (entity.canConvert<nix::Tag>()) {
         return entity.value<nix::Tag>().featureCount();
     } else if (entity.canConvert<nix::MultiTag>()) {

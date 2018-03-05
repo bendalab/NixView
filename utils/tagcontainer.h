@@ -19,18 +19,18 @@ public:
     std::string type();
     std::vector<nix::DataArray> references();
     std::vector<nix::Feature> features();
-    QVector<QVector<double>> positions();
+    QVector<double> positions(unsigned int index);
     bool hasExtents();
-    QVector<QVector<double>> extents();
+    QVector<double> extents(unsigned int index);
     std::string description();
 
 
-    void refLabels(QString &ylabel, QVector<QString> &xlabels, int index);
-    void tagLabels(QString &ylabel, QVector<QString> &xlabels, int index);
-    void featureLabels(QString &ylabel, QVector<QString> &xlabels, int index);
+    void refLabels(QString &ylabel, QVector<QString> &xlabels, unsigned int index);
+    void tagLabels(QString &ylabel, QVector<QString> &xlabels, unsigned int index);
+    void featureLabels(QString &ylabel, QVector<QString> &xlabels, unsigned int index);
 
-    int refCount();
-    int tagCount();
-    int featureCount();
+    unsigned int refCount();
+    unsigned int tagCount();
+    unsigned int featureCount();
 };
 #endif // TAGCONTAINER_H
