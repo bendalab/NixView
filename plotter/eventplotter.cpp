@@ -19,25 +19,29 @@ EventPlotter::EventPlotter(QWidget *parent) :
 
     ui->plot->axisRect()->setRangeZoom(ui->plot->xAxis->orientation());
     ui->plot->axisRect()->setRangeDrag(ui->plot->xAxis->orientation());
-
 }
+
 
 EventPlotter::~EventPlotter() {
     delete ui;
 }
 
+
 PlotterType EventPlotter::plotter_type() const {
     return PlotterType::Event;
 }
+
 
 void EventPlotter::set_label(const std::string &label) {
     //ui->label->setText(QString::fromStdString(label));
 }
 
+
 // To be routed to the x-Axis Plotter
 void EventPlotter::set_xlabel(const std::string &label) {
     set_xlabel(QString::fromStdString(label));
 }
+
 
 void EventPlotter::set_xlabel(const QString &label){
     ui->plot->xAxis->setLabel(label);
@@ -57,27 +61,27 @@ void EventPlotter::set_ylabel(const QString &label){
 
 
 void EventPlotter::add_events(const QVector<double> &x_data, const QVector<double> &y_data, const QString &name, bool y_scale) {
-
+    plot(x_data);
 }
+
 
 void EventPlotter::add_segments(const QVector<double> &positions, const QVector<double> &extents, const QString &name) {
-
+    plot(positions, extents);
 }
+
 
 QCustomPlot* EventPlotter::get_plot() {
     return ui->plot;
 }
 
 
-void EventPlotter::draw(const QVector<QVector<double>> &positions, const QVector<QVector<QString>> &name) {
-//    if(! checkDimensions(positions)) {
-//        return;
-//    }
+void EventPlotter::draw(const QVector<double> &positions, const QString &ylabel, const QVector<QString> &xlabels) {
+    set_xlabel(xlabels[0]);
+    set_ylabel(ylabel);
 
-    for (int i = 0; i < positions.size(); i++) {
-        plot(positions[i]);
-    }
+    plot(positions);
 }
+
 
 void EventPlotter::plot(const QVector<double> &positions) {
     ui->plot->addGraph();
@@ -106,14 +110,11 @@ void EventPlotter::plot(const QVector<double> &positions) {
     ui->plot->replot();
 }
 
-void EventPlotter::draw(const QVector<QVector<double>> &positions, const QVector<QVector<double>> &extends, const QVector<QVector<QString>> &name) {
-//    if( ! checkDimensions(positions, extends)) {
-//        return;
-//    }
+void EventPlotter::draw(const QVector<double> &positions, const QVector<double> &extents, const QString &ylabel, const QVector<QString> &xlabels) {
+    set_xlabel(xlabels[0]);
+    set_ylabel(ylabel);
 
-    for (int i = 0; i < positions.size(); i++) {
-        plot(positions[i], extends[i]);
-    }
+    plot(positions, extents);
 }
 
 void EventPlotter::plot(const QVector<double> &positions, const QVector<double> &extends) {
@@ -126,10 +127,10 @@ void EventPlotter::plot(const QVector<double> &positions, const QVector<double> 
     QVector<double> yValues = QVector<double>(4*positions.size());
 
     for(int i = 0; i < positions.size(); i++) {
-        xValues[4*i]   = positions[i];
+        xValues[4*i]   = positions[i]-(1.0/80000);
         xValues[4*i+1] = positions[i];
         xValues[4*i+2] = positions[i] + extends[i];
-        xValues[4*i+3] = positions[i] + extends[i];
+        xValues[4*i+3] = positions[i] + extends[i]+(1.0/80000);
 
         yValues[4*i]   = 0;
         yValues[4*i+1] = 1;
@@ -142,48 +143,4 @@ void EventPlotter::plot(const QVector<double> &positions, const QVector<double> 
     ui->plot->yAxis->setRange(-1.1,1.1);
     ui->plot->replot();
 }
-
-
-
-//bool EventPlotter::checkDimensions(QVector<QVector<double>> &positions, QVector<QVector<double>> &extends) {
-
-
-//    if(extends.dataExtent().size() == positions.dataExtent().size() && positions.dataExtent().size() > 2) {
-//        std::cerr << "Eventplotter::draw positions and extends dont have the same number of dims or more than 2." << std::endl;
-//        return false;
-//    }
-
-//    for(unsigned int i = 0; i < positions.size(); i++) {
-//        if(positions[i].size() != extends[i].size()) {
-//            std::cerr << "Eventplotter::draw positions and extends dont always have the same length." << std::endl;
-//            return false;
-//        }
-//    }
-
-//    if(! Plotter::check_plottable_dtype(positions) || ! Plotter::check_plottable_dtype(extends)) {
-//        std::cerr << "Eventplotter::draw cannot handle that data type. (extends)" << std::endl;
-//        return false;
-//    }
-
-//    return true;
-//}
-
-//bool EventPlotter::checkDimensions(const nix::DataArray &positions) {
-//    if(positions.dataExtent().size() > 2) {
-//        std::cerr << "Eventplotter::draw positions has more than 2 dimensions." << std::endl;
-//        return false;
-//    }
-//    if(! Plotter::check_plottable_dtype(positions)) {
-//        std::cerr << "Eventplotter::draw cannot handle that data type. (positions)" << std::endl;
-//        return false;
-//    }
-
-//    return true;
-//}
-
-
-
-
-
-
 

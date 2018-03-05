@@ -17,8 +17,8 @@ public:
     explicit EventPlotter(QWidget *parent = 0);
     ~EventPlotter();
 
-    void draw(const QVector<QVector<double>> &positions, const QVector<QVector<QString>> &names);
-    void draw(const QVector<QVector<double>> &positions, const QVector<QVector<double>> &extends , const QVector<QVector<QString>> &names);
+    void draw(const QVector<double> &positions, const QString &ylabel, const QVector<QString> &xlabels);
+    void draw(const QVector<double> &positions, const QVector<double> &extents, const QString &ylabel, const QVector<QString> &xlabels);
 
     bool check_dimension(const nix::DataArray &array) const;
 
@@ -44,8 +44,6 @@ private:
     Ui::EventPlotter *ui;
     ColorMap cmap;
 
-    //bool checkDimensions(QVector<QVector<double>> &positions, QVector<QVector<double>> &extends);
-    //bool checkDimensions(QVector<QVector<double>> &positions);
     void plot(const QVector<double> &positions);
     void plot(const QVector<double> &positions, const QVector<double> &extends);
 
