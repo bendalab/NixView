@@ -8,31 +8,13 @@
 #include <QListWidget>
 #include "model/NixModelItem.hpp"
 #include "utils/entitydescriptor.h"
+#include "utils/tagcontainer.h"
 
 namespace Ui {
 class TagView;
 }
 
 class PlotWidget;
-
-
-class TagContainer {
-public:
-    TagContainer();
-    TagContainer(QVariant entity);
-
-private:
-    QVariant entity;
-
-public:
-    QVariant getEntity();
-    std::string name();
-    std::string type();
-    std::vector<nix::DataArray> references();
-    std::vector<nix::Feature> features();
-    std::string description();
-};
-
 
 class TagView : public QScrollArea
 {
@@ -52,7 +34,6 @@ public slots:
 
 private:
     Ui::TagView *ui;
-    //nix::Tag tag;
     QMap<int, int> feature_map, reference_map;
     TagContainer tag;
 
