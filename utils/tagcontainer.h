@@ -24,7 +24,6 @@ public:
     QVector<double> extents(unsigned int index);
     std::string description();
 
-
     void refLabels(QString &ylabel, QVector<QString> &xlabels, unsigned int index);
     void tagLabels(QString &ylabel, QVector<QString> &xlabels, unsigned int index);
     void featureLabels(QString &ylabel, QVector<QString> &xlabels, unsigned int index);

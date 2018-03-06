@@ -5,13 +5,12 @@
 #include "plotter/plotwidget.h"
 
 TagContainer::TagContainer(QVariant entity) {
-    if (entity.canConvert<nix::Tag>() ||entity.canConvert<nix::MultiTag>()) {
-        this->entity = entity;
-    } else {
-        std::cerr << "TagContainer() - Exeption: None tag entity in TagContainer." << std::endl;
-        this->entity = entity;
+    if ( ! entity.canConvert<nix::Tag>() && ! entity.canConvert<nix::MultiTag>()) {
+        std::cerr << "TagContainer() - Exception: None tag entity in TagContainer." << std::endl;
     }
+    this->entity = entity;
 }
+
 TagContainer::TagContainer(){}
 
 
@@ -49,21 +48,16 @@ QVector<double> TagContainer::positions(unsigned int index) {
         std::vector<double> pos = entity.value<nix::Tag>().position();
         positions = QVector<double>::fromStdVector(pos);
         return positions;
-
     } else if (entity.canConvert<nix::MultiTag>()) {
         nix::DataArray array = entity.value<nix::MultiTag>().positions();
-
-
         if (array.dataExtent().size() == 1) { // index has to be 0.
             std::vector<double> data = std::vector<double>(array.dataExtent()[0]);
             array.getData(nix::DataType::Double, data.data(), {array.dataExtent()[0]}, {0});
             positions = QVector<double>::fromStdVector(data);
             return positions;
-
         } else if (array.dimensionCount() == 2) {     
                positions = Plotter::get_data_line(array, index, 1);
                return positions;
-
         } else {
             std::cerr << "Tagcontainer::positions(): can't handle arrays with more than 2 dimensions." << std::endl;
         }
@@ -156,7 +150,6 @@ void TagContainer::refLabels(QString &ylabel, QVector<QString> &xlabels, unsigne
         std::cerr << "TagContainer::refLabels() - Index bigger than refCount." << std::endl;
         return;
     }
-
     if (entity.canConvert<nix::Tag>()) {
         Plotter::data_array_ax_labels(entity.value<nix::Tag>().references()[index],ylabel,xlabels);
         return;
@@ -172,23 +165,18 @@ void TagContainer::tagLabels(QString &ylabel, QVector<QString> &xlabels, unsigne
         std::cerr << "TagContainer::tagLabels() - Index bigger than tagCount." << std::endl;
         return;
     }
-
     refLabels(ylabel, xlabels, 0); // get xlabels from the first ref.
     ylabel = QString::fromStdString("Tag: " + name() + " " + std::to_string(index));
-
 }
 
 
-// TODO? labels depending on linktype ?
 void TagContainer::featureLabels(QString &ylabel, QVector<QString> &xlabels, unsigned int index) {
     if(index >= featureCount()) {
         std::cerr << "TagContainer::featureLabels() - Index bigger than featureCount." << std::endl;
         return;
     }
-
     nix::Feature f = features()[index];
     Plotter::data_array_ax_labels(f.data(),ylabel,xlabels);
-
 }
 
 
