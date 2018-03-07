@@ -2,6 +2,9 @@
 #define LOADTHREAD_H
 
 #include <QThread>
+#include <QMutex>
+#include <QWaitCondition>
+#include <nix.hpp>
 
 
 class LoadThread: public QThread
@@ -10,12 +13,24 @@ class LoadThread: public QThread
 
 public:
     LoadThread();
+    ~LoadThread();
 
     void run() override;
+    bool setVariables(const nix::DataArray &array, nix::NDSize start, nix::NDSize extend);
+
+private:
+    bool testInput(const nix::DataArray &array, nix::NDSize start, nix::NDSize extend);
 
 signals:
+    void dataReady(QVector<double> data, nix::NDSize start, nix::NDSize extend);
 
-    void resultsReady();
+private:
+    QMutex mutex;
+    QWaitCondition condition;
+    nix::DataArray &array;
+    nix::NDSize start;
+    nix::NDSize extend;
+    bool abort;
 
 };
 
