@@ -12,7 +12,7 @@ class LoadThread: public QThread
     Q_OBJECT
 
 public:
-    LoadThread();
+    LoadThread(QObject *parent = 0);
     ~LoadThread();
 
     void run() override;
@@ -27,7 +27,7 @@ signals:
 private:
     QMutex mutex;
     QWaitCondition condition;
-    nix::DataArray &array;
+    nix::DataArray array;
     nix::NDSize start;
     nix::NDSize extend;
     bool abort;

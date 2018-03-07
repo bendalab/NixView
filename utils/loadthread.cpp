@@ -1,8 +1,8 @@
 #include "loadthread.h"
+#include <QVector>
 
-LoadThread::LoadThread(QWidget *parent):
-    QThread(parent)
-{
+LoadThread::LoadThread(QObject *parent):
+    QThread(parent) {
     abort = false;
 }
 
@@ -16,7 +16,7 @@ LoadThread::~LoadThread() {
 }
 
 void LoadThread::run() {
-    QVector<double> data;
+    QVector<double> loadedData;
 
     while(true) {
         mutex.lock();
@@ -30,11 +30,11 @@ void LoadThread::run() {
             if(extend[0] > dataLength) // extend has to define 1d data (all 1 exept for one entry)
                 dataLength = extend[0];
         }
-        data = QVector<double>(dataLength);
+        loadedData.resize(dataLength);
 
-        array.getData(array.dataType(),data.data(),extend, start);
+        array.getData(array.dataType(),loadedData.data(),extend, start);
 
-        emit dataReady(data, start, extend);
+        emit dataReady(loadedData, start, extend);
         condition.wait(&mutex);
 
         if(abort) {
@@ -86,4 +86,6 @@ bool LoadThread::testInput(const nix::DataArray &array, nix::NDSize start, nix::
     if(! Dataload1d) {
         std::cerr << "DataThread::testInput(): using DataThread to load a single datum." << std::endl;
     }
+
+    return true;
 }
