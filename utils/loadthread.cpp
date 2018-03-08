@@ -15,6 +15,7 @@ LoadThread::~LoadThread() {
     wait();
 }
 
+
 void LoadThread::run() {
     QVector<double> loadedData;
 
@@ -34,9 +35,11 @@ void LoadThread::run() {
 
         array.getData(array.dataType(),loadedData.data(),extend, start);
 
-        emit dataReady(loadedData, start, extend);
-        condition.wait(&mutex);
+        emit dataReady(loadedData);
 
+        mutex.lock();
+        condition.wait(&mutex);
+        mutex.unlock();
         if(abort) {
             return;
         }
@@ -44,20 +47,25 @@ void LoadThread::run() {
 }
 
 
-
-bool LoadThread::setVariables(const nix::DataArray &array, nix::NDSize start, nix::NDSize extend) {
+void LoadThread::setVariables(const nix::DataArray &array, nix::NDSize start, nix::NDSize extend) {
     if(! testInput(array, start, extend)) {
-        return false;
+        std::cerr << "LoadThread::setVariables(): Input not correct." << std::endl;
+        return;
     }
 
-    mutex.lock();
+    QMutexLocker locker(&mutex); // locks the members and unlocks them when it goes out of scope.
+
     this->array = array;
     this->start = start;
     this->extend = extend;
-    condition.wakeOne();
-    mutex.unlock();
-    return true;
+
+    if(! isRunning()) {
+        QThread::start(LowPriority);
+    } else {
+        condition.wakeOne();
+    }
 }
+
 
 bool LoadThread::testInput(const nix::DataArray &array, nix::NDSize start, nix::NDSize extend) {
     nix::NDSize size = array.dataExtent();
@@ -73,7 +81,7 @@ bool LoadThread::testInput(const nix::DataArray &array, nix::NDSize start, nix::
             return false;
         }
 
-        if(extend[i] != 1) { // extend has to define 1d data (all 1 exept for one entry)
+        if(extend[i] > 1) { // extend has to define 1d data (all 1 exept for one entry)
             if (Dataload1d) {
                 std::cerr << "DataThread::testInput(): extend defines data that is more than one dimensional." << std::endl;
                 return false;
@@ -82,7 +90,6 @@ bool LoadThread::testInput(const nix::DataArray &array, nix::NDSize start, nix::
             }
         }
     }
-
     if(! Dataload1d) {
         std::cerr << "DataThread::testInput(): using DataThread to load a single datum." << std::endl;
     }
