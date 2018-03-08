@@ -3,7 +3,7 @@
 #include <QMenu>
 
 LinePlotter::LinePlotter(QWidget *parent, int numOfPoints) :
-    QWidget(parent), ui(new Ui::LinePlotter), cmap(), totalXRange(0,0), totalYRange(0,0) {
+    QWidget(parent), ui(new Ui::LinePlotter), cmap(), totalXRange(0,0), totalYRange(0,0), loader() {
     ui->setupUi(this);
     // connect slot that ties some axis selections together (especially opposite axes):
     connect(ui->plot, SIGNAL(selectionChangedByUser()), this, SLOT(selection_changed()));
@@ -21,6 +21,8 @@ LinePlotter::LinePlotter(QWidget *parent, int numOfPoints) :
     connect(ui->plot->xAxis, SIGNAL(rangeChanged(QCPRange)), this, SLOT(xAxisNewRange(QCPRange)));
     connect(ui->plot->yAxis, SIGNAL(rangeChanged(QCPRange)), this, SLOT(yAxisNewRange(QCPRange)));
 
+    connect(&loader, SIGNAL(dataReady(const QVector<double> &)), this, SLOT(drawThreadData(const QVector<double> &)));
+    qRegisterMetaType<QVector<double>>();
 
     this->numOfPoints = numOfPoints; // standard 100 000
 
@@ -90,7 +92,10 @@ void LinePlotter::draw_1d(const nix::DataArray &array) {
     nix::Dimension d = array.getDimension(1);
     QVector<double> x_axis, y_axis;
     QVector<QString> x_tick_labels;
-    data_array_to_qvector(array, x_axis, y_axis, x_tick_labels, 1);
+
+    loader.setVariables(array, {0}, {array.dataExtent()[0]});
+    /*
+     * data_array_to_qvector(array, x_axis, y_axis, x_tick_labels, 1);
 
     QString y_label;
     QVector<QString> ax_labels;
@@ -107,6 +112,7 @@ void LinePlotter::draw_1d(const nix::DataArray &array) {
         this->set_xlabel(ax_labels[0]);
         this->set_label(array.name());
     }
+*/
 }
 
 
@@ -253,6 +259,16 @@ void LinePlotter::setYRange(QVector<double> yData) {
     //emit yAxisNewRange(ui->plot->yAxis->range());
 }
 
+
+void LinePlotter::drawThreadData(const QVector<double> &data) {
+
+    QVector<double> yData = QVector<double>(data.size());
+    for(int i=0; i<yData.size(); i++) {
+        yData[i] = i;
+    }
+
+    add_line_plot(yData, data, QString::fromStdString("Testing Thread nonsense y-values"));
+}
 
 void LinePlotter::resetView() {
     QCPDataContainer<QCPGraphData> data = *ui->plot->graph()->data().data();

@@ -5,6 +5,7 @@
 #include "plotter.h"
 #include <nix.hpp>
 #include "colormap.hpp"
+#include "utils/loadthread.h"
 
 namespace Ui {
     class LinePlotter;
@@ -53,6 +54,7 @@ private:
     int numOfPoints;
     QCPRange totalXRange;
     QCPRange totalYRange;
+    LoadThread loader;
 
     QCustomPlot* get_plot() override;
     void setXRange(QVector<double> xData);
@@ -64,6 +66,7 @@ signals:
     void anyAxisChanged(QCPRange xNow, QCPRange xComplete); // for zoom slider
 
 public slots:
+    void drawThreadData(const QVector<double> &data);
     void resetView();
 
     void xAxisNewRange(QCPRange newRange);
