@@ -150,11 +150,11 @@ int LinePlotter::guess_best_xdim(const nix::DataArray &array) const {
 
 
 bool LinePlotter::check_dimensions(const nix::DataArray &array) const {
-    if (array.dimensionCount() == 0) {
+    if (array.dimensionCount() == 0 || array.dimensionCount() > 2) {
         return false;
     }
-    if (array.dimensionCount() == 1) {
-        return true;
+    if (array.dimensionCount() == 1 && array.getDimension(1).dimensionType() == nix::DimensionType::Set) {
+        return false;
     }
     nix::DimensionType dt_1 = array.getDimension(1).dimensionType();
     nix::DimensionType dt_2 = array.getDimension(2).dimensionType();
@@ -166,7 +166,7 @@ bool LinePlotter::check_dimensions(const nix::DataArray &array) const {
     }
     if (dt_1 == nix::DimensionType::Set && dt_2 == nix::DimensionType::Set) {
         std::cerr << "LinePlotter should draw 2D Set data? You serious?" << std::endl;
-        return true;
+        return false;
     }
     return false;
 }
