@@ -4,6 +4,13 @@
 LoadThread::LoadThread(QObject *parent):
     QThread(parent) {
     abort = false;
+    chunksize = 100000;
+}
+
+LoadThread::LoadThread(QObject *parent, unsigned int chunksize):
+    QThread(parent) {
+    abort = false;
+    this->chunksize = chunksize;
 }
 
 LoadThread::~LoadThread() {
@@ -24,16 +31,42 @@ void LoadThread::run() {
         nix::DataArray array = this->array;
         nix::NDSize start = this->start;
         nix::NDSize extend = this->extend;
+        unsigned int chunksize = this->chunksize;
         mutex.unlock();
 
-        uint dataLength = 0;
-        for (uint i=0; i<extend.size(); i++) {
-            if(extend[0] > dataLength) // extend has to define 1d data (all 1 exept for one entry)
-                dataLength = extend[0];
-        }
-        loadedData.resize(dataLength);
 
-        array.getData(array.dataType(),loadedData.data(),extend, start);
+        unsigned int dataLength = 1;
+        int readDim =0;
+        unsigned int offset = start[0];
+        for (unsigned int i=0; i<extend.size(); i++) {
+            if(extend[i] > 1) // extend has to define 1d data (all entries 1 exept for one)
+                dataLength = extend[i];
+                readDim = static_cast<int>(i);
+                offset = start[i];
+        }
+
+        int totalChunks;
+        if( dataLength / chunksize == static_cast<double>(dataLength) / chunksize) {
+            totalChunks = dataLength / chunksize;
+        } else {
+            totalChunks = dataLength / chunksize + 1;
+        }
+
+        extend[readDim] = chunksize;
+        QVector<double> chunkdata(chunksize);
+        //totalChunks * (File.IO (getdata) + resize loadedData + append) -- work
+        for (int i=0; i<=totalChunks; i++) {
+
+            if(i == totalChunks) {
+                extend[readDim] = dataLength - (totalChunks-1) * chunksize;
+                chunkdata.resize(dataLength - (totalChunks-1) * chunksize);
+            }
+            start[readDim] = offset + i * chunksize;
+            array.getData(array.dataType(),chunkdata.data(),extend, start);
+
+            loadedData.append(chunkdata);
+            emit(progress(static_cast<double>(i)/chunksize));
+        }
 
         emit dataReady(loadedData);
 
@@ -64,6 +97,12 @@ void LoadThread::setVariables(const nix::DataArray &array, nix::NDSize start, ni
     } else {
         condition.wakeOne();
     }
+}
+
+bool LoadThread::setChuncksize(unsigned int size) {
+    mutex.lock();
+    chunksize = size;
+    mutex.unlock();
 }
 
 
