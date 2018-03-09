@@ -49,18 +49,17 @@ void LoadThread::run() {
 
         extend[readDim] = chunksize;
         QVector<double> chunkdata(chunksize);
-        //totalChunks * (File.IO (getdata) + resize loadedData + append) -- work
-        for (int i=0; i<=totalChunks; i++) {
+        for (int i=0; i<totalChunks; i++) {
 
-            if(i == totalChunks) {
-                extend[readDim] = dataLength - (totalChunks-1) * chunksize;
-                chunkdata.resize(dataLength - (totalChunks-1) * chunksize);
+            if(i == totalChunks-1) {
+                extend[readDim] = (dataLength - (totalChunks-1) * chunksize);
+                chunkdata.resize((dataLength - (totalChunks-1) * chunksize));
             }
             start[readDim] = offset + i * chunksize;
             array.getData(array.dataType(),chunkdata.data(),extend, start);
 
             loadedData.append(chunkdata);
-            emit(progress(static_cast<double>(i)/chunksize));
+            emit(progress(static_cast<double>(i)/totalChunks)); //starts with 0 ends with one step below 1
         }
 
         emit dataReady(loadedData);
