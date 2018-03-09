@@ -12,8 +12,7 @@ class LoadThread: public QThread
     Q_OBJECT
 
 public:
-    LoadThread(QObject *parent = 0);
-    LoadThread(QObject *parent = 0, unsigned int chunksize);
+    LoadThread(QObject *parent = 0, unsigned int chunksize =100000);
     ~LoadThread();
 
     void run() override;

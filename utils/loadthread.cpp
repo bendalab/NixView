@@ -1,11 +1,6 @@
 #include "loadthread.h"
 #include <QVector>
 
-LoadThread::LoadThread(QObject *parent):
-    QThread(parent) {
-    abort = false;
-    chunksize = 100000;
-}
 
 LoadThread::LoadThread(QObject *parent, unsigned int chunksize):
     QThread(parent) {
@@ -99,7 +94,7 @@ void LoadThread::setVariables(const nix::DataArray &array, nix::NDSize start, ni
     }
 }
 
-bool LoadThread::setChuncksize(unsigned int size) {
+void LoadThread::setChuncksize(unsigned int size) {
     mutex.lock();
     chunksize = size;
     mutex.unlock();
