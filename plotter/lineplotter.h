@@ -67,6 +67,7 @@ signals:
 
 public slots:
     void drawThreadData(const QVector<double> &data);
+    void printProgress(double progress);
     void resetView();
 
     void xAxisNewRange(QCPRange newRange);

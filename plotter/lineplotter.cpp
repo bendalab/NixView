@@ -22,10 +22,10 @@ LinePlotter::LinePlotter(QWidget *parent, int numOfPoints) :
     connect(ui->plot->yAxis, SIGNAL(rangeChanged(QCPRange)), this, SLOT(yAxisNewRange(QCPRange)));
 
     connect(&loader, SIGNAL(dataReady(const QVector<double> &)), this, SLOT(drawThreadData(const QVector<double> &)));
+    connect(&loader, SIGNAL(progress(double)), this, SLOT(printProgress(double)));
     qRegisterMetaType<QVector<double>>();
 
     this->numOfPoints = numOfPoints; // standard 100 000
-
 }
 
 
@@ -153,14 +153,20 @@ bool LinePlotter::check_dimensions(const nix::DataArray &array) const {
     if (array.dimensionCount() == 0 || array.dimensionCount() > 2) {
         return false;
     }
+
     if (array.dimensionCount() == 1 && array.getDimension(1).dimensionType() == nix::DimensionType::Set) {
         return false;
+    } else if(array.dimensionCount() == 1) {
+        return true;
     }
+
     nix::DimensionType dt_1 = array.getDimension(1).dimensionType();
     nix::DimensionType dt_2 = array.getDimension(2).dimensionType();
+
     if ((dt_1 == nix::DimensionType::Sample || dt_1 == nix::DimensionType::Range) && dt_2 == nix::DimensionType::Set) {
         return true;
     }
+
     if (dt_1 == nix::DimensionType::Set && (dt_2 == nix::DimensionType::Range || dt_2 == nix::DimensionType::Sample)) {
         return true;
     }
@@ -268,6 +274,10 @@ void LinePlotter::drawThreadData(const QVector<double> &data) {
     }
 
     add_line_plot(yData, data, QString::fromStdString("Testing Thread nonsense y-values"));
+}
+
+void LinePlotter::printProgress(double progress) {
+    std::cerr << "Loaded: " << progress*100 << "%" << std::endl;
 }
 
 void LinePlotter::resetView() {
