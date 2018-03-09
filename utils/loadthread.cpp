@@ -40,6 +40,8 @@ void LoadThread::run() {
                 offset = start[i];
         }
 
+        loadedData.resize(dataLength);
+
         int totalChunks;
         if( dataLength / chunksize == static_cast<double>(dataLength) / chunksize) {
             totalChunks = dataLength / chunksize;
@@ -58,7 +60,11 @@ void LoadThread::run() {
             start[readDim] = offset + i * chunksize;
             array.getData(array.dataType(),chunkdata.data(),extend, start);
 
-            loadedData.append(chunkdata);
+            //loadedData.append(chunkdata);
+            for (int j=0; j<chunkdata.size(); j++) {
+                loadedData[(i*chunksize)+j] = chunkdata[j];
+            }
+
             emit(progress(static_cast<double>(i)/totalChunks)); //starts with 0 ends with one step below 1
         }
 
