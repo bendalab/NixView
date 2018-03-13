@@ -28,10 +28,13 @@ before_install:
     fi
 
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then
-    sudo apt-get install -qq;
     sudo apt-get install -q gcc-4.8 g++-4.8 libstdc++-4.8-dev libboost-all-dev -y;
     sudo apt-get install libcppunit-dev libboost-all-dev libhdf5-serial-dev libhdf5-dev libhdf5-7 -y;
-    sudo apt-get install qt5-default qttools5-dev-tools -y;
+        
+    sudo apt-add-repository ppa:beineri/opt-qt562-trusty -y;
+    sudo apt-get update;
+    sudo apt-get install qt56-meta-minimal qt56x11extras -y;
+    
     sudo add-apt-repository ppa:gnode/nix -y;
     sudo apt-get update;
     sudo apt-get install libnix-dev -y;
@@ -50,6 +53,8 @@ install:
 
 script: 
   - if [  "$TRAVIS_OS_NAME" == "linux" ]; then
+    /opt/qt56/bin/qt56-env.sh;
+    export CMAKE_PREFIX_PATH=/opt/qt56;
     cmake . && make;
     fi
   
