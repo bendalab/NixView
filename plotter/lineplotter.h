@@ -59,6 +59,7 @@ private:
     QCustomPlot* get_plot() override;
     void setXRange(QVector<double> xData);
     void setYRange(QVector<double> yData);
+    void calcStartExtent(const nix::DataArray &array, nix::NDSize &start_size, nix::NDSize& extent_size, int xDim);
 
 signals:
     void xAxisChanged(QCPRange xNow, QCPRange xComplete);

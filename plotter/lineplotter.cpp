@@ -115,6 +115,81 @@ void LinePlotter::draw_1d(const nix::DataArray &array) {
 */
 }
 
+void LinePlotter::calcStartExtent(const nix::DataArray &array, nix::NDSize &start_size, nix::NDSize& extent_size, int xDim) {
+    QCPRange curRange = ui->plot->xAxis->range();
+    nix::Dimension d = array.getDimension(xDim);
+
+    double start, extent;
+
+
+
+    if( d.dimensionType() == nix::DimensionType::Set) {
+        start = 0;
+        extent = array.dataExtent()[xDim-1];
+    } else {
+        double pInRange;
+        double startIndex;
+
+        if( d.dimensionType() == nix::DimensionType::Sample) {
+            nix::SampledDimension spd = d.asSampledDimension();
+            double samplingIntervall = spd.samplingInterval();
+            double offset = 0;
+            if(spd.offset()) {
+                offset = spd.offset().value();
+            }
+
+            startIndex = (curRange.lower - offset) / samplingIntervall;
+            pInRange = ui->plot->xAxis->range().size() / samplingIntervall;
+
+        } else { // rangeDimension
+            nix::RangeDimension rd = d.asRangeDimension();
+            std::vector<double> ticks = rd.ticks();
+            startIndex = std::distance(ticks.cbegin(), std::lower_bound(ticks.cbegin(), ticks.cend(), curRange.lower));
+            pInRange   = std::distance(ticks.cbegin(), std::upper_bound(ticks.cbegin(), ticks.cend(), curRange.upper)) - startIndex;
+        }
+
+        if(pInRange < numOfPoints) {
+            start  = startIndex - numOfPoints;
+            extent =  numOfPoints + pInRange + numOfPoints;
+
+        } else if (pInRange > numOfPoints && pInRange < numOfPoints * 3) {
+            start  = startIndex - numOfPoints / 2;
+            extent = pInRange + numOfPoints; //numOfPoints/2 + pInRange + numOfPoints/2
+        } else {
+            start  = startIndex;
+            extent = pInRange + 1;
+        }
+    }
+
+    start = std::floor(start);
+    extent = std::ceil(extent);
+
+    if(start < 0) {
+        start = 0;
+    }
+
+    if(extent > array.dataExtent()[xDim-1] - start) {
+        extent = array.dataExtent()[xDim-1] - start;
+    } else if(extent < 1) {
+        extent = 1;
+    }
+
+    if(array.dimensionCount() == 1) {
+        start_size = nix::NDSize({static_cast<int>(start)});
+        extent_size = nix::NDSize({static_cast<int>(extent)});
+    } else {
+        start_size = nix::NDSize({1, 1});
+        start_size[xDim-1] = std::floor(static_cast<int>(start));
+        extent_size = nix::NDSize({1,1});
+        extent_size[xDim-1] = std::floor(static_cast<int>(extent));
+    }
+
+    std::cerr << "start: " << start << std::endl;
+    std::cerr << "extent: " << extent << std::endl;
+
+
+}
+
 
 void LinePlotter::draw_2d(const nix::DataArray &array) {
     int best_dim = guess_best_xdim(array);
