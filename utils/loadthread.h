@@ -16,7 +16,6 @@ public:
     ~LoadThread();
 
     void run() override;
-    void setVariables(const nix::DataArray &array, nix::NDSize start, nix::NDSize extend);
     void setVariables(const nix::DataArray &array, nix::NDSize start, nix::NDSize extend, int index);
     void setChuncksize(unsigned int size);
 
@@ -25,9 +24,8 @@ private:
     bool testInput(const nix::DataArray &array, nix::NDSize start, nix::NDSize extend);
 
 signals:
-    void dataReady(const QVector<double> &data);
-    void progress(double percent);
     void dataReady(const QVector<double> &data, const QVector<double> &axis, int index);
+    void progress(double percent, int index);
 
 private:
     QMutex mutex;

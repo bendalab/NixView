@@ -124,7 +124,6 @@ void LoadThread::getAxis(const nix::DataArray &array, QVector<double> &axis, uns
 }
 
 
-void LoadThread::setVariables(const nix::DataArray &array, nix::NDSize start, nix::NDSize extend) {
 void LoadThread::setVariables(const nix::DataArray &array, nix::NDSize start, nix::NDSize extend, int index) {
     if(! testInput(array, start, extend)) {
         std::cerr << "LoadThread::setVariables(): Input not correct." << std::endl;
@@ -147,6 +146,11 @@ void LoadThread::setVariables(const nix::DataArray &array, nix::NDSize start, ni
 }
 
 void LoadThread::setChuncksize(unsigned int size) {
+    if(size == 0) {
+        std::cerr << "LoadThread::setChunksize(): Size can't be zero." << std::endl;
+        return;
+    }
+
     mutex.lock();
     chunksize = size;
     mutex.unlock();
