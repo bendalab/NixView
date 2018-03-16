@@ -21,7 +21,7 @@ LoadThread::~LoadThread() {
 void LoadThread::run() {
     QVector<double> loadedData;
 
-    while(true) {
+    while(! abort) {
         mutex.lock();
         nix::DataArray array = this->array;
         nix::NDSize start = this->start;
@@ -73,8 +73,6 @@ void LoadThread::run() {
         mutex.lock();
         condition.wait(&mutex);
         mutex.unlock();
-        if(abort) {
-            return;
     }
 }
 void LoadThread::getAxis(const nix::DataArray &array, QVector<double> &axis, unsigned int count, unsigned int offset, int xDim) {
