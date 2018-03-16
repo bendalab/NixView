@@ -29,6 +29,7 @@ void LoadThread::run() {
         mutex.lock();
         if(restart) {
             mutex.unlock();
+            restart=false;
             continue;
         }
 
