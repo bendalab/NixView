@@ -17,6 +17,7 @@ public:
 
     void run() override;
     void setVariables(const nix::DataArray &array, nix::NDSize start, nix::NDSize extend);
+    void setVariables(const nix::DataArray &array, nix::NDSize start, nix::NDSize extend, int index);
     void setChuncksize(unsigned int size);
 
 private:
@@ -26,6 +27,7 @@ private:
 signals:
     void dataReady(const QVector<double> &data);
     void progress(double percent);
+    void dataReady(const QVector<double> &data, const QVector<double> &axis, int index);
 
 private:
     QMutex mutex;
@@ -34,6 +36,7 @@ private:
     nix::NDSize start;
     nix::NDSize extend;
     unsigned int chunksize;
+    int index;
     bool abort;
 
 };

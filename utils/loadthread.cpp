@@ -27,6 +27,7 @@ void LoadThread::run() {
         nix::NDSize start = this->start;
         nix::NDSize extend = this->extend;
         unsigned int chunksize = this->chunksize;
+        int index = this->index;
         mutex.unlock();
 
 
@@ -39,6 +40,8 @@ void LoadThread::run() {
                 readDim = static_cast<int>(i);
                 offset = start[i];
         }
+        QVector<double> axis(0);
+            getAxis(array, axis, dataLength, offset, readDim +1);
 
         int totalChunks;
         if( dataLength / chunksize == static_cast<double>(dataLength) / chunksize) {
@@ -50,6 +53,7 @@ void LoadThread::run() {
         extend[readDim] = chunksize;
         QVector<double> chunkdata(chunksize);
         for (int i=0; i<totalChunks; i++) {
+            emit(progress(static_cast<double>(i)/totalChunks, index)); //starts with 0 ends with one step below 1
 
             if(i == totalChunks-1) {
                 extend[readDim] = (dataLength - (totalChunks-1) * chunksize);
@@ -61,6 +65,7 @@ void LoadThread::run() {
             loadedData.append(chunkdata);
 
             emit(progress(static_cast<double>(i)/totalChunks)); //starts with 0 ends with one step below 1
+            emit dataReady(loadedData, axis, index);
         }
 
         emit dataReady(loadedData);
@@ -88,6 +93,7 @@ void LoadThread::getAxis(const nix::DataArray &array, QVector<double> &axis, uns
 
 
 void LoadThread::setVariables(const nix::DataArray &array, nix::NDSize start, nix::NDSize extend) {
+void LoadThread::setVariables(const nix::DataArray &array, nix::NDSize start, nix::NDSize extend, int index) {
     if(! testInput(array, start, extend)) {
         std::cerr << "LoadThread::setVariables(): Input not correct." << std::endl;
         return;
@@ -98,6 +104,7 @@ void LoadThread::setVariables(const nix::DataArray &array, nix::NDSize start, ni
     this->array = array;
     this->start = start;
     this->extend = extend;
+    this->index = index;
 
     if(! isRunning()) {
         QThread::start(LowPriority);
