@@ -2,6 +2,7 @@
 #define LINEPLOTTER_H
 
 #include <QWidget>
+#include <QVector>
 #include "plotter.h"
 #include <nix.hpp>
 #include "colormap.hpp"
@@ -19,10 +20,6 @@ public:
     ~LinePlotter();
 
     void draw(const nix::DataArray &array);
-
-    void draw_1d(const nix::DataArray &array);
-
-    void draw_2d(const nix::DataArray &array);
 
     bool check_dimensions(const nix::DataArray &array) const;
 
@@ -54,12 +51,19 @@ private:
     int numOfPoints;
     QCPRange totalXRange;
     QCPRange totalYRange;
-    LoadThread loader;
+    QVector<nix::DataArray> arrays;
+    QVector<LoadThread*> loaders;
+    QVector<int> working;
+
+    void draw_1d(const nix::DataArray &array);
+
+    void draw_2d(const nix::DataArray &array);
 
     QCustomPlot* get_plot() override;
     void setXRange(QVector<double> xData);
     void setYRange(QVector<double> yData);
     void calcStartExtent(const nix::DataArray &array, nix::NDSize &start_size, nix::NDSize& extent_size, int xDim);
+    bool checkForMoreData(int graphIndex, int arrayIndex, double currentExtreme, bool higher);
 
 signals:
     void xAxisChanged(QCPRange xNow, QCPRange xComplete);
@@ -67,8 +71,9 @@ signals:
     void anyAxisChanged(QCPRange xNow, QCPRange xComplete); // for zoom slider
 
 public slots:
-    void drawThreadData(const QVector<double> &data);
+    void drawThreadData(const QVector<double> &data, const QVector<double> &axis, int graphIndex);
     void printProgress(double progress);
+    void checkGraphs(QCPRange range);
     void resetView();
 
     void xAxisNewRange(QCPRange newRange);
