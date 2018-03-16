@@ -70,6 +70,18 @@ void LoadThread::run() {
         mutex.unlock();
         if(abort) {
             return;
+    }
+}
+void LoadThread::getAxis(const nix::DataArray &array, QVector<double> &axis, unsigned int count, unsigned int offset, int xDim) {
+    nix::Dimension d = array.getDimension(xDim);
+    if(d.dimensionType() == nix::DimensionType::Sample) {
+        axis = QVector<double>::fromStdVector(d.asSampledDimension().axis(count, offset));
+    } else if(d.dimensionType() == nix::DimensionType::Range) {
+        axis = QVector<double>::fromStdVector(d.asRangeDimension().axis(count, offset));
+    } else {
+        axis.resize(count);
+        for (unsigned int i=0; i<count; i++) {
+            axis[0] = i+offset;
         }
     }
 }

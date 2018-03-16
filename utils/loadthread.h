@@ -20,6 +20,7 @@ public:
     void setChuncksize(unsigned int size);
 
 private:
+    void getAxis(const nix::DataArray &array, QVector<double> &axis, unsigned int count, unsigned int offset, int xDim);
     bool testInput(const nix::DataArray &array, nix::NDSize start, nix::NDSize extend);
 
 signals:
