@@ -1,10 +1,13 @@
 #include "loadthread.h"
 #include <QVector>
+#include <chrono>
+#include <thread>
 
 
 LoadThread::LoadThread(QObject *parent, unsigned int chunksize):
     QThread(parent) {
     abort = false;
+    restart = false;
     this->chunksize = chunksize;
 }
 
@@ -19,17 +22,22 @@ LoadThread::~LoadThread() {
 
 
 void LoadThread::run() {
-    QVector<double> loadedData;
 
     while(! abort) {
+
+        std::this_thread::sleep_for(std::chrono::milliseconds(50));
         mutex.lock();
+        if(restart) {
+            mutex.unlock();
+            continue;
+        }
+
         nix::DataArray array = this->array;
         nix::NDSize start = this->start;
         nix::NDSize extend = this->extend;
         unsigned int chunksize = this->chunksize;
         int index = this->index;
         mutex.unlock();
-
 
         unsigned int dataLength = 1;
         int readDim =0;
@@ -41,7 +49,14 @@ void LoadThread::run() {
                 offset = start[i];
         }
         QVector<double> axis(0);
+
+        try {
             getAxis(array, axis, dataLength, offset, readDim +1);
+        } catch(...) {
+            //Throws exceptions without wait time at the start.
+            //std::cerr << "getAxis is the problem!" << std::endl;
+            continue;
+        }
 
         int totalChunks;
         if( dataLength / chunksize == static_cast<double>(dataLength) / chunksize) {
@@ -51,8 +66,19 @@ void LoadThread::run() {
         }
 
         extend[readDim] = chunksize;
+        QVector<double> loadedData;
         QVector<double> chunkdata(chunksize);
+        bool brokenData = false;
         for (int i=0; i<totalChunks; i++) {
+            mutex.lock();
+            if(restart) {
+                //std::cerr << "saved time" << std::endl;
+                brokenData = true;
+                mutex.unlock();
+                break;
+            }
+            mutex.unlock();
+
             emit(progress(static_cast<double>(i)/totalChunks, index)); //starts with 0 ends with one step below 1
 
             if(i == totalChunks-1) {
@@ -60,21 +86,29 @@ void LoadThread::run() {
                 chunkdata.resize((dataLength - (totalChunks-1) * chunksize));
             }
             start[readDim] = offset + i * chunksize;
+
             array.getData(array.dataType(),chunkdata.data(),extend, start);
 
             loadedData.append(chunkdata);
+            }
 
-            emit(progress(static_cast<double>(i)/totalChunks)); //starts with 0 ends with one step below 1
+        if(! brokenData) {
             emit dataReady(loadedData, axis, index);
         }
 
-        emit dataReady(loadedData);
-
         mutex.lock();
-        condition.wait(&mutex);
+        if(! restart) {
+            condition.wait(&mutex);
+        } else {
+            //std::cerr << "restarted" << std::endl;
+            restart = false;
+        }
         mutex.unlock();
+
     }
 }
+
+
 void LoadThread::getAxis(const nix::DataArray &array, QVector<double> &axis, unsigned int count, unsigned int offset, int xDim) {
     nix::Dimension d = array.getDimension(xDim);
     if(d.dimensionType() == nix::DimensionType::Sample) {
@@ -107,6 +141,7 @@ void LoadThread::setVariables(const nix::DataArray &array, nix::NDSize start, ni
     if(! isRunning()) {
         QThread::start(LowPriority);
     } else {
+        this->restart = true;
         condition.wakeOne();
     }
 }

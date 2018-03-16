@@ -38,6 +38,7 @@ private:
     unsigned int chunksize;
     int index;
     bool abort;
+    bool restart;
 
 };
 
