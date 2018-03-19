@@ -24,8 +24,6 @@ LoadThread::~LoadThread() {
 void LoadThread::run() {
 
     while(! abort) {
-
-        std::this_thread::sleep_for(std::chrono::milliseconds(50));
         mutex.lock();
         if(restart) {
             mutex.unlock();
@@ -48,15 +46,6 @@ void LoadThread::run() {
                 dataLength = extend[i];
                 readDim = static_cast<int>(i);
                 offset = start[i];
-        }
-        QVector<double> axis(0);
-
-        try {
-            getAxis(array, axis, dataLength, offset, readDim +1);
-        } catch(...) {
-            //Throws exceptions without wait time at the start.
-            //std::cerr << "getAxis is the problem!" << std::endl;
-            continue;
         }
 
         int totalChunks;
@@ -93,6 +82,16 @@ void LoadThread::run() {
             }
 
         if(! brokenData) {
+            QVector<double> axis(0);
+
+            try {
+                getAxis(array, axis, dataLength, offset, readDim +1);
+            } catch(...) {
+                //Throws exceptions without wait time at the start.
+                //std::cerr << "------------getAxis is the problem!" << std::endl;
+                continue;
+            }
+
             emit dataReady(loadedData, axis, index);
         }
 
