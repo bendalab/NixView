@@ -419,32 +419,18 @@ void LinePlotter::checkGraphs(QCPRange range) {
         double min = graph->dataMainKey(0);
         double mean = graph->dataCount() / (max-min);
 
-        /*
-        std::cerr << "range upper: " << range.upper << std::endl;
-        std::cerr << "range lower: " << range.lower << std::endl;
-        std::cerr << "min: " << min << std::endl;
-        std::cerr << "max: " << max << std::endl;
-        std::cerr << "mean: " << mean << std::endl;
-        std::cerr << "numOfPoints/4: " << numOfPoints/4 << std::endl;
-        std::cerr << "min - range.lower: " << (min-range.lower) << std::endl;
-        std::cerr << "range.upper - max: " << (range.upper-max) << std::endl;
-        */
-
+        bool check;
         if((range.lower - min)*mean < numOfPoints/4) {
-            //std::cerr << "before check min: " << checkForMoreData(i, arrayIndex, max, true) << std::endl;
-
-            if(checkForMoreData(i, arrayIndex, min, false)) {
-                //std::cerr << "before check min" << std::endl;
+            check = checkForMoreData(i, arrayIndex, min, false);
+            if(check) {
                 nix::NDSize start, extent;
                 calcStartExtent(array, start, extent, guess_best_xdim(array));
                 loaders[arrayIndex]->setVariables(arrays[arrayIndex], start, extent, i);
             }
         }
         if((max - range.upper) * mean < numOfPoints / 4) {
-            //std::cerr << "before check max: " << checkForMoreData(i, arrayIndex, max, true) << std::endl;
-
-            if(checkForMoreData(i, arrayIndex, max, true)) {
-                //std::cerr << "after check max" << std::endl;
+            check = checkForMoreData(i, arrayIndex, max, true);
+            if(check) {
                 nix::NDSize start, extent;
                 calcStartExtent(array, start, extent, guess_best_xdim(array));
                 loaders[arrayIndex]->setVariables(arrays[arrayIndex], start, extent, i);

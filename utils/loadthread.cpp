@@ -73,7 +73,6 @@ void LoadThread::run() {
         for (int i=0; i<totalChunks; i++) {
             mutex.lock();
             if(restart) {
-                //std::cerr << "saved time" << std::endl;
                 brokenData = true;
                 mutex.unlock();
                 break;
@@ -101,7 +100,6 @@ void LoadThread::run() {
         if(! restart) {
             condition.wait(&mutex);
         } else {
-            //std::cerr << "restarted" << std::endl;
             restart = false;
         }
         mutex.unlock();
