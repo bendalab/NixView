@@ -63,7 +63,7 @@ private:
     void setXRange(QVector<double> xData);
     void setYRange(QVector<double> yData);
     void calcStartExtent(const nix::DataArray &array, nix::NDSize &start_size, nix::NDSize& extent_size, int xDim);
-    bool checkForMoreData(int graphIndex, int arrayIndex, double currentExtreme, bool higher);
+    bool checkForMoreData(int arrayIndex, double currentExtreme, bool higher);
 
 signals:
     void xAxisChanged(QCPRange xNow, QCPRange xComplete);
@@ -73,7 +73,7 @@ signals:
 public slots:
     void drawThreadData(const QVector<double> &data, const QVector<double> &axis, int graphIndex);
     void printProgress(double progress);
-    void checkGraphs(QCPRange range);
+    void checkGraphsPerArray(QCPRange range);
     void resetView();
 
     void xAxisNewRange(QCPRange newRange);
