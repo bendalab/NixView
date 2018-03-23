@@ -153,8 +153,6 @@ void LinePlotter::draw_2d(const nix::DataArray &array) {
     int best_dim = guess_best_xdim(array);
     int firstGraphIndex = ui->plot->graphCount();
 
-    std::cerr << "xDim: " << best_dim << std::endl;
-
     setXRange(array, best_dim);
 
     for(unsigned int i=0; i<array.dataExtent()[2-best_dim]; i++) {
@@ -381,7 +379,6 @@ QCustomPlot* LinePlotter::get_plot() {
 }
 
 void LinePlotter::setXRange(const nix::DataArray &array, int xDim) {
-
     int dimI = xDim-1;
 
     int maxLoad = numOfPoints;
@@ -390,13 +387,16 @@ void LinePlotter::setXRange(const nix::DataArray &array, int xDim) {
     }
 
     nix::Dimension d = array.getDimension(xDim);
+    unsigned int dimMax = array.dataExtent()[dimI];
+
+
 
     if(d.dimensionType() == nix::DimensionType::Sample) {
-        totalXRange.expand(QCPRange(d.asSampledDimension().axis(1,0)[0], d.asSampledDimension().axis(1,array.dataExtent()[dimI]-1)[0]));
-        ui->plot->xAxis->setRange(d.asSampledDimension().axis(1,0)[0], d.asSampledDimension().axis(1,maxLoad)[0]);
+        totalXRange.expand(QCPRange(d.asSampledDimension().axis(1,0)[0], d.asSampledDimension().axis(1,dimMax-1)[0]));
+        ui->plot->xAxis->setRange(d.asSampledDimension().axis(1,0)[0], d.asSampledDimension().axis(1,maxLoad-1)[0]);
     } else if (d.dimensionType() == nix::DimensionType::Range) {
-        totalXRange.expand(QCPRange(d.asRangeDimension().axis(1,0)[0],d.asRangeDimension().axis(1,array.dataExtent()[dimI]-1)[0]));
-        ui->plot->xAxis->setRange(QCPRange(d.asRangeDimension().axis(1,0)[0],d.asRangeDimension().axis(1,maxLoad)[0]));
+        totalXRange.expand(QCPRange(d.asRangeDimension().axis(1)[0],d.asRangeDimension().axis(1,dimMax-1)[0]));
+        ui->plot->xAxis->setRange(QCPRange(d.asRangeDimension().axis(1,0)[0],d.asRangeDimension().axis(1,maxLoad-1)[0]));
     } else {
         // How does this work for set dim ? TODO
         std::cerr << "Lineplotter::setXRange(array), not yet done. " << std::endl;
