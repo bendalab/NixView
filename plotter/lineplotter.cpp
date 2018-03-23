@@ -122,17 +122,10 @@ void LinePlotter::draw_1d(const nix::DataArray &array) {
     } else {
         int newGraphIndex = ui->plot->graphCount();
 
-        if(ui->plot->graphCount() == 0) { // first graph: set xAxis range
-            if(d.dimensionType() == nix::DimensionType::Sample) {
-                totalXRange.expand(QCPRange(d.asSampledDimension().axis(1,0)[0], d.asSampledDimension().axis(1,array.dataExtent()[0]-1)[0]));
-                ui->plot->xAxis->setRange(d.asSampledDimension().axis(1,0)[0], d.asSampledDimension().axis(1,numOfPoints)[0]);
-            } else {
-                totalXRange.expand(QCPRange(d.asRangeDimension().axis(1,0)[0],d.asRangeDimension().axis(1,array.dataExtent()[0]-1)[0]));
-                ui->plot->xAxis->setRange(QCPRange(d.asRangeDimension().axis(1,0)[0],d.asRangeDimension().axis(1,numOfPoints)[0]));
-            }
-        }
+        setXRange(array, 1);
 
         ui->plot->addGraph();
+        ui->plot->graph()->setPen(QPen(cmap.next()));
         nix::NDSize start, extent;
 
         calcStartExtent(array, start, extent, 1);
@@ -141,6 +134,44 @@ void LinePlotter::draw_1d(const nix::DataArray &array) {
         // open loading dialog ? too fast for small amounts (TODO: general loading Dialog)
     }
 }
+
+
+void LinePlotter::draw_2d(const nix::DataArray &array) {
+    int best_dim = guess_best_xdim(array);
+    /*
+    QVector<double> x_axis, y_axis;
+    QVector<QString> labels;
+    get_data_array_axis(array, x_axis, labels, best_dim);
+    get_data_array_axis(array, y_axis, labels, 3-best_dim);
+    for (int i = 0; i < y_axis.size(); i++) {
+        QVector<double> data = get_data_line(array, i, best_dim);
+        add_line_plot(x_axis, data, labels[i]);
+    }
+    QString y_label;
+    QVector<QString> ax_labels;
+    data_array_ax_labels(array, y_label, ax_labels);
+    this->set_ylabel(y_label);
+    this->set_xlabel(ax_labels[best_dim-1]);
+    */
+
+    int firstGraphIndex = ui->plot->graphCount();
+
+
+    setXRange(array, best_dim);
+
+    for(unsigned int i=0; i<array.dataExtent()[2-best_dim]; i++) {
+        QPen pen;
+        pen.setColor(cmap.next());
+
+        ui->plot->addGraph();
+        ui->plot->graph()->setPen(pen);
+    }
+
+    nix::NDSize start, extent;
+    calcStartExtent(array, start, extent, best_dim);
+    loaders.last()->setVariables(array, start, extent, std::vector<int>(), best_dim, firstGraphIndex);
+}
+
 
 void LinePlotter::calcStartExtent(const nix::DataArray &array, nix::NDSize &start_size, nix::NDSize& extent_size, int xDim) {
     try {
@@ -219,24 +250,6 @@ void LinePlotter::calcStartExtent(const nix::DataArray &array, nix::NDSize &star
     } catch(...) {
         std::cerr << "ERROR IN CALC START EXTENT." << std::endl;
     }
-}
-
-
-void LinePlotter::draw_2d(const nix::DataArray &array) {
-    int best_dim = guess_best_xdim(array);
-    QVector<double> x_axis, y_axis;
-    QVector<QString> labels;
-    get_data_array_axis(array, x_axis, labels, best_dim);
-    get_data_array_axis(array, y_axis, labels, 3-best_dim);
-    for (int i = 0; i < y_axis.size(); i++) {
-        QVector<double> data = get_data_line(array, i, best_dim);
-        add_line_plot(x_axis, data, labels[i]);
-    }
-    QString y_label;
-    QVector<QString> ax_labels;
-    data_array_ax_labels(array, y_label, ax_labels);
-    this->set_ylabel(y_label);
-    this->set_xlabel(ax_labels[best_dim-1]);
 }
 
 
