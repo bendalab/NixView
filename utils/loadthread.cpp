@@ -41,7 +41,7 @@ void LoadThread::run() {
 
         int dimCount;
         try {
-        dimCount = array.dimensionCount();
+        dimCount = array.dataExtent().size();
         } catch(...) {
             std::cerr << "ARRAY DIMCOUNT IS A PROBLEM" << std::endl;
             dimCount = 1;
@@ -239,7 +239,7 @@ void LoadThread::setVariables(const nix::DataArray &array, nix::NDSize start, ni
 
     QMutexLocker locker(&mutex); // locks the members and unlocks them when it goes out of scope.
 
-    this->array = array;
+    this->array = nix::DataArray(array);
     this->start = start;
     this->extent = extent;
     this->graphIndex = graphIndex;
@@ -260,7 +260,7 @@ void LoadThread::setVariables(const nix::DataArray &array, nix::NDSize start, ni
 
 void LoadThread::setVariables1D(const nix::DataArray &array, nix::NDSize start, nix::NDSize extent, int graphIndex) {
 
-    if(array.dimensionCount() != 1) {
+    if(array.dataExtent().size() != 1) {
         std::cerr << "LoadThread::setVariables1D() given array has more than 1 dimension." << std::endl;
     }
 
