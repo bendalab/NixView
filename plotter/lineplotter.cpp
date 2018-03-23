@@ -357,6 +357,29 @@ QCustomPlot* LinePlotter::get_plot() {
     return ui->plot;
 }
 
+void LinePlotter::setXRange(const nix::DataArray &array, int xDim) {
+
+    int dimI = xDim-1;
+
+    int maxLoad = numOfPoints;
+    if(array.dataExtent()[dimI] < static_cast<unsigned>(numOfPoints)) {
+        maxLoad = array.dataExtent()[dimI];
+    }
+
+    nix::Dimension d = array.getDimension(xDim);
+
+    if(d.dimensionType() == nix::DimensionType::Sample) {
+        totalXRange.expand(QCPRange(d.asSampledDimension().axis(1,0)[0], d.asSampledDimension().axis(1,array.dataExtent()[0]-1)[0]));
+        ui->plot->xAxis->setRange(d.asSampledDimension().axis(1,0)[0], d.asSampledDimension().axis(1,maxLoad)[0]);
+    } else if (d.dimensionType() == nix::DimensionType::Range) {
+        totalXRange.expand(QCPRange(d.asRangeDimension().axis(1,0)[0],d.asRangeDimension().axis(1,array.dataExtent()[0]-1)[0]));
+        ui->plot->xAxis->setRange(QCPRange(d.asRangeDimension().axis(1,0)[0],d.asRangeDimension().axis(1,maxLoad)[0]));
+    } else {
+        // How does this work for set dim ? TODO
+    }
+}
+
+
 void LinePlotter::setXRange(QVector<double> xData) {
     totalXRange.expand(QCPRange(xData[0],xData.last()));
 

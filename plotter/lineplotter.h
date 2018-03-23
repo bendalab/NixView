@@ -60,7 +60,9 @@ private:
     void draw_2d(const nix::DataArray &array);
 
     QCustomPlot* get_plot() override;
+    void setXRange(const nix::DataArray &array, int xDim);
     void setXRange(QVector<double> xData);
+
     void setYRange(QVector<double> yData);
     void calcStartExtent(const nix::DataArray &array, nix::NDSize &start_size, nix::NDSize& extent_size, int xDim);
     bool checkForMoreData(int arrayIndex, double currentExtreme, bool higher);
