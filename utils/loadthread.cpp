@@ -56,7 +56,6 @@ void LoadThread::run() {
 
 
         } else if(dimCount == 2) {
-            std::cerr << "its not a two D array" << std::endl;
             mutex.lock();
             unsigned int xDim = this->xDim;
             std::vector<int> index2D = this->index2D;
@@ -150,8 +149,9 @@ void LoadThread::load2D(nix::DataArray array, nix::NDSize start, nix::NDSize ext
     }
 
     extent[xDimIndex] = chunksize;
-    QVector<double> loadedData;
     QVector<double> chunkdata(chunksize);
+
+
 
     //if index2D is empty do all.
     if(index2D.size() == 0) {
@@ -164,6 +164,8 @@ void LoadThread::load2D(nix::DataArray array, nix::NDSize start, nix::NDSize ext
     //iterate over given indices
     for(unsigned int j=0; j<index2D.size(); j++) {
         bool brokenData = false;
+        QVector<double> loadedData;
+
         start[1-xDimIndex] = index2D[j];
 
         mutex.lock();
