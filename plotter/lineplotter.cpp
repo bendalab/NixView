@@ -71,7 +71,6 @@ void LinePlotter::set_ylabel(const QString &label){
 
 
 void LinePlotter::draw(const nix::DataArray &array) {
-    try {
     if (!Plotter::check_plottable_dtype(array)) {
         std::cerr << "LinePlotter::draw cannot handle data type " << array.dataType() << std::endl;
         return;
@@ -93,9 +92,6 @@ void LinePlotter::draw(const nix::DataArray &array) {
         draw_1d(array);
     } else {
         draw_2d(array);
-    }
-    }catch(...) {
-        std::cerr << "ERROR IS WITHIN DRAW()" << std::endl;
     }
 }
 
@@ -239,7 +235,7 @@ void LinePlotter::calcStartExtent(const nix::DataArray &array, nix::NDSize &star
         start_size = nix::NDSize({static_cast<int>(start)});
         extent_size = nix::NDSize({static_cast<int>(extent)});
     } else {
-        start_size = nix::NDSize({1, 1});
+        start_size = nix::NDSize({0, 0});
         start_size[xDim-1] = static_cast<int>(start);
         extent_size = nix::NDSize({1,1});
         extent_size[xDim-1] = static_cast<int>(extent);
