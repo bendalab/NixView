@@ -252,7 +252,7 @@ public:
                 }
             } else if (array.getDimension(1).dimensionType() == nix::DimensionType::Set) {
                 if (array.getDimension(2).dimensionType() == nix::DimensionType::Range ||
-                    array.getDimension(2).dimensionType() == nix::DimensionType::Range) {
+                    array.getDimension(2).dimensionType() == nix::DimensionType::Sample) {
                     return PlotterType::Line;
                 } else {
                     return PlotterType::Category;
