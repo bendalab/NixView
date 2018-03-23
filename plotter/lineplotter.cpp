@@ -133,7 +133,7 @@ void LinePlotter::draw_1d(const nix::DataArray &array) {
 
 
 void LinePlotter::draw_2d(const nix::DataArray &array) {
-    int best_dim = guess_best_xdim(array);
+
     /*
     QVector<double> x_axis, y_axis;
     QVector<QString> labels;
@@ -150,8 +150,10 @@ void LinePlotter::draw_2d(const nix::DataArray &array) {
     this->set_xlabel(ax_labels[best_dim-1]);
     */
 
+    int best_dim = guess_best_xdim(array);
     int firstGraphIndex = ui->plot->graphCount();
 
+    std::cerr << "xDim: " << best_dim << std::endl;
 
     setXRange(array, best_dim);
 
@@ -250,23 +252,35 @@ void LinePlotter::calcStartExtent(const nix::DataArray &array, nix::NDSize &star
 
 
 int LinePlotter::guess_best_xdim(const nix::DataArray &array) const {
-    try {
-    if (array.dimensionCount() > 1){
-        if (array.getDimension(1).dimensionType() == nix::DimensionType::Sample ||
-                array.getDimension(1).dimensionType() == nix::DimensionType::Range) {
-            return 1;
-        } else {
-            nix::DimensionType dt_2 = array.getDimension(2).dimensionType();
-            if (dt_2 != nix::DimensionType::Set)
-                return 2;
-        }
-    }
-    return 1;
 
-    } catch(...) {
-        std::cerr << "ERROR IN GUESS BEST XDIM() " << std::endl;
+    if(array.dimensionCount() == 1) {
         return 1;
     }
+
+    if(array.dimensionCount() == 2) {
+
+        nix::DimensionType d_1 = array.getDimension(1).dimensionType();
+        nix::DimensionType d_2 = array.getDimension(2).dimensionType();
+
+
+        if(d_1 == nix::DimensionType::Sample) {
+            return 1;
+        } else if (d_2 == nix::DimensionType::Sample) {
+            return 2;
+        } else {
+            if(d_1 == nix::DimensionType::Set && d_2 == nix::DimensionType::Range) {
+                return 2;
+            } else if (d_1 == nix::DimensionType::Range && d_2 == nix::DimensionType::Set){
+                return 1;
+            } else {
+                std::cerr << "How did you get with 2D Set Data to guess_best_xdims() in the Lineplotter?" << std::endl;
+                return 1;
+            }
+        }
+    }
+
+    std::cerr << "DataArray with more than 2 Dimensions in Lineplotter::guess_best_xDim()." << std::endl;
+    return 1;
 }
 
 
