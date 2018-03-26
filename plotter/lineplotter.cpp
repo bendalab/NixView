@@ -126,7 +126,7 @@ void LinePlotter::draw_1d(const nix::DataArray &array) {
         nix::NDSize start, extent;
 
         calcStartExtent(array, start, extent, 1);
-        loaders.last()->setVariables(array, start, extent, std::vector<int>(), 1, newGraphIndex);
+        loaders.last()->setVariables1D(array, start, extent, newGraphIndex);
 
         // open loading dialog ? too fast for small amounts (TODO: general loading Dialog)
     }
