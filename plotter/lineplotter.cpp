@@ -89,7 +89,7 @@ void LinePlotter::draw(const nix::DataArray &array) {
     connect(loader, SIGNAL(dataReady(const QVector<double> &, const QVector<double> &, int)), this, SLOT(drawThreadData(const QVector<double> &, const QVector<double> &, int)));
     //connect(loader, SIGNAL(progress(double)), this, SLOT(printProgress(double)));
 
-    if (array.dimensionCount() == 1) {
+    if (array.dataExtent().size() == 1) {
         draw_1d(array);
     } else {
         draw_2d(array);
@@ -227,8 +227,7 @@ void LinePlotter::calcStartExtent(const nix::DataArray &array, nix::NDSize &star
         extent = 1;
     }
 
-
-    if(array.dimensionCount() == 1) {
+    if(array.dataExtent().size() == 1) {
         start_size = nix::NDSize({static_cast<int>(start)});
         extent_size = nix::NDSize({static_cast<int>(extent)});
     } else {
@@ -245,15 +244,19 @@ void LinePlotter::calcStartExtent(const nix::DataArray &array, nix::NDSize &star
 
 int LinePlotter::guess_best_xdim(const nix::DataArray &array) const {
 
-    if(array.dimensionCount() == 1) {
-        return 1;
+    if(array.dataExtent().size() == 0) {
+        throw nix::IncompatibleDimensions("Array has dataExtent().size 0.", "guess_best_xdim");
     }
 
-    if(array.dimensionCount() == 2) {
+    if(array.dataExtent().size() > 2) {
+        throw nix::IncompatibleDimensions("Array has more than two dimensions.", "guess_best_xdim");
+    }
 
+    if(array.dataExtent().size() == 1) {
+        return 1;
+    } else { //(array.dataExtent().size() == 2) {
         nix::DimensionType d_1 = array.getDimension(1).dimensionType();
         nix::DimensionType d_2 = array.getDimension(2).dimensionType();
-
 
         if(d_1 == nix::DimensionType::Sample) {
             return 1;
@@ -266,27 +269,24 @@ int LinePlotter::guess_best_xdim(const nix::DataArray &array) const {
                 return 1;
             } else {
                 std::cerr << "How did you get with 2D Set Data to guess_best_xdims() in the Lineplotter?" << std::endl;
-                return 1;
+                throw nix::IncompatibleDimensions("Array contains 2D set data.", "guess_best_xdim");
             }
         }
     }
-
-    std::cerr << "DataArray with more than 2 Dimensions in Lineplotter::guess_best_xDim()." << std::endl;
-    return 1;
 }
 
 
 bool LinePlotter::check_dimensions(const nix::DataArray &array) const {
-    if (array.dimensionCount() > 2) {
+    if (array.dataExtent().size() > 2) {
         std::cerr << "LinePlotter::check_dimensions cannot draw 3D!" << std::endl;
         return false;
     }
 
-    if (array.dimensionCount() == 0 || array.dimensionCount() > 2) {
+    if (array.dataExtent().size() == 0 || array.dataExtent().size() > 2) {
         return false;
     }
 
-    if(array.dimensionCount() == 1) {
+    if(array.dataExtent().size() == 1) {
         return true;
     }
 
@@ -383,8 +383,6 @@ void LinePlotter::expandXRange(const nix::DataArray &array, int xDim) {
     nix::Dimension d = array.getDimension(xDim);
     unsigned int dimMax = array.dataExtent()[dimI];
 
-
-
     if(d.dimensionType() == nix::DimensionType::Sample) {
         totalXRange.expand(QCPRange(d.asSampledDimension().axis(1,0)[0], d.asSampledDimension().axis(1,dimMax-1)[0]));
         ui->plot->xAxis->setRange(d.asSampledDimension().axis(1,0)[0], d.asSampledDimension().axis(1,maxLoad-1)[0]);
@@ -470,7 +468,6 @@ void LinePlotter::checkGraphsPerArray(QCPRange range) {
     int graphIndex = 0;
     // TODO: FEATURE plot only some graphs of a DataArray
     for(int i=0; i<arrays.size(); i++) {
-
         QCPGraph *graph = ui->plot->graph(graphIndex);
 
         if(graph->dataCount() == 0) {
@@ -480,9 +477,9 @@ void LinePlotter::checkGraphsPerArray(QCPRange range) {
             calcStartExtent(arrays[i], start, extent, xDim);
             loaders[i]->setVariables(arrays[i], start, extent, std::vector<int>(), xDim, graphIndex);
 
-            if(arrays[i].dimensionCount() == 1) {
+            if(arrays[i].dataExtent().size() == 1) {
                 graphIndex += 1;
-            } else if(arrays[i].dimensionCount() == 2) {
+            } else if(arrays[i].dataExtent().size() == 2) {
                 graphIndex += arrays[i].dataExtent()[2-xDim];
             }
             continue;
@@ -511,9 +508,9 @@ void LinePlotter::checkGraphsPerArray(QCPRange range) {
             }
         }
 
-        if(arrays[i].dimensionCount() == 1) {
+        if(arrays[i].dataExtent().size() == 1) {
             graphIndex += 1;
-        } else if(arrays[i].dimensionCount() == 2) {
+        } else if(arrays[i].dataExtent().size() == 2) {
             graphIndex += arrays[i].dataExtent()[2-xDim];
         }
     }
@@ -535,7 +532,6 @@ bool LinePlotter::checkForMoreData(int arrayIndex, double currentExtreme, bool h
         } else {
             return (d.asSampledDimension().axis(1,0)[0] < currentExtreme);
         }
-
     } else if(d.dimensionType() == nix::DimensionType::Range) {
         if(higher) {
             return (d.asRangeDimension().axis(1,array.dataExtent()[xDim-1]-1)[0] > currentExtreme);
@@ -547,7 +543,6 @@ bool LinePlotter::checkForMoreData(int arrayIndex, double currentExtreme, bool h
         return false;
     }
 }
-
 
 
 void LinePlotter::xAxisNewRange(QCPRange range) {
@@ -578,9 +573,7 @@ void LinePlotter::changeXAxisSize(double ratio) {
     if(xNewSize != ui->plot->xAxis->range().size()) {
         ui->plot->xAxis->setRange(ui->plot->xAxis->range().center(), xNewSize, Qt::AlignCenter);
         ui->plot->replot();
-
     }
-
 }
 
 

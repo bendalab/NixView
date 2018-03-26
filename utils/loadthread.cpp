@@ -42,7 +42,6 @@ void LoadThread::run() {
 
         if(dimCount == 1) {
             load1D(array, start, extent, chunksize, graphIndex);
-
         } else if(dimCount == 2) {
             mutex.lock();
             unsigned int xDim = this->xDim;
@@ -79,7 +78,6 @@ void LoadThread::load1D(nix::DataArray array, nix::NDSize start, nix::NDSize ext
 
     bool brokenData = false;
     for (int i=0; i<totalChunks; i++) {
-
         mutex.lock();
         if(restart) {
             brokenData = true;
@@ -95,14 +93,22 @@ void LoadThread::load1D(nix::DataArray array, nix::NDSize start, nix::NDSize ext
             chunkdata.resize((dataLength - (totalChunks-1) * chunksize));
         }
         start[0] = offset + i * chunksize;
+        try{
         array.getData(array.dataType(),chunkdata.data(),extent, start);
+        } catch(...) {
+            std::cerr << "GET DATA THROWS ERRORS" << std::endl;
+        }
 
         loadedData.append(chunkdata);
     }
 
     if(! brokenData) {
         QVector<double> axis(0);
+        try{
         getAxis(array, axis, dataLength, offset, 1);
+        } catch(...) {
+            std::cerr << "GET AXIS THROWS ERRORS" << std::endl;
+        }
 
         emit dataReady(loadedData, axis, graphIndex);
     }
@@ -149,7 +155,6 @@ void LoadThread::load2D(nix::DataArray array, nix::NDSize start, nix::NDSize ext
         mutex.unlock();
 
         for (int i=0; i<totalChunks; i++) {
-
             mutex.lock();
             if(restart) {
                 brokenData = true;
@@ -159,7 +164,6 @@ void LoadThread::load2D(nix::DataArray array, nix::NDSize start, nix::NDSize ext
             mutex.unlock();
 
             emit(progress(static_cast<double>(i)*j / (totalChunks*index2D.size()), graphIndex)); //starts with 0 ends with one step below 1
-
 
             if(i == totalChunks-1) {
                 extent[xDimIndex] = (dataLength - (totalChunks-1) * chunksize);
