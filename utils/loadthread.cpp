@@ -22,7 +22,6 @@ LoadThread::~LoadThread() {
 
 
 void LoadThread::run() {
-    try {
     while(! abort) {
 
         mutex.lock();
@@ -39,32 +38,18 @@ void LoadThread::run() {
         int graphIndex = this->graphIndex;
         mutex.unlock();
 
-        int dimCount;
-        try {
-        dimCount = array.dataExtent().size();
-        } catch(...) {
-            std::cerr << "ARRAY DIMCOUNT IS A PROBLEM" << std::endl;
-            dimCount = 1;
-        }
+        int dimCount = array.dataExtent().size();;
 
         if(dimCount == 1) {
-            try {
             load1D(array, start, extent, chunksize, graphIndex);
-            } catch (...) {
-                std::cerr << "SOMEWHERE IN LOAD 1D" << std::endl;
-            }
-
 
         } else if(dimCount == 2) {
             mutex.lock();
             unsigned int xDim = this->xDim;
             std::vector<int> index2D = this->index2D;
             mutex.unlock();
-            try {
+
             load2D(array, start, extent, xDim, index2D, chunksize, graphIndex);
-            } catch(...) {
-                std::cerr << "WHY THE FUCK IN LOAD2D()" << std::endl;
-            }
         }
 
         mutex.lock();
@@ -74,9 +59,6 @@ void LoadThread::run() {
             restart = false;
         }
         mutex.unlock();
-    }
-    } catch(...) {
-        std::cerr << "SOMEWHERE IN RUN() where it wasn't caught GREAT" << std::endl;
     }
 }
 
@@ -120,7 +102,7 @@ void LoadThread::load1D(nix::DataArray array, nix::NDSize start, nix::NDSize ext
 
     if(! brokenData) {
         QVector<double> axis(0);
-        getAxis(array, axis, dataLength, offset, xDim);
+        getAxis(array, axis, dataLength, offset, 1);
 
         emit dataReady(loadedData, axis, graphIndex);
     }
@@ -248,7 +230,7 @@ void LoadThread::setVariables1D(const nix::DataArray &array, nix::NDSize start, 
 
     QMutexLocker locker(&mutex);
 
-    this->array = array;
+    this->array = nix::DataArray(array);
     this->start = start;
     this->extent = extent;
     this->graphIndex = graphIndex;

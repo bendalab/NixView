@@ -171,7 +171,6 @@ void LinePlotter::draw_2d(const nix::DataArray &array) {
 
 
 void LinePlotter::calcStartExtent(const nix::DataArray &array, nix::NDSize &start_size, nix::NDSize& extent_size, int xDim) {
-    try {
     QCPRange curRange = ui->plot->xAxis->range();
     nix::Dimension d = array.getDimension(xDim);
 
@@ -185,19 +184,16 @@ void LinePlotter::calcStartExtent(const nix::DataArray &array, nix::NDSize &star
         double startIndex;
 
         if( d.dimensionType() == nix::DimensionType::Sample) {
-            try{
             nix::SampledDimension spd = d.asSampledDimension();
             double samplingIntervall = spd.samplingInterval();
             double offset = 0;
             if(spd.offset()) {
-                offset = spd.offset().value();
+                offset = spd.offset().get();
             }
 
             startIndex = (curRange.lower - offset) / samplingIntervall;
             pInRange = ui->plot->xAxis->range().size() / samplingIntervall;
-            } catch (...) {
-                std::cerr << "INSIDE THE SAMPLED DIMENSION PART OF CALC START EXTENT" << std::endl;
-            }
+
         } else { // rangeDimension
             nix::RangeDimension rd = d.asRangeDimension();
             std::vector<double> ticks = rd.ticks();
@@ -244,9 +240,6 @@ void LinePlotter::calcStartExtent(const nix::DataArray &array, nix::NDSize &star
 
     //std::cerr << "start: " << start << std::endl;
     //std::cerr << "extent: " << extent << std::endl;
-    } catch(...) {
-        std::cerr << "ERROR IN CALC START EXTENT." << std::endl;
-    }
 }
 
 
@@ -470,7 +463,6 @@ void LinePlotter::resetView() {
 }
 
 void LinePlotter::checkGraphsPerArray(QCPRange range) {
-    try {
     if(ui->plot->graphCount() == 0) {
         return;
     }
@@ -487,7 +479,7 @@ void LinePlotter::checkGraphsPerArray(QCPRange range) {
 
             calcStartExtent(arrays[i], start, extent, xDim);
             loaders[i]->setVariables(arrays[i], start, extent, std::vector<int>(), xDim, graphIndex);
-            std::cerr << "inactive ?" << std::endl;
+
             if(arrays[i].dimensionCount() == 1) {
                 graphIndex += 1;
             } else if(arrays[i].dimensionCount() == 2) {
@@ -502,38 +494,19 @@ void LinePlotter::checkGraphsPerArray(QCPRange range) {
 
         int xDim = guess_best_xdim(arrays[i]);
 
-        bool check;
         if((range.lower - min)*mean < numOfPoints/4) {
-            try {
-            check = checkForMoreData(i, min, false);
-            } catch (...) {
-                std::cerr << "CHECK FOR MORE DATA MIN---------" << std::endl;
-            }
-
-            if(check) {
+            if(checkForMoreData(i, min, false)) {
                 nix::NDSize start, extent;
-                try {
                 calcStartExtent(arrays[i], start, extent, xDim);
-                } catch (...) {
-                    std::cerr << "START EXTENT MIN----------------" << std::endl;
-                }
 
                 loaders[i]->setVariables(arrays[i], start, extent, std::vector<int>(), xDim, graphIndex);
             }
         }
         if((max - range.upper) * mean < numOfPoints / 4) {
-            try {
-            check = checkForMoreData(i, max, true);
-            } catch (...) {
-                std::cerr << "CHECK FOR MORE DATA MAX+++++++++++" << std::endl;
-            }
-            if(check) {
+            if(checkForMoreData(i, max, true)) {
                 nix::NDSize start, extent;
-                try {
                 calcStartExtent(arrays[i], start, extent, xDim);
-                } catch (...) {
-                    std::cerr << "START EXTENT MAX+++++++++++++++++" << std::endl;
-                }
+
                 loaders[i]->setVariables(arrays[i], start, extent, std::vector<int>(), xDim, graphIndex);
             }
         }
@@ -544,15 +517,10 @@ void LinePlotter::checkGraphsPerArray(QCPRange range) {
             graphIndex += arrays[i].dataExtent()[2-xDim];
         }
     }
-
-    } catch(...) {
-        std::cerr << "SOMEWHERE IN CHECK GRAPHS PER ARRAY" << std::endl;
-    }
 }
 
 
 bool LinePlotter::checkForMoreData(int arrayIndex, double currentExtreme, bool higher) {
-    try {
     nix::DataArray array = arrays[arrayIndex];
 
     int xDim = guess_best_xdim(array);
@@ -578,11 +546,6 @@ bool LinePlotter::checkForMoreData(int arrayIndex, double currentExtreme, bool h
         std::cerr << "Lineplotter::CheckForMoreData(): unsupported dimension type." << std::endl;
         return false;
     }
-    } catch(...) {
-        std::cerr << "ERROR IN CHECK FOR MORE DATA" << std::endl;
-        return false;
-    }
-
 }
 
 
