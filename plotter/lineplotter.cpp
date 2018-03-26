@@ -25,6 +25,7 @@ LinePlotter::LinePlotter(QWidget *parent, int numOfPoints) :
     connect(ui->plot->xAxis, SIGNAL(rangeChanged(QCPRange)), this, SLOT(checkGraphsPerArray(QCPRange)));
 
     this->numOfPoints = numOfPoints; // standard 100 000
+    this->totalYRange = QCPRange(0, 0);
 }
 
 LinePlotter::~LinePlotter()
@@ -118,7 +119,7 @@ void LinePlotter::draw_1d(const nix::DataArray &array) {
     } else {
         int newGraphIndex = ui->plot->graphCount();
 
-        setXRange(array, 1);
+        expandXRange(array, 1);
 
         ui->plot->addGraph();
         ui->plot->graph()->setPen(QPen(cmap.next()));
@@ -153,7 +154,7 @@ void LinePlotter::draw_2d(const nix::DataArray &array) {
     int best_dim = guess_best_xdim(array);
     int firstGraphIndex = ui->plot->graphCount();
 
-    setXRange(array, best_dim);
+    expandXRange(array, best_dim);
 
     for(unsigned int i=0; i<array.dataExtent()[2-best_dim]; i++) {
         QPen pen;
@@ -378,7 +379,7 @@ QCustomPlot* LinePlotter::get_plot() {
     return ui->plot;
 }
 
-void LinePlotter::setXRange(const nix::DataArray &array, int xDim) {
+void LinePlotter::expandXRange(const nix::DataArray &array, int xDim) {
     int dimI = xDim-1;
 
     int maxLoad = numOfPoints;
@@ -414,11 +415,22 @@ void LinePlotter::setXRange(QVector<double> xData) {
     }
 }
 
-void LinePlotter::setYRange(QVector<double> yData) {
-    double yMin = *std::min_element(std::begin(yData), std::end(yData));
-    double yMax = *std::max_element(std::begin(yData), std::end(yData));
+
+void LinePlotter::expandYRange(QVector<double> yData) {
+    double yMin = *std::min_element(yData.constBegin(), yData.constEnd());
+    double yMax = *std::max_element(yData.constBegin(), yData.constEnd());
     if (yMin == yMax)
-        yMin = 0.0;
+        yMin = yMax-1;
+
+    totalYRange.expand(QCPRange(yMin, yMax));
+}
+
+
+void LinePlotter::setYRange(QVector<double> yData) {
+    double yMin = *std::min_element(yData.constBegin(), yData.constEnd());
+    double yMax = *std::max_element(yData.constBegin(), yData.constEnd());
+    if (yMin == yMax)
+        yMin = yMax-1;
 
     totalYRange.expand(QCPRange(yMin, yMax));
     ui->plot->yAxis->setRange(totalYRange.lower*1.05, totalYRange.upper*1.05);
@@ -428,7 +440,11 @@ void LinePlotter::setYRange(QVector<double> yData) {
 
 
 void LinePlotter::drawThreadData(const QVector<double> &data, const QVector<double> &axis, int graphIndex) {
-    //std::cerr << axis.size() << " axis to values " << data.size() << std::endl;
+    if(totalYRange == QCPRange(0, 0)) {
+        setYRange(data);
+    } else {
+        expandYRange(data);
+    }
     ui->plot->graph(graphIndex)->setData(axis, data, true);
     ui->plot->replot();
 }
