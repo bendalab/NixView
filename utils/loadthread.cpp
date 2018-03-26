@@ -113,27 +113,19 @@ void LoadThread::load1D(nix::DataArray array, nix::NDSize start, nix::NDSize ext
             chunkdata.resize((dataLength - (totalChunks-1) * chunksize));
         }
         start[0] = offset + i * chunksize;
-
-        try {
         array.getData(array.dataType(),chunkdata.data(),extent, start);
-        } catch (...) {
-            std::cerr << "GET DATA - is the culprit ***********" << std::endl;
-        }
 
         loadedData.append(chunkdata);
     }
 
     if(! brokenData) {
         QVector<double> axis(0);
+        getAxis(array, axis, dataLength, offset, xDim);
 
-        try {
-            getAxis(array, axis, dataLength, offset, xDim);
-        } catch(...) {
-            std::cerr << "LoadThread::load1D::getAxis() threw an error." << std::endl;
-        }
         emit dataReady(loadedData, axis, graphIndex);
     }
 }
+
 
 void LoadThread::load2D(nix::DataArray array, nix::NDSize start, nix::NDSize extent,  unsigned int xDim, std::vector<int> index2D, unsigned int chunksize, int graphIndex) {
 
@@ -150,8 +142,6 @@ void LoadThread::load2D(nix::DataArray array, nix::NDSize start, nix::NDSize ext
 
     extent[xDimIndex] = chunksize;
     QVector<double> chunkdata(chunksize);
-
-
 
     //if index2D is empty do all.
     if(index2D.size() == 0) {
@@ -202,14 +192,9 @@ void LoadThread::load2D(nix::DataArray array, nix::NDSize start, nix::NDSize ext
 
         if(! brokenData) {
             QVector<double> axis(0);
+            getAxis(array, axis, dataLength, offset, xDim);
 
-            try {
-                getAxis(array, axis, dataLength, offset, xDim);
-                emit dataReady(loadedData, axis, graphIndex + index2D[j]);
-            } catch(...) {
-                std::cerr << "LoadThread::load2D::getAxis() threw an error." << std::endl;
-            }
-
+            emit dataReady(loadedData, axis, graphIndex + index2D[j]);
         }
     }
 }
@@ -232,7 +217,6 @@ void LoadThread::getAxis(const nix::DataArray &array, QVector<double> &axis, uns
 
 
 void LoadThread::setVariables(const nix::DataArray &array, nix::NDSize start, nix::NDSize extent, std::vector<int> index2D, unsigned int xDim, int graphIndex) {
-    try {
 
     if(! testInput(array, start, extent)) {
         std::cerr << "LoadThread::setVariables(): Input not correct." << std::endl;
@@ -253,10 +237,6 @@ void LoadThread::setVariables(const nix::DataArray &array, nix::NDSize start, ni
     } else {
         this->restart = true;
         condition.wakeOne();
-    }
-
-    } catch(...) {
-        std::cerr << "ERROR IN SET VARIABLES()" << std::endl;
     }
 }
 
@@ -279,8 +259,6 @@ void LoadThread::setVariables1D(const nix::DataArray &array, nix::NDSize start, 
         this->restart = true;
         condition.wakeOne();
     }
-
-
 }
 
 void LoadThread::setChuncksize(unsigned int size) {
@@ -296,7 +274,6 @@ void LoadThread::setChuncksize(unsigned int size) {
 
 
 bool LoadThread::testInput(const nix::DataArray &array, nix::NDSize start, nix::NDSize extent) {
-    try {
     nix::NDSize size = array.dataExtent();
     if( ! (size.size() == start.size() && size.size() == extent.size())) {
         std::cerr << "DataThread::testInput(): start and/or extent don't have the same dimensionality as the array." << std::endl;
@@ -324,8 +301,4 @@ bool LoadThread::testInput(const nix::DataArray &array, nix::NDSize start, nix::
     }
 
     return true;
-    }catch(...) {
-        std::cerr << "ERROR IN TEST INPUT()" << std::endl;
-        return false;
-    }
 }
