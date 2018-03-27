@@ -36,19 +36,24 @@ void LoadThread::run() {
         nix::NDSize extent = this->extent;
         unsigned int chunksize = this->chunksize;
         int graphIndex = this->graphIndex;
+        nix::Dimension dim = this->dim;
         mutex.unlock();
 
         int dimCount = array.dataExtent().size();;
 
         if(dimCount == 1) {
-            load1D(array, start, extent, chunksize, graphIndex);
+            try{
+            load1D(array, start, extent, dim, chunksize, graphIndex);
+            } catch (...) {
+                std::cerr << "probably obvious" << std::endl;
+            }
         } else if(dimCount == 2) {
             mutex.lock();
-            unsigned int xDim = this->xDim;
+            unsigned int dimNumber = this->dimNumber;
             std::vector<int> index2D = this->index2D;
             mutex.unlock();
 
-            load2D(array, start, extent, xDim, index2D, chunksize, graphIndex);
+            load2D(array, start, extent, dim, dimNumber, index2D, chunksize, graphIndex);
         }
 
         mutex.lock();
@@ -62,7 +67,7 @@ void LoadThread::run() {
 }
 
 
-void LoadThread::load1D(nix::DataArray array, nix::NDSize start, nix::NDSize extent, unsigned int chunksize, int graphIndex) {
+void LoadThread::load1D(nix::DataArray array, nix::NDSize start, nix::NDSize extent, nix::Dimension dim, unsigned int chunksize, int graphIndex) {
 
     int dataLength = extent[0];
     unsigned int offset = start[0];
@@ -105,7 +110,7 @@ void LoadThread::load1D(nix::DataArray array, nix::NDSize start, nix::NDSize ext
     if(! brokenData) {
         QVector<double> axis(0);
         try{
-        getAxis(array, axis, dataLength, offset, 1);
+        getAxis(dim, axis, dataLength, offset);
         } catch(...) {
             std::cerr << "GET AXIS THROWS ERRORS" << std::endl;
         }
@@ -115,7 +120,7 @@ void LoadThread::load1D(nix::DataArray array, nix::NDSize start, nix::NDSize ext
 }
 
 
-void LoadThread::load2D(nix::DataArray array, nix::NDSize start, nix::NDSize extent,  unsigned int xDim, std::vector<int> index2D, unsigned int chunksize, int graphIndex) {
+void LoadThread::load2D(nix::DataArray array, nix::NDSize start, nix::NDSize extent, nix::Dimension dim, unsigned int xDim, std::vector<int> index2D, unsigned int chunksize, int graphIndex) {
 
     unsigned int xDimIndex = xDim-1;
     unsigned int dataLength = extent[xDimIndex];
@@ -178,7 +183,7 @@ void LoadThread::load2D(nix::DataArray array, nix::NDSize start, nix::NDSize ext
 
         if(! brokenData) {
             QVector<double> axis(0);
-            getAxis(array, axis, dataLength, offset, xDim);
+            getAxis(dim, axis, dataLength, offset);
 
             emit dataReady(loadedData, axis, graphIndex + index2D[j]);
         }
@@ -187,12 +192,12 @@ void LoadThread::load2D(nix::DataArray array, nix::NDSize start, nix::NDSize ext
 
 
 
-void LoadThread::getAxis(const nix::DataArray &array, QVector<double> &axis, unsigned int count, unsigned int offset, int xDim) {
-    nix::Dimension d = array.getDimension(xDim);
-    if(d.dimensionType() == nix::DimensionType::Sample) {
-        axis = QVector<double>::fromStdVector(d.asSampledDimension().axis(count, offset));
-    } else if(d.dimensionType() == nix::DimensionType::Range) {
-        axis = QVector<double>::fromStdVector(d.asRangeDimension().axis(count, offset));
+void LoadThread::getAxis(nix::Dimension dim, QVector<double> &axis, unsigned int count, unsigned int offset) {
+
+    if(dim.dimensionType() == nix::DimensionType::Sample) {
+        axis = QVector<double>::fromStdVector(dim.asSampledDimension().axis(count, offset));
+    } else if(dim.dimensionType() == nix::DimensionType::Range) {
+        axis = QVector<double>::fromStdVector(dim.asRangeDimension().axis(count, offset));
     } else {
         axis.resize(count);
         for (unsigned int i=0; i<count; i++) {
@@ -202,7 +207,7 @@ void LoadThread::getAxis(const nix::DataArray &array, QVector<double> &axis, uns
 }
 
 
-void LoadThread::setVariables(const nix::DataArray &array, nix::NDSize start, nix::NDSize extent, std::vector<int> index2D, unsigned int xDim, int graphIndex) {
+void LoadThread::setVariables(const nix::DataArray &array, nix::NDSize start, nix::NDSize extent, nix::Dimension dim, std::vector<int> index2D, unsigned int dimNumber, int graphIndex) {
 
     if(! testInput(array, start, extent)) {
         std::cerr << "LoadThread::setVariables(): Input not correct." << std::endl;
@@ -216,7 +221,8 @@ void LoadThread::setVariables(const nix::DataArray &array, nix::NDSize start, ni
     this->extent = extent;
     this->graphIndex = graphIndex;
     this->index2D = index2D;
-    this->xDim = xDim;
+    this->dimNumber = dimNumber;
+    this->dim = dim;
 
     if(! isRunning()) {
         QThread::start(LowPriority);
@@ -226,7 +232,7 @@ void LoadThread::setVariables(const nix::DataArray &array, nix::NDSize start, ni
     }
 }
 
-void LoadThread::setVariables1D(const nix::DataArray &array, nix::NDSize start, nix::NDSize extent, int graphIndex) {
+void LoadThread::setVariables1D(const nix::DataArray &array, nix::NDSize start, nix::NDSize extent, nix::Dimension dim, int graphIndex) {
 
     if(array.dataExtent().size() != 1) {
         std::cerr << "LoadThread::setVariables1D() given array has more than 1 dimension." << std::endl;
@@ -237,6 +243,7 @@ void LoadThread::setVariables1D(const nix::DataArray &array, nix::NDSize start, 
     this->array = nix::DataArray(array);
     this->start = start;
     this->extent = extent;
+    this->dim = dim;
     this->graphIndex = graphIndex;
 
     if(! isRunning()) {

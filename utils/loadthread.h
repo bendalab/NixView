@@ -28,20 +28,22 @@ public:
      * @param start: nix::NDSize with the same dimensionality as the Array defining the offset/startIndex where the loading begins.
      * @param extent: nix::NDSize with the same dimensionality as the Array defining the length of data to get.
      * @param index2D: A vector of indicies that defines which indices of a 2D Array should be loaded. (An empty array means all)
-     * @param xDim: The number of the nix::Dimension to be used as the xAxis.
+     * @param dim: the nix dimension  that describes the xAxis.
+     * @param dimNumber: The 'index' of the nix::Dimension to be used as the xAxis.
      * @param Index: An Index that will be givenin the signals to be able to use multiple threads at the same time.
      *          For 2D Arrays the Index is increassed by the index in second dimension of the loaded data.
      */
-    void setVariables(const nix::DataArray &array, nix::NDSize start, nix::NDSize extent, std::vector<int> index2D, unsigned int xDim, int Index);
+    void setVariables(const nix::DataArray &array, nix::NDSize start, nix::NDSize extent, nix::Dimension dim, std::vector<int> index2D, unsigned int dimNumber, int Index);
 
     /**
      * @brief setVariables1D: A smaller setVariables for 1D Arrays that don't need all members. Also starts the thread.
      * @param array: 1D DataArray to be loaded.
      * @param start: 1D nix::NDSize defining the startindex of the loading.
      * @param extent: 1D nix::NDSize defining the size of the part to be loaded.
+     * @param dim: the nix dimension  that describes the xAxis.
      * @param graphIndex: An index that will be returned in the Signals to be able to use multiple threads at once.
      */
-    void setVariables1D(const nix::DataArray &array, nix::NDSize start, nix::NDSize extent, int graphIndex);
+    void setVariables1D(const nix::DataArray &array, nix::NDSize start, nix::NDSize extent, nix::Dimension dim, int graphIndex);
 
     /**
      * @brief setChuncksize: sets the chunksize of the thread. Defines the size of the parts the thread will split the work.
@@ -50,10 +52,10 @@ public:
     void setChuncksize(unsigned int size);
 
 private:
-    void getAxis(const nix::DataArray &array, QVector<double> &axis, unsigned int count, unsigned int offset, int xDim);
+    void getAxis(nix::Dimension dim, QVector<double> &axis, unsigned int count, unsigned int offset);
     bool testInput(const nix::DataArray &array, nix::NDSize start, nix::NDSize extent);
-    void load1D(nix::DataArray array, nix::NDSize start, nix::NDSize extent, unsigned int chunksize, int graphIndex);
-    void load2D(nix::DataArray array, nix::NDSize start, nix::NDSize extent,  unsigned int xDim, std::vector<int> index2D, unsigned int chunksize, int Index);
+    void load1D(nix::DataArray array, nix::NDSize start, nix::NDSize extent, nix::Dimension dim, unsigned int chunksize, int graphIndex);
+    void load2D(nix::DataArray array, nix::NDSize start, nix::NDSize extent, nix::Dimension dim,  unsigned int dimNumber, std::vector<int> index2D, unsigned int chunksize, int Index);
 
 signals:
     /**
@@ -77,7 +79,8 @@ private:
     nix::NDSize start;
     nix::NDSize extent;
     unsigned int chunksize;
-    unsigned int xDim;
+    nix::Dimension dim;
+    unsigned int dimNumber;
     std::vector<int> index2D;
     int graphIndex;
     bool abort;

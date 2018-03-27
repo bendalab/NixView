@@ -126,7 +126,7 @@ void LinePlotter::draw_1d(const nix::DataArray &array) {
         nix::NDSize start, extent;
 
         calcStartExtent(array, start, extent, 1);
-        loaders.last()->setVariables1D(array, start, extent, newGraphIndex);
+        loaders.last()->setVariables1D(array, start, extent, array.getDimension(1), newGraphIndex);
 
         // open loading dialog ? too fast for small amounts (TODO: general loading Dialog)
     }
@@ -166,7 +166,7 @@ void LinePlotter::draw_2d(const nix::DataArray &array) {
 
     nix::NDSize start, extent;
     calcStartExtent(array, start, extent, best_dim);
-    loaders.last()->setVariables(array, start, extent, std::vector<int>(), best_dim, firstGraphIndex);
+    loaders.last()->setVariables(array, start, extent, array.getDimension(best_dim), std::vector<int>(), best_dim, firstGraphIndex);
 }
 
 
@@ -475,7 +475,7 @@ void LinePlotter::checkGraphsPerArray(QCPRange range) {
             int xDim = guess_best_xdim(arrays[i]);
 
             calcStartExtent(arrays[i], start, extent, xDim);
-            loaders[i]->setVariables(arrays[i], start, extent, std::vector<int>(), xDim, graphIndex);
+            loaders[i]->setVariables(arrays[i], start, extent, arrays[i].getDimension(xDim), std::vector<int>(), xDim, graphIndex);
 
             if(arrays[i].dataExtent().size() == 1) {
                 graphIndex += 1;
@@ -496,7 +496,7 @@ void LinePlotter::checkGraphsPerArray(QCPRange range) {
                 nix::NDSize start, extent;
                 calcStartExtent(arrays[i], start, extent, xDim);
 
-                loaders[i]->setVariables(arrays[i], start, extent, std::vector<int>(), xDim, graphIndex);
+                loaders[i]->setVariables(arrays[i], start, extent, arrays[i].getDimension(xDim), std::vector<int>(), xDim, graphIndex);
             }
         }
         if((max - range.upper) * mean < numOfPoints / 4) {
@@ -504,7 +504,7 @@ void LinePlotter::checkGraphsPerArray(QCPRange range) {
                 nix::NDSize start, extent;
                 calcStartExtent(arrays[i], start, extent, xDim);
 
-                loaders[i]->setVariables(arrays[i], start, extent, std::vector<int>(), xDim, graphIndex);
+                loaders[i]->setVariables(arrays[i], start, extent, arrays[i].getDimension(xDim), std::vector<int>(), xDim, graphIndex);
             }
         }
 
