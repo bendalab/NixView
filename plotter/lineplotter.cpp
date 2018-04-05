@@ -126,8 +126,12 @@ void LinePlotter::draw_1d(const nix::DataArray &array) {
         nix::NDSize start(1);
         start[0] = 0;
 
+        int length = array.dataExtent()[0];
+        if(length > numOfPoints) {
+            length = numOfPoints;
+        }
         nix::NDSize extent(1);
-        extent[0] = numOfPoints;
+        extent[0] = length;
 
         loaders.last()->setVariables1D(array, start, extent, array.getDimension(1), newGraphIndex);
 
@@ -172,7 +176,7 @@ void LinePlotter::draw_2d(const nix::DataArray &array) {
     start[1] = 0;
 
     double length = array.dataExtent()[best_dim-1];
-    if(numOfPoints < length) {
+    if(length > numOfPoints) {
         length = numOfPoints;
     }
     nix::NDSize extent(2);
