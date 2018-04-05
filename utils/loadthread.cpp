@@ -79,7 +79,7 @@ void LoadThread::load1D(nix::DataArray array, nix::NDSize start, nix::NDSize ext
 
     extent[0] = chunksize;
     QVector<double> loadedData;
-    QVector<double> chunkdata(chunksize);
+    std::vector<double> chunkdata(chunksize);
 
     bool brokenData = false;
     for (int i=0; i<totalChunks; i++) {
@@ -98,22 +98,14 @@ void LoadThread::load1D(nix::DataArray array, nix::NDSize start, nix::NDSize ext
             chunkdata.resize((dataLength - (totalChunks-1) * chunksize));
         }
         start[0] = offset + i * chunksize;
-        try{
-        array.getData(array.dataType(),chunkdata.data(),extent, start);
-        } catch(...) {
-            std::cerr << "GET DATA THROWS ERRORS" << std::endl;
-        }
+        array.getData(chunkdata,extent, start);
 
-        loadedData.append(chunkdata);
+        loadedData.append(QVector<double>::fromStdVector(chunkdata));
     }
 
     if(! brokenData) {
         QVector<double> axis(0);
-        try{
         getAxis(dim, axis, dataLength, offset);
-        } catch(...) {
-            std::cerr << "GET AXIS THROWS ERRORS" << std::endl;
-        }
 
         emit dataReady(loadedData, axis, graphIndex);
     }
