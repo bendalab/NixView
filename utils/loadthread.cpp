@@ -226,6 +226,11 @@ void LoadThread::setVariables1D(const nix::DataArray &array, nix::NDSize start, 
         std::cerr << "LoadThread::setVariables1D() given array has more than 1 dimension." << std::endl;
     }
 
+    if(! testInput(array, start, extent)) {
+        std::cerr << "LoadThread::setVariables1D(): Input not correct." << std::endl;
+        return;
+    }
+
     QMutexLocker locker(&mutex);
 
     this->array = nix::DataArray(array);
