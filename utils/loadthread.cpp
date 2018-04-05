@@ -42,11 +42,7 @@ void LoadThread::run() {
         int dimCount = array.dataExtent().size();;
 
         if(dimCount == 1) {
-            try{
             load1D(array, start, extent, dim, chunksize, graphIndex);
-            } catch (...) {
-                std::cerr << "probably obvious" << std::endl;
-            }
         } else if(dimCount == 2) {
             mutex.lock();
             unsigned int dimNumber = this->dimNumber;
