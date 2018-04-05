@@ -258,6 +258,148 @@ void LoadThread::setChuncksize(unsigned int size) {
 }
 
 
+void LoadThread::restartThread(nix::NDSize start, nix::NDSize extent) {
+
+    QMutexLocker locker(&mutex);
+
+    this->start = start;
+    this->extent = extent;
+
+    if(! isRunning()) {
+        std::cerr << "You have to call Loadthread::setVariables[1D]() first to set all needed members." << std::endl;
+    } else {
+        this->restart = true;
+        condition.wakeOne();
+    }
+}
+
+
+void LoadThread::startLoadingIfNeeded(QCPRange range, int xDim, double dataMin, double dataMax, double meanPoints) {
+    mutex.lock();
+    nix::DataArray array = this->array;
+    mutex.unlock();
+
+    if(dataMin == dataMax) {
+        nix::NDSize start, extent;
+
+        calcStartExtent(array, start, extent, range, xDim);
+        restartThread(start, extent);
+        return;
+    }
+
+    double numOfPoints = static_cast<double>(chunksize) / 3;
+
+    if((range.lower - dataMin)*meanPoints < numOfPoints/4) {
+        if(checkForMoreData(array, dataMin, false, xDim)) {
+            nix::NDSize start, extent;
+            calcStartExtent(array, start, extent, range, xDim);
+            restartThread(start, extent);
+        }
+    }
+    if((dataMax - range.upper) * meanPoints < numOfPoints / 4) {
+        if(checkForMoreData(array, dataMax, true, xDim)) {
+            nix::NDSize start, extent;
+            calcStartExtent(array, start, extent, range, xDim);
+            restartThread(start, extent);
+        }
+    }
+}
+
+
+void LoadThread::calcStartExtent(const nix::DataArray &array, nix::NDSize &start_size, nix::NDSize &extent_size, QCPRange curRange, int xDim) {
+    nix::Dimension d = array.getDimension(xDim);
+
+    double start, extent;
+
+    if( d.dimensionType() == nix::DimensionType::Set) {
+        start = 0;
+        extent = array.dataExtent()[xDim-1];
+    } else {
+        double pInRange;
+        double startIndex;
+
+        if( d.dimensionType() == nix::DimensionType::Sample) {
+            nix::SampledDimension spd = d.asSampledDimension();
+            double samplingIntervall = spd.samplingInterval();
+            double offset = 0;
+            if(spd.offset()) {
+                offset = spd.offset().get();
+            }
+
+            startIndex = (curRange.lower - offset) / samplingIntervall;
+            pInRange = curRange.size() / samplingIntervall;
+
+        } else { // rangeDimension
+            nix::RangeDimension rd = d.asRangeDimension();
+            std::vector<double> ticks = rd.ticks();
+            startIndex = std::distance(ticks.cbegin(), std::lower_bound(ticks.cbegin(), ticks.cend(), curRange.lower));
+            pInRange   = std::distance(ticks.cbegin(), std::upper_bound(ticks.cbegin(), ticks.cend(), curRange.upper)) - startIndex;
+        }
+
+        double numOfPoints = static_cast<double>(chunksize) / 3;
+
+        if(pInRange <= numOfPoints) {
+            start  = startIndex - numOfPoints;
+            extent =  numOfPoints + pInRange + numOfPoints;
+
+        } else if (pInRange > numOfPoints && pInRange < numOfPoints * 3) {
+            start  = startIndex - numOfPoints / 2;
+            extent = pInRange + numOfPoints; //numOfPoints/2 + pInRange + numOfPoints/2
+        } else {
+            start  = startIndex;
+            extent = pInRange + 1;
+        }
+    }
+
+    start = std::floor(start);
+    extent = std::ceil(extent);
+
+    if(start < 0) {
+        start = 0;
+    }
+
+    if(extent > array.dataExtent()[xDim-1] - start) {
+        extent = array.dataExtent()[xDim-1] - start;
+    } else if(extent < 1) {
+        extent = 1;
+    }
+
+    if(array.dataExtent().size() == 1) {
+        start_size = nix::NDSize({static_cast<int>(start)});
+        extent_size = nix::NDSize({static_cast<int>(extent)});
+    } else {
+        start_size = nix::NDSize({0, 0});
+        start_size[xDim-1] = static_cast<int>(start);
+        extent_size = nix::NDSize({1,1});
+        extent_size[xDim-1] = static_cast<int>(extent);
+    }
+}
+
+
+bool LoadThread::checkForMoreData(const nix::DataArray &array, double currentExtreme, bool higher, int xDim) {
+    nix::Dimension d = array.getDimension(xDim);
+
+    if(d.dimensionType() == nix::DimensionType::Set) {
+        std::cerr << "LoadThread::CheckForMoreData(): check set dim... no! Not yet." << std::endl;
+        return false;
+    } else if(d.dimensionType() == nix::DimensionType::Sample) {
+        if(higher) {
+            return (d.asSampledDimension().axis(1,array.dataExtent()[xDim-1]-1)[0] > currentExtreme);
+        } else {
+            return (d.asSampledDimension().axis(1,0)[0] < currentExtreme);
+        }
+    } else if(d.dimensionType() == nix::DimensionType::Range) {
+        if(higher) {
+            return (d.asRangeDimension().axis(1,array.dataExtent()[xDim-1]-1)[0] > currentExtreme);
+        } else {
+            return (d.asRangeDimension().axis(1,0)[0] < currentExtreme);
+        }
+    } else {
+        std::cerr << "LoadThread::CheckForMoreData(): unsupported dimension type." << std::endl;
+        return false;
+    }
+}
+
 bool LoadThread::testInput(const nix::DataArray &array, nix::NDSize start, nix::NDSize extent) {
     nix::NDSize size = array.dataExtent();
     if( ! (size.size() == start.size() && size.size() == extent.size())) {

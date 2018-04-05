@@ -22,7 +22,7 @@ LinePlotter::LinePlotter(QWidget *parent, int numOfPoints) :
     connect(ui->plot->yAxis, SIGNAL(rangeChanged(QCPRange)), this, SLOT(yAxisNewRange(QCPRange)));
 
     qRegisterMetaType<QVector<double>>();
-    connect(ui->plot->xAxis, SIGNAL(rangeChanged(QCPRange)), this, SLOT(checkGraphsPerArray(QCPRange)));
+    connect(ui->plot->xAxis, SIGNAL(rangeChanged(QCPRange)), this, SLOT(testThreads(QCPRange)));
 
     this->numOfPoints = numOfPoints; // standard 100 000
     this->totalYRange = QCPRange(0, 0);
@@ -123,9 +123,12 @@ void LinePlotter::draw_1d(const nix::DataArray &array) {
 
         ui->plot->addGraph();
         ui->plot->graph()->setPen(QPen(cmap.next()));
-        nix::NDSize start, extent;
+        nix::NDSize start(1);
+        start[0] = 0;
 
-        calcStartExtent(array, start, extent, 1);
+        nix::NDSize extent(1);
+        extent[0] = numOfPoints;
+
         loaders.last()->setVariables1D(array, start, extent, array.getDimension(1), newGraphIndex);
 
         // open loading dialog ? too fast for small amounts (TODO: general loading Dialog)
@@ -164,12 +167,22 @@ void LinePlotter::draw_2d(const nix::DataArray &array) {
         ui->plot->graph()->setPen(pen);
     }
 
-    nix::NDSize start, extent;
-    calcStartExtent(array, start, extent, best_dim);
+    nix::NDSize start(2);
+    start[0] = 0;
+    start[1] = 0;
+
+    double length = array.dataExtent()[best_dim-1];
+    if(numOfPoints < length) {
+        length = numOfPoints;
+    }
+    nix::NDSize extent(2);
+    extent[best_dim-1] = length;
+    extent[2-best_dim] = 1;
+
     loaders.last()->setVariables(array, start, extent, array.getDimension(best_dim), std::vector<int>(), best_dim, firstGraphIndex);
 }
 
-
+/*
 void LinePlotter::calcStartExtent(const nix::DataArray &array, nix::NDSize &start_size, nix::NDSize& extent_size, int xDim) {
     QCPRange curRange = ui->plot->xAxis->range();
     nix::Dimension d = array.getDimension(xDim);
@@ -240,7 +253,7 @@ void LinePlotter::calcStartExtent(const nix::DataArray &array, nix::NDSize &star
     //std::cerr << "start: " << start << std::endl;
     //std::cerr << "extent: " << extent << std::endl;
 }
-
+*/
 
 int LinePlotter::guess_best_xdim(const nix::DataArray &array) const {
 
@@ -460,6 +473,44 @@ void LinePlotter::resetView() {
     ui->plot->yAxis->setRange(totalYRange.lower*1.05, totalYRange.upper*1.05);
 }
 
+
+void LinePlotter::testThreads(QCPRange range) {
+    if(ui->plot->graphCount() == 0) {
+        return;
+    }
+
+    int graphIndex = 0;
+    for(int i=0; i<arrays.size(); i++) {
+        int xDim = guess_best_xdim(arrays[i]);
+        QCPGraph *graph = ui->plot->graph(graphIndex);
+
+        if(graph->dataCount() == 0) {
+            // with setVariables ?
+            //loaders[i]->setVariables();
+
+            if(arrays[i].dataExtent().size() == 1) {
+                graphIndex += 1;
+            } else if(arrays[i].dataExtent().size() == 2) {
+                graphIndex += arrays[i].dataExtent()[2-xDim];
+            }
+            continue;
+        }
+
+        double max = graph->dataMainKey(graph->dataCount()-1);
+        double min = graph->dataMainKey(0);
+        double mean = graph->dataCount() / (max-min);
+
+        loaders[i]->startLoadingIfNeeded(range, xDim, min, max, mean);
+
+        if(arrays[i].dataExtent().size() == 1) {
+            graphIndex += 1;
+        } else if(arrays[i].dataExtent().size() == 2) {
+            graphIndex += arrays[i].dataExtent()[2-xDim];
+        }
+    }
+}
+
+/*
 void LinePlotter::checkGraphsPerArray(QCPRange range) {
     if(ui->plot->graphCount() == 0) {
         return;
@@ -543,6 +594,7 @@ bool LinePlotter::checkForMoreData(int arrayIndex, double currentExtreme, bool h
         return false;
     }
 }
+*/
 
 
 void LinePlotter::xAxisNewRange(QCPRange range) {
