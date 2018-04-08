@@ -372,9 +372,11 @@ void MainWindow::populate_recent_file_menu() {
         ui->menu_open_recent->removeAction(a);
         delete a;
     }
-    for (QString s : recent_files) {
-        if (! QFile(s).exists()) {
-            recent_files.removeAll(s);
+    for (size_t i = recent_files.size(); i > 0; --i) {
+        QString s = recent_files[i-1];
+        QFileInfo info(s);
+        if (! info.exists()) {
+            recent_files.removeAt(i);
             continue;
         }
         ui->menu_open_recent->addAction(s);
