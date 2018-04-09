@@ -3,6 +3,7 @@
 #include "lineplotter.h"
 #include "categoryplotter.h"
 #include "imageplotter.h"
+#include "eventplotter.h"
 #include "common/Common.hpp"
 
 PlotWidget::PlotWidget(QWidget *parent) :
@@ -109,6 +110,12 @@ Plotter* PlotWidget::process(const nix::DataArray &array) {
         ui->scrollAreaWidgetContents->layout()->addWidget(ip);
         ip->draw(array);
         plot = ip;
+    } else if (suggestion == PlotterType::Event) {
+        deleteWidgetsFromLayout();
+        EventPlotter *ep = new EventPlotter();
+        ui->scrollAreaWidgetContents->layout()->addWidget(ep);
+        ep->draw(array);
+        plot = ep;
     }
     return plot;
 }

@@ -79,7 +79,6 @@ void EventPlotter::draw(const nix::DataArray &array) {
     if(! testArray(array)) {
         return;
     }
-
     std::vector<double> positions;
     array.getData(positions);
     plot(QVector<double>::fromStdVector(positions));
