@@ -17,6 +17,7 @@ public:
     explicit EventPlotter(QWidget *parent = 0);
     ~EventPlotter();
 
+    void draw(const nix::DataArray &array);
     void draw(const QVector<double> &positions, const QString &ylabel, const QVector<QString> &xlabels);
     void draw(const QVector<double> &positions, const QVector<double> &extents, const QString &ylabel, const QVector<QString> &xlabels);
 
@@ -43,6 +44,8 @@ public:
 private:
     Ui::EventPlotter *ui;
     ColorMap cmap;
+
+    bool testArray(const nix::DataArray &array);
 
     void plot(const QVector<double> &positions);
     void plot(const QVector<double> &positions, const QVector<double> &extends);

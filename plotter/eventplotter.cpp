@@ -75,6 +75,44 @@ QCustomPlot* EventPlotter::get_plot() {
 }
 
 
+void EventPlotter::draw(const nix::DataArray &array) {
+    if(! testArray(array)) {
+        return;
+    }
+
+    std::vector<double> positions;
+    array.getData(positions);
+    plot(QVector<double>::fromStdVector(positions));
+
+    set_ylabel(array.name());
+
+}
+
+
+bool EventPlotter::testArray(const nix::DataArray &array) {
+    if(array.dataExtent().size() > 1) {
+        std::cerr << "Eventplotter::testArray() - Eventplotter can't handle 2D data." << std::endl;
+        return false;
+    }
+
+    if(array.dataExtent().size() < 0) {
+        std::cerr << "Eventplotter::testArray() - array with dimCount: 0." << std::endl;
+        return false;
+    }
+
+    nix::Dimension d = array.getDimension(1);
+    if(d.dimensionType() != nix::DimensionType::Range) {
+        std::cerr << "Eventplotter::testArray() - Eventplotter can't handle other dimensions than alias ranged." << std::endl;
+        return false;
+    }
+    if( ! d.asRangeDimension().alias()) {
+        std::cerr << "Eventplotter::testArray() - Eventplotter ranged dimension is not an alias ranged." << std::endl;
+        return false;
+    }
+    return true;
+}
+
+
 void EventPlotter::draw(const QVector<double> &positions, const QString &ylabel, const QVector<QString> &xlabels) {
     set_xlabel(xlabels[0]);
     set_ylabel(ylabel);
