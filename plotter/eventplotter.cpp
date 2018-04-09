@@ -22,7 +22,7 @@ EventPlotter::EventPlotter(QWidget *parent) :
 
     qRegisterMetaType<QVector<double>>();
 
-    ui->plot->yAxis->setRange(-1.05,1.05);
+    ui->plot->yAxis->setRange(-0.05,1.05);
 }
 
 
@@ -87,6 +87,10 @@ void EventPlotter::draw(const nix::DataArray &array) {
     this->array = array;
 
     ui->plot->addGraph();
+    QPen pen;
+    pen.setColor(cmap.next());
+    ui->plot->graph()->setPen(pen);
+    ui->plot->graph()->setLineStyle(QCPGraph::LineStyle::lsImpulse);
 
     set_ylabel(array.name());
 
@@ -149,24 +153,13 @@ void EventPlotter::plot(const QVector<double> &positions) {
     QPen pen;
     pen.setColor(cmap.next());
     ui->plot->graph()->setPen(pen);
+    ui->plot->graph()->setLineStyle(QCPGraph::LineStyle::lsImpulse);
 
-    QVector<double> xValues = QVector<double>(4*positions.size());
-    QVector<double> yValues = QVector<double>(4*positions.size());
+    QVector<double> yValues(positions.size());
+    yValues.fill(1);
 
-    for(int i = 0; i < positions.size(); i++) {
-        xValues[4*i]   = positions[i]-(1.0/80000); // half of a step of the max(?) sample rate (40k).
-        xValues[4*i+1] = positions[i];
-        xValues[4*i+2] = positions[i];
-        xValues[4*i+3] = positions[i]+(1.0/80000);
-
-        yValues[4*i]   = 0;
-        yValues[4*i+1] = 1;
-        yValues[4*i+2] = -1;
-        yValues[4*i+3] = 0;
-    }
-
-    ui->plot->graph()->addData(xValues, yValues, true);
-    ui->plot->xAxis->setRange(xValues[0], xValues.last());
+    ui->plot->graph()->addData(positions, yValues, true);
+    ui->plot->xAxis->setRange(positions[0], positions.last());
     ui->plot->replot();
 }
 
@@ -200,29 +193,16 @@ void EventPlotter::plot(const QVector<double> &positions, const QVector<double> 
 
     ui->plot->graph()->addData(xValues, yValues, true);
     ui->plot->xAxis->setRange(xValues[0], xValues.last());
-    ui->plot->yAxis->setRange(-1.1,1.1);
     ui->plot->replot();
 }
 
 
 void EventPlotter::drawThreadData(const QVector<double> &positions, const QVector<double> &axis, int graphIndex) {
 
-    QVector<double> xValues = QVector<double>(4*positions.size());
-    QVector<double> yValues = QVector<double>(4*positions.size());
+    QVector<double> yValues(positions.size());
+    yValues.fill(1);
 
-    for(int i = 0; i < positions.size(); i++) {
-        xValues[4*i]   = positions[i]-(1.0/80000); // half of a step of the max(?) sample rate (40k).
-        xValues[4*i+1] = positions[i];
-        xValues[4*i+2] = positions[i];
-        xValues[4*i+3] = positions[i]+(1.0/80000);
-
-        yValues[4*i]   = 0;
-        yValues[4*i+1] = 1;
-        yValues[4*i+2] = -1;
-        yValues[4*i+3] = 0;
-    }
-
-    ui->plot->graph(graphIndex)->setData(xValues, yValues, true);
+    ui->plot->graph(graphIndex)->setData(positions, yValues, true);
     ui->plot->replot();
 }
 
