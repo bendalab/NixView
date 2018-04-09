@@ -2,7 +2,7 @@
 #include "ui_eventplotter.h"
 
 EventPlotter::EventPlotter(QWidget *parent) :
-  QWidget(parent), ui(new Ui::EventPlotter) {
+  QWidget(parent), ui(new Ui::EventPlotter), thread(this,200000) {
     ui->setupUi(this);
     // connect slot that ties some axis selections together (especially opposite axes):
     //connect(ui->plot, SIGNAL(selectionChangedByUser()), this, SLOT(selection_changed()));
@@ -19,6 +19,10 @@ EventPlotter::EventPlotter(QWidget *parent) :
 
     ui->plot->axisRect()->setRangeZoom(ui->plot->xAxis->orientation());
     ui->plot->axisRect()->setRangeDrag(ui->plot->xAxis->orientation());
+
+    qRegisterMetaType<QVector<double>>();
+
+    ui->plot->yAxis->setRange(-1.05,1.05);
 }
 
 
@@ -79,12 +83,32 @@ void EventPlotter::draw(const nix::DataArray &array) {
     if(! testArray(array)) {
         return;
     }
-    std::vector<double> positions;
-    array.getData(positions);
-    plot(QVector<double>::fromStdVector(positions));
+
+    this->array = array;
+
+    ui->plot->addGraph();
 
     set_ylabel(array.name());
 
+    nix::NDSize start(1), extent(1);
+    start[0] = 0;
+    unsigned int length = 25000;
+    if(array.dataExtent()[0] < length) {
+        length = array.dataExtent()[0];
+    }
+        extent[0] = length;
+
+    nix::Dimension d = array.getDimension(1);
+    ui->plot->xAxis->setRange(QCPRange(d.asRangeDimension().axis(1,0)[0],d.asRangeDimension().axis(1,length-1)[0]));
+
+    connect(&thread, SIGNAL(dataReady(const QVector<double> &, const QVector<double> &, int)), this, SLOT(drawThreadData(const QVector<double> &, const QVector<double> &, int)));
+    thread.setVariables1D(array, start, extent, array.getDimension(1), 0 );
+
+    connect(ui->plot->xAxis, SIGNAL(rangeChanged(QCPRange)), this, SLOT(xRangeChanged(QCPRange)));
+
+    //std::vector<double> positions;
+    //array.getData(positions);
+    //plot(QVector<double>::fromStdVector(positions));
 }
 
 
@@ -141,9 +165,8 @@ void EventPlotter::plot(const QVector<double> &positions) {
         yValues[4*i+3] = 0;
     }
 
-    ui->plot->graph()->addData(xValues, yValues);
+    ui->plot->graph()->addData(xValues, yValues, true);
     ui->plot->xAxis->setRange(xValues[0], xValues.last());
-    ui->plot->yAxis->setRange(-1,1);
     ui->plot->replot();
 }
 
@@ -175,9 +198,42 @@ void EventPlotter::plot(const QVector<double> &positions, const QVector<double> 
         yValues[4*i+3] = 0;
     }
 
-    ui->plot->graph()->addData(xValues, yValues);
+    ui->plot->graph()->addData(xValues, yValues, true);
     ui->plot->xAxis->setRange(xValues[0], xValues.last());
     ui->plot->yAxis->setRange(-1.1,1.1);
     ui->plot->replot();
+}
+
+
+void EventPlotter::drawThreadData(const QVector<double> &positions, const QVector<double> &axis, int graphIndex) {
+
+    QVector<double> xValues = QVector<double>(4*positions.size());
+    QVector<double> yValues = QVector<double>(4*positions.size());
+
+    for(int i = 0; i < positions.size(); i++) {
+        xValues[4*i]   = positions[i]-(1.0/80000); // half of a step of the max(?) sample rate (40k).
+        xValues[4*i+1] = positions[i];
+        xValues[4*i+2] = positions[i];
+        xValues[4*i+3] = positions[i]+(1.0/80000);
+
+        yValues[4*i]   = 0;
+        yValues[4*i+1] = 1;
+        yValues[4*i+2] = -1;
+        yValues[4*i+3] = 0;
+    }
+
+    ui->plot->graph(graphIndex)->setData(xValues, yValues, true);
+    ui->plot->replot();
+}
+
+void EventPlotter::xRangeChanged(QCPRange newRange) {
+    //assumption has exactly one graph.
+    QCPGraph *graph = ui->plot->graph();
+
+    double max = graph->dataMainKey(graph->dataCount()-1);
+    double min = graph->dataMainKey(0);
+    double meanPoints = graph->dataCount() / (max-min);
+
+    thread.startLoadingIfNeeded(newRange,1, min, max, meanPoints);
 }
 

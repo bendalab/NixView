@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include "plotter.h"
+#include "../utils/loadthread.h"
 #include <nix.hpp>
 #include "colormap.hpp"
 
@@ -44,6 +45,8 @@ public:
 private:
     Ui::EventPlotter *ui;
     ColorMap cmap;
+    nix::DataArray array;
+    LoadThread thread;
 
     bool testArray(const nix::DataArray &array);
 
@@ -51,6 +54,10 @@ private:
     void plot(const QVector<double> &positions, const QVector<double> &extends);
 
 public slots:
+
+    void drawThreadData(const QVector<double> &data, const QVector<double> &axis, int graphIndex);
+    void xRangeChanged(QCPRange newRange);
+
     /*void selection_changed();
     void mouse_wheel();
     void mouse_press();
