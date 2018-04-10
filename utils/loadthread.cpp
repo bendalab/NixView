@@ -74,7 +74,7 @@ void LoadThread::load1D(nix::DataArray array, nix::NDSize start, nix::NDSize ext
     }
 
     extent[0] = chunksize;
-    QVector<double> loadedData;
+    std::vector<double> loadedData;
     std::vector<double> chunkdata(chunksize);
 
     bool brokenData = false;
@@ -96,14 +96,16 @@ void LoadThread::load1D(nix::DataArray array, nix::NDSize start, nix::NDSize ext
         start[0] = offset + i * chunksize;
         array.getData(chunkdata,extent, start);
 
-        loadedData.append(QVector<double>::fromStdVector(chunkdata));
+        loadedData.insert(loadedData.end(), chunkdata.begin(), chunkdata.end());
+
+        //loadedData.append(QVector<double>::fromStdVector(chunkdata));
     }
 
     if(! brokenData) {
         QVector<double> axis(0);
         getAxis(dim, axis, dataLength, offset);
 
-        emit dataReady(loadedData, axis, graphIndex);
+        emit dataReady(QVector<double>::fromStdVector(loadedData), axis, graphIndex);
     }
 }
 
@@ -135,7 +137,7 @@ void LoadThread::load2D(nix::DataArray array, nix::NDSize start, nix::NDSize ext
     //iterate over given indices
     for(unsigned int j=0; j<index2D.size(); j++) {
         bool brokenData = false;
-        QVector<double> loadedData;
+        std::vector<double> loadedData;
 
         start[1-xDimIndex] = index2D[j];
 
@@ -166,14 +168,14 @@ void LoadThread::load2D(nix::DataArray array, nix::NDSize start, nix::NDSize ext
 
             array.getData(array.dataType(),chunkdata.data(),extent, start);
 
-            loadedData.append(chunkdata);
+            loadedData.insert(loadedData.end(), chunkdata.begin(), chunkdata.end());
             }
 
         if(! brokenData) {
             QVector<double> axis(0);
             getAxis(dim, axis, dataLength, offset);
 
-            emit dataReady(loadedData, axis, graphIndex + index2D[j]);
+            emit dataReady(QVector<double>::fromStdVector(loadedData), axis, graphIndex + index2D[j]);
         }
     }
 }

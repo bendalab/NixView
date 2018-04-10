@@ -123,7 +123,7 @@ bool EventPlotter::testArray(const nix::DataArray &array) {
         return false;
     }
 
-    if(array.dataExtent().size() < 0) {
+    if(array.dataExtent().size() == 0) {
         std::cerr << "Eventplotter::testArray() - array with dimCount: 0." << std::endl;
         return false;
     }
