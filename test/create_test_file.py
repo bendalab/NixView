@@ -109,7 +109,7 @@ def create_1d_range(f, b):
 
     range_da = b.create_data_array('zero crossings', 'nix.event', data=xings)
     range_da.definition = "1-D data that is irregularly sampled in time. That \
-    is, the time betwee consecutive sampling points is not regular. Here we \
+    is, the time between consecutive sampling points is not regular. Here we \
     store the times at which a signal crossed the zero line. The content of the \
     DataArray itself defines the time-axis the only dimension descriptor is thus \
     an \"aliasRange\" dimension."
@@ -123,7 +123,7 @@ def create_1d_set(f, b):
     labels = ["Sep", "Aug", "Jul", "Jun", "Mai", "April", "Mar", "Feb", "Jan", "Dec", "Nov", "Okt"]
 
     da = b.create_data_array("average temperature", "nix.catergorical", data=temp)
-    da.definition = "1-D categorical data can also be stored in a DAtaArray entity. The dimension\
+    da.definition = "1-D categorical data can also be stored in a DataArray entity. The dimension\
     descriptor is in this case a SetDimension. The labels stored in this dimension are used to \
     label the ticks of the x-axis."
     da.label = "temperature"

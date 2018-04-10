@@ -5,6 +5,7 @@
 #include <QMutex>
 #include <QWaitCondition>
 #include <nix.hpp>
+#include "../plotter/plotter.h"
 
 
 class LoadThread: public QThread
@@ -50,6 +51,11 @@ public:
      * @param size: cannot be 0
      */
     void setChuncksize(unsigned int size);
+
+    void restartThread(nix::NDSize start, nix::NDSize extent);
+    void startLoadingIfNeeded(QCPRange range, int xDim, double dataMin, double dataMax, double meanPoints);
+    void calcStartExtent(const nix::DataArray &array, nix::NDSize &start_size, nix::NDSize& extent_size, QCPRange curRange, int xDim);
+    bool checkForMoreData(const nix::DataArray &array, double currentExtreme, bool higher, int xDim);
 
 private:
     void getAxis(nix::Dimension dim, QVector<double> &axis, unsigned int count, unsigned int offset);

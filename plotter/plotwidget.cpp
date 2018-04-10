@@ -3,6 +3,7 @@
 #include "lineplotter.h"
 #include "categoryplotter.h"
 #include "imageplotter.h"
+#include "eventplotter.h"
 #include "common/Common.hpp"
 
 PlotWidget::PlotWidget(QWidget *parent) :
@@ -109,6 +110,26 @@ Plotter* PlotWidget::process(const nix::DataArray &array) {
         ui->scrollAreaWidgetContents->layout()->addWidget(ip);
         ip->draw(array);
         plot = ip;
+    } else if (suggestion == PlotterType::Event) {
+        deleteWidgetsFromLayout();
+        EventPlotter *ep = new EventPlotter();
+        ui->scrollAreaWidgetContents->layout()->addWidget(ep);
+
+        ui->resetViewButton->setHidden(false);
+        ui->hScrollBar->setHidden(false);
+        ui->zoomSlider->setHidden(false);
+        ui->zoomLabel->setHidden(false);
+
+        connect(this, SIGNAL(resetViewToPlot()), ep, SLOT(resetView()));
+
+        connect(ep, SIGNAL(xAxisChanged(QCPRange,QCPRange)), this, SLOT(changeSliderPos(QCPRange,QCPRange)));
+        connect(this, SIGNAL(sliderToPlot(double)), ep, SLOT(changeXAxisSize(double)));
+
+        connect(ep,   SIGNAL(xAxisChanged(QCPRange, QCPRange)), this, SLOT(changeHScrollBarValue(QCPRange, QCPRange)) );
+        connect(this, SIGNAL(hScrollBarToPlot(double)), ep, SLOT(changeXAxisPosition(double)) );
+
+        ep->draw(array);
+        plot = ep;
     }
     return plot;
 }

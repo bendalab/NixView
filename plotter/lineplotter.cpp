@@ -22,7 +22,7 @@ LinePlotter::LinePlotter(QWidget *parent, int numOfPoints) :
     connect(ui->plot->yAxis, SIGNAL(rangeChanged(QCPRange)), this, SLOT(yAxisNewRange(QCPRange)));
 
     qRegisterMetaType<QVector<double>>();
-    connect(ui->plot->xAxis, SIGNAL(rangeChanged(QCPRange)), this, SLOT(checkGraphsPerArray(QCPRange)));
+    connect(ui->plot->xAxis, SIGNAL(rangeChanged(QCPRange)), this, SLOT(testThreads(QCPRange)));
 
     this->numOfPoints = numOfPoints; // standard 100 000
     this->totalYRange = QCPRange(0, 0);
@@ -123,9 +123,16 @@ void LinePlotter::draw_1d(const nix::DataArray &array) {
 
         ui->plot->addGraph();
         ui->plot->graph()->setPen(QPen(cmap.next()));
-        nix::NDSize start, extent;
+        nix::NDSize start(1);
+        start[0] = 0;
 
-        calcStartExtent(array, start, extent, 1);
+        int length = array.dataExtent()[0];
+        if(length > numOfPoints) {
+            length = numOfPoints;
+        }
+        nix::NDSize extent(1);
+        extent[0] = length;
+
         loaders.last()->setVariables1D(array, start, extent, array.getDimension(1), newGraphIndex);
 
         // open loading dialog ? too fast for small amounts (TODO: general loading Dialog)
@@ -164,81 +171,19 @@ void LinePlotter::draw_2d(const nix::DataArray &array) {
         ui->plot->graph()->setPen(pen);
     }
 
-    nix::NDSize start, extent;
-    calcStartExtent(array, start, extent, best_dim);
+    nix::NDSize start(2);
+    start[0] = 0;
+    start[1] = 0;
+
+    double length = array.dataExtent()[best_dim-1];
+    if(length > numOfPoints) {
+        length = numOfPoints;
+    }
+    nix::NDSize extent(2);
+    extent[best_dim-1] = length;
+    extent[2-best_dim] = 1;
+
     loaders.last()->setVariables(array, start, extent, array.getDimension(best_dim), std::vector<int>(), best_dim, firstGraphIndex);
-}
-
-
-void LinePlotter::calcStartExtent(const nix::DataArray &array, nix::NDSize &start_size, nix::NDSize& extent_size, int xDim) {
-    QCPRange curRange = ui->plot->xAxis->range();
-    nix::Dimension d = array.getDimension(xDim);
-
-    double start, extent;
-
-    if( d.dimensionType() == nix::DimensionType::Set) {
-        start = 0;
-        extent = array.dataExtent()[xDim-1];
-    } else {
-        double pInRange;
-        double startIndex;
-
-        if( d.dimensionType() == nix::DimensionType::Sample) {
-            nix::SampledDimension spd = d.asSampledDimension();
-            double samplingIntervall = spd.samplingInterval();
-            double offset = 0;
-            if(spd.offset()) {
-                offset = spd.offset().get();
-            }
-
-            startIndex = (curRange.lower - offset) / samplingIntervall;
-            pInRange = ui->plot->xAxis->range().size() / samplingIntervall;
-
-        } else { // rangeDimension
-            nix::RangeDimension rd = d.asRangeDimension();
-            std::vector<double> ticks = rd.ticks();
-            startIndex = std::distance(ticks.cbegin(), std::lower_bound(ticks.cbegin(), ticks.cend(), curRange.lower));
-            pInRange   = std::distance(ticks.cbegin(), std::upper_bound(ticks.cbegin(), ticks.cend(), curRange.upper)) - startIndex;
-        }
-
-        if(pInRange <= numOfPoints) {
-            start  = startIndex - numOfPoints;
-            extent =  numOfPoints + pInRange + numOfPoints;
-
-        } else if (pInRange > numOfPoints && pInRange < numOfPoints * 3) {
-            start  = startIndex - numOfPoints / 2;
-            extent = pInRange + numOfPoints; //numOfPoints/2 + pInRange + numOfPoints/2
-        } else {
-            start  = startIndex;
-            extent = pInRange + 1;
-        }
-    }
-
-    start = std::floor(start);
-    extent = std::ceil(extent);
-
-    if(start < 0) {
-        start = 0;
-    }
-
-    if(extent > array.dataExtent()[xDim-1] - start) {
-        extent = array.dataExtent()[xDim-1] - start;
-    } else if(extent < 1) {
-        extent = 1;
-    }
-
-    if(array.dataExtent().size() == 1) {
-        start_size = nix::NDSize({static_cast<int>(start)});
-        extent_size = nix::NDSize({static_cast<int>(extent)});
-    } else {
-        start_size = nix::NDSize({0, 0});
-        start_size[xDim-1] = static_cast<int>(start);
-        extent_size = nix::NDSize({1,1});
-        extent_size[xDim-1] = static_cast<int>(extent);
-    }
-
-    //std::cerr << "start: " << start << std::endl;
-    //std::cerr << "extent: " << extent << std::endl;
 }
 
 
@@ -425,8 +370,6 @@ void LinePlotter::setYRange(QVector<double> yData) {
 
     totalYRange.expand(QCPRange(yMin, yMax));
     ui->plot->yAxis->setRange(totalYRange.lower*1.05, totalYRange.upper*1.05);
-
-    //emit yAxisNewRange(ui->plot->yAxis->range());
 }
 
 
@@ -460,22 +403,20 @@ void LinePlotter::resetView() {
     ui->plot->yAxis->setRange(totalYRange.lower*1.05, totalYRange.upper*1.05);
 }
 
-void LinePlotter::checkGraphsPerArray(QCPRange range) {
+
+void LinePlotter::testThreads(QCPRange range) {
     if(ui->plot->graphCount() == 0) {
         return;
     }
 
     int graphIndex = 0;
-    // TODO: FEATURE plot only some graphs of a DataArray
     for(int i=0; i<arrays.size(); i++) {
+        int xDim = guess_best_xdim(arrays[i]);
         QCPGraph *graph = ui->plot->graph(graphIndex);
 
         if(graph->dataCount() == 0) {
-            nix::NDSize start, extent;
-            int xDim = guess_best_xdim(arrays[i]);
-
-            calcStartExtent(arrays[i], start, extent, xDim);
-            loaders[i]->setVariables(arrays[i], start, extent, arrays[i].getDimension(xDim), std::vector<int>(), xDim, graphIndex);
+            // with setVariables ?
+            //loaders[i]->setVariables();
 
             if(arrays[i].dataExtent().size() == 1) {
                 graphIndex += 1;
@@ -489,58 +430,13 @@ void LinePlotter::checkGraphsPerArray(QCPRange range) {
         double min = graph->dataMainKey(0);
         double mean = graph->dataCount() / (max-min);
 
-        int xDim = guess_best_xdim(arrays[i]);
-
-        if((range.lower - min)*mean < numOfPoints/4) {
-            if(checkForMoreData(i, min, false)) {
-                nix::NDSize start, extent;
-                calcStartExtent(arrays[i], start, extent, xDim);
-
-                loaders[i]->setVariables(arrays[i], start, extent, arrays[i].getDimension(xDim), std::vector<int>(), xDim, graphIndex);
-            }
-        }
-        if((max - range.upper) * mean < numOfPoints / 4) {
-            if(checkForMoreData(i, max, true)) {
-                nix::NDSize start, extent;
-                calcStartExtent(arrays[i], start, extent, xDim);
-
-                loaders[i]->setVariables(arrays[i], start, extent, arrays[i].getDimension(xDim), std::vector<int>(), xDim, graphIndex);
-            }
-        }
+        loaders[i]->startLoadingIfNeeded(range, xDim, min, max, mean);
 
         if(arrays[i].dataExtent().size() == 1) {
             graphIndex += 1;
         } else if(arrays[i].dataExtent().size() == 2) {
             graphIndex += arrays[i].dataExtent()[2-xDim];
         }
-    }
-}
-
-
-bool LinePlotter::checkForMoreData(int arrayIndex, double currentExtreme, bool higher) {
-    nix::DataArray array = arrays[arrayIndex];
-
-    int xDim = guess_best_xdim(array);
-    nix::Dimension d = array.getDimension(xDim);
-
-    if(d.dimensionType() == nix::DimensionType::Set) {
-        std::cerr << "Lineplotter::CheckForMoreData(): check set dim... no! Not yet." << std::endl;
-        return false;
-    } else if(d.dimensionType() == nix::DimensionType::Sample) {
-        if(higher) {
-            return (d.asSampledDimension().axis(1,array.dataExtent()[xDim-1]-1)[0] > currentExtreme);
-        } else {
-            return (d.asSampledDimension().axis(1,0)[0] < currentExtreme);
-        }
-    } else if(d.dimensionType() == nix::DimensionType::Range) {
-        if(higher) {
-            return (d.asRangeDimension().axis(1,array.dataExtent()[xDim-1]-1)[0] > currentExtreme);
-        } else {
-            return (d.asRangeDimension().axis(1,0)[0] < currentExtreme);
-        }
-    } else {
-        std::cerr << "Lineplotter::CheckForMoreData(): unsupported dimension type." << std::endl;
-        return false;
     }
 }
 
