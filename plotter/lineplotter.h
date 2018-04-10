@@ -70,7 +70,6 @@ private:
 signals:
     void xAxisChanged(QCPRange xNow, QCPRange xComplete);
     void yAxisChanged(QCPRange yNow, QCPRange yComplete);
-    void anyAxisChanged(QCPRange xNow, QCPRange xComplete); // for zoom slider
 
 public slots:
     void drawThreadData(const QVector<double> &data, const QVector<double> &axis, int graphIndex);
