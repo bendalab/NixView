@@ -15,7 +15,7 @@ class EventPlotter : public QWidget , public Plotter {
     Q_OBJECT
 
 public:
-    explicit EventPlotter(QWidget *parent = 0);
+    explicit EventPlotter(QWidget *parent = 0, int numOfPoints=100000);
     ~EventPlotter();
 
     void draw(const nix::DataArray &array);
@@ -47,16 +47,25 @@ private:
     ColorMap cmap;
     nix::DataArray array;
     LoadThread thread;
+    QCPRange totalRange;
+    int numOfPoints;
 
     bool testArray(const nix::DataArray &array);
 
     void plot(const QVector<double> &positions);
     void plot(const QVector<double> &positions, const QVector<double> &extends);
 
-public slots:
+signals:
+    void xAxisChanged(QCPRange xNow, QCPRange total);
 
+
+public slots:
     void drawThreadData(const QVector<double> &data, const QVector<double> &axis, int graphIndex);
-    void xRangeChanged(QCPRange newRange);
+    void xRangeChanged(QCPRange newRange); // send new info to thread to load if needed.
+
+    void changeXAxisPosition(double newCenter); // react to signals from plotwidget.
+    void changeXAxisSize(double ratio);
+    void resetView();
 
     /*void selection_changed();
     void mouse_wheel();
