@@ -40,8 +40,9 @@ void LazyLoadView::setColumnState(QString column, bool visible) {
     NixTreeModel *model = static_cast<NixTreeModel*>(ui->treeView->model());
     if (model == nullptr)
         return;
-    for (int i = 0; i < model->columnCount(); i++) {
-        if (model->headerData(i, Qt::Horizontal).toString() == column) {
+
+    for (int i = 0; i < NixTreeModelItem::columns.size(); i++) {
+        if (model->headerData(i, Qt::Horizontal, Qt::DisplayRole).toString() == column) {
             ui->treeView->setColumnHidden(i, !visible);
         }
     }
