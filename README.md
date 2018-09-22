@@ -15,7 +15,7 @@ For more information on nix see https://github.com/G-Node/nix
  - Qt5
  - Boost > 1.49
  - cmake
- - Nix libraries (currently builds against the 1.3 release, build from source or install via launchpad/homebrew)
+ - Nix libraries (currently builds against the 1.4.2 release, build from source or install via launchpad/homebrew)
 
 
 ## Installation
@@ -56,7 +56,7 @@ make -j 4
 The easiest way to install the dependencies is via [homebrew](http://brew.sh).
 ```shell
 brew update
-brew tap homebrew/science
+brew tap g-node/pkg
 brew install nixio
 
 brew install qt5
